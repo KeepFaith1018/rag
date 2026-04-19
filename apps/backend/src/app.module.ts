@@ -5,6 +5,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from '@common/prisma/prisma.module';
 import { winstonConfig } from '@common/config/winston.config';
+import { configValidationSchema } from '@common/config/env.validation';
 import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { LoggingInterceptor } from '@common/interceptors/logging.interceptor';
 import { AllExceptionsFilter } from '@common/filter/all-exceptions.filter';
@@ -12,10 +13,6 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { KnowledgeBaseModule } from './modules/knowledge-base/knowledge-base.module';
 import { KbMemberModule } from './modules/kb-member/kb-member.module';
-import { DocumentModule } from './modules/document/document.module';
-import { ChatModule } from './modules/chat/chat.module';
-import { AiModelModule } from './modules/ai-model/ai-model.module';
-import { DictModule } from './modules/dict/dict.module';
 import { JwtModule } from '@nestjs/jwt';
 
 @Module({
@@ -23,17 +20,21 @@ import { JwtModule } from '@nestjs/jwt';
     ConfigModule.forRoot({
       isGlobal: true,
       envFilePath: ['.env'],
+      validationSchema: configValidationSchema,
+      validationOptions: {
+        allowUnknown: true,
+        abortEarly: true,
+      },
     }),
     JwtModule.registerAsync({
       global: true,
-      useFactory(configService: ConfigService) {
-        return {
-          secret: configService.get<string>('JWT_SECRET'),
-          signOptions: {
-            expiresIn: '30m', // 默认 30 分钟
-          },
-        };
-      },
+      imports: [ConfigModule],
+      useFactory: (configService: ConfigService) => ({
+        secret: configService.get<string>('JWT_EXPIRES_IN'),
+        signOptions: {
+          expiresIn: '7d',
+        },
+      }),
       inject: [ConfigService],
     }),
     PrismaModule,
@@ -42,12 +43,13 @@ import { JwtModule } from '@nestjs/jwt';
     UserModule,
     KnowledgeBaseModule,
     KbMemberModule,
-    DocumentModule,
-    ChatModule,
-    AiModelModule,
-    DictModule,
   ],
   controllers: [AppController],
-  providers: [AppService, ResponseInterceptor, LoggingInterceptor, AllExceptionsFilter],
+  providers: [
+    AppService,
+    ResponseInterceptor,
+    LoggingInterceptor,
+    AllExceptionsFilter,
+  ],
 })
 export class AppModule {}

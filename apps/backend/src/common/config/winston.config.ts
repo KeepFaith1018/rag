@@ -1,5 +1,13 @@
 import * as winston from 'winston';
 import { utilities as nestWinstonModuleUtilities } from 'nest-winston';
+import 'winston-daily-rotate-file';
+
+const dailyRotateOptions = {
+  datePattern: 'YYYY-MM-DD',
+  zippedArchive: false,
+  maxSize: '20m',
+  maxFiles: '14d',
+};
 
 export const winstonConfig: winston.LoggerOptions = {
   level: 'info',
@@ -19,15 +27,17 @@ export const winstonConfig: winston.LoggerOptions = {
         }),
       ),
     }),
-    // 输出到 info 日志文件
-    new winston.transports.File({
-      filename: 'logs/app-info.log',
+    // 按天切分 info 日志文件
+    new winston.transports.DailyRotateFile({
+      filename: 'logs/%DATE%/app-info.log',
       level: 'info',
+      ...dailyRotateOptions,
     }),
-    // 输出到 error 日志文件
-    new winston.transports.File({
-      filename: 'logs/app-error.log',
+    // 按天切分 error 日志文件
+    new winston.transports.DailyRotateFile({
+      filename: 'logs/%DATE%/app-error.log',
       level: 'error',
+      ...dailyRotateOptions,
     }),
   ],
 };
