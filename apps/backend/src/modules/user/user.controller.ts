@@ -8,12 +8,12 @@ import { Auth } from '../../common/decorators/auth.decorator';
 import { ResetPasswordDto } from './dto/reset-password.dto';
 
 @Controller('users')
-@UseGuards(AuthGuard)
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
   // 更新当前登录用户的个人信息
   @Patch('me')
+  @UseGuards(AuthGuard)
   @Auth()
   async updateProfile(
     @CurrentUser('sub') userId: string,
@@ -24,6 +24,7 @@ export class UserController {
 
   // 修改当前登录用户的密码
   @Post('me/password')
+  @UseGuards(AuthGuard)
   @Auth()
   async changePassword(
     @CurrentUser('sub') userId: string,

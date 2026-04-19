@@ -8,7 +8,7 @@ import { ErrorCode } from '@common/utils/errorCodeMap';
 
 @Injectable()
 export class EmailService {
-  private transporter: nodemailer.Transporter;
+  private transporter: nodemailer.Transporter | null = null;
 
   constructor(
     private readonly prisma: PrismaService,
@@ -17,28 +17,46 @@ export class EmailService {
     this.initTransporter();
   }
 
+  /**
+   * 初始化邮件发送器。
+   * 当邮件配置不完整时，不在构造阶段直接抛错，避免影响未使用邮件能力的场景启动。
+   */
   private initTransporter() {
     const host = this.configService.get<string>('EMAIL_HOST');
     const port = this.configService.get<number>('EMAIL_PORT');
     const user = this.configService.get<string>('EMAIL_USER');
     const pass = this.configService.get<string>('EMAIL_PASS');
 
-    if (host && port && user && pass) {
-      this.transporter = nodemailer.createTransport({
-        host,
-        port: Number(port),
-        secure: Number(port) === 465,
-        auth: {
-          user,
-          pass,
-        },
-      });
+    if (!host || !port || !user || !pass) {
+      this.transporter = null;
+      return;
     }
+
+    this.transporter = nodemailer.createTransport({
+      host,
+      port: Number(port),
+      secure: Number(port) === 465,
+      auth: {
+        user,
+        pass,
+      },
+    });
+  }
+
+  /**
+   * 获取可用的邮件发送器。
+   */
+  private getTransporter(): nodemailer.Transporter {
+    if (!this.transporter) {
+      throw new BusinessException(ErrorCode.EMAIL_CONFIG_INVALID);
+    }
+
+    return this.transporter;
   }
 
   async sendVerificationCode(email: string, purpose: VerificationPurpose) {
     const now = new Date();
-    const recentUnused = await this.prisma.email_verification_codes.findFirst({
+    const recentUnused = await this.prisma.sys_email_codes.findFirst({
       where: {
         email,
         purpose,
@@ -54,7 +72,7 @@ export class EmailService {
 
     const code = Math.floor(100000 + Math.random() * 900000).toString();
     try {
-      await this.prisma.email_verification_codes.create({
+      await this.prisma.sys_email_codes.create({
         data: {
           email,
           code,
@@ -66,8 +84,10 @@ export class EmailService {
       throw new BusinessException(ErrorCode.EMAIL_CODE_PROCESS_FAILED);
     }
 
+    const transporter = this.getTransporter();
+
     try {
-      await this.transporter.sendMail({
+      await transporter.sendMail({
         from:
           this.configService.get<string>('EMAIL_FROM') ||
           'RAG 私有知识库 <no-reply@rag-kb.com>',
@@ -202,7 +222,7 @@ export class EmailService {
   }
 
   async verifyCode(email: string, code: string, purpose: VerificationPurpose) {
-    const validCode = await this.prisma.email_verification_codes.findFirst({
+    const validCode = await this.prisma.sys_email_codes.findFirst({
       where: {
         email,
         code,
@@ -217,7 +237,7 @@ export class EmailService {
       throw new BusinessException(ErrorCode.EMAIL_CODE_INVALID);
     }
 
-    await this.prisma.email_verification_codes.update({
+    await this.prisma.sys_email_codes.update({
       where: { id: validCode.id },
       data: { used: true },
     });
@@ -225,4 +245,3 @@ export class EmailService {
     return true;
   }
 }
-   

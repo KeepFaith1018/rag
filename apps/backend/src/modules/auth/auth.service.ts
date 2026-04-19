@@ -7,12 +7,14 @@ import { RegisterDto } from './dto/register.dto';
 import { LoginDto } from './dto/login.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { EmailService } from '../email/email.service';
-import { SendVerificationCodeDto, VerificationPurpose } from './dto/send-verification-code.dto';
+import {
+  SendVerificationCodeDto,
+  VerificationPurpose,
+} from './dto/send-verification-code.dto';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
-import { PrismaService } from '@common/prisma/prisma.service'
+import { PrismaService } from '@common/prisma/prisma.service';
 import { JwtUser } from './interface/jwtUser';
-
 
 @Injectable()
 export class AuthService {
@@ -31,7 +33,10 @@ export class AuthService {
         throw new BusinessException(ErrorCode.AUTH_USER_EXISTS);
       }
       // 如果是重置密码或登录，校验用户是否存在
-    } else if (dto.purpose === VerificationPurpose.RESET_PASSWORD || dto.purpose === VerificationPurpose.LOGIN) {
+    } else if (
+      dto.purpose === VerificationPurpose.RESET_PASSWORD ||
+      dto.purpose === VerificationPurpose.LOGIN
+    ) {
       const existingUser = await this.userService.findByEmail(dto.email);
       if (!existingUser) {
         throw new BusinessException(ErrorCode.AUTH_USER_NOT_FOUND);
@@ -46,7 +51,7 @@ export class AuthService {
     await this.emailService.verifyCode(
       registerDto.email,
       registerDto.code,
-      VerificationPurpose.REGISTER
+      VerificationPurpose.REGISTER,
     );
 
     const existingUser = await this.userService.findByEmail(registerDto.email);
@@ -56,12 +61,12 @@ export class AuthService {
 
     const salt = await bcrypt.genSalt();
     const hashedPassword = await bcrypt.hash(registerDto.password, salt);
-    
+
     await this.userService.create({
       ...registerDto,
       password: hashedPassword,
     });
-    
+
     return { message: 'Register success' };
   }
 
@@ -70,24 +75,26 @@ export class AuthService {
     if (!user) {
       throw new BusinessException(ErrorCode.AUTH_INVALID_CREDENTIALS);
     }
-    
+
     const isMatch = await bcrypt.compare(loginDto.password, user.password_hash);
     if (!isMatch) {
       throw new BusinessException(ErrorCode.AUTH_INVALID_CREDENTIALS);
     }
-    const payload = { 
+    const payload = {
       sub: user.id.toString(),
       email: user.email,
-      username: user.full_name,
-      isAdmin: user.is_superuser,
+      username: user.full_name ?? user.email,
+      isAdmin: false,
     };
     const accessToken = await this.jwtService.signAsync(payload); // Default 30m from module config
-    const refreshToken = await this.jwtService.signAsync(payload, { expiresIn: '7d' });
+    const refreshToken = await this.jwtService.signAsync(payload, {
+      expiresIn: '7d',
+    });
     const refreshTokenHash = this.hashToken(refreshToken);
     const sessionId = this.generateSessionId();
     const now = new Date();
 
-    await this.prisma.user_sessions.create({
+    await this.prisma.b_user_sessions.create({
       data: {
         session_id: sessionId,
         user_id: user.id,
@@ -97,19 +104,11 @@ export class AuthService {
         expired_at: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
       },
     });
-    
-    const userInfo = {
-      id: user.id.toString(),
-      email: user.email,
-      username: user.full_name,
-      avatar: user.avatar_url,
-      roles: user.is_superuser ? ['admin'] : ['user'],
-    };
 
     return {
       accessToken,
       refreshToken,
-      user: userInfo,
+      user: this.userService.buildUserProfile(user),
     };
   }
 
@@ -117,7 +116,7 @@ export class AuthService {
     const hash = this.hashToken(refreshTokenDto.refreshToken);
     const now = new Date();
 
-    const session = await this.prisma.user_sessions.findFirst({
+    const session = await this.prisma.b_user_sessions.findFirst({
       where: {
         refresh_token_hash: hash,
         revoked: false,
@@ -130,7 +129,9 @@ export class AuthService {
     }
 
     try {
-      const payload: JwtUser = await this.jwtService.verifyAsync(refreshTokenDto.refreshToken);
+      const payload: JwtUser = await this.jwtService.verifyAsync(
+        refreshTokenDto.refreshToken,
+      );
 
       const user = await this.userService.findById(session.user_id);
       if (!user || user.id.toString() !== String(payload.sub)) {
@@ -140,8 +141,8 @@ export class AuthService {
       const newPayload = {
         sub: user.id.toString(),
         email: user.email,
-        username: user.full_name,
-        isAdmin: user.is_superuser,
+        username: user.full_name ?? user.email,
+        isAdmin: false,
       };
 
       const accessToken = await this.jwtService.signAsync(newPayload);
@@ -168,12 +169,6 @@ export class AuthService {
     if (!user) {
       throw new BusinessException(ErrorCode.UNAUTHORIZED);
     }
-    return {
-      id: user.id.toString(),
-      email: user.email,
-      username: user.full_name,
-      avatar: user.avatar_url,
-      roles: user.is_superuser ? ['admin'] : ['user'],
-    };
+    return this.userService.buildUserProfile(user);
   }
 }

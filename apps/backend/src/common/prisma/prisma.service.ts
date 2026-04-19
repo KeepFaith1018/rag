@@ -1,9 +1,12 @@
 import { Injectable, OnModuleInit, OnModuleDestroy } from '@nestjs/common';
-import { PrismaClient } from '@prisma/client';
+import { PrismaClient } from '../../../generated/prisma/client';
 import { PrismaMariaDb } from '@prisma/adapter-mariadb';
 
 @Injectable()
-export class PrismaService extends PrismaClient implements OnModuleInit, OnModuleDestroy {
+export class PrismaService
+  extends PrismaClient
+  implements OnModuleInit, OnModuleDestroy
+{
   constructor() {
     const port = process.env.DATABASE_PORT
       ? Number(process.env.DATABASE_PORT)
@@ -11,7 +14,8 @@ export class PrismaService extends PrismaClient implements OnModuleInit, OnModul
 
     super({
       log:
-        process.env.NODE_ENV === 'development' && !process.env.DATABASE_URL_ACCELERATE
+        process.env.NODE_ENV === 'development' &&
+        !process.env.DATABASE_URL_ACCELERATE
           ? [{ emit: 'event', level: 'query' }]
           : [],
       adapter: new PrismaMariaDb({

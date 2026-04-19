@@ -23,7 +23,7 @@ export class UserService {
   // 创建用户（注册时使用）
   async create(registerDto: RegisterDto) {
     const { email, password, username } = registerDto;
-    const user = await this.prisma.sys_users.create({
+    const user = await this.prisma.b_users.create({
       data: {
         email,
         password_hash: password,
@@ -34,30 +34,48 @@ export class UserService {
     return user;
   }
 
+  /**
+   * 统一组装对外暴露的用户信息结构，避免各接口返回字段不一致。
+   */
+  buildUserProfile(user: {
+    id: bigint;
+    email: string;
+    full_name: string | null;
+    avatar_url: string | null;
+  }) {
+    return {
+      id: user.id.toString(),
+      email: user.email,
+      username: user.full_name ?? user.email,
+      avatar: user.avatar_url,
+      roles: ['user'],
+    };
+  }
+
   // 根据邮箱查询用户
   async findByEmail(email: string) {
-    return this.prisma.sys_users.findUnique({
+    return this.prisma.b_users.findUnique({
       where: { email },
     });
   }
 
   // 根据ID查询用户
   async findById(id: number | bigint) {
-    return this.prisma.sys_users.findUnique({
+    return this.prisma.b_users.findUnique({
       where: { id: BigInt(id) },
     });
   }
 
   // 更新当前登录用户的个人资料
   async updateProfile(userId: number, updateUserDto: UpdateUserDto) {
-    const user = await this.prisma.sys_users.findUnique({
+    const user = await this.prisma.b_users.findUnique({
       where: { id: BigInt(userId) },
     });
     if (!user) {
       throw new BusinessException(ErrorCode.AUTH_USER_NOT_FOUND);
     }
 
-    const updated = await this.prisma.sys_users.update({
+    const updated = await this.prisma.b_users.update({
       where: { id: BigInt(userId) },
       data: {
         full_name: updateUserDto.full_name ?? user.full_name,
@@ -67,17 +85,12 @@ export class UserService {
 
     this.logger.info('更新用户资料', { userId: updated.id });
 
-    return {
-      id: updated.id.toString(),
-      email: updated.email,
-      full_name: updated.full_name,
-      avatar_url: updated.avatar_url,
-    };
+    return this.buildUserProfile(updated);
   }
 
   // 修改当前登录用户的密码
   async changePassword(userId: number, changePasswordDto: ChangePasswordDto) {
-    const user = await this.prisma.sys_users.findUnique({
+    const user = await this.prisma.b_users.findUnique({
       where: { id: BigInt(userId) },
     });
     if (!user) {
@@ -98,7 +111,7 @@ export class UserService {
       salt,
     );
 
-    await this.prisma.sys_users.update({
+    await this.prisma.b_users.update({
       where: { id: BigInt(userId) },
       data: {
         password_hash: newHashedPassword,
@@ -120,7 +133,7 @@ export class UserService {
       VerificationPurpose.RESET_PASSWORD,
     );
 
-    const user = await this.prisma.sys_users.findUnique({
+    const user = await this.prisma.b_users.findUnique({
       where: { email: dto.email },
     });
     if (!user) {
@@ -130,7 +143,7 @@ export class UserService {
     const salt = await bcrypt.genSalt();
     const newHashedPassword = await bcrypt.hash(dto.new_password, salt);
 
-    await this.prisma.sys_users.update({
+    await this.prisma.b_users.update({
       where: { id: user.id },
       data: {
         password_hash: newHashedPassword,
