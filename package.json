@@ -1,0 +1,28 @@
+{
+  "name": "rag-knowledge-base",
+  "private": true,
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "install:all": "pnpm install",
+
+    "dev:backend": "pnpm --filter backend run start:dev",
+    "dev:frontend": "pnpm --filter frontend run dev",
+
+    "build": "pnpm -r run build",
+    "build:backend": "pnpm --filter backend run build",
+    "build:frontend": "pnpm --filter frontend run build",
+
+    "lint": "pnpm -r run lint",
+    "lint:backend": "pnpm --filter backend run lint",
+
+    "typecheck": "pnpm -r run typecheck",
+
+    "clean": "pnpm -r exec rm -rf dist node_modules"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "packageManager": "pnpm@10.18.1"
+}

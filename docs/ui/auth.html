@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>登录 | KINETIC_AI</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-surface-variant": "#c7c4d8",
+                        "tertiary": "#ffb695",
+                        "on-secondary-fixed": "#140f54",
+                        "on-tertiary": "#571f00",
+                        "error": "#ffb4ab",
+                        "inverse-surface": "#e5e1e4",
+                        "error-container": "#93000a",
+                        "on-secondary-container": "#b0aef9",
+                        "on-primary-container": "#dad7ff",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "on-secondary": "#2a276a",
+                        "on-background": "#e5e1e4",
+                        "tertiary-container": "#a44100",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "surface-container-high": "#2a2a2c",
+                        "surface-bright": "#39393b",
+                        "surface": "#131315",
+                        "primary-container": "#4f46e5",
+                        "surface-tint": "#c3c0ff",
+                        "on-tertiary-container": "#ffd2be",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "on-surface": "#e5e1e4",
+                        "secondary-container": "#413f82",
+                        "background": "#131315",
+                        "primary": "#c3c0ff",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-primary": "#1d00a5",
+                        "on-primary-fixed": "#0f0069",
+                        "primary-fixed": "#e2dfff",
+                        "on-error": "#690005",
+                        "surface-container-lowest": "#0e0e10",
+                        "secondary": "#c3c0ff",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "tertiary-fixed": "#ffdbcc",
+                        "inverse-primary": "#4d44e3",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-fixed-variant": "#413f82",
+                        "surface-container-low": "#1c1b1d",
+                        "surface-variant": "#353437",
+                        "inverse-on-surface": "#313032",
+                        "surface-container": "#201f22",
+                        "surface-dim": "#131315",
+                        "outline": "#918fa1",
+                        "on-tertiary-fixed": "#351000",
+                        "surface-container-highest": "#353437",
+                        "secondary-fixed": "#e2dfff",
+                        "outline-variant": "#464555"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                },
+            }
+        }
+    </script>
+<style>.blueprint-grid {
+    background-image: linear-gradient(to right, rgba(79, 70, 229, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(79, 70, 229, 0.05) 1px, transparent 1px);
+    background-size: 40px 40px
+    }
+.grain-overlay {
+    background-image: url(https://lh3.googleusercontent.com/aida-public/AB6AXuCAfks2Q8gE_UgvNkrZMWdb_1bKKU7qbSQVvLoCqNUCmpXTxiZ7pdwRebgMed0TIn1NwF2sbB3fLc1SGj8ekCv-wID-N4reP40k2OpDCu6JNoIKIAwr7FSrsk15gEvp6GEbGXwxqMaUj5dVhRG4YQytqW77ma1kwudi80C_TzzJMnCbAUochgTR38OdiZr371o6zFgyQv2qoe0tQeobrU3qaDBf7mvxwvtxe0dlv6qIvIQepywAn9FUSli4D8sarZIWXQpkz8-hb9s1);
+    opacity: 0.03;
+    pointer-events: none
+    }
+.material-symbols-outlined {
+    font-variation-settings: "FILL" 0, "wght" 400, "GRAD" 0, "opsz" 24
+    }</style>
+</head>
+<body class="bg-surface text-on-surface font-body overflow-hidden">
+<div class="fixed inset-0 grain-overlay z-50"></div>
+<main class="flex h-screen w-full relative">
+<!-- Background Section (Visual Brand) -->
+<div class="hidden lg:flex lg:w-3/5 bg-surface-container-lowest relative overflow-hidden items-center justify-center border-r-0 border-transparent">
+<div class="absolute inset-0 blueprint-grid"></div>
+<!-- Dynamic Gradient Orbs -->
+<div class="absolute top-1/4 -left-20 w-96 h-96 bg-primary-container opacity-20 blur-[120px] rounded-full"></div>
+<div class="absolute bottom-1/4 -right-20 w-80 h-80 bg-secondary-container opacity-10 blur-[100px] rounded-full"></div>
+<div class="relative z-10 p-16 max-w-2xl">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 bg-primary-container flex items-center justify-center rounded-lg">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="font-headline font-bold text-2xl tracking-tighter text-primary">KINETIC_AI</span>
+</div>
+<h1 class="font-headline text-5xl font-bold tracking-tight text-white mb-6 leading-tight">
+<span class="text-primary">下一代计算智能</span>
+</h1>
+<p class="text-on-surface-variant text-lg leading-relaxed mb-12 font-light">
+                    通过我们的编辑界面，驾驭高精度工程。为未来的构建者设计。
+                </p>
+<div class="grid grid-cols-2 gap-8">
+<div class="p-6 bg-surface-container-low rounded-xl border border-outline-variant/10">
+<span class="text-primary font-headline text-3xl font-bold block mb-1">0.4ms</span>
+<span class="text-label-sm uppercase tracking-wider text-on-surface-variant text-[10px] font-medium">延迟阈值</span>
+</div>
+<div class="p-6 bg-surface-container-low rounded-xl border border-outline-variant/10">
+<span class="text-primary font-headline text-3xl font-bold block mb-1">99.9%</span>
+<span class="text-label-sm uppercase tracking-wider text-on-surface-variant text-[10px] font-medium">正常运行时间保证</span>
+</div>
+</div>
+</div>
+<!-- Abstract Visual -->
+<div class="absolute bottom-0 right-0 w-full h-full opacity-40 pointer-events-none">
+<div class="absolute bottom-10 right-10 w-[600px] h-[600px]" data-alt="Abstract 3D architectural wireframe rendered in high contrast monochromatic style with soft glowing indigo light trails on a dark background" style="background-image: url('https://lh3.googleusercontent.com/aida-public/AB6AXuAdIDJ6eehA0h25Dz1XlB54QHxttnZnkFTpOcYkofSXxS-LQCur690_YDm-sdv8aFo3qfWLfHWhIRkMMFIgu8LMU2XGxRVL-Xok9_SBwY1P6RisQeLXYfQDYK81rVOTGRaBQnr4-R7ABj_0uTSAkvrn9S9-vxnGklfyRt-an9y8CVJU0-2HMUUFlv3BHUS-tjQcW4l7hJR8ZqHBJY6QbmrOOIYJM7fBv4JsXwv3vqYaypgqERcsWaIu4scSsdGo59tdp1pWKGPgjTJP'); background-size: cover; background-position: center; filter: grayscale(100%) contrast(120%); mask-image: radial-gradient(circle, black 30%, transparent 70%);">
+</div>
+</div>
+</div>
+<!-- Form Section -->
+<div class="w-full lg:w-2/5 flex items-center justify-center bg-surface px-8 sm:px-16 lg:px-20 relative z-20">
+<div class="w-full max-w-md">
+<!-- Mobile Branding -->
+<div class="lg:hidden flex items-center gap-2 mb-12">
+<div class="w-8 h-8 bg-primary-container flex items-center justify-center rounded-lg">
+<span class="material-symbols-outlined text-on-primary-container text-sm" style="font-variation-settings: 'FILL' 1;">bolt</span>
+</div>
+<span class="font-headline font-bold text-xl tracking-tighter text-primary">KINETIC_AI</span>
+</div>
+<div class="mb-10">
+<h2 class="font-headline text-3xl font-bold tracking-tight text-white mb-2">欢迎回来</h2>
+<p class="text-on-surface-variant font-light text-sm">请输入您的凭据以访问蓝图。</p>
+</div>
+<form action="#" class="space-y-6">
+<div class="space-y-2">
+<label class="block text-xs uppercase tracking-[0.1em] text-on-surface-variant font-medium" for="email">电子邮箱</label>
+<div class="relative group">
+<input class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm text-white placeholder-on-surface-variant/30 focus:outline-none focus:border-primary transition-all duration-200" id="email" name="email" placeholder="name@kinetic.ai" required="" type="email"/>
+<div class="absolute inset-y-0 right-3 flex items-center pointer-events-none text-on-surface-variant/40">
+<span class="material-symbols-outlined text-lg">alternate_email</span>
+</div>
+</div>
+</div>
+<div class="space-y-2">
+<div class="flex justify-between items-center">
+<label class="block text-xs uppercase tracking-[0.1em] text-on-surface-variant font-medium" for="password">密码</label>
+<a class="text-[11px] font-medium text-primary hover:text-white transition-colors uppercase tracking-wider" href="#">忘记密码？</a>
+</div>
+<div class="relative group">
+<input class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-lg px-4 py-3 text-sm text-white placeholder-on-surface-variant/30 focus:outline-none focus:border-primary transition-all duration-200" id="password" name="password" placeholder="••••••••" required="" type="password"/>
+<div class="absolute inset-y-0 right-3 flex items-center cursor-pointer text-on-surface-variant/40 hover:text-on-surface transition-colors">
+<span class="material-symbols-outlined text-lg">visibility_off</span>
+</div>
+</div>
+</div>
+<div class="flex items-center gap-2 pt-2">
+<input class="w-4 h-4 rounded border-outline-variant/30 bg-surface-container-highest text-primary focus:ring-offset-surface focus:ring-primary" id="remember" type="checkbox"/>
+<label class="text-sm text-on-surface-variant cursor-pointer" for="remember">保持登录状态 30 天</label>
+</div>
+<div class="pt-4">
+<button class="w-full bg-primary-container text-on-primary-container font-headline font-semibold py-4 rounded-lg hover:brightness-110 active:scale-[0.98] transition-all duration-200 flex items-center justify-center gap-2" type="submit">
+<span>执行登录</span>
+<span class="material-symbols-outlined text-sm">arrow_forward</span>
+</button>
+</div>
+</form>
+<div class="mt-10 pt-10 border-t border-outline-variant/10 text-center">
+<p class="text-sm text-on-surface-variant mb-6">或通过以下方式继续</p>
+<div class="grid grid-cols-2 gap-4">
+<button class="flex items-center justify-center gap-2 bg-surface-container-low border border-outline-variant/20 hover:bg-surface-container-high transition-colors py-3 rounded-lg text-sm text-on-surface font-medium">
+<img alt="Google" class="w-4 h-4" data-alt="Google logo icon in official brand colors" src="https://lh3.googleusercontent.com/aida-public/AB6AXuBr2sPH79JF_V2rCjZBkwTj_-LFcsUKzY1i1-2kNq2vXNHiiZaQHnLMZi_HSLJX7FPIRjA9BdC_7mP4kRGcGfaATorWdjK4SxefWrx1mN_XWk_p-RNk6gNT2lA-sfEPqfMkySTAWFCQ36VlT9WUobmjhN8YJlXgHOGco4UZSaqswKQboGnJcNjcJjBtGjnSzIjq1w80d21yokE2yuP36RS0fW-31wXs34RsTXZgN-ru6LOObE4MoekW9xMHWpaoppcoGb3EXEa6k3v_"/>
+<span>Google</span>
+</button>
+<button class="flex items-center justify-center gap-2 bg-surface-container-low border border-outline-variant/20 hover:bg-surface-container-high transition-colors py-3 rounded-lg text-sm text-on-surface font-medium">
+<span class="material-symbols-outlined text-lg">terminal</span>
+<span>SSO</span>
+</button>
+</div>
+</div>
+<div class="mt-12 text-center">
+<p class="text-xs text-on-surface-variant uppercase tracking-widest font-medium">
+                        新用户？ <a class="text-primary hover:underline decoration-primary/30 underline-offset-4" href="#">申请账户</a>
+</p>
+</div>
+</div>
+<!-- Minimal Footer Links -->
+<div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex items-center gap-6 whitespace-nowrap opacity-40">
+<a class="text-[10px] uppercase tracking-[0.2em] hover:opacity-100 transition-opacity" href="#">隐私政策</a>
+<a class="text-[10px] uppercase tracking-[0.2em] hover:opacity-100 transition-opacity" href="#">技术文档</a>
+<a class="text-[10px] uppercase tracking-[0.2em] hover:opacity-100 transition-opacity" href="#">状态</a>
+</div>
+</div>
+</main>
+</body></html>

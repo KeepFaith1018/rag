@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&amp;family=Inter:wght@300;400;500;600&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "on-surface-variant": "#c7c4d8",
+                    "tertiary": "#ffb695",
+                    "on-secondary-fixed": "#140f54",
+                    "on-tertiary": "#571f00",
+                    "error": "#ffb4ab",
+                    "inverse-surface": "#e5e1e4",
+                    "error-container": "#93000a",
+                    "on-secondary-container": "#b0aef9",
+                    "on-primary-container": "#dad7ff",
+                    "secondary-fixed-dim": "#c3c0ff",
+                    "on-secondary": "#2a276a",
+                    "on-background": "#e5e1e4",
+                    "tertiary-container": "#a44100",
+                    "on-tertiary-fixed-variant": "#7b2f00",
+                    "surface-container-high": "#2a2a2c",
+                    "surface-bright": "#39393b",
+                    "surface": "#131315",
+                    "primary-container": "#4f46e5",
+                    "surface-tint": "#c3c0ff",
+                    "on-tertiary-container": "#ffd2be",
+                    "tertiary-fixed-dim": "#ffb695",
+                    "on-surface": "#e5e1e4",
+                    "secondary-container": "#413f82",
+                    "background": "#131315",
+                    "primary": "#c3c0ff",
+                    "primary-fixed-dim": "#c3c0ff",
+                    "on-primary": "#1d00a5",
+                    "on-primary-fixed": "#0f0069",
+                    "primary-fixed": "#e2dfff",
+                    "on-error": "#690005",
+                    "surface-container-lowest": "#0e0e10",
+                    "secondary": "#c3c0ff",
+                    "on-primary-fixed-variant": "#3323cc",
+                    "tertiary-fixed": "#ffdbcc",
+                    "inverse-primary": "#4d44e3",
+                    "on-error-container": "#ffdad6",
+                    "on-secondary-fixed-variant": "#413f82",
+                    "surface-container-low": "#1c1b1d",
+                    "surface-variant": "#353437",
+                    "inverse-on-surface": "#313032",
+                    "surface-container": "#201f22",
+                    "surface-dim": "#131315",
+                    "outline": "#918fa1",
+                    "on-tertiary-fixed": "#351000",
+                    "surface-container-highest": "#353437",
+                    "secondary-fixed": "#e2dfff",
+                    "outline-variant": "#464555"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.125rem",
+                    "lg": "0.25rem",
+                    "xl": "0.5rem",
+                    "full": "0.75rem"
+            },
+            "fontFamily": {
+                    "headline": ["Space Grotesk"],
+                    "body": ["Inter"],
+                    "label": ["Inter"]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+        body {
+            background-color: #131315;
+            background-image: 
+                radial-gradient(circle at 2px 2px, rgba(255,255,255,0.02) 1px, transparent 0);
+            background-size: 24px 24px;
+        }
+        .grain {
+            position: fixed;
+            top: 0; left: 0; width: 100%; height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+    </style>
+</head>
+<body class="font-body text-on-surface selection:bg-primary/30 antialiased">
+<div class="grain"></div>
+<!-- SideNavBar Shell -->
+<aside class="fixed left-0 top-0 h-full w-64 flex flex-col bg-[#1c1b1d] border-r border-transparent z-50">
+<div class="p-6 flex flex-col gap-1">
+<div class="flex items-center gap-3 mb-8">
+<div class="w-10 h-10 bg-primary-container rounded-lg flex items-center justify-center">
+<span class="material-symbols-outlined text-on-primary-container" style="font-variation-settings: 'FILL' 1;">deployed_code</span>
+</div>
+<div>
+<h1 class="font-headline font-bold uppercase tracking-[0.1em] text-[10px] text-gray-500">Kinetic Blueprint</h1>
+<p class="text-xs text-on-surface-variant font-medium">v1.0.4-alpha</p>
+</div>
+</div>
+<nav class="flex flex-col gap-1">
+<!-- Knowledge Base is Active -->
+<a class="flex items-center gap-3 px-4 py-3 bg-[#4f46e5] text-white rounded-md mx-2 transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">database</span>
+<span class="font-medium text-sm">知识库</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2a2a2c] rounded-md transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">history</span>
+<span class="font-medium text-sm">会话历史</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-3 text-gray-400 hover:text-white hover:bg-[#2a2a2c] rounded-md transition-all active:scale-[0.98]" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-medium text-sm">设置</span>
+</a>
+</nav>
+</div>
+<div class="mt-auto p-6 flex flex-col gap-1 border-t border-outline-variant/10">
+<a class="flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-white hover:bg-[#2a2a2c] rounded-md transition-all" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-medium text-sm">帮助中心</span>
+</a>
+<a class="flex items-center gap-3 px-4 py-2 text-gray-400 hover:text-white hover:bg-[#2a2a2c] rounded-md transition-all" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-medium text-sm">退出登录</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-64 min-h-screen">
+<!-- Header Section -->
+<header class="bg-[#131315]/80 backdrop-blur-xl sticky top-0 z-40 px-8 h-20 flex items-center justify-between">
+<div class="flex items-center gap-4">
+<button class="w-10 h-10 flex items-center justify-center rounded-lg hover:bg-surface-container-high transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">arrow_back</span>
+</button>
+<div>
+<div class="flex items-center gap-2">
+<span class="text-[10px] font-bold uppercase tracking-widest text-primary/70 font-label">知识库详情: 8842-X</span>
+<span class="w-1 h-1 rounded-full bg-outline-variant"></span>
+<span class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant font-label">最后同步于 2分钟前</span>
+</div>
+<h2 class="font-headline text-2xl font-bold tracking-tight text-on-surface">神经引擎文档</h2>
+</div>
+</div>
+<div class="flex items-center gap-3">
+<div class="flex -space-x-2 mr-4">
+<img alt="User" class="w-8 h-8 rounded-full border-2 border-surface" data-alt="professional headshot of a developer in a modern office setting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAvAKwYawX9QdTRQsXTAJGN0Yf14LH9FbwciVtk3Q7opU51JNCc3LFh_sPmJfYbJL_m8YMN2kwGrP5JwIJw8O6Q3GY0V8qkHayYxylC2T9HSc_FSUQ9IqoLeGxl7fSHA_wWMFqW5bb8EFjg-fUGbVGaLxR2Chg4pg5zZrGFBDer4xbJfWGYLNFmp5nnPZpTHLDFZsSCfOmi2xtE5VeXd7rkBviJiQzL0Q3d5XwLLXzc-lB-GWeSTwTl6OPsUg2rP8_w9nL80UBZdJVU"/>
+<img alt="User" class="w-8 h-8 rounded-full border-2 border-surface" data-alt="portrait of a confident woman working in a creative studio space" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7wWX9NK8L-0CGOCThW36cKWJmeI24a9tyDd8ZUcy5P6FOayGS-h3-uyy6ZLS_XS4TPlbk3wSxECWcQCg9pq63FXz9Q-8obF1YFUW9pCbsJQIEAzW29XFcC31JwhyNRAfzZ_WKQ6ziXP5gd7N7AIXe6ibjz-NwL6Xxa_F5_Xi_bOYLC1TpQyMZAx7BXGWHMSqyBSGcB-muAnILADvrcoyH4cATgLEn_05-b4fpWSgQEVG_NYMGqskmrAvXhlqhsmNjvJDKs2QZ2Fqs"/>
+<div class="w-8 h-8 rounded-full border-2 border-surface bg-surface-container-highest flex items-center justify-center text-[10px] font-bold">+4</div>
+</div>
+<button class="bg-primary-container text-on-primary-container px-4 py-2 rounded-md font-medium text-sm flex items-center gap-2 hover:brightness-110 transition-all active:scale-95">
+<span class="material-symbols-outlined text-sm">sync</span>
+                    全部重新索引
+                </button>
+</div>
+</header>
+<div class="px-8 pb-12">
+<!-- Navigation Tabs -->
+<div class="flex gap-8 mb-8 border-b border-outline-variant/10">
+<button class="pb-4 text-sm font-semibold text-primary border-b-2 border-primary">文档</button>
+<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">成员</button>
+<button class="pb-4 text-sm font-medium text-on-surface-variant hover:text-on-surface transition-colors">设置</button>
+</div>
+<!-- Bento Grid Layout -->
+<div class="grid grid-cols-12 gap-6">
+<!-- Left: Upload & List (8 cols) -->
+<div class="col-span-8 flex flex-col gap-6">
+<!-- Upload Zone -->
+<div class="bg-surface-container-low p-8 rounded-xl border border-dashed border-outline-variant/20 flex flex-col items-center justify-center group hover:border-primary/40 transition-all cursor-pointer">
+<div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
+<span class="material-symbols-outlined text-3xl text-primary">cloud_upload</span>
+</div>
+<h3 class="font-headline text-lg font-bold mb-1">上传知识资产</h3>
+<p class="text-on-surface-variant text-sm mb-6">拖拽 PDF, Markdown 或 JSON 文件至此</p>
+<button class="px-6 py-2 bg-surface-container-highest rounded-md text-sm font-semibold hover:bg-surface-bright transition-colors">浏览文件</button>
+</div>
+<!-- Documents List -->
+<div class="bg-surface-container-low rounded-xl overflow-hidden">
+<div class="px-6 py-4 flex justify-between items-center border-b border-outline-variant/5">
+<h4 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant font-label">当前文件 (12)</h4>
+<div class="flex gap-2">
+<button class="p-2 rounded hover:bg-surface-container-high"><span class="material-symbols-outlined text-sm">filter_list</span></button>
+<button class="p-2 rounded hover:bg-surface-container-high"><span class="material-symbols-outlined text-sm">search</span></button>
+</div>
+</div>
+<div class="divide-y divide-outline-variant/5">
+<!-- File Item 1: Processing -->
+<div class="px-6 py-5 flex items-center gap-4 hover:bg-surface-container-high/50 transition-colors">
+<div class="w-10 h-10 bg-error-container/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-error">picture_as_pdf</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-semibold text-sm truncate">Core_Architecture_v2.pdf</span>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary uppercase">解析中</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[65%] rounded-full"></div>
+</div>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-on-surface-variant font-label uppercase">12.4 MB</p>
+<p class="text-[10px] text-primary font-medium">已完成 65%</p>
+</div>
+<button class="ml-4 p-2 text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+<!-- File Item 2: Success -->
+<div class="px-6 py-5 flex items-center gap-4 hover:bg-surface-container-high/50 transition-colors">
+<div class="w-10 h-10 bg-secondary-container/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary">description</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-semibold text-sm truncate">User_Behavior_Analysis.md</span>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-secondary/10 text-secondary uppercase">就绪</span>
+</div>
+<p class="text-xs text-on-surface-variant">最后更新于 2023年10月24日</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-on-surface-variant font-label uppercase">842 KB</p>
+<p class="text-[10px] text-on-surface-variant font-medium">2,402 切片</p>
+</div>
+<button class="ml-4 p-2 text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+<!-- File Item 3: Success -->
+<div class="px-6 py-5 flex items-center gap-4 hover:bg-surface-container-high/50 transition-colors">
+<div class="w-10 h-10 bg-tertiary-container/20 rounded flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary">code</span>
+</div>
+<div class="flex-1 min-w-0">
+<div class="flex items-center gap-2 mb-1">
+<span class="font-semibold text-sm truncate">API_Endpoints_Schema.json</span>
+<span class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-secondary/10 text-secondary uppercase">就绪</span>
+</div>
+<p class="text-xs text-on-surface-variant">最后更新于 2023年10月22日</p>
+</div>
+<div class="text-right">
+<p class="text-[10px] font-bold text-on-surface-variant font-label uppercase">2.1 MB</p>
+<p class="text-[10px] text-on-surface-variant font-medium">512 切片</p>
+</div>
+<button class="ml-4 p-2 text-on-surface-variant hover:text-on-surface"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</div>
+</div>
+</div>
+<!-- Right: Stats & Settings (4 cols) -->
+<div class="col-span-4 flex flex-col gap-6">
+<!-- Stats Card -->
+<div class="bg-surface-container-low rounded-xl p-6 relative overflow-hidden">
+<div class="absolute -right-4 -top-4 opacity-5">
+<span class="material-symbols-outlined text-[120px]">database</span>
+</div>
+<h4 class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant font-label mb-6">数据库健康度</h4>
+<div class="space-y-6">
+<div>
+<div class="flex justify-between items-end mb-2">
+<span class="text-3xl font-headline font-bold">8.2k</span>
+<span class="text-xs text-on-surface-variant">总切片数</span>
+</div>
+<div class="w-full bg-surface-container-highest h-1.5 rounded-full overflow-hidden">
+<div class="bg-primary h-full w-[45%]"></div>
+</div>
+<p class="mt-2 text-[10px] text-on-surface-variant uppercase tracking-wider">已用 45% (上限 20k)</p>
+</div>
+<div class="grid grid-cols-2 gap-4">
+<div class="bg-surface-container-high p-4 rounded-lg">
+<p class="text-[10px] text-on-surface-variant font-bold uppercase mb-1">平均延迟</p>
+<p class="text-xl font-headline font-bold">142ms</p>
+</div>
+<div class="bg-surface-container-high p-4 rounded-lg">
+<p class="text-[10px] text-on-surface-variant font-bold uppercase mb-1">嵌入向量</p>
+<p class="text-xl font-headline font-bold">ADA-002</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Quick Settings Card -->
+<div class="bg-surface-container-low rounded-xl p-6">
+<h4 class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant font-label mb-4">快速设置</h4>
+<div class="space-y-4">
+<div class="flex items-center justify-between p-3 bg-surface-container-high rounded-lg group cursor-pointer hover:bg-surface-bright transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-primary">auto_awesome</span>
+<div class="text-xs">
+<p class="font-bold">自动同步</p>
+<p class="text-on-surface-variant">每 15 分钟</p>
+</div>
+</div>
+<div class="w-8 h-4 bg-primary-container rounded-full relative">
+<div class="absolute right-0.5 top-0.5 w-3 h-3 bg-white rounded-full"></div>
+</div>
+</div>
+<div class="flex items-center justify-between p-3 bg-surface-container-high rounded-lg group cursor-pointer hover:bg-surface-bright transition-colors">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-on-surface-variant">translate</span>
+<div class="text-xs">
+<p class="font-bold">多语言</p>
+<p class="text-on-surface-variant">英语, 德语, 法语</p>
+</div>
+</div>
+<span class="material-symbols-outlined text-sm text-on-surface-variant">chevron_right</span>
+</div>
+<button class="w-full py-3 mt-4 border border-outline-variant/20 rounded-md text-xs font-bold uppercase tracking-widest hover:bg-surface-container-high transition-all">
+                                查看详细设置
+                            </button>
+</div>
+</div>
+<!-- Recent Activity Card -->
+<div class="bg-surface-container-low rounded-xl p-6">
+<h4 class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant font-label mb-4">最近活动</h4>
+<div class="space-y-4">
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-primary mt-1.5"></div>
+<div>
+<p class="text-xs text-on-surface leading-snug"><b>Sarah L.</b> 上传了 4 份新技术规格书。</p>
+<p class="text-[10px] text-on-surface-variant mt-0.5 uppercase">14 分钟前</p>
+</div>
+</div>
+<div class="flex gap-3">
+<div class="w-1.5 h-1.5 rounded-full bg-secondary mt-1.5"></div>
+<div>
+<p class="text-xs text-on-surface leading-snug">系统已成功重新索引 <b>Neural_Core</b>。</p>
+<p class="text-[10px] text-on-surface-variant mt-0.5 uppercase">2 小时前</p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</div>
+</main>
+</body></html>

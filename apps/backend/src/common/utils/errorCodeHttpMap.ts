@@ -1,0 +1,57 @@
+import { HttpStatus } from '@nestjs/common'
+import { ErrorCode } from './errorCodeMap'
+
+export const ErrorCodeHttpStatusMap: Record<ErrorCode, HttpStatus> = {
+  [ErrorCode.SUCCESS]: HttpStatus.OK,
+
+  [ErrorCode.PARAM_ERROR]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.UNAUTHORIZED]: HttpStatus.UNAUTHORIZED,
+  [ErrorCode.UNAUTHORIZED_EXPIRED]: HttpStatus.UNAUTHORIZED,
+  [ErrorCode.FORBIDDEN]: HttpStatus.FORBIDDEN,
+  [ErrorCode.NOT_FOUND]: HttpStatus.NOT_FOUND,
+
+  [ErrorCode.INTERNAL_ERROR]: HttpStatus.INTERNAL_SERVER_ERROR,
+  [ErrorCode.SERVICE_UNAVAILABLE]: HttpStatus.SERVICE_UNAVAILABLE,
+
+  // 知识库 
+  [ErrorCode.KNOWLEDGE_NOT_FOUND]: HttpStatus.NOT_FOUND,
+  [ErrorCode.KNOWLEDGE_UNAUTHORIZED]: HttpStatus.FORBIDDEN,
+  [ErrorCode.KNOWLEDGE_NOT_SHARED]: HttpStatus.FORBIDDEN,
+  [ErrorCode.KNOWLEDGE_HAS_JOINED]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.KNOWLEDGE_HAS_OWNED]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.KNOWLEDGE_NOT_JOINED]: HttpStatus.BAD_REQUEST,
+
+  // 文件
+  [ErrorCode.FILE_NOT_FOUND]: HttpStatus.NOT_FOUND,
+  [ErrorCode.FILE_UPLOAD_FAILED]: HttpStatus.INTERNAL_SERVER_ERROR,
+  [ErrorCode.FILE_TYPE_UNSUPPORTED]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.FILE_TOO_LARGE]: HttpStatus.PAYLOAD_TOO_LARGE,
+
+  // 会话
+  [ErrorCode.CONVERSATION_NOT_FOUND]: HttpStatus.NOT_FOUND,
+  [ErrorCode.CONVERSATION_UNAUTHORIZED]: HttpStatus.FORBIDDEN,
+  [ErrorCode.CONVERSATION_CLOSED]: HttpStatus.BAD_REQUEST,
+
+  // 消息
+  [ErrorCode.MESSAGE_NOT_FOUND]: HttpStatus.NOT_FOUND,
+  [ErrorCode.MESSAGE_UNAUTHORIZED]: HttpStatus.FORBIDDEN,
+
+  // 向量
+  [ErrorCode.VECTOR_FILE_FAILED]: HttpStatus.INTERNAL_SERVER_ERROR,
+  [ErrorCode.VECTOR_FILE_UNSUPPORTED]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.VECTOR_FILE_IMG_EMPTY]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.VECTOR_INDEX_FAILED]: HttpStatus.INTERNAL_SERVER_ERROR,
+  [ErrorCode.VECTOR_SEARCH_FAILED]: HttpStatus.INTERNAL_SERVER_ERROR,
+
+  [ErrorCode.EMAIL_CODE_PROCESS_FAILED]: HttpStatus.INTERNAL_SERVER_ERROR,
+  [ErrorCode.EMAIL_SEND_FAILED]: HttpStatus.INTERNAL_SERVER_ERROR,
+  [ErrorCode.EMAIL_CODE_INVALID]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.EMAIL_CONFIG_INVALID]: HttpStatus.SERVICE_UNAVAILABLE,
+  [ErrorCode.EMAIL_RATE_LIMIT]: HttpStatus.TOO_MANY_REQUESTS,
+
+  // 认证
+  [ErrorCode.AUTH_INVALID_CREDENTIALS]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.AUTH_USER_EXISTS]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.AUTH_USER_NOT_FOUND]: HttpStatus.NOT_FOUND,
+  [ErrorCode.AUTH_INVALID_REFRESH_TOKEN]: HttpStatus.UNAUTHORIZED,
+}

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="zh-CN"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700;900&amp;family=Inter:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-bright": "#39393b",
+                        "surface-container-highest": "#353437",
+                        "on-surface": "#e5e1e4",
+                        "on-background": "#e5e1e4",
+                        "inverse-on-surface": "#313032",
+                        "surface-dim": "#131315",
+                        "surface-container": "#201f22",
+                        "surface-variant": "#353437",
+                        "inverse-primary": "#4d44e3",
+                        "tertiary": "#ffb695",
+                        "secondary-fixed-dim": "#c3c0ff",
+                        "on-secondary-fixed-variant": "#413f82",
+                        "inverse-surface": "#e5e1e4",
+                        "on-primary-fixed-variant": "#3323cc",
+                        "tertiary-container": "#a44100",
+                        "on-tertiary-fixed": "#351000",
+                        "on-tertiary-fixed-variant": "#7b2f00",
+                        "tertiary-fixed": "#ffdbcc",
+                        "primary-container": "#4f46e5",
+                        "error-container": "#93000a",
+                        "primary-fixed-dim": "#c3c0ff",
+                        "on-primary-container": "#dad7ff",
+                        "on-primary": "#1d00a5",
+                        "secondary-fixed": "#e2dfff",
+                        "primary": "#c3c0ff",
+                        "on-error-container": "#ffdad6",
+                        "on-secondary-container": "#b0aef9",
+                        "surface": "#131315",
+                        "surface-container-low": "#1c1b1d",
+                        "on-secondary": "#2a276a",
+                        "tertiary-fixed-dim": "#ffb695",
+                        "surface-container-high": "#2a2a2c",
+                        "on-primary-fixed": "#0f0069",
+                        "outline": "#918fa1",
+                        "on-secondary-fixed": "#140f54",
+                        "surface-tint": "#c3c0ff",
+                        "error": "#ffb4ab",
+                        "on-surface-variant": "#c7c4d8",
+                        "primary-fixed": "#e2dfff",
+                        "on-tertiary-container": "#ffd2be",
+                        "secondary-container": "#413f82",
+                        "secondary": "#c3c0ff",
+                        "surface-container-lowest": "#0e0e10",
+                        "outline-variant": "#464555",
+                        "on-tertiary": "#571f00",
+                        "on-error": "#690005",
+                        "background": "#131315"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "fontFamily": {
+                        "headline": ["Space Grotesk"],
+                        "body": ["Inter"],
+                        "label": ["Inter"]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .grain-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9999;
+            opacity: 0.02;
+            background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+        }
+        .blueprint-grid {
+            background-image: linear-gradient(to right, #464555 1px, transparent 1px), linear-gradient(to bottom, #464555 1px, transparent 1px);
+            background-size: 24px 24px;
+            opacity: 0.03;
+        }
+    </style>
+<style>
+    body {
+      min-height: max(884px, 100dvh);
+    }
+  </style>
+</head>
+<body class="bg-surface text-on-surface font-body selection:bg-primary/30 min-h-screen">
+<div class="grain-overlay"></div>
+<!-- TopAppBar -->
+<header class="bg-[#131315]/80 backdrop-blur-xl fixed top-0 w-full z-50 flex justify-between items-center px-6 py-4 w-full">
+<div class="flex items-center gap-4">
+<span class="material-symbols-outlined text-[#c3c0ff]">menu</span>
+<h1 class="text-xl font-black text-[#c3c0ff] tracking-[0.1em] font-['Space_Grotesk']">KINETIC AI</h1>
+</div>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-outline-variant/30">
+<img alt="用户个人资料" class="w-full h-full object-cover" data-alt="Close-up portrait of a professional operator in a high-tech environment with soft blue neon lighting" src="https://lh3.googleusercontent.com/aida-public/AB6AXuDZsqwUaF-FLcRp7Fx8m-lAt-e7no_Ju4u2Pq1W11jPh5h-rHora-0qSqbPd1HwtpmOAwN1oz91xSkD8Upr_H8eDW2Szn1kW_gpzfjOURcML8WYidx1lo8NR-J5BrFYSpYFBaZVnTdOsR2SqzcA8M9oUvEHyN7f9BggYXi5Hkq56i2e6fYK1lP7Lp1ZHvF8eAesvx00Oa0WdbOwz5t7r14M5oCel7w1FbZg--kqP_kON3Kzbf56HuuM3p-cWbAXqBu_aBSkkgXYJzQ-"/>
+</div>
+</header>
+<main class="pt-24 pb-32 px-6">
+<!-- Background Grid -->
+<div class="fixed inset-0 blueprint-grid pointer-events-none"></div>
+<!-- Header Section -->
+<section class="relative mb-8">
+<div class="flex flex-col gap-1">
+<span class="text-[0.6875rem] uppercase tracking-widest font-semibold text-primary font-label">Storage_Core</span>
+<h2 class="text-3xl font-headline font-bold text-on-surface tracking-tight">库</h2>
+</div>
+<!-- Search Bar -->
+<div class="mt-6 relative">
+<div class="absolute inset-y-0 left-4 flex items-center pointer-events-none">
+<span class="material-symbols-outlined text-outline text-lg">search</span>
+</div>
+<input class="w-full bg-surface-container-highest border border-outline-variant/15 rounded-xl py-3 pl-12 pr-4 text-sm font-body focus:ring-1 focus:ring-primary focus:border-primary transition-all placeholder:text-outline/50" placeholder="筛选活动节点..." type="text"/>
+</div>
+</section>
+<!-- Bento Grid Knowledge Bases -->
+<div class="grid grid-cols-1 gap-4 relative">
+<!-- Card 1: Neural Logic -->
+<div class="bg-surface-container-low p-5 rounded-xl transition-all duration-200 active:scale-95 border border-transparent hover:border-outline-variant/10 group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-primary-container/10 rounded-lg">
+<span class="material-symbols-outlined text-primary" data-weight="fill">neurology</span>
+</div>
+<span class="text-[10px] font-label uppercase tracking-tighter text-outline bg-surface-container-highest px-2 py-0.5 rounded">v4.2.0</span>
+</div>
+<h3 class="text-lg font-headline font-bold text-on-surface mb-1">神经网络逻辑</h3>
+<p class="text-xs text-outline font-body mb-4">核心决策框架和启发式模型。</p>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<img alt="M1" class="w-6 h-6 rounded-full border-2 border-surface-container-low" data-alt="Portrait of a diverse male team member in technical wear" src="https://lh3.googleusercontent.com/aida-public/AB6AXuAVctsCPX9yWt8m6rmH6hvE1fj3N4F9TWLyzHXEfZ-LOk_gixaBBDyIhoVaU3GSb1UpkPZXqWF6UvXDMsgCbX27bY3_Qxg_25_KOb5vlj6Rrx1N5900q8v0s_-ysQfwb-zQF7eRUfvQei9svRD9eezEzkZyXubUbctMLwEOwQ902SU1tDEVjX392vPo9X0g0nnbQDGOG1kEs8jh4QgcSuxCvyE9qgX5dfNMcZIKE_WwqH_dxVeQ2iTdN6ztgr7FZKBLlrm7c41Sa-8q"/>
+<img alt="M2" class="w-6 h-6 rounded-full border-2 border-surface-container-low" data-alt="Portrait of a creative female team member with a warm smile" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8AAu_icloxnZeDtoisgYxFT0Sw6Nb_KshBmTpDuSqYnIEUkxIWKFh1OpWHWy0MpYLgGabhXw4uZNGLApLz5Nka9_ewt5tMVICkxoM-H1jXKT_bdc0v6PlBMfPG3ul8M6cTCRyB94BLj6UOEw5GQNVegaFbz6U08Tf363gW13ZVZoKJxxbe6xjN276DkstyLohv8HM-G7vWqWuDqvbPLMik87kPqZrTynZf48E81EeDmnOmwebLYgw9BMM5oL78IYFYfgPY7KG6NDk"/>
+<div class="w-6 h-6 rounded-full border-2 border-surface-container-low bg-surface-container-high flex items-center justify-center text-[8px] font-bold">+2</div>
+</div>
+<div class="flex items-center gap-1.5 text-outline">
+<span class="material-symbols-outlined text-sm">description</span>
+<span class="text-xs font-label">128 文档</span>
+</div>
+</div>
+</div>
+<!-- Card 2: Strategic Intel -->
+<div class="bg-surface-container-low p-5 rounded-xl transition-all duration-200 active:scale-95 border border-transparent hover:border-outline-variant/10">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-tertiary-container/10 rounded-lg">
+<span class="material-symbols-outlined text-tertiary" data-weight="fill">insights</span>
+</div>
+<span class="text-[10px] font-label uppercase tracking-tighter text-outline bg-surface-container-highest px-2 py-0.5 rounded">v1.0.8</span>
+</div>
+<h3 class="text-lg font-headline font-bold text-on-surface mb-1">战略情报</h3>
+<p class="text-xs text-outline font-body mb-4">市场情绪分析和竞争格局数据。</p>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<img alt="M3" class="w-6 h-6 rounded-full border-2 border-surface-container-low" data-alt="Portrait of a sharp professional man with dark hair" src="https://lh3.googleusercontent.com/aida-public/AB6AXuC3LexxwqDJbzJuaU2H0K5HszzHnFIYIoRdckJG4Jjicli2_KVBgAPIBQZVGWlpzLbvoU420cB7mDaSarYigz2jYfSXoqAywy_RqmbnOzcXabs2-6DG2aX_qQAOWiwQ0yevN90NayBCGwxf6pXIFKjsqWyQQquX7uUlxF3csEftyNwzdxScGK1JD3aDye1Kx2sEwofv9zZ8VRMVDaxsvU48nT2H1gXl24PEvQs1gHCXDE6V5qHzlo6UECLZcc4tgnYVD-_Inj9BH0C1"/>
+</div>
+<div class="flex items-center gap-1.5 text-outline">
+<span class="material-symbols-outlined text-sm">description</span>
+<span class="text-xs font-label">45 文档</span>
+</div>
+</div>
+</div>
+<!-- Card 3: System Protocols (Horizontal Variant) -->
+<div class="bg-surface-container-low p-5 rounded-xl transition-all duration-200 active:scale-95 border border-transparent hover:border-outline-variant/10 grid grid-cols-[1fr_auto] gap-4">
+<div>
+<h3 class="text-lg font-headline font-bold text-on-surface mb-1">系统协议</h3>
+<p class="text-xs text-outline font-body">人工智能部署的标准操作程序。</p>
+<div class="mt-3 flex items-center gap-3">
+<div class="flex items-center gap-1.5 text-outline">
+<span class="material-symbols-outlined text-sm">description</span>
+<span class="text-xs font-label">312 文档</span>
+</div>
+<div class="w-1 h-1 rounded-full bg-outline-variant"></div>
+<span class="text-xs font-label text-primary">活跃同步</span>
+</div>
+</div>
+<div class="flex flex-col items-end justify-between">
+<div class="p-2 bg-secondary-container/20 rounded-lg">
+<span class="material-symbols-outlined text-secondary" data-weight="fill">shield</span>
+</div>
+<div class="flex -space-x-1">
+<div class="w-5 h-5 rounded-full border border-surface-container-low bg-surface-container-high flex items-center justify-center text-[7px] font-bold">JD</div>
+<div class="w-5 h-5 rounded-full border border-surface-container-low bg-surface-container-high flex items-center justify-center text-[7px] font-bold">AK</div>
+</div>
+</div>
+</div>
+<!-- Card 4: Dark Web Siphon -->
+<div class="bg-surface-container-low p-5 rounded-xl transition-all duration-200 active:scale-95 border border-transparent hover:border-outline-variant/10 group">
+<div class="flex justify-between items-start mb-4">
+<div class="p-2 bg-error-container/10 rounded-lg">
+<span class="material-symbols-outlined text-error" data-weight="fill">leak_add</span>
+</div>
+<div class="flex items-center gap-1 text-[10px] font-label text-error uppercase">
+<span class="w-1 h-1 rounded-full bg-error"></span>
+                        不安全
+                    </div>
+</div>
+<h3 class="text-lg font-headline font-bold text-on-surface mb-1">暗网虹吸</h3>
+<p class="text-xs text-outline font-body mb-4">来自边界节点的加密数据流。</p>
+<div class="flex items-center justify-between">
+<div class="flex -space-x-2">
+<img alt="M4" class="w-6 h-6 rounded-full border-2 border-surface-container-low" data-alt="Portrait of a young focused female analyst" src="https://lh3.googleusercontent.com/aida-public/AB6AXuB8jhHOa5iXf1ry-OAzIAJ4it2LR4geNoAaRnBLQmLK9yKRHZG65kfdGf_B4UlHSTouPZ1JgflQNVDyutUMf51dRItr89IFObxD9WpR034T7Y5dEsRRKUXw8dVxIswSWmLcrRigyf-Jcomt4fLcO9OH7ROeFp0ubiQyOAlCTM407Qj4rNb6le-gPNSW4-PDMCSPIDGYKPgAM1y69zdTfXjK8eX6xupxWInz6y8NaindNl_VdB1fShkVccvUMIPQ943-KlvURWFWPpkY"/>
+</div>
+<div class="flex items-center gap-1.5 text-outline">
+<span class="material-symbols-outlined text-sm">description</span>
+<span class="text-xs font-label">12 文档</span>
+</div>
+</div>
+</div>
+</div>
+</main>
+<!-- Floating Action Button -->
+<button class="fixed right-6 bottom-28 w-14 h-14 bg-primary-container text-on-primary-container rounded-xl shadow-2xl flex items-center justify-center active:scale-90 duration-200 z-[60] border border-white/10">
+<span class="material-symbols-outlined text-2xl" style="font-variation-settings: 'FILL' 1;">add</span>
+</button>
+<!-- BottomNavBar -->
+<nav class="fixed bottom-0 left-0 w-full flex justify-around items-center px-4 pb-6 pt-3 bg-[#131315]/90 backdrop-blur-lg z-50 rounded-t-xl shadow-[0_-4px_20px_rgba(0,0,0,0.5)]">
+<div class="flex flex-col items-center justify-center text-slate-500 hover:text-[#c3c0ff] transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined mb-1">dashboard</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold">仪表盘</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 hover:text-[#c3c0ff] transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined mb-1">bubble_chart</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold">对话</span>
+</div>
+<div class="flex flex-col items-center justify-center text-slate-500 hover:text-[#c3c0ff] transition-all active:scale-90 duration-200">
+<span class="material-symbols-outlined mb-1">insights</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold">情报</span>
+</div>
+<div class="flex flex-col items-center justify-center bg-[#4f46e5] text-white rounded-lg px-3 py-1.5 active:scale-90 duration-200">
+<span class="material-symbols-outlined mb-0.5">folder_open</span>
+<span class="font-['Inter'] text-[10px] uppercase tracking-widest font-semibold">仓库</span>
+</div>
+</nav>
+</body></html>
