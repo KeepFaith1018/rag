@@ -20,8 +20,15 @@
     "noFallthroughCasesInSwitch": true,
     "baseUrl": "./",
     "paths": {
-      "@app/*": ["src/*"],
-      "@common/*": ["src/common/*"],
-    }
+      "@app/*": [
+        "src/*"
+      ],
+      "@common/*": [
+        "src/common/*"
+      ],
+      "@prisma-client": [
+        "./prisma/generated/client"
+      ],
+    },
   }
 }

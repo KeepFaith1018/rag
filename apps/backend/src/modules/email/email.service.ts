@@ -3,7 +3,10 @@ import { PrismaService } from '@common/prisma/prisma.service';
 import { ConfigService } from '@nestjs/config';
 import * as nodemailer from 'nodemailer';
 import { VerificationPurpose } from '../auth/dto/send-verification-code.dto';
-import { BusinessException } from '@common/exception/businessException';
+import {
+  BusinessException,
+  wrapBusinessException,
+} from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 
 @Injectable()
@@ -55,46 +58,58 @@ export class EmailService {
   }
 
   async sendVerificationCode(email: string, purpose: VerificationPurpose) {
-    const now = new Date();
-    const recentUnused = await this.prisma.sys_email_codes.findFirst({
-      where: {
-        email,
-        purpose,
-        used: false,
-        expired_at: { gt: now },
-        created_at: { gt: new Date(now.getTime() - 30 * 1000) },
-      },
-      orderBy: { created_at: 'desc' },
-    });
-    if (recentUnused) {
-      throw new BusinessException(ErrorCode.EMAIL_RATE_LIMIT);
-    }
-
-    const code = Math.floor(100000 + Math.random() * 900000).toString();
     try {
-      await this.prisma.sys_email_codes.create({
-        data: {
+      const now = new Date();
+      const recentUnused = await this.prisma.sys_email_codes.findFirst({
+        where: {
           email,
-          code,
           purpose,
-          expired_at: new Date(Date.now() + 5 * 60 * 1000),
+          used: false,
+          expired_at: { gt: now },
+          created_at: { gt: new Date(now.getTime() - 30 * 1000) },
         },
+        orderBy: { created_at: 'desc' },
       });
-    } catch (error) {
-      throw new BusinessException(ErrorCode.EMAIL_CODE_PROCESS_FAILED);
-    }
+      if (recentUnused) {
+        throw new BusinessException(ErrorCode.EMAIL_RATE_LIMIT);
+      }
 
-    const transporter = this.getTransporter();
+      const code = Math.floor(100000 + Math.random() * 900000).toString();
+      try {
+        await this.prisma.sys_email_codes.create({
+          data: {
+            email,
+            code,
+            purpose,
+            expired_at: new Date(Date.now() + 5 * 60 * 1000),
+          },
+        });
+      } catch (error) {
+        throw wrapBusinessException(
+          error,
+          ErrorCode.EMAIL_CODE_PROCESS_FAILED,
+          {
+            context: {
+              module: 'EmailService',
+              action: 'saveVerificationCode',
+              email,
+              purpose,
+            },
+          },
+        );
+      }
 
-    try {
-      await transporter.sendMail({
-        from:
-          this.configService.get<string>('EMAIL_FROM') ||
-          'RAG 私有知识库 <no-reply@rag-kb.com>',
-        to: email,
-        subject: 'RAG 私有知识库验证码',
-        text: `您的验证码为：${code}，有效期 5 分钟，请勿泄露给他人。`,
-        html: `
+      const transporter = this.getTransporter();
+
+      try {
+        await transporter.sendMail({
+          from:
+            this.configService.get<string>('EMAIL_FROM') ||
+            'RAG 私有知识库 <1482487295@qq.com>',
+          to: email,
+          subject: 'RAG 私有知识库验证码',
+          text: `您的验证码为：${code}，有效期 5 分钟，请勿泄露给他人。`,
+          html: `
           <div style="
             margin: 0;
             padding: 32px 24px;
@@ -213,35 +228,63 @@ export class EmailService {
             </div>
           </div>
         `,
-      });
-    } catch (error) {
-      throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED);
-    }
+        });
+      } catch (error) {
+        throw wrapBusinessException(error, ErrorCode.EMAIL_SEND_FAILED, {
+          context: {
+            module: 'EmailService',
+            action: 'sendVerificationCode',
+            email,
+            purpose,
+          },
+        });
+      }
 
-    return true;
+      return true;
+    } catch (error) {
+      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+        context: {
+          module: 'EmailService',
+          action: 'sendVerificationCodeFlow',
+          email,
+          purpose,
+        },
+      });
+    }
   }
 
   async verifyCode(email: string, code: string, purpose: VerificationPurpose) {
-    const validCode = await this.prisma.sys_email_codes.findFirst({
-      where: {
-        email,
-        code,
-        purpose,
-        used: false,
-        expired_at: { gt: new Date() },
-      },
-      orderBy: { created_at: 'desc' },
-    });
+    try {
+      const validCode = await this.prisma.sys_email_codes.findFirst({
+        where: {
+          email,
+          code,
+          purpose,
+          used: false,
+          expired_at: { gt: new Date() },
+        },
+        orderBy: { created_at: 'desc' },
+      });
 
-    if (!validCode) {
-      throw new BusinessException(ErrorCode.EMAIL_CODE_INVALID);
+      if (!validCode) {
+        throw new BusinessException(ErrorCode.EMAIL_CODE_INVALID);
+      }
+
+      await this.prisma.sys_email_codes.update({
+        where: { id: validCode.id },
+        data: { used: true },
+      });
+
+      return true;
+    } catch (error) {
+      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+        context: {
+          module: 'EmailService',
+          action: 'verifyCode',
+          email,
+          purpose,
+        },
+      });
     }
-
-    await this.prisma.sys_email_codes.update({
-      where: { id: validCode.id },
-      data: { used: true },
-    });
-
-    return true;
   }
 }

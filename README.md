@@ -54,6 +54,10 @@ Linsor AI (灵索智能) 是一个专注于极致用户体验与高效信息检�
 - [前端认证请求层设计 (auth-api-design.md)](apps/frontend/docs/auth-api-design.md): 基于 `fetch` 的双 token、自动刷新与请求排队设计。
 - [前端认证实现总结 (auth-implementation-summary-2026-04-22.md)](apps/frontend/docs/auth-implementation-summary-2026-04-22.md): 本次认证链路落地、验证结果与后续建议。
 
+后端专题实现文档位于 `apps/backend/docs/`：
+
+- [异常治理与认证邮件联调总结 (exception-governance-and-auth-email-joint-debug-2026-04-24.md)](apps/backend/docs/exception-governance-and-auth-email-joint-debug-2026-04-24.md): 记录统一异常模型增强、全局异常日志收口、认证与邮件验证码联调中的问题定位与修复结果。
+
 ## 🚀 快速开始
 
 ### 1. 环境准备
@@ -107,6 +111,9 @@ pnpm --filter frontend dev
   - 优化导航结构，底部个人菜单重构为类 ChatGPT 的丝滑 Popover 弹出菜单。
   - 完成前端认证基础设施：统一请求层、双 token、自动刷新、刷新排队、`auth store`、启动恢复登录态、路由守卫。
   - 完成认证页面联调：登录、注册、发送验证码、忘记密码、重置密码、全局消息提示、验证码倒计时与基础表单校验。
+  - 完成前后端认证联调修复：统一前端 API 基础地址为 `/api` 前缀，修复认证接口 `404` 问题。
+  - 完成后端异常治理增强：`BusinessException` 支持 `cause/context/logLevel`，全局异常过滤器支持记录根因堆栈与结构化上下文。
+  - 完成认证与邮件验证码链路排障：定位并暴露数据库连接池超时、SMTP 连接超时、SMTP 发件人与授权账号不一致等问题。
 
 ### 2026-01: 项目初始化与后端架构
 

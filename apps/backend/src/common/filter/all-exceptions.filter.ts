@@ -7,6 +7,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { Request, Response } from 'express';
+import { inspect } from 'node:util';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { Logger } from 'winston';
 import { ErrorCode } from '@common/utils/errorCodeMap';
@@ -35,12 +36,30 @@ export class AllExceptionsFilter implements ExceptionFilter {
     // 业务异常
     if (exception instanceof BusinessException) {
       const res = exception.getResponse() as { code: number; message: string };
-
-      this.logger.warn('[BusinessException]', {
+      const cause = exception.cause;
+      const logPayload = {
         ...requestMeta,
+        status: exception.getStatus(),
         code: res.code,
         message: res.message,
-      });
+        context: this.sanitizeLogValue(exception.context),
+        stack:
+          exception.logLevel === 'error'
+            ? this.sanitizeLogValue(exception.stack)
+            : undefined,
+        causeMessage: cause instanceof Error ? cause.message : undefined,
+        causeStack: cause instanceof Error ? cause.stack : undefined,
+        cause:
+          cause && !(cause instanceof Error)
+            ? this.sanitizeLogValue(cause)
+            : undefined,
+      };
+
+      if (exception.logLevel === 'error') {
+        this.logger.error('[BusinessException]', logPayload);
+      } else {
+        this.logger.warn('[BusinessException]', logPayload);
+      }
 
       response
         .status(exception.getStatus())
@@ -162,6 +181,30 @@ export class AllExceptionsFilter implements ExceptionFilter {
       return JSON.stringify(exception);
     } catch {
       return 'Unknown exception';
+    }
+  }
+
+  /**
+   * 将日志附加字段转换为可安全输出的结构，避免 BigInt 等值导致日志序列化失败。
+   */
+  private sanitizeLogValue(value: unknown): unknown {
+    if (value === undefined) {
+      return undefined;
+    }
+
+    if (typeof value === 'string') {
+      return value;
+    }
+
+    try {
+      const serialized = JSON.stringify(value, (_, currentValue: unknown) =>
+        typeof currentValue === 'bigint'
+          ? currentValue.toString()
+          : currentValue,
+      );
+      return serialized ? (JSON.parse(serialized) as unknown) : serialized;
+    } catch {
+      return inspect(value, { depth: 5, breakLength: 120 });
     }
   }
 }

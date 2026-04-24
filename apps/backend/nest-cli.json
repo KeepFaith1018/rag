@@ -6,6 +6,14 @@
     "spec": false
   },
   "compilerOptions": {
-    "deleteOutDir": true
+    "deleteOutDir": true,
+    "watchAssets": true,
+          "assets": [
+              {
+                  "include": "../prisma/generated",
+                  "outDir": "dist/prisma",
+                  "watchAssets": true
+              }
+          ]
   }
 }

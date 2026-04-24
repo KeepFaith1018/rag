@@ -14,7 +14,8 @@ import {
 } from "@/utils/token";
 
 const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() || "/api";
+  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() ||
+  "http://localhost:3000/api";
 
 type AuthFailureHandler = () => void | Promise<void>;
 
