@@ -18,6 +18,7 @@ import { CurrentUser } from '@common/decorators/currentUser.decorator';
 import { AuthGuard } from '@common/guards/auth.guard';
 import { KbPermission } from '../knowledge-base/permission/kb-permission.decorator';
 import { KbPermissionGuard } from '../knowledge-base/permission/kb-permission.guard';
+import { ListDocumentProcessingTasksDto } from './dto/list-document-processing-tasks.dto';
 import { ListDocumentsDto } from './dto/list-documents.dto';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { DocumentService } from './document.service';
@@ -82,6 +83,25 @@ export class DocumentController {
     @Param('documentId') documentId: string,
   ) {
     return this.documentService.detail(Number(userId), kbId, documentId);
+  }
+
+  /**
+   * 获取指定文档的处理任务记录。
+   */
+  @Get('knowledge-bases/:kbId/documents/:documentId/processing-tasks')
+  @KbPermission({ action: 'read' })
+  listProcessingTasks(
+    @CurrentUser('sub') userId: string,
+    @Param('kbId') kbId: string,
+    @Param('documentId') documentId: string,
+    @Query() query: ListDocumentProcessingTasksDto,
+  ) {
+    return this.documentService.listProcessingTasks(
+      Number(userId),
+      kbId,
+      documentId,
+      query,
+    );
   }
 
   /**

@@ -249,6 +249,11 @@ exports.Prisma.B_documentsScalarFieldEnum = {
   file_type: 'file_type',
   mime_type: 'mime_type',
   status: 'status',
+  processing_version: 'processing_version',
+  current_stage: 'current_stage',
+  last_error_stage: 'last_error_stage',
+  retry_count: 'retry_count',
+  last_error_code: 'last_error_code',
   error_msg: 'error_msg',
   token_count: 'token_count',
   parse_started_at: 'parse_started_at',
@@ -306,6 +311,24 @@ exports.Prisma.B_document_chunksScalarFieldEnum = {
   metadata_json: 'metadata_json',
   embedding_status: 'embedding_status',
   created_at: 'created_at'
+};
+
+exports.Prisma.B_document_processing_tasksScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  processing_version: 'processing_version',
+  job_id: 'job_id',
+  stage: 'stage',
+  status: 'status',
+  attempt: 'attempt',
+  error_code: 'error_code',
+  error_message: 'error_message',
+  started_at: 'started_at',
+  finished_at: 'finished_at',
+  duration_ms: 'duration_ms',
+  heartbeat_at: 'heartbeat_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.B_chat_sessionsScalarFieldEnum = {
@@ -453,6 +476,9 @@ exports.Prisma.b_documentsOrderByRelevanceFieldEnum = {
   file_type: 'file_type',
   mime_type: 'mime_type',
   status: 'status',
+  current_stage: 'current_stage',
+  last_error_stage: 'last_error_stage',
+  last_error_code: 'last_error_code',
   error_msg: 'error_msg'
 };
 
@@ -477,6 +503,14 @@ exports.Prisma.b_document_chunksOrderByRelevanceFieldEnum = {
   content: 'content',
   vector_id: 'vector_id',
   embedding_status: 'embedding_status'
+};
+
+exports.Prisma.b_document_processing_tasksOrderByRelevanceFieldEnum = {
+  job_id: 'job_id',
+  stage: 'stage',
+  status: 'status',
+  error_code: 'error_code',
+  error_message: 'error_message'
 };
 
 exports.Prisma.b_chat_sessionsOrderByRelevanceFieldEnum = {
@@ -526,6 +560,7 @@ exports.Prisma.ModelName = {
   b_upload_sessions: 'b_upload_sessions',
   b_upload_chunks: 'b_upload_chunks',
   b_document_chunks: 'b_document_chunks',
+  b_document_processing_tasks: 'b_document_processing_tasks',
   b_chat_sessions: 'b_chat_sessions',
   b_chat_messages: 'b_chat_messages',
   sys_audit_logs: 'sys_audit_logs',

@@ -1,5 +1,5 @@
 import { Injectable } from '@nestjs/common';
-import { Prisma } from '@prisma-client';
+import { Prisma, b_document_processing_tasks } from '@prisma-client';
 import { createHash } from 'crypto';
 import { extname } from 'path';
 import {
@@ -9,7 +9,9 @@ import {
 import { PrismaService } from '@common/prisma/prisma.service';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 import { FileStorageService } from '@common/storage/file-storage.service';
+import { QdrantService } from '@common/vector/qdrant.service';
 import { ListDocumentsDto } from './dto/list-documents.dto';
+import { ListDocumentProcessingTasksDto } from './dto/list-document-processing-tasks.dto';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { KbPermissionService } from '../knowledge-base/permission/kb-permission.service';
 import { KbPermissionContext } from '../knowledge-base/interfaces/kb-permission.interface';
@@ -18,6 +20,13 @@ import {
   resolveDocumentMimeType,
   SUPPORTED_DOCUMENT_EXTENSIONS,
 } from './document.constants';
+import { DocumentQueueService } from '../document-processing/queue/document-queue.service';
+import { DocumentProcessingStateService } from '../document-processing/services/document-processing-state.service';
+import { DocumentProcessingTaskService } from '../document-processing/services/document-processing-task.service';
+import {
+  DOCUMENT_QUEUE_ENQUEUE_ERROR_CODE,
+  DOCUMENT_PROCESSING_STAGE,
+} from '../document-processing/constants/document-processing.constants';
 
 type DocumentWithUploader = Prisma.b_documentsGetPayload<{
   include: {
@@ -44,6 +53,8 @@ type UploadedDocumentFile = {
   mimetype: string;
 };
 
+type DocumentProcessingTaskRecord = b_document_processing_tasks;
+
 /**
  * 负责知识库文档元数据管理、文件存储编排与资源级权限判断。
  */
@@ -53,6 +64,10 @@ export class DocumentService {
     private readonly prisma: PrismaService,
     private readonly kbPermissionService: KbPermissionService,
     private readonly fileStorageService: FileStorageService,
+    private readonly qdrantService: QdrantService,
+    private readonly documentQueueService: DocumentQueueService,
+    private readonly documentProcessingStateService: DocumentProcessingStateService,
+    private readonly documentProcessingTaskService: DocumentProcessingTaskService,
   ) {}
 
   /**
@@ -97,7 +112,10 @@ export class DocumentService {
           file_size: BigInt(normalizedFile.size),
           file_type: normalizedFile.fileType,
           mime_type: normalizedFile.mimeType,
-          status: 'uploaded',
+          status: DOCUMENT_PROCESSING_STAGE.UPLOADED,
+          processing_version: 1,
+          current_stage: DOCUMENT_PROCESSING_STAGE.UPLOADED,
+          retry_count: 0,
         },
         include: {
           b_users: {
@@ -116,8 +134,42 @@ export class DocumentService {
         },
       });
 
+      try {
+        await this.documentQueueService.enqueueDocumentProcessing(
+          this.buildDocumentProcessingJobPayload({
+            documentId: document.id,
+            kbId,
+            processingVersion: document.processing_version,
+            triggerType: 'upload',
+            requestedBy: userId,
+          }),
+        );
+        await this.documentProcessingStateService.markQueued(
+          document.id,
+          document.processing_version,
+        );
+      } catch (error) {
+        await this.rollbackUploadedDocument(document.id, document.file_path);
+        throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
+          message: '文档已上传，但解析任务入队失败，请稍后重试',
+          cause: error,
+          context: {
+            module: 'DocumentService',
+            action: 'upload.enqueue',
+            userId,
+            kbId,
+            documentId: document.id.toString(),
+          },
+        });
+      }
+
+      const queuedDocument = await this.getDocumentOrThrow(
+        kbId,
+        document.id.toString(),
+      );
+
       return {
-        ...this.buildDocumentItem(document),
+        ...this.buildDocumentItem(queuedDocument),
         kbPermission: permission,
       };
     } catch (error) {
@@ -207,9 +259,21 @@ export class DocumentService {
         'read',
       );
       const document = await this.getDocumentOrThrow(kbId, documentId);
+      const recentTasks =
+        await this.documentProcessingTaskService.getRecentDocumentTasks(
+          document.id,
+          10,
+        );
 
       return {
         ...this.buildDocumentItem(document),
+        processingOverview: this.buildDocumentProcessingOverview(
+          document,
+          recentTasks,
+        ),
+        recentProcessingTasks: recentTasks.map((item) =>
+          this.buildDocumentProcessingTaskItem(item),
+        ),
         kbPermission: permission,
       };
     } catch (error) {
@@ -217,6 +281,71 @@ export class DocumentService {
         context: {
           module: 'DocumentService',
           action: 'detail',
+          userId,
+          kbId,
+          documentId,
+        },
+      });
+    }
+  }
+
+  /**
+   * 获取指定文档的处理任务记录列表。
+   */
+  async listProcessingTasks(
+    userId: number,
+    kbId: string,
+    documentId: string,
+    query: ListDocumentProcessingTasksDto,
+  ) {
+    try {
+      const permission = await this.kbPermissionService.authorize(
+        userId,
+        kbId,
+        'read',
+      );
+      const document = await this.getDocumentOrThrow(kbId, documentId);
+      const normalized = this.normalizeProcessingTaskQuery(query);
+      const pagination = this.buildPagination(
+        normalized.page,
+        normalized.pageSize,
+      );
+      const result = await this.documentProcessingTaskService.listDocumentTasks(
+        {
+          documentId: document.id,
+          processingVersion: normalized.processingVersion,
+          stage: normalized.stage,
+          status: normalized.status,
+          skip: pagination.skip,
+          take: pagination.take,
+        },
+      );
+
+      return {
+        kbId,
+        documentId,
+        kbPermission: permission,
+        currentStage: document.current_stage,
+        currentProcessingVersion: document.processing_version,
+        filters: {
+          status: normalized.status ?? null,
+          stage: normalized.stage ?? null,
+          processingVersion: normalized.processingVersion ?? null,
+        },
+        list: result.items.map((item) =>
+          this.buildDocumentProcessingTaskItem(item),
+        ),
+        pagination: {
+          page: normalized.page,
+          pageSize: normalized.pageSize,
+          total: result.total,
+        },
+      };
+    } catch (error) {
+      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+        context: {
+          module: 'DocumentService',
+          action: 'listProcessingTasks',
           userId,
           kbId,
           documentId,
@@ -276,6 +405,7 @@ export class DocumentService {
       const document = await this.getDocumentOrThrow(kbId, documentId);
       this.assertCanManageDocument(permission, document.uploader_id, 'delete');
 
+      await this.qdrantService.deleteByDocument(document.id.toString());
       await this.prisma.b_documents.delete({
         where: {
           id: document.id,
@@ -313,6 +443,11 @@ export class DocumentService {
       );
       const document = await this.getDocumentOrThrow(kbId, documentId);
       this.assertCanManageDocument(permission, document.uploader_id, 'reparse');
+      await this.qdrantService.deleteByDocumentVersion(
+        document.id.toString(),
+        document.processing_version,
+      );
+      const nextProcessingVersion = document.processing_version + 1;
 
       await this.prisma.$transaction([
         this.prisma.b_document_chunks.deleteMany({
@@ -320,27 +455,53 @@ export class DocumentService {
             doc_id: document.id,
           },
         }),
-        this.prisma.b_documents.update({
-          where: {
-            id: document.id,
-          },
-          data: {
-            status: 'uploaded',
-            error_msg: null,
-            token_count: 0,
-            parse_started_at: null,
-            parse_finished_at: null,
-            last_reparse_at: new Date(),
-            updated_at: new Date(),
-          },
-        }),
       ]);
+      await this.documentProcessingStateService.resetForReparse(
+        document.id,
+        nextProcessingVersion,
+      );
+
+      try {
+        await this.documentQueueService.enqueueDocumentProcessing(
+          this.buildDocumentProcessingJobPayload({
+            documentId: document.id,
+            kbId,
+            processingVersion: nextProcessingVersion,
+            triggerType: 'reparse',
+            requestedBy: userId,
+          }),
+        );
+        await this.documentProcessingStateService.markQueued(
+          document.id,
+          nextProcessingVersion,
+        );
+      } catch (error) {
+        await this.documentProcessingStateService.markQueueEnqueueFailed(
+          document.id,
+          nextProcessingVersion,
+          DOCUMENT_QUEUE_ENQUEUE_ERROR_CODE,
+          '文档重解析任务入队失败，请稍后重试',
+        );
+        throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
+          message: '文档重解析任务入队失败，请稍后重试',
+          cause: error,
+          context: {
+            module: 'DocumentService',
+            action: 'reparse.enqueue',
+            userId,
+            kbId,
+            documentId,
+            processingVersion: nextProcessingVersion,
+          },
+        });
+      }
 
       return {
         kbId,
         documentId,
         reparsed: true,
-        status: 'uploaded',
+        status: DOCUMENT_PROCESSING_STAGE.QUEUED,
+        processingVersion: nextProcessingVersion,
       };
     } catch (error) {
       throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
@@ -449,6 +610,21 @@ export class DocumentService {
   }
 
   /**
+   * 归一化文档处理任务查询参数。
+   */
+  private normalizeProcessingTaskQuery(query: ListDocumentProcessingTasksDto) {
+    return {
+      status: query.status,
+      stage: query.stage,
+      processingVersion: query.processingVersion
+        ? this.parseProcessingVersion(query.processingVersion)
+        : undefined,
+      page: query.page ?? 1,
+      pageSize: Math.min(query.pageSize ?? 10, 100),
+    };
+  }
+
+  /**
    * 构造文档列表查询条件。
    */
   private buildDocumentWhere(
@@ -515,6 +691,11 @@ export class DocumentService {
       fileType: document.file_type,
       mimeType: document.mime_type,
       status: document.status,
+      processingVersion: document.processing_version,
+      currentStage: document.current_stage,
+      lastErrorStage: document.last_error_stage,
+      retryCount: document.retry_count,
+      lastErrorCode: document.last_error_code,
       errorMessage: document.error_msg,
       tokenCount: document.token_count ?? 0,
       chunkCount: document._count.document_chunks,
@@ -531,6 +712,70 @@ export class DocumentService {
             avatarUrl: document.b_users.avatar_url,
           }
         : null,
+    };
+  }
+
+  /**
+   * 统一输出文档处理任务结构。
+   */
+  private buildDocumentProcessingTaskItem(task: DocumentProcessingTaskRecord) {
+    return {
+      id: task.id.toString(),
+      documentId: task.document_id.toString(),
+      processingVersion: task.processing_version,
+      jobId: task.job_id,
+      stage: task.stage,
+      status: task.status,
+      attempt: task.attempt,
+      errorCode: task.error_code,
+      errorMessage: task.error_message,
+      startedAt: task.started_at,
+      finishedAt: task.finished_at,
+      durationMs: task.duration_ms,
+      heartbeatAt: task.heartbeat_at,
+      createdAt: task.created_at,
+      updatedAt: task.updated_at,
+    };
+  }
+
+  /**
+   * 构建文档详情页需要的处理概览信息。
+   */
+  private buildDocumentProcessingOverview(
+    document: DocumentWithUploader,
+    recentTasks: DocumentProcessingTaskRecord[],
+  ) {
+    const currentVersionTasks = recentTasks.filter(
+      (task) => task.processing_version === document.processing_version,
+    );
+    const latestTask = recentTasks[0] ?? null;
+    const latestFailedTask =
+      recentTasks.find(
+        (task) => task.status === 'failed' || task.status === 'timed_out',
+      ) ?? null;
+
+    return {
+      currentStage: document.current_stage,
+      currentProcessingVersion: document.processing_version,
+      retryCount: document.retry_count,
+      lastErrorCode: document.last_error_code,
+      lastErrorStage: document.last_error_stage,
+      errorMessage: document.error_msg,
+      latestTask: latestTask
+        ? this.buildDocumentProcessingTaskItem(latestTask)
+        : null,
+      latestFailedTask: latestFailedTask
+        ? this.buildDocumentProcessingTaskItem(latestFailedTask)
+        : null,
+      currentVersionTaskCount: currentVersionTasks.length,
+      stageDurations: currentVersionTasks
+        .filter((task) => task.duration_ms !== null)
+        .map((task) => ({
+          stage: task.stage,
+          status: task.status,
+          attempt: task.attempt,
+          durationMs: task.duration_ms,
+        })),
     };
   }
 
@@ -584,5 +829,52 @@ export class DocumentService {
     } catch {
       throw new BusinessException(ErrorCode.PARAM_ERROR, '文档 ID 格式不正确');
     }
+  }
+
+  /**
+   * 将字符串形式的处理版本号解析为 number。
+   */
+  private parseProcessingVersion(processingVersion: string) {
+    const parsedValue = Number(processingVersion);
+    if (!Number.isInteger(parsedValue) || parsedValue < 1) {
+      throw new BusinessException(
+        ErrorCode.PARAM_ERROR,
+        '处理版本号格式不正确',
+      );
+    }
+
+    return parsedValue;
+  }
+
+  /**
+   * 统一构造文档处理入队载荷。
+   */
+  private buildDocumentProcessingJobPayload(options: {
+    documentId: bigint;
+    kbId: string;
+    processingVersion: number;
+    triggerType: 'upload' | 'reparse';
+    requestedBy: number;
+  }) {
+    return {
+      documentId: options.documentId.toString(),
+      kbId: options.kbId,
+      processingVersion: options.processingVersion,
+      triggerType: options.triggerType,
+      requestedBy: options.requestedBy.toString(),
+      requestedAt: new Date().toISOString(),
+    };
+  }
+
+  /**
+   * 上传成功但入队失败时，回滚已创建的文档记录和源文件，避免残留脏数据。
+   */
+  private async rollbackUploadedDocument(documentId: bigint, filePath: string) {
+    await this.prisma.b_documents.delete({
+      where: {
+        id: documentId,
+      },
+    });
+    await this.fileStorageService.deleteFile(filePath);
   }
 }

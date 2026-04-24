@@ -21,7 +21,11 @@ import { InitUploadDto } from './dto/init-upload.dto';
 import { UploadChunkDto } from './dto/upload-chunk.dto';
 
 const UPLOAD_SESSION_EXPIRE_HOURS = 72;
-const ACTIVE_UPLOAD_SESSION_STATUS = ['init', 'uploading', 'completed'] as const;
+const ACTIVE_UPLOAD_SESSION_STATUS = [
+  'init',
+  'uploading',
+  'completed',
+] as const;
 
 type UploadedChunkFile = {
   buffer: Buffer;
@@ -174,22 +178,32 @@ export class UploadService {
 
     try {
       await this.kbPermissionService.authorize(userId, kbId, 'uploadDocument');
-      const session = await this.getUploadSessionOrThrow(kbId, userId, uploadId);
+      const session = await this.getUploadSessionOrThrow(
+        kbId,
+        userId,
+        uploadId,
+      );
       this.assertSessionCanAcceptChunk(session);
       this.assertChunkFileValid(session, dto.chunkIndex, file);
 
       if (dto.chunkHash) {
         const actualChunkHash = this.computeHash(file.buffer);
         if (actualChunkHash !== dto.chunkHash.toLowerCase()) {
-          throw new BusinessException(ErrorCode.FILE_HASH_MISMATCH, '分片哈希校验失败');
+          throw new BusinessException(
+            ErrorCode.FILE_HASH_MISMATCH,
+            '分片哈希校验失败',
+          );
         }
       }
 
-      const savedChunk = await this.fileStorageService.saveUploadChunk(file.buffer, {
-        kbId,
-        uploadId,
-        chunkIndex: dto.chunkIndex,
-      });
+      const savedChunk = await this.fileStorageService.saveUploadChunk(
+        file.buffer,
+        {
+          kbId,
+          uploadId,
+          chunkIndex: dto.chunkIndex,
+        },
+      );
 
       await this.prisma.b_upload_chunks.upsert({
         where: {
@@ -217,7 +231,9 @@ export class UploadService {
 
       const uploadedChunks = await this.listUploadedChunks(session.id);
       const nextStatus =
-        uploadedChunks.length === session.total_chunks ? 'completed' : 'uploading';
+        uploadedChunks.length === session.total_chunks
+          ? 'completed'
+          : 'uploading';
       await this.prisma.b_upload_sessions.update({
         where: {
           id: session.id,
@@ -257,12 +273,22 @@ export class UploadService {
   async getStatus(userId: number, kbId: string, uploadId: string) {
     try {
       await this.kbPermissionService.authorize(userId, kbId, 'uploadDocument');
-      const session = await this.getUploadSessionOrThrow(kbId, userId, uploadId);
-      const uploadedChunks = session.upload_chunks.map((item) => item.chunk_index);
+      const session = await this.getUploadSessionOrThrow(
+        kbId,
+        userId,
+        uploadId,
+      );
+      const uploadedChunks = session.upload_chunks.map(
+        (item) => item.chunk_index,
+      );
       const uploadedChunkSet = new Set(uploadedChunks);
       const missingChunks: number[] = [];
 
-      for (let chunkIndex = 0; chunkIndex < session.total_chunks; chunkIndex += 1) {
+      for (
+        let chunkIndex = 0;
+        chunkIndex < session.total_chunks;
+        chunkIndex += 1
+      ) {
         if (!uploadedChunkSet.has(chunkIndex)) {
           missingChunks.push(chunkIndex);
         }
@@ -304,7 +330,11 @@ export class UploadService {
   ) {
     try {
       await this.kbPermissionService.authorize(userId, kbId, 'uploadDocument');
-      const session = await this.getUploadSessionOrThrow(kbId, userId, uploadId);
+      const session = await this.getUploadSessionOrThrow(
+        kbId,
+        userId,
+        uploadId,
+      );
 
       if (session.status === 'merged' && session.document_id) {
         return {
@@ -316,7 +346,9 @@ export class UploadService {
         };
       }
 
-      const uploadedChunks = session.upload_chunks.map((item) => item.chunk_index);
+      const uploadedChunks = session.upload_chunks.map(
+        (item) => item.chunk_index,
+      );
       if (uploadedChunks.length !== session.total_chunks) {
         throw new BusinessException(ErrorCode.FILE_CHUNK_INCOMPLETE);
       }
@@ -400,7 +432,11 @@ export class UploadService {
   async cancel(userId: number, kbId: string, uploadId: string) {
     try {
       await this.kbPermissionService.authorize(userId, kbId, 'uploadDocument');
-      const session = await this.getUploadSessionOrThrow(kbId, userId, uploadId);
+      const session = await this.getUploadSessionOrThrow(
+        kbId,
+        userId,
+        uploadId,
+      );
 
       await this.prisma.$transaction([
         this.prisma.b_upload_chunks.deleteMany({
@@ -510,8 +546,12 @@ export class UploadService {
         original_filename: payload.fileName,
         file_path: String(existingDocument.file_path),
         file_hash: String(existingDocument.file_hash),
-        file_size: BigInt(existingDocument.file_size?.toString() ?? payload.fileSize),
-        file_type: String(existingDocument.file_type ?? payload.extension.replace('.', '')),
+        file_size: BigInt(
+          existingDocument.file_size?.toString() ?? payload.fileSize,
+        ),
+        file_type: String(
+          existingDocument.file_type ?? payload.extension.replace('.', ''),
+        ),
         mime_type: payload.mimeType || String(existingDocument.mime_type || ''),
         status: 'uploaded',
       },
@@ -709,7 +749,9 @@ export class UploadService {
    * 统一判断上传会话是否过期。
    */
   private isSessionExpired(session: { expired_at: Date | null }) {
-    return session.expired_at ? session.expired_at.getTime() <= Date.now() : false;
+    return session.expired_at
+      ? session.expired_at.getTime() <= Date.now()
+      : false;
   }
 
   /**
@@ -722,7 +764,10 @@ export class UploadService {
   /**
    * 基于标题和文件名推导最终文档标题。
    */
-  private resolveDocumentTitle(title: string | null | undefined, fileName: string) {
+  private resolveDocumentTitle(
+    title: string | null | undefined,
+    fileName: string,
+  ) {
     const normalizedTitle = title?.trim();
     if (normalizedTitle) {
       return normalizedTitle;
@@ -745,7 +790,10 @@ export class UploadService {
     try {
       return BigInt(uploadId);
     } catch {
-      throw new BusinessException(ErrorCode.PARAM_ERROR, '上传会话 ID 格式不正确');
+      throw new BusinessException(
+        ErrorCode.PARAM_ERROR,
+        '上传会话 ID 格式不正确',
+      );
     }
   }
 }

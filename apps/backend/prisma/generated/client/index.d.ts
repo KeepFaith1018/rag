@@ -84,6 +84,11 @@ export type b_upload_chunks = $Result.DefaultSelection<Prisma.$b_upload_chunksPa
  */
 export type b_document_chunks = $Result.DefaultSelection<Prisma.$b_document_chunksPayload>
 /**
+ * Model b_document_processing_tasks
+ * 
+ */
+export type b_document_processing_tasks = $Result.DefaultSelection<Prisma.$b_document_processing_tasksPayload>
+/**
  * Model b_chat_sessions
  * 
  */
@@ -365,6 +370,16 @@ export class PrismaClient<
     * ```
     */
   get b_document_chunks(): Prisma.b_document_chunksDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.b_document_processing_tasks`: Exposes CRUD operations for the **b_document_processing_tasks** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more B_document_processing_tasks
+    * const b_document_processing_tasks = await prisma.b_document_processing_tasks.findMany()
+    * ```
+    */
+  get b_document_processing_tasks(): Prisma.b_document_processing_tasksDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.b_chat_sessions`: Exposes CRUD operations for the **b_chat_sessions** model.
@@ -863,6 +878,7 @@ export namespace Prisma {
     b_upload_sessions: 'b_upload_sessions',
     b_upload_chunks: 'b_upload_chunks',
     b_document_chunks: 'b_document_chunks',
+    b_document_processing_tasks: 'b_document_processing_tasks',
     b_chat_sessions: 'b_chat_sessions',
     b_chat_messages: 'b_chat_messages',
     sys_audit_logs: 'sys_audit_logs',
@@ -883,7 +899,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "b_users" | "sys_admins" | "sys_email_codes" | "b_user_sessions" | "sys_admin_sessions" | "sys_model_configs" | "b_user_model_configs" | "b_knowledge_bases" | "b_kb_members" | "b_kb_invitations" | "b_documents" | "b_upload_sessions" | "b_upload_chunks" | "b_document_chunks" | "b_chat_sessions" | "b_chat_messages" | "sys_audit_logs" | "sys_dict_type" | "sys_dict_item"
+      modelProps: "b_users" | "sys_admins" | "sys_email_codes" | "b_user_sessions" | "sys_admin_sessions" | "sys_model_configs" | "b_user_model_configs" | "b_knowledge_bases" | "b_kb_members" | "b_kb_invitations" | "b_documents" | "b_upload_sessions" | "b_upload_chunks" | "b_document_chunks" | "b_document_processing_tasks" | "b_chat_sessions" | "b_chat_messages" | "sys_audit_logs" | "sys_dict_type" | "sys_dict_item"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1811,6 +1827,72 @@ export namespace Prisma {
           }
         }
       }
+      b_document_processing_tasks: {
+        payload: Prisma.$b_document_processing_tasksPayload<ExtArgs>
+        fields: Prisma.b_document_processing_tasksFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.b_document_processing_tasksFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_processing_tasksPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.b_document_processing_tasksFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_processing_tasksPayload>
+          }
+          findFirst: {
+            args: Prisma.b_document_processing_tasksFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_processing_tasksPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.b_document_processing_tasksFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_processing_tasksPayload>
+          }
+          findMany: {
+            args: Prisma.b_document_processing_tasksFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_processing_tasksPayload>[]
+          }
+          create: {
+            args: Prisma.b_document_processing_tasksCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_processing_tasksPayload>
+          }
+          createMany: {
+            args: Prisma.b_document_processing_tasksCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.b_document_processing_tasksDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_processing_tasksPayload>
+          }
+          update: {
+            args: Prisma.b_document_processing_tasksUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_processing_tasksPayload>
+          }
+          deleteMany: {
+            args: Prisma.b_document_processing_tasksDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.b_document_processing_tasksUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.b_document_processing_tasksUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_processing_tasksPayload>
+          }
+          aggregate: {
+            args: Prisma.B_document_processing_tasksAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateB_document_processing_tasks>
+          }
+          groupBy: {
+            args: Prisma.b_document_processing_tasksGroupByArgs<ExtArgs>
+            result: $Utils.Optional<B_document_processing_tasksGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.b_document_processing_tasksCountArgs<ExtArgs>
+            result: $Utils.Optional<B_document_processing_tasksCountAggregateOutputType> | number
+          }
+        }
+      }
       b_chat_sessions: {
         payload: Prisma.$b_chat_sessionsPayload<ExtArgs>
         fields: Prisma.b_chat_sessionsFieldRefs
@@ -2263,6 +2345,7 @@ export namespace Prisma {
     b_upload_sessions?: b_upload_sessionsOmit
     b_upload_chunks?: b_upload_chunksOmit
     b_document_chunks?: b_document_chunksOmit
+    b_document_processing_tasks?: b_document_processing_tasksOmit
     b_chat_sessions?: b_chat_sessionsOmit
     b_chat_messages?: b_chat_messagesOmit
     sys_audit_logs?: sys_audit_logsOmit
@@ -2541,11 +2624,13 @@ export namespace Prisma {
 
   export type B_documentsCountOutputType = {
     document_chunks: number
+    processing_tasks: number
     upload_sessions: number
   }
 
   export type B_documentsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     document_chunks?: boolean | B_documentsCountOutputTypeCountDocument_chunksArgs
+    processing_tasks?: boolean | B_documentsCountOutputTypeCountProcessing_tasksArgs
     upload_sessions?: boolean | B_documentsCountOutputTypeCountUpload_sessionsArgs
   }
 
@@ -2565,6 +2650,13 @@ export namespace Prisma {
    */
   export type B_documentsCountOutputTypeCountDocument_chunksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_document_chunksWhereInput
+  }
+
+  /**
+   * B_documentsCountOutputType without action
+   */
+  export type B_documentsCountOutputTypeCountProcessing_tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_document_processing_tasksWhereInput
   }
 
   /**
@@ -13047,6 +13139,8 @@ export namespace Prisma {
     kb_id: number | null
     uploader_id: number | null
     file_size: number | null
+    processing_version: number | null
+    retry_count: number | null
     token_count: number | null
   }
 
@@ -13055,6 +13149,8 @@ export namespace Prisma {
     kb_id: bigint | null
     uploader_id: bigint | null
     file_size: bigint | null
+    processing_version: number | null
+    retry_count: number | null
     token_count: number | null
   }
 
@@ -13070,6 +13166,11 @@ export namespace Prisma {
     file_type: string | null
     mime_type: string | null
     status: string | null
+    processing_version: number | null
+    current_stage: string | null
+    last_error_stage: string | null
+    retry_count: number | null
+    last_error_code: string | null
     error_msg: string | null
     token_count: number | null
     parse_started_at: Date | null
@@ -13091,6 +13192,11 @@ export namespace Prisma {
     file_type: string | null
     mime_type: string | null
     status: string | null
+    processing_version: number | null
+    current_stage: string | null
+    last_error_stage: string | null
+    retry_count: number | null
+    last_error_code: string | null
     error_msg: string | null
     token_count: number | null
     parse_started_at: Date | null
@@ -13112,6 +13218,11 @@ export namespace Prisma {
     file_type: number
     mime_type: number
     status: number
+    processing_version: number
+    current_stage: number
+    last_error_stage: number
+    retry_count: number
+    last_error_code: number
     error_msg: number
     token_count: number
     parse_started_at: number
@@ -13128,6 +13239,8 @@ export namespace Prisma {
     kb_id?: true
     uploader_id?: true
     file_size?: true
+    processing_version?: true
+    retry_count?: true
     token_count?: true
   }
 
@@ -13136,6 +13249,8 @@ export namespace Prisma {
     kb_id?: true
     uploader_id?: true
     file_size?: true
+    processing_version?: true
+    retry_count?: true
     token_count?: true
   }
 
@@ -13151,6 +13266,11 @@ export namespace Prisma {
     file_type?: true
     mime_type?: true
     status?: true
+    processing_version?: true
+    current_stage?: true
+    last_error_stage?: true
+    retry_count?: true
+    last_error_code?: true
     error_msg?: true
     token_count?: true
     parse_started_at?: true
@@ -13172,6 +13292,11 @@ export namespace Prisma {
     file_type?: true
     mime_type?: true
     status?: true
+    processing_version?: true
+    current_stage?: true
+    last_error_stage?: true
+    retry_count?: true
+    last_error_code?: true
     error_msg?: true
     token_count?: true
     parse_started_at?: true
@@ -13193,6 +13318,11 @@ export namespace Prisma {
     file_type?: true
     mime_type?: true
     status?: true
+    processing_version?: true
+    current_stage?: true
+    last_error_stage?: true
+    retry_count?: true
+    last_error_code?: true
     error_msg?: true
     token_count?: true
     parse_started_at?: true
@@ -13301,6 +13431,11 @@ export namespace Prisma {
     file_type: string | null
     mime_type: string | null
     status: string
+    processing_version: number
+    current_stage: string
+    last_error_stage: string | null
+    retry_count: number
+    last_error_code: string | null
     error_msg: string | null
     token_count: number | null
     parse_started_at: Date | null
@@ -13341,6 +13476,11 @@ export namespace Prisma {
     file_type?: boolean
     mime_type?: boolean
     status?: boolean
+    processing_version?: boolean
+    current_stage?: boolean
+    last_error_stage?: boolean
+    retry_count?: boolean
+    last_error_code?: boolean
     error_msg?: boolean
     token_count?: boolean
     parse_started_at?: boolean
@@ -13349,6 +13489,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     document_chunks?: boolean | b_documents$document_chunksArgs<ExtArgs>
+    processing_tasks?: boolean | b_documents$processing_tasksArgs<ExtArgs>
     upload_sessions?: boolean | b_documents$upload_sessionsArgs<ExtArgs>
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
     b_users?: boolean | b_documents$b_usersArgs<ExtArgs>
@@ -13369,6 +13510,11 @@ export namespace Prisma {
     file_type?: boolean
     mime_type?: boolean
     status?: boolean
+    processing_version?: boolean
+    current_stage?: boolean
+    last_error_stage?: boolean
+    retry_count?: boolean
+    last_error_code?: boolean
     error_msg?: boolean
     token_count?: boolean
     parse_started_at?: boolean
@@ -13378,9 +13524,10 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type b_documentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kb_id" | "uploader_id" | "title" | "original_filename" | "file_path" | "file_hash" | "file_size" | "file_type" | "mime_type" | "status" | "error_msg" | "token_count" | "parse_started_at" | "parse_finished_at" | "last_reparse_at" | "created_at" | "updated_at", ExtArgs["result"]["b_documents"]>
+  export type b_documentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kb_id" | "uploader_id" | "title" | "original_filename" | "file_path" | "file_hash" | "file_size" | "file_type" | "mime_type" | "status" | "processing_version" | "current_stage" | "last_error_stage" | "retry_count" | "last_error_code" | "error_msg" | "token_count" | "parse_started_at" | "parse_finished_at" | "last_reparse_at" | "created_at" | "updated_at", ExtArgs["result"]["b_documents"]>
   export type b_documentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     document_chunks?: boolean | b_documents$document_chunksArgs<ExtArgs>
+    processing_tasks?: boolean | b_documents$processing_tasksArgs<ExtArgs>
     upload_sessions?: boolean | b_documents$upload_sessionsArgs<ExtArgs>
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
     b_users?: boolean | b_documents$b_usersArgs<ExtArgs>
@@ -13391,6 +13538,7 @@ export namespace Prisma {
     name: "b_documents"
     objects: {
       document_chunks: Prisma.$b_document_chunksPayload<ExtArgs>[]
+      processing_tasks: Prisma.$b_document_processing_tasksPayload<ExtArgs>[]
       upload_sessions: Prisma.$b_upload_sessionsPayload<ExtArgs>[]
       b_knowledge_bases: Prisma.$b_knowledge_basesPayload<ExtArgs>
       b_users: Prisma.$b_usersPayload<ExtArgs> | null
@@ -13407,6 +13555,11 @@ export namespace Prisma {
       file_type: string | null
       mime_type: string | null
       status: string
+      processing_version: number
+      current_stage: string
+      last_error_stage: string | null
+      retry_count: number
+      last_error_code: string | null
       error_msg: string | null
       token_count: number | null
       parse_started_at: Date | null
@@ -13755,6 +13908,7 @@ export namespace Prisma {
   export interface Prisma__b_documentsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     document_chunks<T extends b_documents$document_chunksArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$document_chunksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_chunksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    processing_tasks<T extends b_documents$processing_tasksArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$processing_tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     upload_sessions<T extends b_documents$upload_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$upload_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b_knowledge_bases<T extends b_knowledge_basesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_basesDefaultArgs<ExtArgs>>): Prisma__b_knowledge_basesClient<$Result.GetResult<Prisma.$b_knowledge_basesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     b_users<T extends b_documents$b_usersArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$b_usersArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
@@ -13798,6 +13952,11 @@ export namespace Prisma {
     readonly file_type: FieldRef<"b_documents", 'String'>
     readonly mime_type: FieldRef<"b_documents", 'String'>
     readonly status: FieldRef<"b_documents", 'String'>
+    readonly processing_version: FieldRef<"b_documents", 'Int'>
+    readonly current_stage: FieldRef<"b_documents", 'String'>
+    readonly last_error_stage: FieldRef<"b_documents", 'String'>
+    readonly retry_count: FieldRef<"b_documents", 'Int'>
+    readonly last_error_code: FieldRef<"b_documents", 'String'>
     readonly error_msg: FieldRef<"b_documents", 'String'>
     readonly token_count: FieldRef<"b_documents", 'Int'>
     readonly parse_started_at: FieldRef<"b_documents", 'DateTime'>
@@ -14169,6 +14328,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: B_document_chunksScalarFieldEnum | B_document_chunksScalarFieldEnum[]
+  }
+
+  /**
+   * b_documents.processing_tasks
+   */
+  export type b_documents$processing_tasksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    where?: b_document_processing_tasksWhereInput
+    orderBy?: b_document_processing_tasksOrderByWithRelationInput | b_document_processing_tasksOrderByWithRelationInput[]
+    cursor?: b_document_processing_tasksWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_document_processing_tasksScalarFieldEnum | B_document_processing_tasksScalarFieldEnum[]
   }
 
   /**
@@ -17522,6 +17705,1095 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: b_document_chunksInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model b_document_processing_tasks
+   */
+
+  export type AggregateB_document_processing_tasks = {
+    _count: B_document_processing_tasksCountAggregateOutputType | null
+    _avg: B_document_processing_tasksAvgAggregateOutputType | null
+    _sum: B_document_processing_tasksSumAggregateOutputType | null
+    _min: B_document_processing_tasksMinAggregateOutputType | null
+    _max: B_document_processing_tasksMaxAggregateOutputType | null
+  }
+
+  export type B_document_processing_tasksAvgAggregateOutputType = {
+    id: number | null
+    document_id: number | null
+    processing_version: number | null
+    attempt: number | null
+    duration_ms: number | null
+  }
+
+  export type B_document_processing_tasksSumAggregateOutputType = {
+    id: bigint | null
+    document_id: bigint | null
+    processing_version: number | null
+    attempt: number | null
+    duration_ms: number | null
+  }
+
+  export type B_document_processing_tasksMinAggregateOutputType = {
+    id: bigint | null
+    document_id: bigint | null
+    processing_version: number | null
+    job_id: string | null
+    stage: string | null
+    status: string | null
+    attempt: number | null
+    error_code: string | null
+    error_message: string | null
+    started_at: Date | null
+    finished_at: Date | null
+    duration_ms: number | null
+    heartbeat_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type B_document_processing_tasksMaxAggregateOutputType = {
+    id: bigint | null
+    document_id: bigint | null
+    processing_version: number | null
+    job_id: string | null
+    stage: string | null
+    status: string | null
+    attempt: number | null
+    error_code: string | null
+    error_message: string | null
+    started_at: Date | null
+    finished_at: Date | null
+    duration_ms: number | null
+    heartbeat_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type B_document_processing_tasksCountAggregateOutputType = {
+    id: number
+    document_id: number
+    processing_version: number
+    job_id: number
+    stage: number
+    status: number
+    attempt: number
+    error_code: number
+    error_message: number
+    started_at: number
+    finished_at: number
+    duration_ms: number
+    heartbeat_at: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type B_document_processing_tasksAvgAggregateInputType = {
+    id?: true
+    document_id?: true
+    processing_version?: true
+    attempt?: true
+    duration_ms?: true
+  }
+
+  export type B_document_processing_tasksSumAggregateInputType = {
+    id?: true
+    document_id?: true
+    processing_version?: true
+    attempt?: true
+    duration_ms?: true
+  }
+
+  export type B_document_processing_tasksMinAggregateInputType = {
+    id?: true
+    document_id?: true
+    processing_version?: true
+    job_id?: true
+    stage?: true
+    status?: true
+    attempt?: true
+    error_code?: true
+    error_message?: true
+    started_at?: true
+    finished_at?: true
+    duration_ms?: true
+    heartbeat_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type B_document_processing_tasksMaxAggregateInputType = {
+    id?: true
+    document_id?: true
+    processing_version?: true
+    job_id?: true
+    stage?: true
+    status?: true
+    attempt?: true
+    error_code?: true
+    error_message?: true
+    started_at?: true
+    finished_at?: true
+    duration_ms?: true
+    heartbeat_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type B_document_processing_tasksCountAggregateInputType = {
+    id?: true
+    document_id?: true
+    processing_version?: true
+    job_id?: true
+    stage?: true
+    status?: true
+    attempt?: true
+    error_code?: true
+    error_message?: true
+    started_at?: true
+    finished_at?: true
+    duration_ms?: true
+    heartbeat_at?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type B_document_processing_tasksAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_document_processing_tasks to aggregate.
+     */
+    where?: b_document_processing_tasksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_document_processing_tasks to fetch.
+     */
+    orderBy?: b_document_processing_tasksOrderByWithRelationInput | b_document_processing_tasksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: b_document_processing_tasksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_document_processing_tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_document_processing_tasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned b_document_processing_tasks
+    **/
+    _count?: true | B_document_processing_tasksCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: B_document_processing_tasksAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: B_document_processing_tasksSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: B_document_processing_tasksMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: B_document_processing_tasksMaxAggregateInputType
+  }
+
+  export type GetB_document_processing_tasksAggregateType<T extends B_document_processing_tasksAggregateArgs> = {
+        [P in keyof T & keyof AggregateB_document_processing_tasks]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateB_document_processing_tasks[P]>
+      : GetScalarType<T[P], AggregateB_document_processing_tasks[P]>
+  }
+
+
+
+
+  export type b_document_processing_tasksGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_document_processing_tasksWhereInput
+    orderBy?: b_document_processing_tasksOrderByWithAggregationInput | b_document_processing_tasksOrderByWithAggregationInput[]
+    by: B_document_processing_tasksScalarFieldEnum[] | B_document_processing_tasksScalarFieldEnum
+    having?: b_document_processing_tasksScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: B_document_processing_tasksCountAggregateInputType | true
+    _avg?: B_document_processing_tasksAvgAggregateInputType
+    _sum?: B_document_processing_tasksSumAggregateInputType
+    _min?: B_document_processing_tasksMinAggregateInputType
+    _max?: B_document_processing_tasksMaxAggregateInputType
+  }
+
+  export type B_document_processing_tasksGroupByOutputType = {
+    id: bigint
+    document_id: bigint
+    processing_version: number
+    job_id: string | null
+    stage: string
+    status: string
+    attempt: number
+    error_code: string | null
+    error_message: string | null
+    started_at: Date
+    finished_at: Date | null
+    duration_ms: number | null
+    heartbeat_at: Date | null
+    created_at: Date
+    updated_at: Date
+    _count: B_document_processing_tasksCountAggregateOutputType | null
+    _avg: B_document_processing_tasksAvgAggregateOutputType | null
+    _sum: B_document_processing_tasksSumAggregateOutputType | null
+    _min: B_document_processing_tasksMinAggregateOutputType | null
+    _max: B_document_processing_tasksMaxAggregateOutputType | null
+  }
+
+  type GetB_document_processing_tasksGroupByPayload<T extends b_document_processing_tasksGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<B_document_processing_tasksGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof B_document_processing_tasksGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], B_document_processing_tasksGroupByOutputType[P]>
+            : GetScalarType<T[P], B_document_processing_tasksGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type b_document_processing_tasksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    document_id?: boolean
+    processing_version?: boolean
+    job_id?: boolean
+    stage?: boolean
+    status?: boolean
+    attempt?: boolean
+    error_code?: boolean
+    error_message?: boolean
+    started_at?: boolean
+    finished_at?: boolean
+    duration_ms?: boolean
+    heartbeat_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["b_document_processing_tasks"]>
+
+
+
+  export type b_document_processing_tasksSelectScalar = {
+    id?: boolean
+    document_id?: boolean
+    processing_version?: boolean
+    job_id?: boolean
+    stage?: boolean
+    status?: boolean
+    attempt?: boolean
+    error_code?: boolean
+    error_message?: boolean
+    started_at?: boolean
+    finished_at?: boolean
+    duration_ms?: boolean
+    heartbeat_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type b_document_processing_tasksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "document_id" | "processing_version" | "job_id" | "stage" | "status" | "attempt" | "error_code" | "error_message" | "started_at" | "finished_at" | "duration_ms" | "heartbeat_at" | "created_at" | "updated_at", ExtArgs["result"]["b_document_processing_tasks"]>
+  export type b_document_processing_tasksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
+  }
+
+  export type $b_document_processing_tasksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "b_document_processing_tasks"
+    objects: {
+      b_documents: Prisma.$b_documentsPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      document_id: bigint
+      processing_version: number
+      job_id: string | null
+      stage: string
+      status: string
+      attempt: number
+      error_code: string | null
+      error_message: string | null
+      started_at: Date
+      finished_at: Date | null
+      duration_ms: number | null
+      heartbeat_at: Date | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["b_document_processing_tasks"]>
+    composites: {}
+  }
+
+  type b_document_processing_tasksGetPayload<S extends boolean | null | undefined | b_document_processing_tasksDefaultArgs> = $Result.GetResult<Prisma.$b_document_processing_tasksPayload, S>
+
+  type b_document_processing_tasksCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<b_document_processing_tasksFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: B_document_processing_tasksCountAggregateInputType | true
+    }
+
+  export interface b_document_processing_tasksDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['b_document_processing_tasks'], meta: { name: 'b_document_processing_tasks' } }
+    /**
+     * Find zero or one B_document_processing_tasks that matches the filter.
+     * @param {b_document_processing_tasksFindUniqueArgs} args - Arguments to find a B_document_processing_tasks
+     * @example
+     * // Get one B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends b_document_processing_tasksFindUniqueArgs>(args: SelectSubset<T, b_document_processing_tasksFindUniqueArgs<ExtArgs>>): Prisma__b_document_processing_tasksClient<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one B_document_processing_tasks that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {b_document_processing_tasksFindUniqueOrThrowArgs} args - Arguments to find a B_document_processing_tasks
+     * @example
+     * // Get one B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends b_document_processing_tasksFindUniqueOrThrowArgs>(args: SelectSubset<T, b_document_processing_tasksFindUniqueOrThrowArgs<ExtArgs>>): Prisma__b_document_processing_tasksClient<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_document_processing_tasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_processing_tasksFindFirstArgs} args - Arguments to find a B_document_processing_tasks
+     * @example
+     * // Get one B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends b_document_processing_tasksFindFirstArgs>(args?: SelectSubset<T, b_document_processing_tasksFindFirstArgs<ExtArgs>>): Prisma__b_document_processing_tasksClient<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_document_processing_tasks that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_processing_tasksFindFirstOrThrowArgs} args - Arguments to find a B_document_processing_tasks
+     * @example
+     * // Get one B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends b_document_processing_tasksFindFirstOrThrowArgs>(args?: SelectSubset<T, b_document_processing_tasksFindFirstOrThrowArgs<ExtArgs>>): Prisma__b_document_processing_tasksClient<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more B_document_processing_tasks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_processing_tasksFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.findMany()
+     * 
+     * // Get first 10 B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const b_document_processing_tasksWithIdOnly = await prisma.b_document_processing_tasks.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends b_document_processing_tasksFindManyArgs>(args?: SelectSubset<T, b_document_processing_tasksFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a B_document_processing_tasks.
+     * @param {b_document_processing_tasksCreateArgs} args - Arguments to create a B_document_processing_tasks.
+     * @example
+     * // Create one B_document_processing_tasks
+     * const B_document_processing_tasks = await prisma.b_document_processing_tasks.create({
+     *   data: {
+     *     // ... data to create a B_document_processing_tasks
+     *   }
+     * })
+     * 
+     */
+    create<T extends b_document_processing_tasksCreateArgs>(args: SelectSubset<T, b_document_processing_tasksCreateArgs<ExtArgs>>): Prisma__b_document_processing_tasksClient<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many B_document_processing_tasks.
+     * @param {b_document_processing_tasksCreateManyArgs} args - Arguments to create many B_document_processing_tasks.
+     * @example
+     * // Create many B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends b_document_processing_tasksCreateManyArgs>(args?: SelectSubset<T, b_document_processing_tasksCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a B_document_processing_tasks.
+     * @param {b_document_processing_tasksDeleteArgs} args - Arguments to delete one B_document_processing_tasks.
+     * @example
+     * // Delete one B_document_processing_tasks
+     * const B_document_processing_tasks = await prisma.b_document_processing_tasks.delete({
+     *   where: {
+     *     // ... filter to delete one B_document_processing_tasks
+     *   }
+     * })
+     * 
+     */
+    delete<T extends b_document_processing_tasksDeleteArgs>(args: SelectSubset<T, b_document_processing_tasksDeleteArgs<ExtArgs>>): Prisma__b_document_processing_tasksClient<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one B_document_processing_tasks.
+     * @param {b_document_processing_tasksUpdateArgs} args - Arguments to update one B_document_processing_tasks.
+     * @example
+     * // Update one B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends b_document_processing_tasksUpdateArgs>(args: SelectSubset<T, b_document_processing_tasksUpdateArgs<ExtArgs>>): Prisma__b_document_processing_tasksClient<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more B_document_processing_tasks.
+     * @param {b_document_processing_tasksDeleteManyArgs} args - Arguments to filter B_document_processing_tasks to delete.
+     * @example
+     * // Delete a few B_document_processing_tasks
+     * const { count } = await prisma.b_document_processing_tasks.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends b_document_processing_tasksDeleteManyArgs>(args?: SelectSubset<T, b_document_processing_tasksDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more B_document_processing_tasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_processing_tasksUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends b_document_processing_tasksUpdateManyArgs>(args: SelectSubset<T, b_document_processing_tasksUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one B_document_processing_tasks.
+     * @param {b_document_processing_tasksUpsertArgs} args - Arguments to update or create a B_document_processing_tasks.
+     * @example
+     * // Update or create a B_document_processing_tasks
+     * const b_document_processing_tasks = await prisma.b_document_processing_tasks.upsert({
+     *   create: {
+     *     // ... data to create a B_document_processing_tasks
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the B_document_processing_tasks we want to update
+     *   }
+     * })
+     */
+    upsert<T extends b_document_processing_tasksUpsertArgs>(args: SelectSubset<T, b_document_processing_tasksUpsertArgs<ExtArgs>>): Prisma__b_document_processing_tasksClient<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of B_document_processing_tasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_processing_tasksCountArgs} args - Arguments to filter B_document_processing_tasks to count.
+     * @example
+     * // Count the number of B_document_processing_tasks
+     * const count = await prisma.b_document_processing_tasks.count({
+     *   where: {
+     *     // ... the filter for the B_document_processing_tasks we want to count
+     *   }
+     * })
+    **/
+    count<T extends b_document_processing_tasksCountArgs>(
+      args?: Subset<T, b_document_processing_tasksCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], B_document_processing_tasksCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a B_document_processing_tasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {B_document_processing_tasksAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends B_document_processing_tasksAggregateArgs>(args: Subset<T, B_document_processing_tasksAggregateArgs>): Prisma.PrismaPromise<GetB_document_processing_tasksAggregateType<T>>
+
+    /**
+     * Group by B_document_processing_tasks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_processing_tasksGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends b_document_processing_tasksGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: b_document_processing_tasksGroupByArgs['orderBy'] }
+        : { orderBy?: b_document_processing_tasksGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, b_document_processing_tasksGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetB_document_processing_tasksGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the b_document_processing_tasks model
+   */
+  readonly fields: b_document_processing_tasksFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for b_document_processing_tasks.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__b_document_processing_tasksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    b_documents<T extends b_documentsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_documentsDefaultArgs<ExtArgs>>): Prisma__b_documentsClient<$Result.GetResult<Prisma.$b_documentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the b_document_processing_tasks model
+   */
+  interface b_document_processing_tasksFieldRefs {
+    readonly id: FieldRef<"b_document_processing_tasks", 'BigInt'>
+    readonly document_id: FieldRef<"b_document_processing_tasks", 'BigInt'>
+    readonly processing_version: FieldRef<"b_document_processing_tasks", 'Int'>
+    readonly job_id: FieldRef<"b_document_processing_tasks", 'String'>
+    readonly stage: FieldRef<"b_document_processing_tasks", 'String'>
+    readonly status: FieldRef<"b_document_processing_tasks", 'String'>
+    readonly attempt: FieldRef<"b_document_processing_tasks", 'Int'>
+    readonly error_code: FieldRef<"b_document_processing_tasks", 'String'>
+    readonly error_message: FieldRef<"b_document_processing_tasks", 'String'>
+    readonly started_at: FieldRef<"b_document_processing_tasks", 'DateTime'>
+    readonly finished_at: FieldRef<"b_document_processing_tasks", 'DateTime'>
+    readonly duration_ms: FieldRef<"b_document_processing_tasks", 'Int'>
+    readonly heartbeat_at: FieldRef<"b_document_processing_tasks", 'DateTime'>
+    readonly created_at: FieldRef<"b_document_processing_tasks", 'DateTime'>
+    readonly updated_at: FieldRef<"b_document_processing_tasks", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * b_document_processing_tasks findUnique
+   */
+  export type b_document_processing_tasksFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_document_processing_tasks to fetch.
+     */
+    where: b_document_processing_tasksWhereUniqueInput
+  }
+
+  /**
+   * b_document_processing_tasks findUniqueOrThrow
+   */
+  export type b_document_processing_tasksFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_document_processing_tasks to fetch.
+     */
+    where: b_document_processing_tasksWhereUniqueInput
+  }
+
+  /**
+   * b_document_processing_tasks findFirst
+   */
+  export type b_document_processing_tasksFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_document_processing_tasks to fetch.
+     */
+    where?: b_document_processing_tasksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_document_processing_tasks to fetch.
+     */
+    orderBy?: b_document_processing_tasksOrderByWithRelationInput | b_document_processing_tasksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_document_processing_tasks.
+     */
+    cursor?: b_document_processing_tasksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_document_processing_tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_document_processing_tasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_document_processing_tasks.
+     */
+    distinct?: B_document_processing_tasksScalarFieldEnum | B_document_processing_tasksScalarFieldEnum[]
+  }
+
+  /**
+   * b_document_processing_tasks findFirstOrThrow
+   */
+  export type b_document_processing_tasksFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_document_processing_tasks to fetch.
+     */
+    where?: b_document_processing_tasksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_document_processing_tasks to fetch.
+     */
+    orderBy?: b_document_processing_tasksOrderByWithRelationInput | b_document_processing_tasksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_document_processing_tasks.
+     */
+    cursor?: b_document_processing_tasksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_document_processing_tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_document_processing_tasks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_document_processing_tasks.
+     */
+    distinct?: B_document_processing_tasksScalarFieldEnum | B_document_processing_tasksScalarFieldEnum[]
+  }
+
+  /**
+   * b_document_processing_tasks findMany
+   */
+  export type b_document_processing_tasksFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_document_processing_tasks to fetch.
+     */
+    where?: b_document_processing_tasksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_document_processing_tasks to fetch.
+     */
+    orderBy?: b_document_processing_tasksOrderByWithRelationInput | b_document_processing_tasksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing b_document_processing_tasks.
+     */
+    cursor?: b_document_processing_tasksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_document_processing_tasks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_document_processing_tasks.
+     */
+    skip?: number
+    distinct?: B_document_processing_tasksScalarFieldEnum | B_document_processing_tasksScalarFieldEnum[]
+  }
+
+  /**
+   * b_document_processing_tasks create
+   */
+  export type b_document_processing_tasksCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    /**
+     * The data needed to create a b_document_processing_tasks.
+     */
+    data: XOR<b_document_processing_tasksCreateInput, b_document_processing_tasksUncheckedCreateInput>
+  }
+
+  /**
+   * b_document_processing_tasks createMany
+   */
+  export type b_document_processing_tasksCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many b_document_processing_tasks.
+     */
+    data: b_document_processing_tasksCreateManyInput | b_document_processing_tasksCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * b_document_processing_tasks update
+   */
+  export type b_document_processing_tasksUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    /**
+     * The data needed to update a b_document_processing_tasks.
+     */
+    data: XOR<b_document_processing_tasksUpdateInput, b_document_processing_tasksUncheckedUpdateInput>
+    /**
+     * Choose, which b_document_processing_tasks to update.
+     */
+    where: b_document_processing_tasksWhereUniqueInput
+  }
+
+  /**
+   * b_document_processing_tasks updateMany
+   */
+  export type b_document_processing_tasksUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update b_document_processing_tasks.
+     */
+    data: XOR<b_document_processing_tasksUpdateManyMutationInput, b_document_processing_tasksUncheckedUpdateManyInput>
+    /**
+     * Filter which b_document_processing_tasks to update
+     */
+    where?: b_document_processing_tasksWhereInput
+    /**
+     * Limit how many b_document_processing_tasks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_document_processing_tasks upsert
+   */
+  export type b_document_processing_tasksUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    /**
+     * The filter to search for the b_document_processing_tasks to update in case it exists.
+     */
+    where: b_document_processing_tasksWhereUniqueInput
+    /**
+     * In case the b_document_processing_tasks found by the `where` argument doesn't exist, create a new b_document_processing_tasks with this data.
+     */
+    create: XOR<b_document_processing_tasksCreateInput, b_document_processing_tasksUncheckedCreateInput>
+    /**
+     * In case the b_document_processing_tasks was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<b_document_processing_tasksUpdateInput, b_document_processing_tasksUncheckedUpdateInput>
+  }
+
+  /**
+   * b_document_processing_tasks delete
+   */
+  export type b_document_processing_tasksDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
+    /**
+     * Filter which b_document_processing_tasks to delete.
+     */
+    where: b_document_processing_tasksWhereUniqueInput
+  }
+
+  /**
+   * b_document_processing_tasks deleteMany
+   */
+  export type b_document_processing_tasksDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_document_processing_tasks to delete
+     */
+    where?: b_document_processing_tasksWhereInput
+    /**
+     * Limit how many b_document_processing_tasks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_document_processing_tasks without action
+   */
+  export type b_document_processing_tasksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_processing_tasks
+     */
+    select?: b_document_processing_tasksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_processing_tasks
+     */
+    omit?: b_document_processing_tasksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_processing_tasksInclude<ExtArgs> | null
   }
 
 
@@ -22582,6 +23854,11 @@ export namespace Prisma {
     file_type: 'file_type',
     mime_type: 'mime_type',
     status: 'status',
+    processing_version: 'processing_version',
+    current_stage: 'current_stage',
+    last_error_stage: 'last_error_stage',
+    retry_count: 'retry_count',
+    last_error_code: 'last_error_code',
     error_msg: 'error_msg',
     token_count: 'token_count',
     parse_started_at: 'parse_started_at',
@@ -22651,6 +23928,27 @@ export namespace Prisma {
   };
 
   export type B_document_chunksScalarFieldEnum = (typeof B_document_chunksScalarFieldEnum)[keyof typeof B_document_chunksScalarFieldEnum]
+
+
+  export const B_document_processing_tasksScalarFieldEnum: {
+    id: 'id',
+    document_id: 'document_id',
+    processing_version: 'processing_version',
+    job_id: 'job_id',
+    stage: 'stage',
+    status: 'status',
+    attempt: 'attempt',
+    error_code: 'error_code',
+    error_message: 'error_message',
+    started_at: 'started_at',
+    finished_at: 'finished_at',
+    duration_ms: 'duration_ms',
+    heartbeat_at: 'heartbeat_at',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type B_document_processing_tasksScalarFieldEnum = (typeof B_document_processing_tasksScalarFieldEnum)[keyof typeof B_document_processing_tasksScalarFieldEnum]
 
 
   export const B_chat_sessionsScalarFieldEnum: {
@@ -22858,6 +24156,9 @@ export namespace Prisma {
     file_type: 'file_type',
     mime_type: 'mime_type',
     status: 'status',
+    current_stage: 'current_stage',
+    last_error_stage: 'last_error_stage',
+    last_error_code: 'last_error_code',
     error_msg: 'error_msg'
   };
 
@@ -22894,6 +24195,17 @@ export namespace Prisma {
   };
 
   export type b_document_chunksOrderByRelevanceFieldEnum = (typeof b_document_chunksOrderByRelevanceFieldEnum)[keyof typeof b_document_chunksOrderByRelevanceFieldEnum]
+
+
+  export const b_document_processing_tasksOrderByRelevanceFieldEnum: {
+    job_id: 'job_id',
+    stage: 'stage',
+    status: 'status',
+    error_code: 'error_code',
+    error_message: 'error_message'
+  };
+
+  export type b_document_processing_tasksOrderByRelevanceFieldEnum = (typeof b_document_processing_tasksOrderByRelevanceFieldEnum)[keyof typeof b_document_processing_tasksOrderByRelevanceFieldEnum]
 
 
   export const b_chat_sessionsOrderByRelevanceFieldEnum: {
@@ -23823,6 +25135,11 @@ export namespace Prisma {
     file_type?: StringNullableFilter<"b_documents"> | string | null
     mime_type?: StringNullableFilter<"b_documents"> | string | null
     status?: StringFilter<"b_documents"> | string
+    processing_version?: IntFilter<"b_documents"> | number
+    current_stage?: StringFilter<"b_documents"> | string
+    last_error_stage?: StringNullableFilter<"b_documents"> | string | null
+    retry_count?: IntFilter<"b_documents"> | number
+    last_error_code?: StringNullableFilter<"b_documents"> | string | null
     error_msg?: StringNullableFilter<"b_documents"> | string | null
     token_count?: IntNullableFilter<"b_documents"> | number | null
     parse_started_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
@@ -23831,6 +25148,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"b_documents"> | Date | string
     updated_at?: DateTimeFilter<"b_documents"> | Date | string
     document_chunks?: B_document_chunksListRelationFilter
+    processing_tasks?: B_document_processing_tasksListRelationFilter
     upload_sessions?: B_upload_sessionsListRelationFilter
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
     b_users?: XOR<B_usersNullableScalarRelationFilter, b_usersWhereInput> | null
@@ -23848,6 +25166,11 @@ export namespace Prisma {
     file_type?: SortOrderInput | SortOrder
     mime_type?: SortOrderInput | SortOrder
     status?: SortOrder
+    processing_version?: SortOrder
+    current_stage?: SortOrder
+    last_error_stage?: SortOrderInput | SortOrder
+    retry_count?: SortOrder
+    last_error_code?: SortOrderInput | SortOrder
     error_msg?: SortOrderInput | SortOrder
     token_count?: SortOrderInput | SortOrder
     parse_started_at?: SortOrderInput | SortOrder
@@ -23856,6 +25179,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     document_chunks?: b_document_chunksOrderByRelationAggregateInput
+    processing_tasks?: b_document_processing_tasksOrderByRelationAggregateInput
     upload_sessions?: b_upload_sessionsOrderByRelationAggregateInput
     b_knowledge_bases?: b_knowledge_basesOrderByWithRelationInput
     b_users?: b_usersOrderByWithRelationInput
@@ -23877,6 +25201,11 @@ export namespace Prisma {
     file_type?: StringNullableFilter<"b_documents"> | string | null
     mime_type?: StringNullableFilter<"b_documents"> | string | null
     status?: StringFilter<"b_documents"> | string
+    processing_version?: IntFilter<"b_documents"> | number
+    current_stage?: StringFilter<"b_documents"> | string
+    last_error_stage?: StringNullableFilter<"b_documents"> | string | null
+    retry_count?: IntFilter<"b_documents"> | number
+    last_error_code?: StringNullableFilter<"b_documents"> | string | null
     error_msg?: StringNullableFilter<"b_documents"> | string | null
     token_count?: IntNullableFilter<"b_documents"> | number | null
     parse_started_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
@@ -23885,6 +25214,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"b_documents"> | Date | string
     updated_at?: DateTimeFilter<"b_documents"> | Date | string
     document_chunks?: B_document_chunksListRelationFilter
+    processing_tasks?: B_document_processing_tasksListRelationFilter
     upload_sessions?: B_upload_sessionsListRelationFilter
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
     b_users?: XOR<B_usersNullableScalarRelationFilter, b_usersWhereInput> | null
@@ -23902,6 +25232,11 @@ export namespace Prisma {
     file_type?: SortOrderInput | SortOrder
     mime_type?: SortOrderInput | SortOrder
     status?: SortOrder
+    processing_version?: SortOrder
+    current_stage?: SortOrder
+    last_error_stage?: SortOrderInput | SortOrder
+    retry_count?: SortOrder
+    last_error_code?: SortOrderInput | SortOrder
     error_msg?: SortOrderInput | SortOrder
     token_count?: SortOrderInput | SortOrder
     parse_started_at?: SortOrderInput | SortOrder
@@ -23931,6 +25266,11 @@ export namespace Prisma {
     file_type?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
     mime_type?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
     status?: StringWithAggregatesFilter<"b_documents"> | string
+    processing_version?: IntWithAggregatesFilter<"b_documents"> | number
+    current_stage?: StringWithAggregatesFilter<"b_documents"> | string
+    last_error_stage?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
+    retry_count?: IntWithAggregatesFilter<"b_documents"> | number
+    last_error_code?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
     error_msg?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
     token_count?: IntNullableWithAggregatesFilter<"b_documents"> | number | null
     parse_started_at?: DateTimeNullableWithAggregatesFilter<"b_documents"> | Date | string | null
@@ -24252,6 +25592,115 @@ export namespace Prisma {
     metadata_json?: JsonNullableWithAggregatesFilter<"b_document_chunks">
     embedding_status?: StringWithAggregatesFilter<"b_document_chunks"> | string
     created_at?: DateTimeWithAggregatesFilter<"b_document_chunks"> | Date | string
+  }
+
+  export type b_document_processing_tasksWhereInput = {
+    AND?: b_document_processing_tasksWhereInput | b_document_processing_tasksWhereInput[]
+    OR?: b_document_processing_tasksWhereInput[]
+    NOT?: b_document_processing_tasksWhereInput | b_document_processing_tasksWhereInput[]
+    id?: BigIntFilter<"b_document_processing_tasks"> | bigint | number
+    document_id?: BigIntFilter<"b_document_processing_tasks"> | bigint | number
+    processing_version?: IntFilter<"b_document_processing_tasks"> | number
+    job_id?: StringNullableFilter<"b_document_processing_tasks"> | string | null
+    stage?: StringFilter<"b_document_processing_tasks"> | string
+    status?: StringFilter<"b_document_processing_tasks"> | string
+    attempt?: IntFilter<"b_document_processing_tasks"> | number
+    error_code?: StringNullableFilter<"b_document_processing_tasks"> | string | null
+    error_message?: StringNullableFilter<"b_document_processing_tasks"> | string | null
+    started_at?: DateTimeFilter<"b_document_processing_tasks"> | Date | string
+    finished_at?: DateTimeNullableFilter<"b_document_processing_tasks"> | Date | string | null
+    duration_ms?: IntNullableFilter<"b_document_processing_tasks"> | number | null
+    heartbeat_at?: DateTimeNullableFilter<"b_document_processing_tasks"> | Date | string | null
+    created_at?: DateTimeFilter<"b_document_processing_tasks"> | Date | string
+    updated_at?: DateTimeFilter<"b_document_processing_tasks"> | Date | string
+    b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
+  }
+
+  export type b_document_processing_tasksOrderByWithRelationInput = {
+    id?: SortOrder
+    document_id?: SortOrder
+    processing_version?: SortOrder
+    job_id?: SortOrderInput | SortOrder
+    stage?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    error_code?: SortOrderInput | SortOrder
+    error_message?: SortOrderInput | SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrderInput | SortOrder
+    duration_ms?: SortOrderInput | SortOrder
+    heartbeat_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    b_documents?: b_documentsOrderByWithRelationInput
+    _relevance?: b_document_processing_tasksOrderByRelevanceInput
+  }
+
+  export type b_document_processing_tasksWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    document_id_processing_version_stage_attempt?: b_document_processing_tasksDocument_idProcessing_versionStageAttemptCompoundUniqueInput
+    AND?: b_document_processing_tasksWhereInput | b_document_processing_tasksWhereInput[]
+    OR?: b_document_processing_tasksWhereInput[]
+    NOT?: b_document_processing_tasksWhereInput | b_document_processing_tasksWhereInput[]
+    document_id?: BigIntFilter<"b_document_processing_tasks"> | bigint | number
+    processing_version?: IntFilter<"b_document_processing_tasks"> | number
+    job_id?: StringNullableFilter<"b_document_processing_tasks"> | string | null
+    stage?: StringFilter<"b_document_processing_tasks"> | string
+    status?: StringFilter<"b_document_processing_tasks"> | string
+    attempt?: IntFilter<"b_document_processing_tasks"> | number
+    error_code?: StringNullableFilter<"b_document_processing_tasks"> | string | null
+    error_message?: StringNullableFilter<"b_document_processing_tasks"> | string | null
+    started_at?: DateTimeFilter<"b_document_processing_tasks"> | Date | string
+    finished_at?: DateTimeNullableFilter<"b_document_processing_tasks"> | Date | string | null
+    duration_ms?: IntNullableFilter<"b_document_processing_tasks"> | number | null
+    heartbeat_at?: DateTimeNullableFilter<"b_document_processing_tasks"> | Date | string | null
+    created_at?: DateTimeFilter<"b_document_processing_tasks"> | Date | string
+    updated_at?: DateTimeFilter<"b_document_processing_tasks"> | Date | string
+    b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
+  }, "id" | "document_id_processing_version_stage_attempt">
+
+  export type b_document_processing_tasksOrderByWithAggregationInput = {
+    id?: SortOrder
+    document_id?: SortOrder
+    processing_version?: SortOrder
+    job_id?: SortOrderInput | SortOrder
+    stage?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    error_code?: SortOrderInput | SortOrder
+    error_message?: SortOrderInput | SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrderInput | SortOrder
+    duration_ms?: SortOrderInput | SortOrder
+    heartbeat_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: b_document_processing_tasksCountOrderByAggregateInput
+    _avg?: b_document_processing_tasksAvgOrderByAggregateInput
+    _max?: b_document_processing_tasksMaxOrderByAggregateInput
+    _min?: b_document_processing_tasksMinOrderByAggregateInput
+    _sum?: b_document_processing_tasksSumOrderByAggregateInput
+  }
+
+  export type b_document_processing_tasksScalarWhereWithAggregatesInput = {
+    AND?: b_document_processing_tasksScalarWhereWithAggregatesInput | b_document_processing_tasksScalarWhereWithAggregatesInput[]
+    OR?: b_document_processing_tasksScalarWhereWithAggregatesInput[]
+    NOT?: b_document_processing_tasksScalarWhereWithAggregatesInput | b_document_processing_tasksScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"b_document_processing_tasks"> | bigint | number
+    document_id?: BigIntWithAggregatesFilter<"b_document_processing_tasks"> | bigint | number
+    processing_version?: IntWithAggregatesFilter<"b_document_processing_tasks"> | number
+    job_id?: StringNullableWithAggregatesFilter<"b_document_processing_tasks"> | string | null
+    stage?: StringWithAggregatesFilter<"b_document_processing_tasks"> | string
+    status?: StringWithAggregatesFilter<"b_document_processing_tasks"> | string
+    attempt?: IntWithAggregatesFilter<"b_document_processing_tasks"> | number
+    error_code?: StringNullableWithAggregatesFilter<"b_document_processing_tasks"> | string | null
+    error_message?: StringNullableWithAggregatesFilter<"b_document_processing_tasks"> | string | null
+    started_at?: DateTimeWithAggregatesFilter<"b_document_processing_tasks"> | Date | string
+    finished_at?: DateTimeNullableWithAggregatesFilter<"b_document_processing_tasks"> | Date | string | null
+    duration_ms?: IntNullableWithAggregatesFilter<"b_document_processing_tasks"> | number | null
+    heartbeat_at?: DateTimeNullableWithAggregatesFilter<"b_document_processing_tasks"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"b_document_processing_tasks"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"b_document_processing_tasks"> | Date | string
   }
 
   export type b_chat_sessionsWhereInput = {
@@ -25469,6 +26918,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -25477,6 +26931,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
@@ -25494,6 +26949,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -25502,6 +26962,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
@@ -25515,6 +26976,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25523,6 +26989,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
@@ -25540,6 +27007,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25548,6 +27020,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
@@ -25563,6 +27036,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -25582,6 +27060,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25603,6 +27086,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -25959,6 +27447,131 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_processing_tasksCreateInput = {
+    id?: bigint | number
+    processing_version: number
+    job_id?: string | null
+    stage: string
+    status?: string
+    attempt?: number
+    error_code?: string | null
+    error_message?: string | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+    duration_ms?: number | null
+    heartbeat_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    b_documents: b_documentsCreateNestedOneWithoutProcessing_tasksInput
+  }
+
+  export type b_document_processing_tasksUncheckedCreateInput = {
+    id?: bigint | number
+    document_id: bigint | number
+    processing_version: number
+    job_id?: string | null
+    stage: string
+    status?: string
+    attempt?: number
+    error_code?: string | null
+    error_message?: string | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+    duration_ms?: number | null
+    heartbeat_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_document_processing_tasksUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    processing_version?: IntFieldUpdateOperationsInput | number
+    job_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempt?: IntFieldUpdateOperationsInput | number
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_message?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    heartbeat_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_documents?: b_documentsUpdateOneRequiredWithoutProcessing_tasksNestedInput
+  }
+
+  export type b_document_processing_tasksUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    document_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    processing_version?: IntFieldUpdateOperationsInput | number
+    job_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempt?: IntFieldUpdateOperationsInput | number
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_message?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    heartbeat_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_processing_tasksCreateManyInput = {
+    id?: bigint | number
+    document_id: bigint | number
+    processing_version: number
+    job_id?: string | null
+    stage: string
+    status?: string
+    attempt?: number
+    error_code?: string | null
+    error_message?: string | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+    duration_ms?: number | null
+    heartbeat_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_document_processing_tasksUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    processing_version?: IntFieldUpdateOperationsInput | number
+    job_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempt?: IntFieldUpdateOperationsInput | number
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_message?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    heartbeat_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_processing_tasksUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    document_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    processing_version?: IntFieldUpdateOperationsInput | number
+    job_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempt?: IntFieldUpdateOperationsInput | number
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_message?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    heartbeat_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_chat_sessionsCreateInput = {
@@ -27228,12 +28841,22 @@ export namespace Prisma {
     none?: b_document_chunksWhereInput
   }
 
+  export type B_document_processing_tasksListRelationFilter = {
+    every?: b_document_processing_tasksWhereInput
+    some?: b_document_processing_tasksWhereInput
+    none?: b_document_processing_tasksWhereInput
+  }
+
   export type B_usersNullableScalarRelationFilter = {
     is?: b_usersWhereInput | null
     isNot?: b_usersWhereInput | null
   }
 
   export type b_document_chunksOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type b_document_processing_tasksOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -27255,6 +28878,11 @@ export namespace Prisma {
     file_type?: SortOrder
     mime_type?: SortOrder
     status?: SortOrder
+    processing_version?: SortOrder
+    current_stage?: SortOrder
+    last_error_stage?: SortOrder
+    retry_count?: SortOrder
+    last_error_code?: SortOrder
     error_msg?: SortOrder
     token_count?: SortOrder
     parse_started_at?: SortOrder
@@ -27269,6 +28897,8 @@ export namespace Prisma {
     kb_id?: SortOrder
     uploader_id?: SortOrder
     file_size?: SortOrder
+    processing_version?: SortOrder
+    retry_count?: SortOrder
     token_count?: SortOrder
   }
 
@@ -27284,6 +28914,11 @@ export namespace Prisma {
     file_type?: SortOrder
     mime_type?: SortOrder
     status?: SortOrder
+    processing_version?: SortOrder
+    current_stage?: SortOrder
+    last_error_stage?: SortOrder
+    retry_count?: SortOrder
+    last_error_code?: SortOrder
     error_msg?: SortOrder
     token_count?: SortOrder
     parse_started_at?: SortOrder
@@ -27305,6 +28940,11 @@ export namespace Prisma {
     file_type?: SortOrder
     mime_type?: SortOrder
     status?: SortOrder
+    processing_version?: SortOrder
+    current_stage?: SortOrder
+    last_error_stage?: SortOrder
+    retry_count?: SortOrder
+    last_error_code?: SortOrder
     error_msg?: SortOrder
     token_count?: SortOrder
     parse_started_at?: SortOrder
@@ -27319,6 +28959,8 @@ export namespace Prisma {
     kb_id?: SortOrder
     uploader_id?: SortOrder
     file_size?: SortOrder
+    processing_version?: SortOrder
+    retry_count?: SortOrder
     token_count?: SortOrder
   }
 
@@ -27588,6 +29230,89 @@ export namespace Prisma {
     page_no?: SortOrder
     char_start?: SortOrder
     char_end?: SortOrder
+  }
+
+  export type b_document_processing_tasksOrderByRelevanceInput = {
+    fields: b_document_processing_tasksOrderByRelevanceFieldEnum | b_document_processing_tasksOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type b_document_processing_tasksDocument_idProcessing_versionStageAttemptCompoundUniqueInput = {
+    document_id: bigint | number
+    processing_version: number
+    stage: string
+    attempt: number
+  }
+
+  export type b_document_processing_tasksCountOrderByAggregateInput = {
+    id?: SortOrder
+    document_id?: SortOrder
+    processing_version?: SortOrder
+    job_id?: SortOrder
+    stage?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    error_code?: SortOrder
+    error_message?: SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrder
+    duration_ms?: SortOrder
+    heartbeat_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_document_processing_tasksAvgOrderByAggregateInput = {
+    id?: SortOrder
+    document_id?: SortOrder
+    processing_version?: SortOrder
+    attempt?: SortOrder
+    duration_ms?: SortOrder
+  }
+
+  export type b_document_processing_tasksMaxOrderByAggregateInput = {
+    id?: SortOrder
+    document_id?: SortOrder
+    processing_version?: SortOrder
+    job_id?: SortOrder
+    stage?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    error_code?: SortOrder
+    error_message?: SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrder
+    duration_ms?: SortOrder
+    heartbeat_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_document_processing_tasksMinOrderByAggregateInput = {
+    id?: SortOrder
+    document_id?: SortOrder
+    processing_version?: SortOrder
+    job_id?: SortOrder
+    stage?: SortOrder
+    status?: SortOrder
+    attempt?: SortOrder
+    error_code?: SortOrder
+    error_message?: SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrder
+    duration_ms?: SortOrder
+    heartbeat_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_document_processing_tasksSumOrderByAggregateInput = {
+    id?: SortOrder
+    document_id?: SortOrder
+    processing_version?: SortOrder
+    attempt?: SortOrder
+    duration_ms?: SortOrder
   }
 
   export type B_chat_messagesListRelationFilter = {
@@ -28588,6 +30313,13 @@ export namespace Prisma {
     connect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
   }
 
+  export type b_document_processing_tasksCreateNestedManyWithoutB_documentsInput = {
+    create?: XOR<b_document_processing_tasksCreateWithoutB_documentsInput, b_document_processing_tasksUncheckedCreateWithoutB_documentsInput> | b_document_processing_tasksCreateWithoutB_documentsInput[] | b_document_processing_tasksUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_document_processing_tasksCreateOrConnectWithoutB_documentsInput | b_document_processing_tasksCreateOrConnectWithoutB_documentsInput[]
+    createMany?: b_document_processing_tasksCreateManyB_documentsInputEnvelope
+    connect?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
+  }
+
   export type b_upload_sessionsCreateNestedManyWithoutB_documentsInput = {
     create?: XOR<b_upload_sessionsCreateWithoutB_documentsInput, b_upload_sessionsUncheckedCreateWithoutB_documentsInput> | b_upload_sessionsCreateWithoutB_documentsInput[] | b_upload_sessionsUncheckedCreateWithoutB_documentsInput[]
     connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_documentsInput | b_upload_sessionsCreateOrConnectWithoutB_documentsInput[]
@@ -28612,6 +30344,13 @@ export namespace Prisma {
     connectOrCreate?: b_document_chunksCreateOrConnectWithoutB_documentsInput | b_document_chunksCreateOrConnectWithoutB_documentsInput[]
     createMany?: b_document_chunksCreateManyB_documentsInputEnvelope
     connect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+  }
+
+  export type b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput = {
+    create?: XOR<b_document_processing_tasksCreateWithoutB_documentsInput, b_document_processing_tasksUncheckedCreateWithoutB_documentsInput> | b_document_processing_tasksCreateWithoutB_documentsInput[] | b_document_processing_tasksUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_document_processing_tasksCreateOrConnectWithoutB_documentsInput | b_document_processing_tasksCreateOrConnectWithoutB_documentsInput[]
+    createMany?: b_document_processing_tasksCreateManyB_documentsInputEnvelope
+    connect?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
   }
 
   export type b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput = {
@@ -28641,6 +30380,20 @@ export namespace Prisma {
     update?: b_document_chunksUpdateWithWhereUniqueWithoutB_documentsInput | b_document_chunksUpdateWithWhereUniqueWithoutB_documentsInput[]
     updateMany?: b_document_chunksUpdateManyWithWhereWithoutB_documentsInput | b_document_chunksUpdateManyWithWhereWithoutB_documentsInput[]
     deleteMany?: b_document_chunksScalarWhereInput | b_document_chunksScalarWhereInput[]
+  }
+
+  export type b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput = {
+    create?: XOR<b_document_processing_tasksCreateWithoutB_documentsInput, b_document_processing_tasksUncheckedCreateWithoutB_documentsInput> | b_document_processing_tasksCreateWithoutB_documentsInput[] | b_document_processing_tasksUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_document_processing_tasksCreateOrConnectWithoutB_documentsInput | b_document_processing_tasksCreateOrConnectWithoutB_documentsInput[]
+    upsert?: b_document_processing_tasksUpsertWithWhereUniqueWithoutB_documentsInput | b_document_processing_tasksUpsertWithWhereUniqueWithoutB_documentsInput[]
+    createMany?: b_document_processing_tasksCreateManyB_documentsInputEnvelope
+    set?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
+    disconnect?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
+    delete?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
+    connect?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
+    update?: b_document_processing_tasksUpdateWithWhereUniqueWithoutB_documentsInput | b_document_processing_tasksUpdateWithWhereUniqueWithoutB_documentsInput[]
+    updateMany?: b_document_processing_tasksUpdateManyWithWhereWithoutB_documentsInput | b_document_processing_tasksUpdateManyWithWhereWithoutB_documentsInput[]
+    deleteMany?: b_document_processing_tasksScalarWhereInput | b_document_processing_tasksScalarWhereInput[]
   }
 
   export type b_upload_sessionsUpdateManyWithoutB_documentsNestedInput = {
@@ -28687,6 +30440,20 @@ export namespace Prisma {
     update?: b_document_chunksUpdateWithWhereUniqueWithoutB_documentsInput | b_document_chunksUpdateWithWhereUniqueWithoutB_documentsInput[]
     updateMany?: b_document_chunksUpdateManyWithWhereWithoutB_documentsInput | b_document_chunksUpdateManyWithWhereWithoutB_documentsInput[]
     deleteMany?: b_document_chunksScalarWhereInput | b_document_chunksScalarWhereInput[]
+  }
+
+  export type b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput = {
+    create?: XOR<b_document_processing_tasksCreateWithoutB_documentsInput, b_document_processing_tasksUncheckedCreateWithoutB_documentsInput> | b_document_processing_tasksCreateWithoutB_documentsInput[] | b_document_processing_tasksUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_document_processing_tasksCreateOrConnectWithoutB_documentsInput | b_document_processing_tasksCreateOrConnectWithoutB_documentsInput[]
+    upsert?: b_document_processing_tasksUpsertWithWhereUniqueWithoutB_documentsInput | b_document_processing_tasksUpsertWithWhereUniqueWithoutB_documentsInput[]
+    createMany?: b_document_processing_tasksCreateManyB_documentsInputEnvelope
+    set?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
+    disconnect?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
+    delete?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
+    connect?: b_document_processing_tasksWhereUniqueInput | b_document_processing_tasksWhereUniqueInput[]
+    update?: b_document_processing_tasksUpdateWithWhereUniqueWithoutB_documentsInput | b_document_processing_tasksUpdateWithWhereUniqueWithoutB_documentsInput[]
+    updateMany?: b_document_processing_tasksUpdateManyWithWhereWithoutB_documentsInput | b_document_processing_tasksUpdateManyWithWhereWithoutB_documentsInput[]
+    deleteMany?: b_document_processing_tasksScalarWhereInput | b_document_processing_tasksScalarWhereInput[]
   }
 
   export type b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput = {
@@ -28815,6 +30582,20 @@ export namespace Prisma {
     upsert?: b_documentsUpsertWithoutDocument_chunksInput
     connect?: b_documentsWhereUniqueInput
     update?: XOR<XOR<b_documentsUpdateToOneWithWhereWithoutDocument_chunksInput, b_documentsUpdateWithoutDocument_chunksInput>, b_documentsUncheckedUpdateWithoutDocument_chunksInput>
+  }
+
+  export type b_documentsCreateNestedOneWithoutProcessing_tasksInput = {
+    create?: XOR<b_documentsCreateWithoutProcessing_tasksInput, b_documentsUncheckedCreateWithoutProcessing_tasksInput>
+    connectOrCreate?: b_documentsCreateOrConnectWithoutProcessing_tasksInput
+    connect?: b_documentsWhereUniqueInput
+  }
+
+  export type b_documentsUpdateOneRequiredWithoutProcessing_tasksNestedInput = {
+    create?: XOR<b_documentsCreateWithoutProcessing_tasksInput, b_documentsUncheckedCreateWithoutProcessing_tasksInput>
+    connectOrCreate?: b_documentsCreateOrConnectWithoutProcessing_tasksInput
+    upsert?: b_documentsUpsertWithoutProcessing_tasksInput
+    connect?: b_documentsWhereUniqueInput
+    update?: XOR<XOR<b_documentsUpdateToOneWithWhereWithoutProcessing_tasksInput, b_documentsUpdateWithoutProcessing_tasksInput>, b_documentsUncheckedUpdateWithoutProcessing_tasksInput>
   }
 
   export type b_chat_messagesCreateNestedManyWithoutB_chat_sessionsInput = {
@@ -29289,6 +31070,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -29297,6 +31083,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
   }
@@ -29312,6 +31099,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -29320,6 +31112,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
@@ -29605,6 +31398,11 @@ export namespace Prisma {
     file_type?: StringNullableFilter<"b_documents"> | string | null
     mime_type?: StringNullableFilter<"b_documents"> | string | null
     status?: StringFilter<"b_documents"> | string
+    processing_version?: IntFilter<"b_documents"> | number
+    current_stage?: StringFilter<"b_documents"> | string
+    last_error_stage?: StringNullableFilter<"b_documents"> | string | null
+    retry_count?: IntFilter<"b_documents"> | number
+    last_error_code?: StringNullableFilter<"b_documents"> | string | null
     error_msg?: StringNullableFilter<"b_documents"> | string | null
     token_count?: IntNullableFilter<"b_documents"> | number | null
     parse_started_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
@@ -30137,6 +31935,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -30145,6 +31948,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
@@ -30160,6 +31964,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -30168,6 +31977,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
@@ -30859,6 +32669,50 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type b_document_processing_tasksCreateWithoutB_documentsInput = {
+    id?: bigint | number
+    processing_version: number
+    job_id?: string | null
+    stage: string
+    status?: string
+    attempt?: number
+    error_code?: string | null
+    error_message?: string | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+    duration_ms?: number | null
+    heartbeat_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_document_processing_tasksUncheckedCreateWithoutB_documentsInput = {
+    id?: bigint | number
+    processing_version: number
+    job_id?: string | null
+    stage: string
+    status?: string
+    attempt?: number
+    error_code?: string | null
+    error_message?: string | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+    duration_ms?: number | null
+    heartbeat_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_document_processing_tasksCreateOrConnectWithoutB_documentsInput = {
+    where: b_document_processing_tasksWhereUniqueInput
+    create: XOR<b_document_processing_tasksCreateWithoutB_documentsInput, b_document_processing_tasksUncheckedCreateWithoutB_documentsInput>
+  }
+
+  export type b_document_processing_tasksCreateManyB_documentsInputEnvelope = {
+    data: b_document_processing_tasksCreateManyB_documentsInput | b_document_processing_tasksCreateManyB_documentsInput[]
+    skipDuplicates?: boolean
+  }
+
   export type b_upload_sessionsCreateWithoutB_documentsInput = {
     id?: bigint | number
     file_name: string
@@ -31031,6 +32885,43 @@ export namespace Prisma {
     metadata_json?: JsonNullableFilter<"b_document_chunks">
     embedding_status?: StringFilter<"b_document_chunks"> | string
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
+  }
+
+  export type b_document_processing_tasksUpsertWithWhereUniqueWithoutB_documentsInput = {
+    where: b_document_processing_tasksWhereUniqueInput
+    update: XOR<b_document_processing_tasksUpdateWithoutB_documentsInput, b_document_processing_tasksUncheckedUpdateWithoutB_documentsInput>
+    create: XOR<b_document_processing_tasksCreateWithoutB_documentsInput, b_document_processing_tasksUncheckedCreateWithoutB_documentsInput>
+  }
+
+  export type b_document_processing_tasksUpdateWithWhereUniqueWithoutB_documentsInput = {
+    where: b_document_processing_tasksWhereUniqueInput
+    data: XOR<b_document_processing_tasksUpdateWithoutB_documentsInput, b_document_processing_tasksUncheckedUpdateWithoutB_documentsInput>
+  }
+
+  export type b_document_processing_tasksUpdateManyWithWhereWithoutB_documentsInput = {
+    where: b_document_processing_tasksScalarWhereInput
+    data: XOR<b_document_processing_tasksUpdateManyMutationInput, b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsInput>
+  }
+
+  export type b_document_processing_tasksScalarWhereInput = {
+    AND?: b_document_processing_tasksScalarWhereInput | b_document_processing_tasksScalarWhereInput[]
+    OR?: b_document_processing_tasksScalarWhereInput[]
+    NOT?: b_document_processing_tasksScalarWhereInput | b_document_processing_tasksScalarWhereInput[]
+    id?: BigIntFilter<"b_document_processing_tasks"> | bigint | number
+    document_id?: BigIntFilter<"b_document_processing_tasks"> | bigint | number
+    processing_version?: IntFilter<"b_document_processing_tasks"> | number
+    job_id?: StringNullableFilter<"b_document_processing_tasks"> | string | null
+    stage?: StringFilter<"b_document_processing_tasks"> | string
+    status?: StringFilter<"b_document_processing_tasks"> | string
+    attempt?: IntFilter<"b_document_processing_tasks"> | number
+    error_code?: StringNullableFilter<"b_document_processing_tasks"> | string | null
+    error_message?: StringNullableFilter<"b_document_processing_tasks"> | string | null
+    started_at?: DateTimeFilter<"b_document_processing_tasks"> | Date | string
+    finished_at?: DateTimeNullableFilter<"b_document_processing_tasks"> | Date | string | null
+    duration_ms?: IntNullableFilter<"b_document_processing_tasks"> | number | null
+    heartbeat_at?: DateTimeNullableFilter<"b_document_processing_tasks"> | Date | string | null
+    created_at?: DateTimeFilter<"b_document_processing_tasks"> | Date | string
+    updated_at?: DateTimeFilter<"b_document_processing_tasks"> | Date | string
   }
 
   export type b_upload_sessionsUpsertWithWhereUniqueWithoutB_documentsInput = {
@@ -31271,6 +33162,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -31279,6 +33175,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
@@ -31295,6 +33192,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -31303,6 +33205,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsCreateOrConnectWithoutUpload_sessionsInput = {
@@ -31458,6 +33361,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31466,6 +33374,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
@@ -31482,6 +33391,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31490,6 +33404,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_upload_sessionsCreateWithoutUpload_chunksInput = {
@@ -31610,6 +33525,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -31617,6 +33537,7 @@ export namespace Prisma {
     last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
+    processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
@@ -31634,6 +33555,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -31641,6 +33567,7 @@ export namespace Prisma {
     last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
+    processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
@@ -31670,6 +33597,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31677,6 +33609,7 @@ export namespace Prisma {
     last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
@@ -31694,6 +33627,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -31701,6 +33639,135 @@ export namespace Prisma {
     last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
+  }
+
+  export type b_documentsCreateWithoutProcessing_tasksInput = {
+    id?: bigint | number
+    title: string
+    original_filename?: string | null
+    file_path: string
+    file_hash?: string | null
+    file_size?: bigint | number | null
+    file_type?: string | null
+    mime_type?: string | null
+    status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
+    error_msg?: string | null
+    token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
+    b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
+  }
+
+  export type b_documentsUncheckedCreateWithoutProcessing_tasksInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    uploader_id?: bigint | number | null
+    title: string
+    original_filename?: string | null
+    file_path: string
+    file_hash?: string | null
+    file_size?: bigint | number | null
+    file_type?: string | null
+    mime_type?: string | null
+    status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
+    error_msg?: string | null
+    token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
+  }
+
+  export type b_documentsCreateOrConnectWithoutProcessing_tasksInput = {
+    where: b_documentsWhereUniqueInput
+    create: XOR<b_documentsCreateWithoutProcessing_tasksInput, b_documentsUncheckedCreateWithoutProcessing_tasksInput>
+  }
+
+  export type b_documentsUpsertWithoutProcessing_tasksInput = {
+    update: XOR<b_documentsUpdateWithoutProcessing_tasksInput, b_documentsUncheckedUpdateWithoutProcessing_tasksInput>
+    create: XOR<b_documentsCreateWithoutProcessing_tasksInput, b_documentsUncheckedCreateWithoutProcessing_tasksInput>
+    where?: b_documentsWhereInput
+  }
+
+  export type b_documentsUpdateToOneWithWhereWithoutProcessing_tasksInput = {
+    where?: b_documentsWhereInput
+    data: XOR<b_documentsUpdateWithoutProcessing_tasksInput, b_documentsUncheckedUpdateWithoutProcessing_tasksInput>
+  }
+
+  export type b_documentsUpdateWithoutProcessing_tasksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
+    file_path?: StringFieldUpdateOperationsInput | string
+    file_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_msg?: NullableStringFieldUpdateOperationsInput | string | null
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
+    b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
+  }
+
+  export type b_documentsUncheckedUpdateWithoutProcessing_tasksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    uploader_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
+    file_path?: StringFieldUpdateOperationsInput | string
+    file_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_msg?: NullableStringFieldUpdateOperationsInput | string | null
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
@@ -32020,6 +34087,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -32186,6 +34258,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32194,6 +34271,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
   }
@@ -32209,6 +34287,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32217,6 +34300,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
@@ -32231,6 +34315,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32497,6 +34586,11 @@ export namespace Prisma {
     file_type?: string | null
     mime_type?: string | null
     status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
     error_msg?: string | null
     token_count?: number | null
     parse_started_at?: Date | string | null
@@ -32558,6 +34652,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32566,6 +34665,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
@@ -32581,6 +34681,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32589,6 +34694,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
@@ -32603,6 +34709,11 @@ export namespace Prisma {
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
     mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
@@ -32754,6 +34865,23 @@ export namespace Prisma {
     created_at?: Date | string
   }
 
+  export type b_document_processing_tasksCreateManyB_documentsInput = {
+    id?: bigint | number
+    processing_version: number
+    job_id?: string | null
+    stage: string
+    status?: string
+    attempt?: number
+    error_code?: string | null
+    error_message?: string | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+    duration_ms?: number | null
+    heartbeat_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type b_upload_sessionsCreateManyB_documentsInput = {
     id?: bigint | number
     kb_id: bigint | number
@@ -32816,6 +34944,57 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_processing_tasksUpdateWithoutB_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    processing_version?: IntFieldUpdateOperationsInput | number
+    job_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempt?: IntFieldUpdateOperationsInput | number
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_message?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    heartbeat_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_processing_tasksUncheckedUpdateWithoutB_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    processing_version?: IntFieldUpdateOperationsInput | number
+    job_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempt?: IntFieldUpdateOperationsInput | number
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_message?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    heartbeat_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    processing_version?: IntFieldUpdateOperationsInput | number
+    job_id?: NullableStringFieldUpdateOperationsInput | string | null
+    stage?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    attempt?: IntFieldUpdateOperationsInput | number
+    error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_message?: NullableStringFieldUpdateOperationsInput | string | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    heartbeat_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_upload_sessionsUpdateWithoutB_documentsInput = {

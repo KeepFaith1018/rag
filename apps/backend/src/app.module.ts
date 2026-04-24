@@ -14,6 +14,8 @@ import { UserModule } from './modules/user/user.module';
 import { KnowledgeBaseModule } from './modules/knowledge-base/knowledge-base.module';
 import { DocumentModule } from './modules/document/document.module';
 import { UploadModule } from './modules/upload/upload.module';
+import { DocumentProcessingModule } from './modules/document-processing/document-processing.module';
+import { ScheduleModule } from '@nestjs/schedule';
 
 import { JwtModule } from '@nestjs/jwt';
 
@@ -40,10 +42,12 @@ import { JwtModule } from '@nestjs/jwt';
       inject: [ConfigService],
     }),
     PrismaModule,
+    ScheduleModule.forRoot(),
     WinstonModule.forRoot(winstonConfig),
     AuthModule,
     UserModule,
     KnowledgeBaseModule,
+    DocumentProcessingModule,
     DocumentModule,
     UploadModule,
   ],
