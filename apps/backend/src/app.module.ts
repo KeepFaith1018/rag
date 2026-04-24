@@ -11,6 +11,7 @@ import { LoggingInterceptor } from '@common/interceptors/logging.interceptor';
 import { AllExceptionsFilter } from '@common/filter/all-exceptions.filter';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
+import { KnowledgeBaseModule } from './modules/knowledge-base/knowledge-base.module';
 
 import { JwtModule } from '@nestjs/jwt';
 
@@ -40,6 +41,7 @@ import { JwtModule } from '@nestjs/jwt';
     WinstonModule.forRoot(winstonConfig),
     AuthModule,
     UserModule,
+    KnowledgeBaseModule,
   ],
   controllers: [AppController],
   providers: [

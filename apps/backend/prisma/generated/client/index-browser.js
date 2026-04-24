@@ -208,6 +208,8 @@ exports.Prisma.B_knowledge_basesScalarFieldEnum = {
   description: 'description',
   visibility: 'visibility',
   status: 'status',
+  is_public: 'is_public',
+  allow_public_download: 'allow_public_download',
   owner_id: 'owner_id',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -229,20 +231,29 @@ exports.Prisma.B_kb_invitationsScalarFieldEnum = {
   role: 'role',
   expired_at: 'expired_at',
   is_used: 'is_used',
+  cancelled_at: 'cancelled_at',
+  accepted_by: 'accepted_by',
+  accepted_at: 'accepted_at',
   created_at: 'created_at'
 };
 
 exports.Prisma.B_documentsScalarFieldEnum = {
   id: 'id',
   kb_id: 'kb_id',
+  uploader_id: 'uploader_id',
   title: 'title',
+  original_filename: 'original_filename',
   file_path: 'file_path',
   file_hash: 'file_hash',
   file_size: 'file_size',
   file_type: 'file_type',
+  mime_type: 'mime_type',
   status: 'status',
   error_msg: 'error_msg',
   token_count: 'token_count',
+  parse_started_at: 'parse_started_at',
+  parse_finished_at: 'parse_finished_at',
+  last_reparse_at: 'last_reparse_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -253,6 +264,11 @@ exports.Prisma.B_document_chunksScalarFieldEnum = {
   chunk_index: 'chunk_index',
   content: 'content',
   token_count: 'token_count',
+  page_no: 'page_no',
+  char_start: 'char_start',
+  char_end: 'char_end',
+  vector_id: 'vector_id',
+  metadata_json: 'metadata_json',
   embedding_status: 'embedding_status',
   created_at: 'created_at'
 };
@@ -396,15 +412,18 @@ exports.Prisma.b_kb_invitationsOrderByRelevanceFieldEnum = {
 
 exports.Prisma.b_documentsOrderByRelevanceFieldEnum = {
   title: 'title',
+  original_filename: 'original_filename',
   file_path: 'file_path',
   file_hash: 'file_hash',
   file_type: 'file_type',
+  mime_type: 'mime_type',
   status: 'status',
   error_msg: 'error_msg'
 };
 
 exports.Prisma.b_document_chunksOrderByRelevanceFieldEnum = {
   content: 'content',
+  vector_id: 'vector_id',
   embedding_status: 'embedding_status'
 };
 

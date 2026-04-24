@@ -2185,6 +2185,7 @@ export namespace Prisma {
     chat_sessions: number
     kb_members: number
     knowledge_bases: number
+    uploaded_documents: number
     model_configs: number
     kb_invitations: number
     user_sessions: number
@@ -2194,6 +2195,7 @@ export namespace Prisma {
     chat_sessions?: boolean | B_usersCountOutputTypeCountChat_sessionsArgs
     kb_members?: boolean | B_usersCountOutputTypeCountKb_membersArgs
     knowledge_bases?: boolean | B_usersCountOutputTypeCountKnowledge_basesArgs
+    uploaded_documents?: boolean | B_usersCountOutputTypeCountUploaded_documentsArgs
     model_configs?: boolean | B_usersCountOutputTypeCountModel_configsArgs
     kb_invitations?: boolean | B_usersCountOutputTypeCountKb_invitationsArgs
     user_sessions?: boolean | B_usersCountOutputTypeCountUser_sessionsArgs
@@ -2229,6 +2231,13 @@ export namespace Prisma {
    */
   export type B_usersCountOutputTypeCountKnowledge_basesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_knowledge_basesWhereInput
+  }
+
+  /**
+   * B_usersCountOutputType without action
+   */
+  export type B_usersCountOutputTypeCountUploaded_documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_documentsWhereInput
   }
 
   /**
@@ -2669,6 +2678,7 @@ export namespace Prisma {
     chat_sessions?: boolean | b_users$chat_sessionsArgs<ExtArgs>
     kb_members?: boolean | b_users$kb_membersArgs<ExtArgs>
     knowledge_bases?: boolean | b_users$knowledge_basesArgs<ExtArgs>
+    uploaded_documents?: boolean | b_users$uploaded_documentsArgs<ExtArgs>
     model_configs?: boolean | b_users$model_configsArgs<ExtArgs>
     kb_invitations?: boolean | b_users$kb_invitationsArgs<ExtArgs>
     user_sessions?: boolean | b_users$user_sessionsArgs<ExtArgs>
@@ -2696,6 +2706,7 @@ export namespace Prisma {
     chat_sessions?: boolean | b_users$chat_sessionsArgs<ExtArgs>
     kb_members?: boolean | b_users$kb_membersArgs<ExtArgs>
     knowledge_bases?: boolean | b_users$knowledge_basesArgs<ExtArgs>
+    uploaded_documents?: boolean | b_users$uploaded_documentsArgs<ExtArgs>
     model_configs?: boolean | b_users$model_configsArgs<ExtArgs>
     kb_invitations?: boolean | b_users$kb_invitationsArgs<ExtArgs>
     user_sessions?: boolean | b_users$user_sessionsArgs<ExtArgs>
@@ -2708,6 +2719,7 @@ export namespace Prisma {
       chat_sessions: Prisma.$b_chat_sessionsPayload<ExtArgs>[]
       kb_members: Prisma.$b_kb_membersPayload<ExtArgs>[]
       knowledge_bases: Prisma.$b_knowledge_basesPayload<ExtArgs>[]
+      uploaded_documents: Prisma.$b_documentsPayload<ExtArgs>[]
       model_configs: Prisma.$b_user_model_configsPayload<ExtArgs>[]
       kb_invitations: Prisma.$b_kb_invitationsPayload<ExtArgs>[]
       user_sessions: Prisma.$b_user_sessionsPayload<ExtArgs>[]
@@ -3067,6 +3079,7 @@ export namespace Prisma {
     chat_sessions<T extends b_users$chat_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$chat_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_chat_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     kb_members<T extends b_users$kb_membersArgs<ExtArgs> = {}>(args?: Subset<T, b_users$kb_membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_kb_membersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     knowledge_bases<T extends b_users$knowledge_basesArgs<ExtArgs> = {}>(args?: Subset<T, b_users$knowledge_basesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_knowledge_basesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    uploaded_documents<T extends b_users$uploaded_documentsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$uploaded_documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_documentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     model_configs<T extends b_users$model_configsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$model_configsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_user_model_configsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     kb_invitations<T extends b_users$kb_invitationsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$kb_invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_kb_invitationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     user_sessions<T extends b_users$user_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$user_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_user_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3522,6 +3535,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: B_knowledge_basesScalarFieldEnum | B_knowledge_basesScalarFieldEnum[]
+  }
+
+  /**
+   * b_users.uploaded_documents
+   */
+  export type b_users$uploaded_documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_documents
+     */
+    select?: b_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_documents
+     */
+    omit?: b_documentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_documentsInclude<ExtArgs> | null
+    where?: b_documentsWhereInput
+    orderBy?: b_documentsOrderByWithRelationInput | b_documentsOrderByWithRelationInput[]
+    cursor?: b_documentsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_documentsScalarFieldEnum | B_documentsScalarFieldEnum[]
   }
 
   /**
@@ -9613,6 +9650,8 @@ export namespace Prisma {
     description: string | null
     visibility: string | null
     status: string | null
+    is_public: boolean | null
+    allow_public_download: boolean | null
     owner_id: bigint | null
     created_at: Date | null
     updated_at: Date | null
@@ -9624,6 +9663,8 @@ export namespace Prisma {
     description: string | null
     visibility: string | null
     status: string | null
+    is_public: boolean | null
+    allow_public_download: boolean | null
     owner_id: bigint | null
     created_at: Date | null
     updated_at: Date | null
@@ -9635,6 +9676,8 @@ export namespace Prisma {
     description: number
     visibility: number
     status: number
+    is_public: number
+    allow_public_download: number
     owner_id: number
     created_at: number
     updated_at: number
@@ -9658,6 +9701,8 @@ export namespace Prisma {
     description?: true
     visibility?: true
     status?: true
+    is_public?: true
+    allow_public_download?: true
     owner_id?: true
     created_at?: true
     updated_at?: true
@@ -9669,6 +9714,8 @@ export namespace Prisma {
     description?: true
     visibility?: true
     status?: true
+    is_public?: true
+    allow_public_download?: true
     owner_id?: true
     created_at?: true
     updated_at?: true
@@ -9680,6 +9727,8 @@ export namespace Prisma {
     description?: true
     visibility?: true
     status?: true
+    is_public?: true
+    allow_public_download?: true
     owner_id?: true
     created_at?: true
     updated_at?: true
@@ -9778,6 +9827,8 @@ export namespace Prisma {
     description: string | null
     visibility: string
     status: string
+    is_public: boolean
+    allow_public_download: boolean
     owner_id: bigint
     created_at: Date
     updated_at: Date
@@ -9808,6 +9859,8 @@ export namespace Prisma {
     description?: boolean
     visibility?: boolean
     status?: boolean
+    is_public?: boolean
+    allow_public_download?: boolean
     owner_id?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -9826,12 +9879,14 @@ export namespace Prisma {
     description?: boolean
     visibility?: boolean
     status?: boolean
+    is_public?: boolean
+    allow_public_download?: boolean
     owner_id?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type b_knowledge_basesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "visibility" | "status" | "owner_id" | "created_at" | "updated_at", ExtArgs["result"]["b_knowledge_bases"]>
+  export type b_knowledge_basesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "visibility" | "status" | "is_public" | "allow_public_download" | "owner_id" | "created_at" | "updated_at", ExtArgs["result"]["b_knowledge_bases"]>
   export type b_knowledge_basesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | b_knowledge_bases$documentsArgs<ExtArgs>
     kb_members?: boolean | b_knowledge_bases$kb_membersArgs<ExtArgs>
@@ -9854,6 +9909,8 @@ export namespace Prisma {
       description: string | null
       visibility: string
       status: string
+      is_public: boolean
+      allow_public_download: boolean
       owner_id: bigint
       created_at: Date
       updated_at: Date
@@ -10235,6 +10292,8 @@ export namespace Prisma {
     readonly description: FieldRef<"b_knowledge_bases", 'String'>
     readonly visibility: FieldRef<"b_knowledge_bases", 'String'>
     readonly status: FieldRef<"b_knowledge_bases", 'String'>
+    readonly is_public: FieldRef<"b_knowledge_bases", 'Boolean'>
+    readonly allow_public_download: FieldRef<"b_knowledge_bases", 'Boolean'>
     readonly owner_id: FieldRef<"b_knowledge_bases", 'BigInt'>
     readonly created_at: FieldRef<"b_knowledge_bases", 'DateTime'>
     readonly updated_at: FieldRef<"b_knowledge_bases", 'DateTime'>
@@ -11662,12 +11721,14 @@ export namespace Prisma {
     id: number | null
     kb_id: number | null
     inviter_id: number | null
+    accepted_by: number | null
   }
 
   export type B_kb_invitationsSumAggregateOutputType = {
     id: bigint | null
     kb_id: bigint | null
     inviter_id: bigint | null
+    accepted_by: bigint | null
   }
 
   export type B_kb_invitationsMinAggregateOutputType = {
@@ -11678,6 +11739,9 @@ export namespace Prisma {
     role: string | null
     expired_at: Date | null
     is_used: boolean | null
+    cancelled_at: Date | null
+    accepted_by: bigint | null
+    accepted_at: Date | null
     created_at: Date | null
   }
 
@@ -11689,6 +11753,9 @@ export namespace Prisma {
     role: string | null
     expired_at: Date | null
     is_used: boolean | null
+    cancelled_at: Date | null
+    accepted_by: bigint | null
+    accepted_at: Date | null
     created_at: Date | null
   }
 
@@ -11700,6 +11767,9 @@ export namespace Prisma {
     role: number
     expired_at: number
     is_used: number
+    cancelled_at: number
+    accepted_by: number
+    accepted_at: number
     created_at: number
     _all: number
   }
@@ -11709,12 +11779,14 @@ export namespace Prisma {
     id?: true
     kb_id?: true
     inviter_id?: true
+    accepted_by?: true
   }
 
   export type B_kb_invitationsSumAggregateInputType = {
     id?: true
     kb_id?: true
     inviter_id?: true
+    accepted_by?: true
   }
 
   export type B_kb_invitationsMinAggregateInputType = {
@@ -11725,6 +11797,9 @@ export namespace Prisma {
     role?: true
     expired_at?: true
     is_used?: true
+    cancelled_at?: true
+    accepted_by?: true
+    accepted_at?: true
     created_at?: true
   }
 
@@ -11736,6 +11811,9 @@ export namespace Prisma {
     role?: true
     expired_at?: true
     is_used?: true
+    cancelled_at?: true
+    accepted_by?: true
+    accepted_at?: true
     created_at?: true
   }
 
@@ -11747,6 +11825,9 @@ export namespace Prisma {
     role?: true
     expired_at?: true
     is_used?: true
+    cancelled_at?: true
+    accepted_by?: true
+    accepted_at?: true
     created_at?: true
     _all?: true
   }
@@ -11845,6 +11926,9 @@ export namespace Prisma {
     role: string
     expired_at: Date
     is_used: boolean
+    cancelled_at: Date | null
+    accepted_by: bigint | null
+    accepted_at: Date | null
     created_at: Date
     _count: B_kb_invitationsCountAggregateOutputType | null
     _avg: B_kb_invitationsAvgAggregateOutputType | null
@@ -11875,6 +11959,9 @@ export namespace Prisma {
     role?: boolean
     expired_at?: boolean
     is_used?: boolean
+    cancelled_at?: boolean
+    accepted_by?: boolean
+    accepted_at?: boolean
     created_at?: boolean
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
@@ -11890,10 +11977,13 @@ export namespace Prisma {
     role?: boolean
     expired_at?: boolean
     is_used?: boolean
+    cancelled_at?: boolean
+    accepted_by?: boolean
+    accepted_at?: boolean
     created_at?: boolean
   }
 
-  export type b_kb_invitationsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kb_id" | "inviter_id" | "invite_code" | "role" | "expired_at" | "is_used" | "created_at", ExtArgs["result"]["b_kb_invitations"]>
+  export type b_kb_invitationsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kb_id" | "inviter_id" | "invite_code" | "role" | "expired_at" | "is_used" | "cancelled_at" | "accepted_by" | "accepted_at" | "created_at", ExtArgs["result"]["b_kb_invitations"]>
   export type b_kb_invitationsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
@@ -11913,6 +12003,9 @@ export namespace Prisma {
       role: string
       expired_at: Date
       is_used: boolean
+      cancelled_at: Date | null
+      accepted_by: bigint | null
+      accepted_at: Date | null
       created_at: Date
     }, ExtArgs["result"]["b_kb_invitations"]>
     composites: {}
@@ -12292,6 +12385,9 @@ export namespace Prisma {
     readonly role: FieldRef<"b_kb_invitations", 'String'>
     readonly expired_at: FieldRef<"b_kb_invitations", 'DateTime'>
     readonly is_used: FieldRef<"b_kb_invitations", 'Boolean'>
+    readonly cancelled_at: FieldRef<"b_kb_invitations", 'DateTime'>
+    readonly accepted_by: FieldRef<"b_kb_invitations", 'BigInt'>
+    readonly accepted_at: FieldRef<"b_kb_invitations", 'DateTime'>
     readonly created_at: FieldRef<"b_kb_invitations", 'DateTime'>
   }
     
@@ -12669,6 +12765,7 @@ export namespace Prisma {
   export type B_documentsAvgAggregateOutputType = {
     id: number | null
     kb_id: number | null
+    uploader_id: number | null
     file_size: number | null
     token_count: number | null
   }
@@ -12676,6 +12773,7 @@ export namespace Prisma {
   export type B_documentsSumAggregateOutputType = {
     id: bigint | null
     kb_id: bigint | null
+    uploader_id: bigint | null
     file_size: bigint | null
     token_count: number | null
   }
@@ -12683,14 +12781,20 @@ export namespace Prisma {
   export type B_documentsMinAggregateOutputType = {
     id: bigint | null
     kb_id: bigint | null
+    uploader_id: bigint | null
     title: string | null
+    original_filename: string | null
     file_path: string | null
     file_hash: string | null
     file_size: bigint | null
     file_type: string | null
+    mime_type: string | null
     status: string | null
     error_msg: string | null
     token_count: number | null
+    parse_started_at: Date | null
+    parse_finished_at: Date | null
+    last_reparse_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -12698,14 +12802,20 @@ export namespace Prisma {
   export type B_documentsMaxAggregateOutputType = {
     id: bigint | null
     kb_id: bigint | null
+    uploader_id: bigint | null
     title: string | null
+    original_filename: string | null
     file_path: string | null
     file_hash: string | null
     file_size: bigint | null
     file_type: string | null
+    mime_type: string | null
     status: string | null
     error_msg: string | null
     token_count: number | null
+    parse_started_at: Date | null
+    parse_finished_at: Date | null
+    last_reparse_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -12713,14 +12823,20 @@ export namespace Prisma {
   export type B_documentsCountAggregateOutputType = {
     id: number
     kb_id: number
+    uploader_id: number
     title: number
+    original_filename: number
     file_path: number
     file_hash: number
     file_size: number
     file_type: number
+    mime_type: number
     status: number
     error_msg: number
     token_count: number
+    parse_started_at: number
+    parse_finished_at: number
+    last_reparse_at: number
     created_at: number
     updated_at: number
     _all: number
@@ -12730,6 +12846,7 @@ export namespace Prisma {
   export type B_documentsAvgAggregateInputType = {
     id?: true
     kb_id?: true
+    uploader_id?: true
     file_size?: true
     token_count?: true
   }
@@ -12737,6 +12854,7 @@ export namespace Prisma {
   export type B_documentsSumAggregateInputType = {
     id?: true
     kb_id?: true
+    uploader_id?: true
     file_size?: true
     token_count?: true
   }
@@ -12744,14 +12862,20 @@ export namespace Prisma {
   export type B_documentsMinAggregateInputType = {
     id?: true
     kb_id?: true
+    uploader_id?: true
     title?: true
+    original_filename?: true
     file_path?: true
     file_hash?: true
     file_size?: true
     file_type?: true
+    mime_type?: true
     status?: true
     error_msg?: true
     token_count?: true
+    parse_started_at?: true
+    parse_finished_at?: true
+    last_reparse_at?: true
     created_at?: true
     updated_at?: true
   }
@@ -12759,14 +12883,20 @@ export namespace Prisma {
   export type B_documentsMaxAggregateInputType = {
     id?: true
     kb_id?: true
+    uploader_id?: true
     title?: true
+    original_filename?: true
     file_path?: true
     file_hash?: true
     file_size?: true
     file_type?: true
+    mime_type?: true
     status?: true
     error_msg?: true
     token_count?: true
+    parse_started_at?: true
+    parse_finished_at?: true
+    last_reparse_at?: true
     created_at?: true
     updated_at?: true
   }
@@ -12774,14 +12904,20 @@ export namespace Prisma {
   export type B_documentsCountAggregateInputType = {
     id?: true
     kb_id?: true
+    uploader_id?: true
     title?: true
+    original_filename?: true
     file_path?: true
     file_hash?: true
     file_size?: true
     file_type?: true
+    mime_type?: true
     status?: true
     error_msg?: true
     token_count?: true
+    parse_started_at?: true
+    parse_finished_at?: true
+    last_reparse_at?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -12876,14 +13012,20 @@ export namespace Prisma {
   export type B_documentsGroupByOutputType = {
     id: bigint
     kb_id: bigint
+    uploader_id: bigint | null
     title: string
+    original_filename: string | null
     file_path: string
     file_hash: string | null
     file_size: bigint | null
     file_type: string | null
+    mime_type: string | null
     status: string
     error_msg: string | null
     token_count: number | null
+    parse_started_at: Date | null
+    parse_finished_at: Date | null
+    last_reparse_at: Date | null
     created_at: Date
     updated_at: Date
     _count: B_documentsCountAggregateOutputType | null
@@ -12910,18 +13052,25 @@ export namespace Prisma {
   export type b_documentsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
     id?: boolean
     kb_id?: boolean
+    uploader_id?: boolean
     title?: boolean
+    original_filename?: boolean
     file_path?: boolean
     file_hash?: boolean
     file_size?: boolean
     file_type?: boolean
+    mime_type?: boolean
     status?: boolean
     error_msg?: boolean
     token_count?: boolean
+    parse_started_at?: boolean
+    parse_finished_at?: boolean
+    last_reparse_at?: boolean
     created_at?: boolean
     updated_at?: boolean
     document_chunks?: boolean | b_documents$document_chunksArgs<ExtArgs>
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
+    b_users?: boolean | b_documents$b_usersArgs<ExtArgs>
     _count?: boolean | B_documentsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_documents"]>
 
@@ -12930,22 +13079,29 @@ export namespace Prisma {
   export type b_documentsSelectScalar = {
     id?: boolean
     kb_id?: boolean
+    uploader_id?: boolean
     title?: boolean
+    original_filename?: boolean
     file_path?: boolean
     file_hash?: boolean
     file_size?: boolean
     file_type?: boolean
+    mime_type?: boolean
     status?: boolean
     error_msg?: boolean
     token_count?: boolean
+    parse_started_at?: boolean
+    parse_finished_at?: boolean
+    last_reparse_at?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type b_documentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kb_id" | "title" | "file_path" | "file_hash" | "file_size" | "file_type" | "status" | "error_msg" | "token_count" | "created_at" | "updated_at", ExtArgs["result"]["b_documents"]>
+  export type b_documentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kb_id" | "uploader_id" | "title" | "original_filename" | "file_path" | "file_hash" | "file_size" | "file_type" | "mime_type" | "status" | "error_msg" | "token_count" | "parse_started_at" | "parse_finished_at" | "last_reparse_at" | "created_at" | "updated_at", ExtArgs["result"]["b_documents"]>
   export type b_documentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     document_chunks?: boolean | b_documents$document_chunksArgs<ExtArgs>
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
+    b_users?: boolean | b_documents$b_usersArgs<ExtArgs>
     _count?: boolean | B_documentsCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -12954,18 +13110,25 @@ export namespace Prisma {
     objects: {
       document_chunks: Prisma.$b_document_chunksPayload<ExtArgs>[]
       b_knowledge_bases: Prisma.$b_knowledge_basesPayload<ExtArgs>
+      b_users: Prisma.$b_usersPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
       kb_id: bigint
+      uploader_id: bigint | null
       title: string
+      original_filename: string | null
       file_path: string
       file_hash: string | null
       file_size: bigint | null
       file_type: string | null
+      mime_type: string | null
       status: string
       error_msg: string | null
       token_count: number | null
+      parse_started_at: Date | null
+      parse_finished_at: Date | null
+      last_reparse_at: Date | null
       created_at: Date
       updated_at: Date
     }, ExtArgs["result"]["b_documents"]>
@@ -13310,6 +13473,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     document_chunks<T extends b_documents$document_chunksArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$document_chunksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_chunksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b_knowledge_bases<T extends b_knowledge_basesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_basesDefaultArgs<ExtArgs>>): Prisma__b_knowledge_basesClient<$Result.GetResult<Prisma.$b_knowledge_basesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    b_users<T extends b_documents$b_usersArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$b_usersArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -13341,14 +13505,20 @@ export namespace Prisma {
   interface b_documentsFieldRefs {
     readonly id: FieldRef<"b_documents", 'BigInt'>
     readonly kb_id: FieldRef<"b_documents", 'BigInt'>
+    readonly uploader_id: FieldRef<"b_documents", 'BigInt'>
     readonly title: FieldRef<"b_documents", 'String'>
+    readonly original_filename: FieldRef<"b_documents", 'String'>
     readonly file_path: FieldRef<"b_documents", 'String'>
     readonly file_hash: FieldRef<"b_documents", 'String'>
     readonly file_size: FieldRef<"b_documents", 'BigInt'>
     readonly file_type: FieldRef<"b_documents", 'String'>
+    readonly mime_type: FieldRef<"b_documents", 'String'>
     readonly status: FieldRef<"b_documents", 'String'>
     readonly error_msg: FieldRef<"b_documents", 'String'>
     readonly token_count: FieldRef<"b_documents", 'Int'>
+    readonly parse_started_at: FieldRef<"b_documents", 'DateTime'>
+    readonly parse_finished_at: FieldRef<"b_documents", 'DateTime'>
+    readonly last_reparse_at: FieldRef<"b_documents", 'DateTime'>
     readonly created_at: FieldRef<"b_documents", 'DateTime'>
     readonly updated_at: FieldRef<"b_documents", 'DateTime'>
   }
@@ -13718,6 +13888,25 @@ export namespace Prisma {
   }
 
   /**
+   * b_documents.b_users
+   */
+  export type b_documents$b_usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_users
+     */
+    select?: b_usersSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_users
+     */
+    omit?: b_usersOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_usersInclude<ExtArgs> | null
+    where?: b_usersWhereInput
+  }
+
+  /**
    * b_documents without action
    */
   export type b_documentsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13753,6 +13942,9 @@ export namespace Prisma {
     doc_id: number | null
     chunk_index: number | null
     token_count: number | null
+    page_no: number | null
+    char_start: number | null
+    char_end: number | null
   }
 
   export type B_document_chunksSumAggregateOutputType = {
@@ -13760,6 +13952,9 @@ export namespace Prisma {
     doc_id: bigint | null
     chunk_index: number | null
     token_count: number | null
+    page_no: number | null
+    char_start: number | null
+    char_end: number | null
   }
 
   export type B_document_chunksMinAggregateOutputType = {
@@ -13768,6 +13963,10 @@ export namespace Prisma {
     chunk_index: number | null
     content: string | null
     token_count: number | null
+    page_no: number | null
+    char_start: number | null
+    char_end: number | null
+    vector_id: string | null
     embedding_status: string | null
     created_at: Date | null
   }
@@ -13778,6 +13977,10 @@ export namespace Prisma {
     chunk_index: number | null
     content: string | null
     token_count: number | null
+    page_no: number | null
+    char_start: number | null
+    char_end: number | null
+    vector_id: string | null
     embedding_status: string | null
     created_at: Date | null
   }
@@ -13788,6 +13991,11 @@ export namespace Prisma {
     chunk_index: number
     content: number
     token_count: number
+    page_no: number
+    char_start: number
+    char_end: number
+    vector_id: number
+    metadata_json: number
     embedding_status: number
     created_at: number
     _all: number
@@ -13799,6 +14007,9 @@ export namespace Prisma {
     doc_id?: true
     chunk_index?: true
     token_count?: true
+    page_no?: true
+    char_start?: true
+    char_end?: true
   }
 
   export type B_document_chunksSumAggregateInputType = {
@@ -13806,6 +14017,9 @@ export namespace Prisma {
     doc_id?: true
     chunk_index?: true
     token_count?: true
+    page_no?: true
+    char_start?: true
+    char_end?: true
   }
 
   export type B_document_chunksMinAggregateInputType = {
@@ -13814,6 +14028,10 @@ export namespace Prisma {
     chunk_index?: true
     content?: true
     token_count?: true
+    page_no?: true
+    char_start?: true
+    char_end?: true
+    vector_id?: true
     embedding_status?: true
     created_at?: true
   }
@@ -13824,6 +14042,10 @@ export namespace Prisma {
     chunk_index?: true
     content?: true
     token_count?: true
+    page_no?: true
+    char_start?: true
+    char_end?: true
+    vector_id?: true
     embedding_status?: true
     created_at?: true
   }
@@ -13834,6 +14056,11 @@ export namespace Prisma {
     chunk_index?: true
     content?: true
     token_count?: true
+    page_no?: true
+    char_start?: true
+    char_end?: true
+    vector_id?: true
+    metadata_json?: true
     embedding_status?: true
     created_at?: true
     _all?: true
@@ -13931,6 +14158,11 @@ export namespace Prisma {
     chunk_index: number
     content: string
     token_count: number | null
+    page_no: number | null
+    char_start: number | null
+    char_end: number | null
+    vector_id: string | null
+    metadata_json: JsonValue | null
     embedding_status: string
     created_at: Date
     _count: B_document_chunksCountAggregateOutputType | null
@@ -13960,6 +14192,11 @@ export namespace Prisma {
     chunk_index?: boolean
     content?: boolean
     token_count?: boolean
+    page_no?: boolean
+    char_start?: boolean
+    char_end?: boolean
+    vector_id?: boolean
+    metadata_json?: boolean
     embedding_status?: boolean
     created_at?: boolean
     b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
@@ -13973,11 +14210,16 @@ export namespace Prisma {
     chunk_index?: boolean
     content?: boolean
     token_count?: boolean
+    page_no?: boolean
+    char_start?: boolean
+    char_end?: boolean
+    vector_id?: boolean
+    metadata_json?: boolean
     embedding_status?: boolean
     created_at?: boolean
   }
 
-  export type b_document_chunksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doc_id" | "chunk_index" | "content" | "token_count" | "embedding_status" | "created_at", ExtArgs["result"]["b_document_chunks"]>
+  export type b_document_chunksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doc_id" | "chunk_index" | "content" | "token_count" | "page_no" | "char_start" | "char_end" | "vector_id" | "metadata_json" | "embedding_status" | "created_at", ExtArgs["result"]["b_document_chunks"]>
   export type b_document_chunksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
   }
@@ -13993,6 +14235,11 @@ export namespace Prisma {
       chunk_index: number
       content: string
       token_count: number | null
+      page_no: number | null
+      char_start: number | null
+      char_end: number | null
+      vector_id: string | null
+      metadata_json: Prisma.JsonValue | null
       embedding_status: string
       created_at: Date
     }, ExtArgs["result"]["b_document_chunks"]>
@@ -14370,6 +14617,11 @@ export namespace Prisma {
     readonly chunk_index: FieldRef<"b_document_chunks", 'Int'>
     readonly content: FieldRef<"b_document_chunks", 'String'>
     readonly token_count: FieldRef<"b_document_chunks", 'Int'>
+    readonly page_no: FieldRef<"b_document_chunks", 'Int'>
+    readonly char_start: FieldRef<"b_document_chunks", 'Int'>
+    readonly char_end: FieldRef<"b_document_chunks", 'Int'>
+    readonly vector_id: FieldRef<"b_document_chunks", 'String'>
+    readonly metadata_json: FieldRef<"b_document_chunks", 'Json'>
     readonly embedding_status: FieldRef<"b_document_chunks", 'String'>
     readonly created_at: FieldRef<"b_document_chunks", 'DateTime'>
   }
@@ -19740,6 +19992,8 @@ export namespace Prisma {
     description: 'description',
     visibility: 'visibility',
     status: 'status',
+    is_public: 'is_public',
+    allow_public_download: 'allow_public_download',
     owner_id: 'owner_id',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -19767,6 +20021,9 @@ export namespace Prisma {
     role: 'role',
     expired_at: 'expired_at',
     is_used: 'is_used',
+    cancelled_at: 'cancelled_at',
+    accepted_by: 'accepted_by',
+    accepted_at: 'accepted_at',
     created_at: 'created_at'
   };
 
@@ -19776,14 +20033,20 @@ export namespace Prisma {
   export const B_documentsScalarFieldEnum: {
     id: 'id',
     kb_id: 'kb_id',
+    uploader_id: 'uploader_id',
     title: 'title',
+    original_filename: 'original_filename',
     file_path: 'file_path',
     file_hash: 'file_hash',
     file_size: 'file_size',
     file_type: 'file_type',
+    mime_type: 'mime_type',
     status: 'status',
     error_msg: 'error_msg',
     token_count: 'token_count',
+    parse_started_at: 'parse_started_at',
+    parse_finished_at: 'parse_finished_at',
+    last_reparse_at: 'last_reparse_at',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -19797,6 +20060,11 @@ export namespace Prisma {
     chunk_index: 'chunk_index',
     content: 'content',
     token_count: 'token_count',
+    page_no: 'page_no',
+    char_start: 'char_start',
+    char_end: 'char_end',
+    vector_id: 'vector_id',
+    metadata_json: 'metadata_json',
     embedding_status: 'embedding_status',
     created_at: 'created_at'
   };
@@ -20003,9 +20271,11 @@ export namespace Prisma {
 
   export const b_documentsOrderByRelevanceFieldEnum: {
     title: 'title',
+    original_filename: 'original_filename',
     file_path: 'file_path',
     file_hash: 'file_hash',
     file_type: 'file_type',
+    mime_type: 'mime_type',
     status: 'status',
     error_msg: 'error_msg'
   };
@@ -20015,6 +20285,7 @@ export namespace Prisma {
 
   export const b_document_chunksOrderByRelevanceFieldEnum: {
     content: 'content',
+    vector_id: 'vector_id',
     embedding_status: 'embedding_status'
   };
 
@@ -20149,6 +20420,7 @@ export namespace Prisma {
     chat_sessions?: B_chat_sessionsListRelationFilter
     kb_members?: B_kb_membersListRelationFilter
     knowledge_bases?: B_knowledge_basesListRelationFilter
+    uploaded_documents?: B_documentsListRelationFilter
     model_configs?: B_user_model_configsListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
     user_sessions?: B_user_sessionsListRelationFilter
@@ -20169,6 +20441,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsOrderByRelationAggregateInput
     kb_members?: b_kb_membersOrderByRelationAggregateInput
     knowledge_bases?: b_knowledge_basesOrderByRelationAggregateInput
+    uploaded_documents?: b_documentsOrderByRelationAggregateInput
     model_configs?: b_user_model_configsOrderByRelationAggregateInput
     kb_invitations?: b_kb_invitationsOrderByRelationAggregateInput
     user_sessions?: b_user_sessionsOrderByRelationAggregateInput
@@ -20193,6 +20466,7 @@ export namespace Prisma {
     chat_sessions?: B_chat_sessionsListRelationFilter
     kb_members?: B_kb_membersListRelationFilter
     knowledge_bases?: B_knowledge_basesListRelationFilter
+    uploaded_documents?: B_documentsListRelationFilter
     model_configs?: B_user_model_configsListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
     user_sessions?: B_user_sessionsListRelationFilter
@@ -20688,6 +20962,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"b_knowledge_bases"> | string | null
     visibility?: StringFilter<"b_knowledge_bases"> | string
     status?: StringFilter<"b_knowledge_bases"> | string
+    is_public?: BoolFilter<"b_knowledge_bases"> | boolean
+    allow_public_download?: BoolFilter<"b_knowledge_bases"> | boolean
     owner_id?: BigIntFilter<"b_knowledge_bases"> | bigint | number
     created_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
     updated_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
@@ -20703,6 +20979,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     visibility?: SortOrder
     status?: SortOrder
+    is_public?: SortOrder
+    allow_public_download?: SortOrder
     owner_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -20722,6 +21000,8 @@ export namespace Prisma {
     description?: StringNullableFilter<"b_knowledge_bases"> | string | null
     visibility?: StringFilter<"b_knowledge_bases"> | string
     status?: StringFilter<"b_knowledge_bases"> | string
+    is_public?: BoolFilter<"b_knowledge_bases"> | boolean
+    allow_public_download?: BoolFilter<"b_knowledge_bases"> | boolean
     owner_id?: BigIntFilter<"b_knowledge_bases"> | bigint | number
     created_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
     updated_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
@@ -20737,6 +21017,8 @@ export namespace Prisma {
     description?: SortOrderInput | SortOrder
     visibility?: SortOrder
     status?: SortOrder
+    is_public?: SortOrder
+    allow_public_download?: SortOrder
     owner_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -20756,6 +21038,8 @@ export namespace Prisma {
     description?: StringNullableWithAggregatesFilter<"b_knowledge_bases"> | string | null
     visibility?: StringWithAggregatesFilter<"b_knowledge_bases"> | string
     status?: StringWithAggregatesFilter<"b_knowledge_bases"> | string
+    is_public?: BoolWithAggregatesFilter<"b_knowledge_bases"> | boolean
+    allow_public_download?: BoolWithAggregatesFilter<"b_knowledge_bases"> | boolean
     owner_id?: BigIntWithAggregatesFilter<"b_knowledge_bases"> | bigint | number
     created_at?: DateTimeWithAggregatesFilter<"b_knowledge_bases"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"b_knowledge_bases"> | Date | string
@@ -20834,6 +21118,9 @@ export namespace Prisma {
     role?: StringFilter<"b_kb_invitations"> | string
     expired_at?: DateTimeFilter<"b_kb_invitations"> | Date | string
     is_used?: BoolFilter<"b_kb_invitations"> | boolean
+    cancelled_at?: DateTimeNullableFilter<"b_kb_invitations"> | Date | string | null
+    accepted_by?: BigIntNullableFilter<"b_kb_invitations"> | bigint | number | null
+    accepted_at?: DateTimeNullableFilter<"b_kb_invitations"> | Date | string | null
     created_at?: DateTimeFilter<"b_kb_invitations"> | Date | string
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
@@ -20847,6 +21134,9 @@ export namespace Prisma {
     role?: SortOrder
     expired_at?: SortOrder
     is_used?: SortOrder
+    cancelled_at?: SortOrderInput | SortOrder
+    accepted_by?: SortOrderInput | SortOrder
+    accepted_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
     b_knowledge_bases?: b_knowledge_basesOrderByWithRelationInput
     b_users?: b_usersOrderByWithRelationInput
@@ -20864,6 +21154,9 @@ export namespace Prisma {
     role?: StringFilter<"b_kb_invitations"> | string
     expired_at?: DateTimeFilter<"b_kb_invitations"> | Date | string
     is_used?: BoolFilter<"b_kb_invitations"> | boolean
+    cancelled_at?: DateTimeNullableFilter<"b_kb_invitations"> | Date | string | null
+    accepted_by?: BigIntNullableFilter<"b_kb_invitations"> | bigint | number | null
+    accepted_at?: DateTimeNullableFilter<"b_kb_invitations"> | Date | string | null
     created_at?: DateTimeFilter<"b_kb_invitations"> | Date | string
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
@@ -20877,6 +21170,9 @@ export namespace Prisma {
     role?: SortOrder
     expired_at?: SortOrder
     is_used?: SortOrder
+    cancelled_at?: SortOrderInput | SortOrder
+    accepted_by?: SortOrderInput | SortOrder
+    accepted_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
     _count?: b_kb_invitationsCountOrderByAggregateInput
     _avg?: b_kb_invitationsAvgOrderByAggregateInput
@@ -20896,6 +21192,9 @@ export namespace Prisma {
     role?: StringWithAggregatesFilter<"b_kb_invitations"> | string
     expired_at?: DateTimeWithAggregatesFilter<"b_kb_invitations"> | Date | string
     is_used?: BoolWithAggregatesFilter<"b_kb_invitations"> | boolean
+    cancelled_at?: DateTimeNullableWithAggregatesFilter<"b_kb_invitations"> | Date | string | null
+    accepted_by?: BigIntNullableWithAggregatesFilter<"b_kb_invitations"> | bigint | number | null
+    accepted_at?: DateTimeNullableWithAggregatesFilter<"b_kb_invitations"> | Date | string | null
     created_at?: DateTimeWithAggregatesFilter<"b_kb_invitations"> | Date | string
   }
 
@@ -20905,35 +21204,49 @@ export namespace Prisma {
     NOT?: b_documentsWhereInput | b_documentsWhereInput[]
     id?: BigIntFilter<"b_documents"> | bigint | number
     kb_id?: BigIntFilter<"b_documents"> | bigint | number
+    uploader_id?: BigIntNullableFilter<"b_documents"> | bigint | number | null
     title?: StringFilter<"b_documents"> | string
+    original_filename?: StringNullableFilter<"b_documents"> | string | null
     file_path?: StringFilter<"b_documents"> | string
     file_hash?: StringNullableFilter<"b_documents"> | string | null
     file_size?: BigIntNullableFilter<"b_documents"> | bigint | number | null
     file_type?: StringNullableFilter<"b_documents"> | string | null
+    mime_type?: StringNullableFilter<"b_documents"> | string | null
     status?: StringFilter<"b_documents"> | string
     error_msg?: StringNullableFilter<"b_documents"> | string | null
     token_count?: IntNullableFilter<"b_documents"> | number | null
+    parse_started_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
+    parse_finished_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
+    last_reparse_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
     created_at?: DateTimeFilter<"b_documents"> | Date | string
     updated_at?: DateTimeFilter<"b_documents"> | Date | string
     document_chunks?: B_document_chunksListRelationFilter
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
+    b_users?: XOR<B_usersNullableScalarRelationFilter, b_usersWhereInput> | null
   }
 
   export type b_documentsOrderByWithRelationInput = {
     id?: SortOrder
     kb_id?: SortOrder
+    uploader_id?: SortOrderInput | SortOrder
     title?: SortOrder
+    original_filename?: SortOrderInput | SortOrder
     file_path?: SortOrder
     file_hash?: SortOrderInput | SortOrder
     file_size?: SortOrderInput | SortOrder
     file_type?: SortOrderInput | SortOrder
+    mime_type?: SortOrderInput | SortOrder
     status?: SortOrder
     error_msg?: SortOrderInput | SortOrder
     token_count?: SortOrderInput | SortOrder
+    parse_started_at?: SortOrderInput | SortOrder
+    parse_finished_at?: SortOrderInput | SortOrder
+    last_reparse_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     document_chunks?: b_document_chunksOrderByRelationAggregateInput
     b_knowledge_bases?: b_knowledge_basesOrderByWithRelationInput
+    b_users?: b_usersOrderByWithRelationInput
     _relevance?: b_documentsOrderByRelevanceInput
   }
 
@@ -20943,31 +21256,44 @@ export namespace Prisma {
     OR?: b_documentsWhereInput[]
     NOT?: b_documentsWhereInput | b_documentsWhereInput[]
     kb_id?: BigIntFilter<"b_documents"> | bigint | number
+    uploader_id?: BigIntNullableFilter<"b_documents"> | bigint | number | null
     title?: StringFilter<"b_documents"> | string
+    original_filename?: StringNullableFilter<"b_documents"> | string | null
     file_path?: StringFilter<"b_documents"> | string
     file_hash?: StringNullableFilter<"b_documents"> | string | null
     file_size?: BigIntNullableFilter<"b_documents"> | bigint | number | null
     file_type?: StringNullableFilter<"b_documents"> | string | null
+    mime_type?: StringNullableFilter<"b_documents"> | string | null
     status?: StringFilter<"b_documents"> | string
     error_msg?: StringNullableFilter<"b_documents"> | string | null
     token_count?: IntNullableFilter<"b_documents"> | number | null
+    parse_started_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
+    parse_finished_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
+    last_reparse_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
     created_at?: DateTimeFilter<"b_documents"> | Date | string
     updated_at?: DateTimeFilter<"b_documents"> | Date | string
     document_chunks?: B_document_chunksListRelationFilter
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
+    b_users?: XOR<B_usersNullableScalarRelationFilter, b_usersWhereInput> | null
   }, "id">
 
   export type b_documentsOrderByWithAggregationInput = {
     id?: SortOrder
     kb_id?: SortOrder
+    uploader_id?: SortOrderInput | SortOrder
     title?: SortOrder
+    original_filename?: SortOrderInput | SortOrder
     file_path?: SortOrder
     file_hash?: SortOrderInput | SortOrder
     file_size?: SortOrderInput | SortOrder
     file_type?: SortOrderInput | SortOrder
+    mime_type?: SortOrderInput | SortOrder
     status?: SortOrder
     error_msg?: SortOrderInput | SortOrder
     token_count?: SortOrderInput | SortOrder
+    parse_started_at?: SortOrderInput | SortOrder
+    parse_finished_at?: SortOrderInput | SortOrder
+    last_reparse_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: b_documentsCountOrderByAggregateInput
@@ -20983,14 +21309,20 @@ export namespace Prisma {
     NOT?: b_documentsScalarWhereWithAggregatesInput | b_documentsScalarWhereWithAggregatesInput[]
     id?: BigIntWithAggregatesFilter<"b_documents"> | bigint | number
     kb_id?: BigIntWithAggregatesFilter<"b_documents"> | bigint | number
+    uploader_id?: BigIntNullableWithAggregatesFilter<"b_documents"> | bigint | number | null
     title?: StringWithAggregatesFilter<"b_documents"> | string
+    original_filename?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
     file_path?: StringWithAggregatesFilter<"b_documents"> | string
     file_hash?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
     file_size?: BigIntNullableWithAggregatesFilter<"b_documents"> | bigint | number | null
     file_type?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
+    mime_type?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
     status?: StringWithAggregatesFilter<"b_documents"> | string
     error_msg?: StringNullableWithAggregatesFilter<"b_documents"> | string | null
     token_count?: IntNullableWithAggregatesFilter<"b_documents"> | number | null
+    parse_started_at?: DateTimeNullableWithAggregatesFilter<"b_documents"> | Date | string | null
+    parse_finished_at?: DateTimeNullableWithAggregatesFilter<"b_documents"> | Date | string | null
+    last_reparse_at?: DateTimeNullableWithAggregatesFilter<"b_documents"> | Date | string | null
     created_at?: DateTimeWithAggregatesFilter<"b_documents"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"b_documents"> | Date | string
   }
@@ -21004,6 +21336,11 @@ export namespace Prisma {
     chunk_index?: IntFilter<"b_document_chunks"> | number
     content?: StringFilter<"b_document_chunks"> | string
     token_count?: IntNullableFilter<"b_document_chunks"> | number | null
+    page_no?: IntNullableFilter<"b_document_chunks"> | number | null
+    char_start?: IntNullableFilter<"b_document_chunks"> | number | null
+    char_end?: IntNullableFilter<"b_document_chunks"> | number | null
+    vector_id?: StringNullableFilter<"b_document_chunks"> | string | null
+    metadata_json?: JsonNullableFilter<"b_document_chunks">
     embedding_status?: StringFilter<"b_document_chunks"> | string
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
     b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
@@ -21015,6 +21352,11 @@ export namespace Prisma {
     chunk_index?: SortOrder
     content?: SortOrder
     token_count?: SortOrderInput | SortOrder
+    page_no?: SortOrderInput | SortOrder
+    char_start?: SortOrderInput | SortOrder
+    char_end?: SortOrderInput | SortOrder
+    vector_id?: SortOrderInput | SortOrder
+    metadata_json?: SortOrderInput | SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
     b_documents?: b_documentsOrderByWithRelationInput
@@ -21030,6 +21372,11 @@ export namespace Prisma {
     chunk_index?: IntFilter<"b_document_chunks"> | number
     content?: StringFilter<"b_document_chunks"> | string
     token_count?: IntNullableFilter<"b_document_chunks"> | number | null
+    page_no?: IntNullableFilter<"b_document_chunks"> | number | null
+    char_start?: IntNullableFilter<"b_document_chunks"> | number | null
+    char_end?: IntNullableFilter<"b_document_chunks"> | number | null
+    vector_id?: StringNullableFilter<"b_document_chunks"> | string | null
+    metadata_json?: JsonNullableFilter<"b_document_chunks">
     embedding_status?: StringFilter<"b_document_chunks"> | string
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
     b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
@@ -21041,6 +21388,11 @@ export namespace Prisma {
     chunk_index?: SortOrder
     content?: SortOrder
     token_count?: SortOrderInput | SortOrder
+    page_no?: SortOrderInput | SortOrder
+    char_start?: SortOrderInput | SortOrder
+    char_end?: SortOrderInput | SortOrder
+    vector_id?: SortOrderInput | SortOrder
+    metadata_json?: SortOrderInput | SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
     _count?: b_document_chunksCountOrderByAggregateInput
@@ -21059,6 +21411,11 @@ export namespace Prisma {
     chunk_index?: IntWithAggregatesFilter<"b_document_chunks"> | number
     content?: StringWithAggregatesFilter<"b_document_chunks"> | string
     token_count?: IntNullableWithAggregatesFilter<"b_document_chunks"> | number | null
+    page_no?: IntNullableWithAggregatesFilter<"b_document_chunks"> | number | null
+    char_start?: IntNullableWithAggregatesFilter<"b_document_chunks"> | number | null
+    char_end?: IntNullableWithAggregatesFilter<"b_document_chunks"> | number | null
+    vector_id?: StringNullableWithAggregatesFilter<"b_document_chunks"> | string | null
+    metadata_json?: JsonNullableWithAggregatesFilter<"b_document_chunks">
     embedding_status?: StringWithAggregatesFilter<"b_document_chunks"> | string
     created_at?: DateTimeWithAggregatesFilter<"b_document_chunks"> | Date | string
   }
@@ -21416,6 +21773,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
@@ -21436,6 +21794,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -21456,6 +21815,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
@@ -21476,6 +21836,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -22010,6 +22371,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
@@ -22024,6 +22387,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     owner_id: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
@@ -22038,6 +22403,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
@@ -22052,6 +22419,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     owner_id?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22066,6 +22435,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     owner_id: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
@@ -22077,6 +22448,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22087,6 +22460,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     owner_id?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -22152,6 +22527,9 @@ export namespace Prisma {
     role?: string
     expired_at: Date | string
     is_used?: boolean
+    cancelled_at?: Date | string | null
+    accepted_by?: bigint | number | null
+    accepted_at?: Date | string | null
     created_at?: Date | string
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutKb_invitationsInput
     b_users: b_usersCreateNestedOneWithoutKb_invitationsInput
@@ -22165,6 +22543,9 @@ export namespace Prisma {
     role?: string
     expired_at: Date | string
     is_used?: boolean
+    cancelled_at?: Date | string | null
+    accepted_by?: bigint | number | null
+    accepted_at?: Date | string | null
     created_at?: Date | string
   }
 
@@ -22174,6 +22555,9 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutKb_invitationsNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKb_invitationsNestedInput
@@ -22187,6 +22571,9 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22198,6 +22585,9 @@ export namespace Prisma {
     role?: string
     expired_at: Date | string
     is_used?: boolean
+    cancelled_at?: Date | string | null
+    accepted_by?: bigint | number | null
+    accepted_at?: Date | string | null
     created_at?: Date | string
   }
 
@@ -22207,6 +22597,9 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22218,36 +22611,51 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_documentsCreateInput = {
     id?: bigint | number
     title: string
+    original_filename?: string | null
     file_path: string
     file_hash?: string | null
     file_size?: bigint | number | null
     file_type?: string | null
+    mime_type?: string | null
     status?: string
     error_msg?: string | null
     token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
+    b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
 
   export type b_documentsUncheckedCreateInput = {
     id?: bigint | number
     kb_id: bigint | number
+    uploader_id?: bigint | number | null
     title: string
+    original_filename?: string | null
     file_path: string
     file_hash?: string | null
     file_size?: bigint | number | null
     file_type?: string | null
+    mime_type?: string | null
     status?: string
     error_msg?: string | null
     token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
@@ -22256,30 +22664,42 @@ export namespace Prisma {
   export type b_documentsUpdateInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
     file_path?: StringFieldUpdateOperationsInput | string
     file_hash?: NullableStringFieldUpdateOperationsInput | string | null
     file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
+    b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
 
   export type b_documentsUncheckedUpdateInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    uploader_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
     file_path?: StringFieldUpdateOperationsInput | string
     file_hash?: NullableStringFieldUpdateOperationsInput | string | null
     file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
@@ -22288,14 +22708,20 @@ export namespace Prisma {
   export type b_documentsCreateManyInput = {
     id?: bigint | number
     kb_id: bigint | number
+    uploader_id?: bigint | number | null
     title: string
+    original_filename?: string | null
     file_path: string
     file_hash?: string | null
     file_size?: bigint | number | null
     file_type?: string | null
+    mime_type?: string | null
     status?: string
     error_msg?: string | null
     token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -22303,13 +22729,18 @@ export namespace Prisma {
   export type b_documentsUpdateManyMutationInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
     file_path?: StringFieldUpdateOperationsInput | string
     file_hash?: NullableStringFieldUpdateOperationsInput | string | null
     file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22317,14 +22748,20 @@ export namespace Prisma {
   export type b_documentsUncheckedUpdateManyInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    uploader_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
     file_path?: StringFieldUpdateOperationsInput | string
     file_hash?: NullableStringFieldUpdateOperationsInput | string | null
     file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22334,6 +22771,11 @@ export namespace Prisma {
     chunk_index: number
     content: string
     token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
     b_documents: b_documentsCreateNestedOneWithoutDocument_chunksInput
@@ -22345,6 +22787,11 @@ export namespace Prisma {
     chunk_index: number
     content: string
     token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
   }
@@ -22354,6 +22801,11 @@ export namespace Prisma {
     chunk_index?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     b_documents?: b_documentsUpdateOneRequiredWithoutDocument_chunksNestedInput
@@ -22365,6 +22817,11 @@ export namespace Prisma {
     chunk_index?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22375,6 +22832,11 @@ export namespace Prisma {
     chunk_index: number
     content: string
     token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
   }
@@ -22384,6 +22846,11 @@ export namespace Prisma {
     chunk_index?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22394,6 +22861,11 @@ export namespace Prisma {
     chunk_index?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -22835,6 +23307,12 @@ export namespace Prisma {
     none?: b_knowledge_basesWhereInput
   }
 
+  export type B_documentsListRelationFilter = {
+    every?: b_documentsWhereInput
+    some?: b_documentsWhereInput
+    none?: b_documentsWhereInput
+  }
+
   export type B_user_model_configsListRelationFilter = {
     every?: b_user_model_configsWhereInput
     some?: b_user_model_configsWhereInput
@@ -22867,6 +23345,10 @@ export namespace Prisma {
   }
 
   export type b_knowledge_basesOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type b_documentsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -23407,16 +23889,6 @@ export namespace Prisma {
     user_id?: SortOrder
   }
 
-  export type B_documentsListRelationFilter = {
-    every?: b_documentsWhereInput
-    some?: b_documentsWhereInput
-    none?: b_documentsWhereInput
-  }
-
-  export type b_documentsOrderByRelationAggregateInput = {
-    _count?: SortOrder
-  }
-
   export type b_knowledge_basesOrderByRelevanceInput = {
     fields: b_knowledge_basesOrderByRelevanceFieldEnum | b_knowledge_basesOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -23429,6 +23901,8 @@ export namespace Prisma {
     description?: SortOrder
     visibility?: SortOrder
     status?: SortOrder
+    is_public?: SortOrder
+    allow_public_download?: SortOrder
     owner_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -23445,6 +23919,8 @@ export namespace Prisma {
     description?: SortOrder
     visibility?: SortOrder
     status?: SortOrder
+    is_public?: SortOrder
+    allow_public_download?: SortOrder
     owner_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -23456,6 +23932,8 @@ export namespace Prisma {
     description?: SortOrder
     visibility?: SortOrder
     status?: SortOrder
+    is_public?: SortOrder
+    allow_public_download?: SortOrder
     owner_id?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -23518,6 +23996,28 @@ export namespace Prisma {
     user_id?: SortOrder
   }
 
+  export type DateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
+  export type BigIntNullableFilter<$PrismaModel = never> = {
+    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
+    in?: bigint[] | number[] | null
+    notIn?: bigint[] | number[] | null
+    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
+    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
   export type b_kb_invitationsOrderByRelevanceInput = {
     fields: b_kb_invitationsOrderByRelevanceFieldEnum | b_kb_invitationsOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -23532,6 +24032,9 @@ export namespace Prisma {
     role?: SortOrder
     expired_at?: SortOrder
     is_used?: SortOrder
+    cancelled_at?: SortOrder
+    accepted_by?: SortOrder
+    accepted_at?: SortOrder
     created_at?: SortOrder
   }
 
@@ -23539,6 +24042,7 @@ export namespace Prisma {
     id?: SortOrder
     kb_id?: SortOrder
     inviter_id?: SortOrder
+    accepted_by?: SortOrder
   }
 
   export type b_kb_invitationsMaxOrderByAggregateInput = {
@@ -23549,6 +24053,9 @@ export namespace Prisma {
     role?: SortOrder
     expired_at?: SortOrder
     is_used?: SortOrder
+    cancelled_at?: SortOrder
+    accepted_by?: SortOrder
+    accepted_at?: SortOrder
     created_at?: SortOrder
   }
 
@@ -23560,6 +24067,9 @@ export namespace Prisma {
     role?: SortOrder
     expired_at?: SortOrder
     is_used?: SortOrder
+    cancelled_at?: SortOrder
+    accepted_by?: SortOrder
+    accepted_at?: SortOrder
     created_at?: SortOrder
   }
 
@@ -23567,9 +24077,24 @@ export namespace Prisma {
     id?: SortOrder
     kb_id?: SortOrder
     inviter_id?: SortOrder
+    accepted_by?: SortOrder
   }
 
-  export type BigIntNullableFilter<$PrismaModel = never> = {
+  export type DateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
+  }
+
+  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
     in?: bigint[] | number[] | null
     notIn?: bigint[] | number[] | null
@@ -23577,7 +24102,12 @@ export namespace Prisma {
     lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedBigIntNullableFilter<$PrismaModel>
+    _min?: NestedBigIntNullableFilter<$PrismaModel>
+    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type IntNullableFilter<$PrismaModel = never> = {
@@ -23597,6 +24127,11 @@ export namespace Prisma {
     none?: b_document_chunksWhereInput
   }
 
+  export type B_usersNullableScalarRelationFilter = {
+    is?: b_usersWhereInput | null
+    isNot?: b_usersWhereInput | null
+  }
+
   export type b_document_chunksOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
@@ -23610,14 +24145,20 @@ export namespace Prisma {
   export type b_documentsCountOrderByAggregateInput = {
     id?: SortOrder
     kb_id?: SortOrder
+    uploader_id?: SortOrder
     title?: SortOrder
+    original_filename?: SortOrder
     file_path?: SortOrder
     file_hash?: SortOrder
     file_size?: SortOrder
     file_type?: SortOrder
+    mime_type?: SortOrder
     status?: SortOrder
     error_msg?: SortOrder
     token_count?: SortOrder
+    parse_started_at?: SortOrder
+    parse_finished_at?: SortOrder
+    last_reparse_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -23625,6 +24166,7 @@ export namespace Prisma {
   export type b_documentsAvgOrderByAggregateInput = {
     id?: SortOrder
     kb_id?: SortOrder
+    uploader_id?: SortOrder
     file_size?: SortOrder
     token_count?: SortOrder
   }
@@ -23632,14 +24174,20 @@ export namespace Prisma {
   export type b_documentsMaxOrderByAggregateInput = {
     id?: SortOrder
     kb_id?: SortOrder
+    uploader_id?: SortOrder
     title?: SortOrder
+    original_filename?: SortOrder
     file_path?: SortOrder
     file_hash?: SortOrder
     file_size?: SortOrder
     file_type?: SortOrder
+    mime_type?: SortOrder
     status?: SortOrder
     error_msg?: SortOrder
     token_count?: SortOrder
+    parse_started_at?: SortOrder
+    parse_finished_at?: SortOrder
+    last_reparse_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -23647,14 +24195,20 @@ export namespace Prisma {
   export type b_documentsMinOrderByAggregateInput = {
     id?: SortOrder
     kb_id?: SortOrder
+    uploader_id?: SortOrder
     title?: SortOrder
+    original_filename?: SortOrder
     file_path?: SortOrder
     file_hash?: SortOrder
     file_size?: SortOrder
     file_type?: SortOrder
+    mime_type?: SortOrder
     status?: SortOrder
     error_msg?: SortOrder
     token_count?: SortOrder
+    parse_started_at?: SortOrder
+    parse_finished_at?: SortOrder
+    last_reparse_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -23662,24 +24216,9 @@ export namespace Prisma {
   export type b_documentsSumOrderByAggregateInput = {
     id?: SortOrder
     kb_id?: SortOrder
+    uploader_id?: SortOrder
     file_size?: SortOrder
     token_count?: SortOrder
-  }
-
-  export type BigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
-    in?: bigint[] | number[] | null
-    notIn?: bigint[] | number[] | null
-    lt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    lte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
-    not?: NestedBigIntNullableWithAggregatesFilter<$PrismaModel> | bigint | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedBigIntNullableFilter<$PrismaModel>
-    _min?: NestedBigIntNullableFilter<$PrismaModel>
-    _max?: NestedBigIntNullableFilter<$PrismaModel>
   }
 
   export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -23715,6 +24254,11 @@ export namespace Prisma {
     chunk_index?: SortOrder
     content?: SortOrder
     token_count?: SortOrder
+    page_no?: SortOrder
+    char_start?: SortOrder
+    char_end?: SortOrder
+    vector_id?: SortOrder
+    metadata_json?: SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
   }
@@ -23724,6 +24268,9 @@ export namespace Prisma {
     doc_id?: SortOrder
     chunk_index?: SortOrder
     token_count?: SortOrder
+    page_no?: SortOrder
+    char_start?: SortOrder
+    char_end?: SortOrder
   }
 
   export type b_document_chunksMaxOrderByAggregateInput = {
@@ -23732,6 +24279,10 @@ export namespace Prisma {
     chunk_index?: SortOrder
     content?: SortOrder
     token_count?: SortOrder
+    page_no?: SortOrder
+    char_start?: SortOrder
+    char_end?: SortOrder
+    vector_id?: SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
   }
@@ -23742,6 +24293,10 @@ export namespace Prisma {
     chunk_index?: SortOrder
     content?: SortOrder
     token_count?: SortOrder
+    page_no?: SortOrder
+    char_start?: SortOrder
+    char_end?: SortOrder
+    vector_id?: SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
   }
@@ -23751,6 +24306,9 @@ export namespace Prisma {
     doc_id?: SortOrder
     chunk_index?: SortOrder
     token_count?: SortOrder
+    page_no?: SortOrder
+    char_start?: SortOrder
+    char_end?: SortOrder
   }
 
   export type B_chat_messagesListRelationFilter = {
@@ -24021,6 +24579,13 @@ export namespace Prisma {
     connect?: b_knowledge_basesWhereUniqueInput | b_knowledge_basesWhereUniqueInput[]
   }
 
+  export type b_documentsCreateNestedManyWithoutB_usersInput = {
+    create?: XOR<b_documentsCreateWithoutB_usersInput, b_documentsUncheckedCreateWithoutB_usersInput> | b_documentsCreateWithoutB_usersInput[] | b_documentsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_documentsCreateOrConnectWithoutB_usersInput | b_documentsCreateOrConnectWithoutB_usersInput[]
+    createMany?: b_documentsCreateManyB_usersInputEnvelope
+    connect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+  }
+
   export type b_user_model_configsCreateNestedManyWithoutB_usersInput = {
     create?: XOR<b_user_model_configsCreateWithoutB_usersInput, b_user_model_configsUncheckedCreateWithoutB_usersInput> | b_user_model_configsCreateWithoutB_usersInput[] | b_user_model_configsUncheckedCreateWithoutB_usersInput[]
     connectOrCreate?: b_user_model_configsCreateOrConnectWithoutB_usersInput | b_user_model_configsCreateOrConnectWithoutB_usersInput[]
@@ -24061,6 +24626,13 @@ export namespace Prisma {
     connectOrCreate?: b_knowledge_basesCreateOrConnectWithoutB_usersInput | b_knowledge_basesCreateOrConnectWithoutB_usersInput[]
     createMany?: b_knowledge_basesCreateManyB_usersInputEnvelope
     connect?: b_knowledge_basesWhereUniqueInput | b_knowledge_basesWhereUniqueInput[]
+  }
+
+  export type b_documentsUncheckedCreateNestedManyWithoutB_usersInput = {
+    create?: XOR<b_documentsCreateWithoutB_usersInput, b_documentsUncheckedCreateWithoutB_usersInput> | b_documentsCreateWithoutB_usersInput[] | b_documentsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_documentsCreateOrConnectWithoutB_usersInput | b_documentsCreateOrConnectWithoutB_usersInput[]
+    createMany?: b_documentsCreateManyB_usersInputEnvelope
+    connect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
   }
 
   export type b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput = {
@@ -24158,6 +24730,20 @@ export namespace Prisma {
     deleteMany?: b_knowledge_basesScalarWhereInput | b_knowledge_basesScalarWhereInput[]
   }
 
+  export type b_documentsUpdateManyWithoutB_usersNestedInput = {
+    create?: XOR<b_documentsCreateWithoutB_usersInput, b_documentsUncheckedCreateWithoutB_usersInput> | b_documentsCreateWithoutB_usersInput[] | b_documentsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_documentsCreateOrConnectWithoutB_usersInput | b_documentsCreateOrConnectWithoutB_usersInput[]
+    upsert?: b_documentsUpsertWithWhereUniqueWithoutB_usersInput | b_documentsUpsertWithWhereUniqueWithoutB_usersInput[]
+    createMany?: b_documentsCreateManyB_usersInputEnvelope
+    set?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+    disconnect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+    delete?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+    connect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+    update?: b_documentsUpdateWithWhereUniqueWithoutB_usersInput | b_documentsUpdateWithWhereUniqueWithoutB_usersInput[]
+    updateMany?: b_documentsUpdateManyWithWhereWithoutB_usersInput | b_documentsUpdateManyWithWhereWithoutB_usersInput[]
+    deleteMany?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
+  }
+
   export type b_user_model_configsUpdateManyWithoutB_usersNestedInput = {
     create?: XOR<b_user_model_configsCreateWithoutB_usersInput, b_user_model_configsUncheckedCreateWithoutB_usersInput> | b_user_model_configsCreateWithoutB_usersInput[] | b_user_model_configsUncheckedCreateWithoutB_usersInput[]
     connectOrCreate?: b_user_model_configsCreateOrConnectWithoutB_usersInput | b_user_model_configsCreateOrConnectWithoutB_usersInput[]
@@ -24240,6 +24826,20 @@ export namespace Prisma {
     update?: b_knowledge_basesUpdateWithWhereUniqueWithoutB_usersInput | b_knowledge_basesUpdateWithWhereUniqueWithoutB_usersInput[]
     updateMany?: b_knowledge_basesUpdateManyWithWhereWithoutB_usersInput | b_knowledge_basesUpdateManyWithWhereWithoutB_usersInput[]
     deleteMany?: b_knowledge_basesScalarWhereInput | b_knowledge_basesScalarWhereInput[]
+  }
+
+  export type b_documentsUncheckedUpdateManyWithoutB_usersNestedInput = {
+    create?: XOR<b_documentsCreateWithoutB_usersInput, b_documentsUncheckedCreateWithoutB_usersInput> | b_documentsCreateWithoutB_usersInput[] | b_documentsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_documentsCreateOrConnectWithoutB_usersInput | b_documentsCreateOrConnectWithoutB_usersInput[]
+    upsert?: b_documentsUpsertWithWhereUniqueWithoutB_usersInput | b_documentsUpsertWithWhereUniqueWithoutB_usersInput[]
+    createMany?: b_documentsCreateManyB_usersInputEnvelope
+    set?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+    disconnect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+    delete?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+    connect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+    update?: b_documentsUpdateWithWhereUniqueWithoutB_usersInput | b_documentsUpdateWithWhereUniqueWithoutB_usersInput[]
+    updateMany?: b_documentsUpdateManyWithWhereWithoutB_usersInput | b_documentsUpdateManyWithWhereWithoutB_usersInput[]
+    deleteMany?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
   }
 
   export type b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput = {
@@ -24590,6 +25190,18 @@ export namespace Prisma {
     connect?: b_usersWhereUniqueInput
   }
 
+  export type NullableDateTimeFieldUpdateOperationsInput = {
+    set?: Date | string | null
+  }
+
+  export type NullableBigIntFieldUpdateOperationsInput = {
+    set?: bigint | number | null
+    increment?: bigint | number
+    decrement?: bigint | number
+    multiply?: bigint | number
+    divide?: bigint | number
+  }
+
   export type b_knowledge_basesUpdateOneRequiredWithoutKb_invitationsNestedInput = {
     create?: XOR<b_knowledge_basesCreateWithoutKb_invitationsInput, b_knowledge_basesUncheckedCreateWithoutKb_invitationsInput>
     connectOrCreate?: b_knowledge_basesCreateOrConnectWithoutKb_invitationsInput
@@ -24619,19 +25231,17 @@ export namespace Prisma {
     connect?: b_knowledge_basesWhereUniqueInput
   }
 
+  export type b_usersCreateNestedOneWithoutUploaded_documentsInput = {
+    create?: XOR<b_usersCreateWithoutUploaded_documentsInput, b_usersUncheckedCreateWithoutUploaded_documentsInput>
+    connectOrCreate?: b_usersCreateOrConnectWithoutUploaded_documentsInput
+    connect?: b_usersWhereUniqueInput
+  }
+
   export type b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput = {
     create?: XOR<b_document_chunksCreateWithoutB_documentsInput, b_document_chunksUncheckedCreateWithoutB_documentsInput> | b_document_chunksCreateWithoutB_documentsInput[] | b_document_chunksUncheckedCreateWithoutB_documentsInput[]
     connectOrCreate?: b_document_chunksCreateOrConnectWithoutB_documentsInput | b_document_chunksCreateOrConnectWithoutB_documentsInput[]
     createMany?: b_document_chunksCreateManyB_documentsInputEnvelope
     connect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
-  }
-
-  export type NullableBigIntFieldUpdateOperationsInput = {
-    set?: bigint | number | null
-    increment?: bigint | number
-    decrement?: bigint | number
-    multiply?: bigint | number
-    divide?: bigint | number
   }
 
   export type NullableIntFieldUpdateOperationsInput = {
@@ -24662,6 +25272,16 @@ export namespace Prisma {
     upsert?: b_knowledge_basesUpsertWithoutDocumentsInput
     connect?: b_knowledge_basesWhereUniqueInput
     update?: XOR<XOR<b_knowledge_basesUpdateToOneWithWhereWithoutDocumentsInput, b_knowledge_basesUpdateWithoutDocumentsInput>, b_knowledge_basesUncheckedUpdateWithoutDocumentsInput>
+  }
+
+  export type b_usersUpdateOneWithoutUploaded_documentsNestedInput = {
+    create?: XOR<b_usersCreateWithoutUploaded_documentsInput, b_usersUncheckedCreateWithoutUploaded_documentsInput>
+    connectOrCreate?: b_usersCreateOrConnectWithoutUploaded_documentsInput
+    upsert?: b_usersUpsertWithoutUploaded_documentsInput
+    disconnect?: b_usersWhereInput | boolean
+    delete?: b_usersWhereInput | boolean
+    connect?: b_usersWhereUniqueInput
+    update?: XOR<XOR<b_usersUpdateToOneWithWhereWithoutUploaded_documentsInput, b_usersUpdateWithoutUploaded_documentsInput>, b_usersUncheckedUpdateWithoutUploaded_documentsInput>
   }
 
   export type b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput = {
@@ -24981,6 +25601,17 @@ export namespace Prisma {
     not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
   }
 
+  export type NestedDateTimeNullableFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableFilter<$PrismaModel> | Date | string | null
+  }
+
   export type NestedBigIntNullableFilter<$PrismaModel = never> = {
     equals?: bigint | number | BigIntFieldRefInput<$PrismaModel> | null
     in?: bigint[] | number[] | null
@@ -24990,6 +25621,20 @@ export namespace Prisma {
     gt?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     gte?: bigint | number | BigIntFieldRefInput<$PrismaModel>
     not?: NestedBigIntNullableFilter<$PrismaModel> | bigint | number | null
+  }
+
+  export type NestedDateTimeNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel> | null
+    in?: Date[] | string[] | null
+    notIn?: Date[] | string[] | null
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeNullableWithAggregatesFilter<$PrismaModel> | Date | string | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _min?: NestedDateTimeNullableFilter<$PrismaModel>
+    _max?: NestedDateTimeNullableFilter<$PrismaModel>
   }
 
   export type NestedBigIntNullableWithAggregatesFilter<$PrismaModel = never> = {
@@ -25093,6 +25738,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
@@ -25106,6 +25753,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
@@ -25120,6 +25769,58 @@ export namespace Prisma {
 
   export type b_knowledge_basesCreateManyB_usersInputEnvelope = {
     data: b_knowledge_basesCreateManyB_usersInput | b_knowledge_basesCreateManyB_usersInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type b_documentsCreateWithoutB_usersInput = {
+    id?: bigint | number
+    title: string
+    original_filename?: string | null
+    file_path: string
+    file_hash?: string | null
+    file_size?: bigint | number | null
+    file_type?: string | null
+    mime_type?: string | null
+    status?: string
+    error_msg?: string | null
+    token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
+  }
+
+  export type b_documentsUncheckedCreateWithoutB_usersInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    title: string
+    original_filename?: string | null
+    file_path: string
+    file_hash?: string | null
+    file_size?: bigint | number | null
+    file_type?: string | null
+    mime_type?: string | null
+    status?: string
+    error_msg?: string | null
+    token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+  }
+
+  export type b_documentsCreateOrConnectWithoutB_usersInput = {
+    where: b_documentsWhereUniqueInput
+    create: XOR<b_documentsCreateWithoutB_usersInput, b_documentsUncheckedCreateWithoutB_usersInput>
+  }
+
+  export type b_documentsCreateManyB_usersInputEnvelope = {
+    data: b_documentsCreateManyB_usersInput | b_documentsCreateManyB_usersInput[]
     skipDuplicates?: boolean
   }
 
@@ -25161,6 +25862,9 @@ export namespace Prisma {
     role?: string
     expired_at: Date | string
     is_used?: boolean
+    cancelled_at?: Date | string | null
+    accepted_by?: bigint | number | null
+    accepted_at?: Date | string | null
     created_at?: Date | string
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutKb_invitationsInput
   }
@@ -25172,6 +25876,9 @@ export namespace Prisma {
     role?: string
     expired_at: Date | string
     is_used?: boolean
+    cancelled_at?: Date | string | null
+    accepted_by?: bigint | number | null
+    accepted_at?: Date | string | null
     created_at?: Date | string
   }
 
@@ -25295,9 +26002,51 @@ export namespace Prisma {
     description?: StringNullableFilter<"b_knowledge_bases"> | string | null
     visibility?: StringFilter<"b_knowledge_bases"> | string
     status?: StringFilter<"b_knowledge_bases"> | string
+    is_public?: BoolFilter<"b_knowledge_bases"> | boolean
+    allow_public_download?: BoolFilter<"b_knowledge_bases"> | boolean
     owner_id?: BigIntFilter<"b_knowledge_bases"> | bigint | number
     created_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
     updated_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
+  }
+
+  export type b_documentsUpsertWithWhereUniqueWithoutB_usersInput = {
+    where: b_documentsWhereUniqueInput
+    update: XOR<b_documentsUpdateWithoutB_usersInput, b_documentsUncheckedUpdateWithoutB_usersInput>
+    create: XOR<b_documentsCreateWithoutB_usersInput, b_documentsUncheckedCreateWithoutB_usersInput>
+  }
+
+  export type b_documentsUpdateWithWhereUniqueWithoutB_usersInput = {
+    where: b_documentsWhereUniqueInput
+    data: XOR<b_documentsUpdateWithoutB_usersInput, b_documentsUncheckedUpdateWithoutB_usersInput>
+  }
+
+  export type b_documentsUpdateManyWithWhereWithoutB_usersInput = {
+    where: b_documentsScalarWhereInput
+    data: XOR<b_documentsUpdateManyMutationInput, b_documentsUncheckedUpdateManyWithoutB_usersInput>
+  }
+
+  export type b_documentsScalarWhereInput = {
+    AND?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
+    OR?: b_documentsScalarWhereInput[]
+    NOT?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
+    id?: BigIntFilter<"b_documents"> | bigint | number
+    kb_id?: BigIntFilter<"b_documents"> | bigint | number
+    uploader_id?: BigIntNullableFilter<"b_documents"> | bigint | number | null
+    title?: StringFilter<"b_documents"> | string
+    original_filename?: StringNullableFilter<"b_documents"> | string | null
+    file_path?: StringFilter<"b_documents"> | string
+    file_hash?: StringNullableFilter<"b_documents"> | string | null
+    file_size?: BigIntNullableFilter<"b_documents"> | bigint | number | null
+    file_type?: StringNullableFilter<"b_documents"> | string | null
+    mime_type?: StringNullableFilter<"b_documents"> | string | null
+    status?: StringFilter<"b_documents"> | string
+    error_msg?: StringNullableFilter<"b_documents"> | string | null
+    token_count?: IntNullableFilter<"b_documents"> | number | null
+    parse_started_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
+    parse_finished_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
+    last_reparse_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
+    created_at?: DateTimeFilter<"b_documents"> | Date | string
+    updated_at?: DateTimeFilter<"b_documents"> | Date | string
   }
 
   export type b_user_model_configsUpsertWithWhereUniqueWithoutB_usersInput = {
@@ -25358,6 +26107,9 @@ export namespace Prisma {
     role?: StringFilter<"b_kb_invitations"> | string
     expired_at?: DateTimeFilter<"b_kb_invitations"> | Date | string
     is_used?: BoolFilter<"b_kb_invitations"> | boolean
+    cancelled_at?: DateTimeNullableFilter<"b_kb_invitations"> | Date | string | null
+    accepted_by?: BigIntNullableFilter<"b_kb_invitations"> | bigint | number | null
+    accepted_at?: DateTimeNullableFilter<"b_kb_invitations"> | Date | string | null
     created_at?: DateTimeFilter<"b_kb_invitations"> | Date | string
   }
 
@@ -25523,6 +26275,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
   }
@@ -25542,6 +26295,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
   }
@@ -25577,6 +26331,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
   }
@@ -25596,6 +26351,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
   }
@@ -25675,6 +26431,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
   }
@@ -25694,6 +26451,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
   }
@@ -25729,6 +26487,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
   }
@@ -25748,6 +26507,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
   }
@@ -25755,28 +26515,40 @@ export namespace Prisma {
   export type b_documentsCreateWithoutB_knowledge_basesInput = {
     id?: bigint | number
     title: string
+    original_filename?: string | null
     file_path: string
     file_hash?: string | null
     file_size?: bigint | number | null
     file_type?: string | null
+    mime_type?: string | null
     status?: string
     error_msg?: string | null
     token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
 
   export type b_documentsUncheckedCreateWithoutB_knowledge_basesInput = {
     id?: bigint | number
+    uploader_id?: bigint | number | null
     title: string
+    original_filename?: string | null
     file_path: string
     file_hash?: string | null
     file_size?: bigint | number | null
     file_type?: string | null
+    mime_type?: string | null
     status?: string
     error_msg?: string | null
     token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
@@ -25822,6 +26594,9 @@ export namespace Prisma {
     role?: string
     expired_at: Date | string
     is_used?: boolean
+    cancelled_at?: Date | string | null
+    accepted_by?: bigint | number | null
+    accepted_at?: Date | string | null
     created_at?: Date | string
     b_users: b_usersCreateNestedOneWithoutKb_invitationsInput
   }
@@ -25833,6 +26608,9 @@ export namespace Prisma {
     role?: string
     expired_at: Date | string
     is_used?: boolean
+    cancelled_at?: Date | string | null
+    accepted_by?: bigint | number | null
+    accepted_at?: Date | string | null
     created_at?: Date | string
   }
 
@@ -25860,6 +26638,7 @@ export namespace Prisma {
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
@@ -25879,6 +26658,7 @@ export namespace Prisma {
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -25903,24 +26683,6 @@ export namespace Prisma {
   export type b_documentsUpdateManyWithWhereWithoutB_knowledge_basesInput = {
     where: b_documentsScalarWhereInput
     data: XOR<b_documentsUpdateManyMutationInput, b_documentsUncheckedUpdateManyWithoutB_knowledge_basesInput>
-  }
-
-  export type b_documentsScalarWhereInput = {
-    AND?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
-    OR?: b_documentsScalarWhereInput[]
-    NOT?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
-    id?: BigIntFilter<"b_documents"> | bigint | number
-    kb_id?: BigIntFilter<"b_documents"> | bigint | number
-    title?: StringFilter<"b_documents"> | string
-    file_path?: StringFilter<"b_documents"> | string
-    file_hash?: StringNullableFilter<"b_documents"> | string | null
-    file_size?: BigIntNullableFilter<"b_documents"> | bigint | number | null
-    file_type?: StringNullableFilter<"b_documents"> | string | null
-    status?: StringFilter<"b_documents"> | string
-    error_msg?: StringNullableFilter<"b_documents"> | string | null
-    token_count?: IntNullableFilter<"b_documents"> | number | null
-    created_at?: DateTimeFilter<"b_documents"> | Date | string
-    updated_at?: DateTimeFilter<"b_documents"> | Date | string
   }
 
   export type b_kb_membersUpsertWithWhereUniqueWithoutB_knowledge_basesInput = {
@@ -25980,6 +26742,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
@@ -25999,6 +26762,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -26010,6 +26774,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
@@ -26023,6 +26789,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     owner_id: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
@@ -26049,6 +26817,7 @@ export namespace Prisma {
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
@@ -26068,6 +26837,7 @@ export namespace Prisma {
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -26095,6 +26865,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
@@ -26108,6 +26880,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     owner_id?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26140,6 +26914,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
@@ -26159,6 +26934,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -26170,6 +26946,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
@@ -26183,6 +26961,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     owner_id: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
@@ -26210,6 +26990,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
   }
@@ -26229,6 +27010,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
   }
@@ -26255,6 +27037,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
@@ -26268,6 +27052,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     owner_id?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26301,6 +27087,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
   }
@@ -26320,6 +27107,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
   }
@@ -26329,6 +27117,11 @@ export namespace Prisma {
     chunk_index: number
     content: string
     token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
   }
@@ -26338,6 +27131,11 @@ export namespace Prisma {
     chunk_index: number
     content: string
     token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
   }
@@ -26358,6 +27156,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     created_at?: Date | string
     updated_at?: Date | string
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
@@ -26371,6 +27171,8 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
     owner_id: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
@@ -26381,6 +27183,51 @@ export namespace Prisma {
   export type b_knowledge_basesCreateOrConnectWithoutDocumentsInput = {
     where: b_knowledge_basesWhereUniqueInput
     create: XOR<b_knowledge_basesCreateWithoutDocumentsInput, b_knowledge_basesUncheckedCreateWithoutDocumentsInput>
+  }
+
+  export type b_usersCreateWithoutUploaded_documentsInput = {
+    id?: bigint | number
+    email: string
+    password_hash: string
+    full_name?: string | null
+    avatar_url?: string | null
+    is_active?: boolean
+    daily_chat_limit?: number
+    token_quota?: bigint | number
+    used_tokens?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
+    kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
+    knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
+    user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+  }
+
+  export type b_usersUncheckedCreateWithoutUploaded_documentsInput = {
+    id?: bigint | number
+    email: string
+    password_hash: string
+    full_name?: string | null
+    avatar_url?: string | null
+    is_active?: boolean
+    daily_chat_limit?: number
+    token_quota?: bigint | number
+    used_tokens?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
+    knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
+    user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+  }
+
+  export type b_usersCreateOrConnectWithoutUploaded_documentsInput = {
+    where: b_usersWhereUniqueInput
+    create: XOR<b_usersCreateWithoutUploaded_documentsInput, b_usersUncheckedCreateWithoutUploaded_documentsInput>
   }
 
   export type b_document_chunksUpsertWithWhereUniqueWithoutB_documentsInput = {
@@ -26408,6 +27255,11 @@ export namespace Prisma {
     chunk_index?: IntFilter<"b_document_chunks"> | number
     content?: StringFilter<"b_document_chunks"> | string
     token_count?: IntNullableFilter<"b_document_chunks"> | number | null
+    page_no?: IntNullableFilter<"b_document_chunks"> | number | null
+    char_start?: IntNullableFilter<"b_document_chunks"> | number | null
+    char_end?: IntNullableFilter<"b_document_chunks"> | number | null
+    vector_id?: StringNullableFilter<"b_document_chunks"> | string | null
+    metadata_json?: JsonNullableFilter<"b_document_chunks">
     embedding_status?: StringFilter<"b_document_chunks"> | string
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
   }
@@ -26429,6 +27281,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
@@ -26442,6 +27296,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     owner_id?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -26449,32 +27305,95 @@ export namespace Prisma {
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
+  export type b_usersUpsertWithoutUploaded_documentsInput = {
+    update: XOR<b_usersUpdateWithoutUploaded_documentsInput, b_usersUncheckedUpdateWithoutUploaded_documentsInput>
+    create: XOR<b_usersCreateWithoutUploaded_documentsInput, b_usersUncheckedCreateWithoutUploaded_documentsInput>
+    where?: b_usersWhereInput
+  }
+
+  export type b_usersUpdateToOneWithWhereWithoutUploaded_documentsInput = {
+    where?: b_usersWhereInput
+    data: XOR<b_usersUpdateWithoutUploaded_documentsInput, b_usersUncheckedUpdateWithoutUploaded_documentsInput>
+  }
+
+  export type b_usersUpdateWithoutUploaded_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
+    kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
+    knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
+    user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+  }
+
+  export type b_usersUncheckedUpdateWithoutUploaded_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
+    knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
+    user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+  }
+
   export type b_documentsCreateWithoutDocument_chunksInput = {
     id?: bigint | number
     title: string
+    original_filename?: string | null
     file_path: string
     file_hash?: string | null
     file_size?: bigint | number | null
     file_type?: string | null
+    mime_type?: string | null
     status?: string
     error_msg?: string | null
     token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
+    b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
 
   export type b_documentsUncheckedCreateWithoutDocument_chunksInput = {
     id?: bigint | number
     kb_id: bigint | number
+    uploader_id?: bigint | number | null
     title: string
+    original_filename?: string | null
     file_path: string
     file_hash?: string | null
     file_size?: bigint | number | null
     file_type?: string | null
+    mime_type?: string | null
     status?: string
     error_msg?: string | null
     token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -26498,29 +27417,41 @@ export namespace Prisma {
   export type b_documentsUpdateWithoutDocument_chunksInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
     file_path?: StringFieldUpdateOperationsInput | string
     file_hash?: NullableStringFieldUpdateOperationsInput | string | null
     file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
+    b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
 
   export type b_documentsUncheckedUpdateWithoutDocument_chunksInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    uploader_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
     file_path?: StringFieldUpdateOperationsInput | string
     file_hash?: NullableStringFieldUpdateOperationsInput | string | null
     file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26573,6 +27504,7 @@ export namespace Prisma {
     updated_at?: Date | string
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
@@ -26592,6 +27524,7 @@ export namespace Prisma {
     updated_at?: Date | string
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -26659,6 +27592,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
@@ -26678,6 +27612,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -26816,6 +27751,28 @@ export namespace Prisma {
     description?: string | null
     visibility?: string
     status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_documentsCreateManyB_usersInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    title: string
+    original_filename?: string | null
+    file_path: string
+    file_hash?: string | null
+    file_size?: bigint | number | null
+    file_type?: string | null
+    mime_type?: string | null
+    status?: string
+    error_msg?: string | null
+    token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -26838,6 +27795,9 @@ export namespace Prisma {
     role?: string
     expired_at: Date | string
     is_used?: boolean
+    cancelled_at?: Date | string | null
+    accepted_by?: bigint | number | null
+    accepted_at?: Date | string | null
     created_at?: Date | string
   }
 
@@ -26904,6 +27864,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
@@ -26917,6 +27879,8 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
@@ -26930,6 +27894,70 @@ export namespace Prisma {
     description?: NullableStringFieldUpdateOperationsInput | string | null
     visibility?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_documentsUpdateWithoutB_usersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
+    file_path?: StringFieldUpdateOperationsInput | string
+    file_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    error_msg?: NullableStringFieldUpdateOperationsInput | string | null
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
+  }
+
+  export type b_documentsUncheckedUpdateWithoutB_usersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
+    file_path?: StringFieldUpdateOperationsInput | string
+    file_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    error_msg?: NullableStringFieldUpdateOperationsInput | string | null
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+  }
+
+  export type b_documentsUncheckedUpdateManyWithoutB_usersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
+    file_path?: StringFieldUpdateOperationsInput | string
+    file_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    error_msg?: NullableStringFieldUpdateOperationsInput | string | null
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26973,6 +28001,9 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutKb_invitationsNestedInput
   }
@@ -26984,6 +28015,9 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -26994,6 +28028,9 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -27105,14 +28142,20 @@ export namespace Prisma {
 
   export type b_documentsCreateManyB_knowledge_basesInput = {
     id?: bigint | number
+    uploader_id?: bigint | number | null
     title: string
+    original_filename?: string | null
     file_path: string
     file_hash?: string | null
     file_size?: bigint | number | null
     file_type?: string | null
+    mime_type?: string | null
     status?: string
     error_msg?: string | null
     token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -27131,34 +28174,49 @@ export namespace Prisma {
     role?: string
     expired_at: Date | string
     is_used?: boolean
+    cancelled_at?: Date | string | null
+    accepted_by?: bigint | number | null
+    accepted_at?: Date | string | null
     created_at?: Date | string
   }
 
   export type b_documentsUpdateWithoutB_knowledge_basesInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
     file_path?: StringFieldUpdateOperationsInput | string
     file_hash?: NullableStringFieldUpdateOperationsInput | string | null
     file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
 
   export type b_documentsUncheckedUpdateWithoutB_knowledge_basesInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
+    uploader_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
     file_path?: StringFieldUpdateOperationsInput | string
     file_hash?: NullableStringFieldUpdateOperationsInput | string | null
     file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
@@ -27166,14 +28224,20 @@ export namespace Prisma {
 
   export type b_documentsUncheckedUpdateManyWithoutB_knowledge_basesInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
+    uploader_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
     file_path?: StringFieldUpdateOperationsInput | string
     file_hash?: NullableStringFieldUpdateOperationsInput | string | null
     file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
     status?: StringFieldUpdateOperationsInput | string
     error_msg?: NullableStringFieldUpdateOperationsInput | string | null
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27205,6 +28269,9 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     b_users?: b_usersUpdateOneRequiredWithoutKb_invitationsNestedInput
   }
@@ -27216,6 +28283,9 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -27226,6 +28296,9 @@ export namespace Prisma {
     role?: StringFieldUpdateOperationsInput | string
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     is_used?: BoolFieldUpdateOperationsInput | boolean
+    cancelled_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    accepted_by?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    accepted_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -27234,6 +28307,11 @@ export namespace Prisma {
     chunk_index: number
     content: string
     token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
   }
@@ -27243,6 +28321,11 @@ export namespace Prisma {
     chunk_index?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27252,6 +28335,11 @@ export namespace Prisma {
     chunk_index?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27261,6 +28349,11 @@ export namespace Prisma {
     chunk_index?: IntFieldUpdateOperationsInput | number
     content?: StringFieldUpdateOperationsInput | string
     token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }

@@ -32,6 +32,7 @@ model b_users {
   chat_sessions   b_chat_sessions[]
   kb_members      b_kb_members[]
   knowledge_bases b_knowledge_bases[]
+  uploaded_documents b_documents[] @relation("document_uploader")
   model_configs   b_user_model_configs[]
   kb_invitations  b_kb_invitations[]
   user_sessions   b_user_sessions[]
@@ -140,8 +141,11 @@ model b_knowledge_bases {
   name        String  @db.VarChar(100)
   description String? @db.Text
 
-  visibility String @default("private") @db.VarChar(50)
-  status     String @default("normal") @db.VarChar(50)
+  visibility            String  @default("private") @db.VarChar(50)
+  status                String  @default("normal") @db.VarChar(50)
+  // 仅对共享知识库生效：控制是否开源以及公开用户是否允许下载。
+  is_public             Boolean @default(false)
+  allow_public_download Boolean @default(false)
 
   owner_id   BigInt
   created_at DateTime @default(now()) @db.DateTime(0)
@@ -154,13 +158,16 @@ model b_knowledge_bases {
   b_users b_users @relation(fields: [owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_kb_owner")
 
   @@index([owner_id], map: "idx_owner")
+  @@index([visibility, status], map: "idx_kb_visibility_status")
+  @@index([visibility, is_public], map: "idx_kb_visibility_public")
 }
 
 model b_kb_members {
   id        BigInt   @id @default(autoincrement())
   kb_id     BigInt
   user_id   BigInt
-  role      String   @default("viewer") @db.VarChar(50)
+  // 共享知识库成员角色：manager / collaborator / member
+  role      String   @default("member") @db.VarChar(50)
   joined_at DateTime @default(now()) @db.DateTime(0)
 
   b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_member_kb")
@@ -171,19 +178,24 @@ model b_kb_members {
 }
 
 model b_kb_invitations {
-  id          BigInt   @id @default(autoincrement())
-  kb_id       BigInt
-  inviter_id  BigInt
-  invite_code String   @unique @db.VarChar(64)
-  role        String   @default("viewer") @db.VarChar(50)
-  expired_at  DateTime @db.DateTime(0)
-  is_used     Boolean  @default(false)
-  created_at  DateTime @default(now()) @db.DateTime(0)
+  id           BigInt    @id @default(autoincrement())
+  kb_id        BigInt
+  inviter_id   BigInt
+  invite_code  String    @unique @db.VarChar(64)
+  // 邀请加入后的目标角色：manager / collaborator / member
+  role         String    @default("member") @db.VarChar(50)
+  expired_at   DateTime  @db.DateTime(0)
+  is_used      Boolean   @default(false)
+  cancelled_at DateTime?
+  accepted_by  BigInt?
+  accepted_at  DateTime?
+  created_at   DateTime  @default(now()) @db.DateTime(0)
 
   b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade)
   b_users           b_users           @relation(fields: [inviter_id], references: [id], onDelete: Cascade)
 
   @@index([kb_id], map: "idx_invite_kb")
+  @@index([kb_id, is_used, expired_at], map: "idx_invite_status_lookup")
 }
 
 // ==========================================================
@@ -191,31 +203,45 @@ model b_kb_invitations {
 // ==========================================================
 
 model b_documents {
-  id          BigInt   @id @default(autoincrement())
-  kb_id       BigInt
-  title       String   @db.VarChar(255)
-  file_path   String   @db.VarChar(500)
-  file_hash   String?  @db.VarChar(64)
-  file_size   BigInt?  @default(0)
-  file_type   String?  @db.VarChar(20)
-  status      String   @default("pending") @db.VarChar(50)
-  error_msg   String?  @db.Text
-  token_count Int?     @default(0)
-  created_at  DateTime @default(now()) @db.DateTime(0)
-  updated_at  DateTime @default(now()) @db.DateTime(0)
+  id                BigInt    @id @default(autoincrement())
+  kb_id             BigInt
+  uploader_id       BigInt?
+  title             String    @db.VarChar(255)
+  original_filename String?   @db.VarChar(255)
+  file_path         String    @db.VarChar(500)
+  file_hash         String?   @db.VarChar(64)
+  file_size         BigInt?   @default(0)
+  file_type         String?   @db.VarChar(20)
+  mime_type         String?   @db.VarChar(100)
+  status            String    @default("pending") @db.VarChar(50)
+  error_msg         String?   @db.Text
+  token_count       Int?      @default(0)
+  parse_started_at  DateTime?
+  parse_finished_at DateTime?
+  last_reparse_at   DateTime?
+  created_at        DateTime  @default(now()) @db.DateTime(0)
+  updated_at        DateTime  @default(now()) @db.DateTime(0)
 
   document_chunks   b_document_chunks[]
   b_knowledge_bases b_knowledge_bases   @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_doc_kb")
+  b_users           b_users?            @relation("document_uploader", fields: [uploader_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_doc_uploader")
 
   @@index([kb_id], map: "idx_kb_id")
+  @@index([uploader_id], map: "idx_doc_uploader_id")
+  @@index([kb_id, uploader_id], map: "idx_doc_kb_uploader")
 }
 
 model b_document_chunks {
-  id          BigInt @id @default(autoincrement())
-  doc_id      BigInt
-  chunk_index Int
-  content     String @db.LongText
-  token_count Int?   @default(0)
+  id            BigInt  @id @default(autoincrement())
+  doc_id        BigInt
+  chunk_index   Int
+  content       String  @db.LongText
+  token_count   Int?    @default(0)
+  page_no       Int?
+  char_start    Int?
+  char_end      Int?
+  vector_id     String? @db.VarChar(100)
+  metadata_json Json?
 
   embedding_status String   @default("pending") @db.VarChar(20)
   created_at       DateTime @default(now()) @db.DateTime(0)
@@ -223,6 +249,7 @@ model b_document_chunks {
   b_documents b_documents @relation(fields: [doc_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chunk_doc")
 
   @@index([doc_id, chunk_index], map: "idx_doc_chunk")
+  @@index([vector_id], map: "idx_chunk_vector_id")
 }
 
 // ==========================================================

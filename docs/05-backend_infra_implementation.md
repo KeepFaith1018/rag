@@ -1,496 +1,616 @@
-## 一、整体设计概览
+# 后端基础设施与开发参考
 
-后端公共层主要分为几部分：
+本文档用于说明当前后端项目已经具备的基础建设、公共能力以及编写业务代码时的统一约定。目标不是只描述“有哪些文件”，而是帮助开发者在新增模块、接口、异常处理、认证逻辑、邮件能力时，能够按同一套规则实现，保证响应结构、日志结构和排障方式一致。
 
-- 日志与配置：
-  - config/winston.config.ts
-  - config/env.validation.ts
-- 统一响应： interceptors/response.interceptor.ts + utils/result.ts
-- 统一日志拦截： interceptors/logging.interceptor.ts
-- 请求链路追踪： utils/requestId.ts
-- 统一异常与错误码：
-  - exception/businessException.ts
-  - filter/all-exceptions.filter.ts
-  - utils/errorCodeMap.ts / errorMessageMap.ts / errorCodeHttpMap.ts
-  - utils/formatValidationErrors.ts
-- 鉴权与用户注入：
-  - decorators/auth.decorator.ts
-  - decorators/currentUser.decorator.ts
-  - guards/auth.guard.ts
-- 数据库访问： prisma/prisma.module.ts + prisma.service.ts （通过 @common/prisma/prisma.service 注入各模块）
+## 一、文档适用范围
 
-## 二、日志体系
+当前后端采用 `Nest.js + Prisma + Winston + JWT` 架构，项目位于 `apps/backend`。
 
-### 2.1 Winston 日志配置
+本文档主要覆盖：
 
-文件： winston.config.ts
+- 启动期基础设施
+- 配置与日志体系
+- 请求链路追踪
+- 统一响应与异常治理
+- 鉴权与用户注入
+- 数据访问、认证、邮件相关基础能力
+- 后端日常开发规范与联调排障经验
 
-- 使用 nest-winston 集成 winston ，提供统一日志格式和输出目标。
-- 配置要点：
-  - level: 'info' ：默认日志级别，从 info 起记录。
-  - 格式（ format ）：
-    - 时间戳： YYYY-MM-DD HH:mm:ss
-    - 错误堆栈
-    - JSON 输出（结构化日志，便于检索）
-  - 输出目标（ transports ）：
-    - Console：带 Nest 风格的 pretty print
-    - DailyRotateFile： `logs/%DATE%/app-info.log` （info 级别）
-    - DailyRotateFile： `logs/%DATE%/app-error.log` （error 级别）
-- 日志切分策略：
-  - 按天切分：`datePattern: 'YYYY-MM-DD'`
-  - 单文件最大：`20m`
-  - 最多保留：`14d`
-  - 不压缩归档：`zippedArchive: false`
-    在 AppModule 中通过 WinstonModule.forRoot(winstonConfig) 注册后，可以在任意地方使用 WINSTON_MODULE_PROVIDER 注入 Logger 。
+## 二、后端基础建设总览
 
-### 2.2 requestId 请求链路追踪
+当前后端公共层的核心能力包括：
 
-文件： `utils/requestId.ts` 、 `main.ts` 、 `logging.interceptor.ts` 、 `all-exceptions.filter.ts`
+- 配置管理：
+  - `src/common/config/env.validation.ts`
+- 日志配置：
+  - `src/common/config/winston.config.ts`
+- 统一成功响应：
+  - `src/common/interceptors/response.interceptor.ts`
+  - `src/common/utils/result.ts`
+- 请求日志与链路追踪：
+  - `src/common/interceptors/logging.interceptor.ts`
+  - `src/common/utils/requestId.ts`
+- 统一异常治理：
+  - `src/common/exception/businessException.ts`
+  - `src/common/filter/all-exceptions.filter.ts`
+  - `src/common/utils/errorCodeMap.ts`
+  - `src/common/utils/errorMessageMap.ts`
+  - `src/common/utils/errorCodeHttpMap.ts`
+  - `src/common/utils/formatValidationErrors.ts`
+- 鉴权与当前用户注入：
+  - `src/common/decorators/auth.decorator.ts`
+  - `src/common/decorators/currentUser.decorator.ts`
+  - `src/common/guards/auth.guard.ts`
+- 数据库访问：
+  - `src/common/prisma/prisma.module.ts`
+  - `src/common/prisma/prisma.service.ts`
+- 启动入口与全局注册：
+  - `src/main.ts`
 
-- 目标：为每个 HTTP 请求分配一个唯一标识，串联入口日志、异常日志以及后续业务日志。
-- 实现方式：
-  - 优先复用上游透传的 `x-request-id`
-  - 若上游未提供，则由服务端通过 `randomUUID()` 生成
-  - 将 `requestId` 挂到 `request` 对象上
-  - 同时写回响应头 `x-request-id`
-- `main.ts` 中通过全局中间件在请求入口执行绑定：
+## 三、启动期基础设施
 
-```
+文件：`src/main.ts`
+
+应用启动时已经统一完成以下注册：
+
+- 为每个请求绑定 `requestId`
+- 启用 CORS
+- 注册 Winston 作为全局日志实现
+- 注册全局响应拦截器 `ResponseInterceptor`
+- 注册全局请求日志拦截器 `LoggingInterceptor`
+- 注册全局异常过滤器 `AllExceptionsFilter`
+- 注册全局参数校验管道 `ValidationPipe`
+- 设置全局接口前缀 `app.setGlobalPrefix('api')`
+
+启动主流程示意：
+
+```ts
 app.use((request, response, next) => {
   bindRequestId(request, response);
   next();
 });
-```
 
-- 日志拦截器与异常过滤器均通过 `getRequestId(request)` 读取并输出该值。
-
-## 三、配置管理
-
-### 3.1 ConfigModule + 环境变量校验
-
-文件： `app.module.ts` 、 `config/env.validation.ts`
-
-- 使用 `@nestjs/config` 作为全局配置模块，统一读取 `.env`
-- 使用 `Joi` 对关键环境变量进行启动期校验，避免服务启动后才暴露配置问题
-- 当前已纳入校验的配置项包括：
-  - `PORT`
-  - `NODE_ENV`
-  - `DATABASE_URL`
-  - `QDRANT_URL`
-  - `JWT_SECRET`
-  - `JWT_EXPIRES_IN`
-  - `REDIS_URL`
-  - `REDIS_PASSWORD`
-
-配置模块的价值：
-
-- 统一管理端口、数据库、向量库、Redis、JWT 等配置
-- 配置缺失时在启动阶段直接失败，降低运行期隐患
-- 为后续拆分多环境（development / test / production）提供基础
-
-## 四、统一响应结构
-
-### 3.1 Result 包装类
-
-文件： result.ts
-
-```
-export class Result<T = any> {
-  readonly success: boolean;
-  readonly code: number;
-  readonly message: string;
-  readonly data?: T;
-
-  // 成功
-  static success<T>(data: T): Result<T> {
-    return new Result(true, 0, 'success', data);
-  }
-
-  // 失败
-  static error(code: ErrorCode, message?: string): 
-  Result<never> {
-    return new Result(
-      false,
-      code,
-      message ?? ErrorMessageMap[code] ?? 'error',
-    );
-  }
-}
-```
-
-- 返回结构统一为：
-  - 成功： { success: true, code: 0, message: 'success', data: ... }
-  - 失败： { success: false, code: ErrorCode, message: string }
-
-### 3.2 ResponseInterceptor：自动包装成功结果
-
-文件： response.interceptor.ts
-
-- 类型： NestInterceptor
-- 作用：拦截所有控制器返回值，自动用 Result.success 包装。
-  核心逻辑：
-
-```
-return next.handle().pipe(
-  map((data) => Result.success(data)),
+app.useLogger(app.get(WINSTON_MODULE_NEST_PROVIDER));
+app.useGlobalInterceptors(
+  app.get(ResponseInterceptor),
+  app.get(LoggingInterceptor),
 );
+app.useGlobalFilters(app.get(AllExceptionsFilter));
+app.useGlobalPipes(
+  new ValidationPipe({
+    transform: true,
+    whitelist: true,
+    exceptionFactory: (errors: ValidationError[]) => {
+      return new BusinessException(
+        ErrorCode.PARAM_ERROR,
+        formatValidationErrors(errors),
+      );
+    },
+  }),
+);
+app.setGlobalPrefix("api");
 ```
 
-使用规范：
+开发注意事项：
 
-- Controller 里直接 return { ... } 或 return someServiceCall() 即可，不要手动包 Result.success 。
-- 任何正常返回都会被包装为统一结构。
+- 所有 HTTP 接口最终访问路径都带 `/api` 前缀
+- 前端或网关联调时，基础地址必须与全局前缀保持一致
+- Controller 不要自行拼装通用响应结构，也不要自行吞掉异常
 
-## 五、统一异常与错误码体系
+## 四、配置管理
 
-### 4.1 错误码枚举
+### 4.1 ConfigModule 与环境变量校验
 
-文件： errorCodeMap.ts
+文件：`src/common/config/env.validation.ts`
 
-- ErrorCode 使用数值型枚举，按模块分段：
-  - 公共：40000+ / 50000+
-    - PARAM_ERROR , UNAUTHORIZED , INTERNAL_ERROR 等
-  - 知识库：41xxx
-  - 文件：42xxx
-  - 会话：43xxx
-  - 消息：44xxx
-  - 向量/RAG：45xxx
-  - 邮件：46xxx（如 EMAIL_CODE_INVALID , EMAIL_RATE_LIMIT ）
-  - 认证：47xxx（如 AUTH_INVALID_CREDENTIALS , AUTH_INVALID_REFRESH_TOKEN ）
-    新增业务错误时，应在这里添加对应枚举项。
+项目通过 `Joi` 对关键环境变量进行启动期校验，避免服务启动后才暴露配置问题。当前已纳入校验的字段包括：
 
-### 4.2 默认错误文案
+- `PORT`
+- `NODE_ENV`
+- `DATABASE_URL`
+- `QDRANT_URL`
+- `JWT_SECRET`
+- `JWT_EXPIRES_IN`
+- `REDIS_URL`
+- `REDIS_PASSWORD`
 
-文件： errorMessageMap.ts
+价值：
 
-- ErrorMessageMap: Record<ErrorCode, string> 为每个错误码给出默认消息，统一使用中文文案。
-- BusinessException 不传 message 时，会从这里取默认文案。
+- 配置缺失时在启动阶段快速失败
+- 降低运行期隐患
+- 为不同环境配置提供统一入口
 
-### 4.3 错误码到 HTTP 状态码映射
+说明：
 
-文件： errorCodeHttpMap.ts
+- 邮件配置当前由 `EmailService` 在运行时读取和校验，未纳入此处的启动期必填校验
+- 这意味着邮件能力配置不完整时，服务可以启动，但调用邮件功能时会抛出 `EMAIL_CONFIG_INVALID`
 
-- ErrorCodeHttpStatusMap: Record<ErrorCode, HttpStatus> 定义每个业务错误对应的 HTTP 状态码。
-  - 例：
-    - UNAUTHORIZED → 401
-    - FORBIDDEN → 403
-    - FILE_NOT_FOUND → 404
-    - EMAIL_RATE_LIMIT → 429
-    - INTERNAL_ERROR / 邮件发送失败等 → 500
+### 4.2 配置开发建议
 
-### 4.4 BusinessException：业务异常类型
+- 新增公共配置时，优先补充到环境变量校验中
+- 只有确实允许“能力延迟失败”的场景，才放在业务模块运行时校验
+- 不要在业务代码里散落硬编码配置值
 
-文件： businessException.ts
+## 五、日志体系
 
-```
-export class BusinessException extends 
-HttpException {
-  readonly code: ErrorCode;
+### 5.1 Winston 日志配置
 
-  constructor(code: ErrorCode, message?: string, 
-  httpStatus?: HttpStatus) {
-    super(
-      {
-        code,
-        message: message ?? ErrorMessageMap[code],
-      },
-      httpStatus ?? ErrorCodeHttpStatusMap
-      [code] ?? HttpStatus.BAD_REQUEST,
-    );
-    this.code = code;
-  }
-}
-```
+文件：`src/common/config/winston.config.ts`
 
-使用方式：
+项目使用 `nest-winston` 集成 `winston`，统一日志格式与输出目标。
 
-- 在业务代码中统一用 throw new BusinessException(ErrorCode.XXX) 抛业务错误。
-- 如需覆盖默认文案或 HTTP 状态码，可传入可选的 message 、 httpStatus 。
+当前配置要点：
 
-### 4.5 AllExceptionsFilter：统一异常出口
+- 默认日志级别：`info`
+- 统一包含：
+  - 时间戳
+  - 错误堆栈
+  - JSON 结构化内容
+- 输出目标：
+  - Console
+  - `logs/%DATE%/app-info.log`
+  - `logs/%DATE%/app-error.log`
+- 切分策略：
+  - 按天切分
+  - 单文件最大 `20m`
+  - 最多保留 `14d`
 
-文件： all-exceptions.filter.ts
+### 5.2 requestId 请求链路追踪
 
-- 类型： @Catch() ，捕获所有异常，实现统一返回和日志记录。
-  处理流程：
+文件：`src/common/utils/requestId.ts`
 
-1. BusinessException
-   - 通过 instanceof BusinessException 判断。
-   - 从 exception.getResponse() 中拿 { code, message } 。
-   - 记录结构化 warn 日志，包含：
-     - `requestId`
-     - `method`
-     - `url`
-     - `ip`
-     - `code`
-     - `message`
-   - 返回：
-     ```
-     response
-       .status(exception.getStatus())
-       .json(Result.error(res.code, res.message));
-     ```
+每个 HTTP 请求都会带上唯一 `requestId`，用于串联：
 
-2. HttpException （如参数校验错误、框架内置异常）
-   - 提取 status、message（兼容 string / object / message[] 三种情况）。
-   - 使用 `mapHttpStatusToErrorCode()` 将 HTTP 状态码映射为统一业务错误码：
-     - 400 → `PARAM_ERROR`
-     - 401 → `UNAUTHORIZED`
-     - 403 → `FORBIDDEN`
-     - 404 → `NOT_FOUND`
-     - 503 → `SERVICE_UNAVAILABLE`
-     - 5xx → `INTERNAL_ERROR`
-   - 4xx 记录为 `warn`，5xx 记录为 `error`
-   - 日志中同样附带 `requestId`
-   - 返回：
-     ```
-     response
-       .status(status)
-       .json(Result.error(errorCode, message));
-     ```
+- 请求入口日志
+- 异常日志
+- 业务过程日志
+- 网关与前端联调排障
 
-3. 未知异常
-   - 提取安全错误消息，兼容 `Error`、字符串、普通对象等异常输入
-   - 记录结构化 error 日志和堆栈
-   - 返回 500，错误码 INTERNAL_ERROR + 文案“服务器内部错误”。
+实现规则：
 
-### 4.6 参数校验错误统一处理
-
-文件： `main.ts` 、 `utils/formatValidationErrors.ts`
-
-- 应用启动时在 `ValidationPipe` 中配置了自定义 `exceptionFactory`
-- 当 DTO / class-validator 校验失败时：
-  - 递归提取所有约束错误消息
-  - 使用中文分号 `；` 拼接为单条可读提示
-  - 最终统一转换为 `BusinessException(ErrorCode.PARAM_ERROR, message)`
+- 优先复用上游透传的 `x-request-id`
+- 若没有透传，则服务端自动生成 UUID
+- 将值挂到 `request.requestId`
+- 同时写回响应头 `x-request-id`
 
 示例：
 
-```
-new ValidationPipe({
-  transform: true,
-  whitelist: true,
-  exceptionFactory: (errors: ValidationError[]) => {
-    return new BusinessException(
-      ErrorCode.PARAM_ERROR,
-      formatValidationErrors(errors),
-    );
-  },
-})
+```ts
+export function bindRequestId(request: Request, response: Response): string {
+  const incomingRequestId = request.headers[REQUEST_ID_HEADER];
+  const requestId =
+    typeof incomingRequestId === "string" && incomingRequestId.trim()
+      ? incomingRequestId.trim()
+      : randomUUID();
+
+  (request as RequestWithRequestId).requestId = requestId;
+  response.setHeader(REQUEST_ID_HEADER, requestId);
+
+  return requestId;
+}
 ```
 
-这样前端拿到的参数错误响应将保持统一结构，例如：
+开发建议：
 
+- 业务日志中如需排查单次请求，优先输出 `requestId`
+- 网关、前端、测试工具建议透传 `x-request-id`
+
+### 5.3 请求日志拦截
+
+文件：`src/common/interceptors/logging.interceptor.ts`
+
+`LoggingInterceptor` 会统一记录每个请求的基础信息：
+
+- `requestId`
+- `method`
+- `url`
+- `body`
+- `durationMs`
+
+核心逻辑：
+
+```ts
+return next.handle().pipe(
+  tap(() => {
+    const time = Date.now() - start;
+    this.logger.info("[RequestCompleted]", {
+      requestId,
+      method,
+      url,
+      durationMs: time,
+      body,
+    });
+  }),
+);
 ```
+
+开发建议：
+
+- 不需要在每个 Controller 手动记录通用请求日志
+- 只在关键业务步骤补充额外业务日志
+
+## 六、统一响应结构
+
+### 6.1 Result 返回模型
+
+文件：`src/common/utils/result.ts`
+
+后端对外统一响应结构如下：
+
+- 成功：
+
+```json
+{
+  "success": true,
+  "code": 0,
+  "message": "success",
+  "data": {}
+}
+```
+
+- 失败：
+
+```json
 {
   "success": false,
   "code": 40000,
-  "message": "用户名不能为空；密码长度不能小于 6 位"
+  "message": "错误信息"
 }
 ```
 
-开发规范：
+### 6.2 ResponseInterceptor 自动包装成功结果
 
-- 自己抛业务错误时：使用 BusinessException + ErrorCode 。
-- 不要在 Controller 手动 catch 后自己返回 Response；交给全局异常过滤器统一处理。
+文件：`src/common/interceptors/response.interceptor.ts`
 
-## 六、鉴权体系（登录拦截 + 注解）
+所有正常返回值都会被自动包装为 `Result.success(data)`，因此：
 
-### 5.1 Auth 装饰器：标记需要鉴权的接口
+- Controller 中直接返回业务数据即可
+- 不要手动 `return Result.success(...)`
+- 不要手动构造 `{ success: true }` 之类的结构
 
-文件： auth.decorator.ts
+示例：
 
-```
-export const AUTH_KEY = 'needAuth';
-export const Auth = () => SetMetadata(AUTH_KEY, 
-true);
-```
-
-- 通过 @Auth() 为路由 handler 打上 needAuth = true 的 metadata。
-- AuthGuard 会读取这个 metadata 决定是否执行鉴权逻辑。
-  使用示例（Controller）：
-
-```
-@UseGuards(AuthGuard)
-@Controller('xxx')
-export class XxxController {
-  @Get()
-  @Auth()
-  list() { ... }
-}
+```ts
+return next.handle().pipe(map((data) => Result.success(data)));
 ```
 
-### 5.2 CurrentUser 装饰器：注入当前登录用户
+## 七、统一异常治理
 
-文件： currentUser.decorator.ts
+### 7.1 设计目标
 
-```
-export const CurrentUser = createParamDecorator(
-  <K extends keyof JwtUser>(
-    key: K,
-    ctx: ExecutionContext,
-  ): JwtUser[K] | JwtUser => {
-    const request = ctx.switchToHttp().
-    getRequest<Request>();
-    const user = request.user as JwtUser;
-    return key ? user[key] : user;
-  },
-);
-```
+异常治理需要同时满足两件事：
 
-- JwtUser 定义在 modules/auth/interface/jwtUser.ts （目前包含 sub / username / isAdmin 等）。
-- 使用方式（推荐统一使用 sub 字段作为用户 id）：
+- 对前端保持稳定、统一的错误码与响应结构
+- 对后端保留真实根因、堆栈与上下文，便于排障
 
-  ```
-  import { CurrentUser } from '@common/decorators/
-  currentUser.decorator';
+本次异常治理的核心结论是：
 
-  @Get('me')
-  getProfile(@CurrentUser('sub') userId: string) {
-    // userId 即 JWT 中的 sub
-  }
-  ```
+- 不能只保留统一业务错误码，而吞掉底层系统异常
+- 所有系统调用失败都应该在统一模型下保留 `cause`
 
-### 5.3 AuthGuard：JWT 校验 + 登录拦截
-
-文件： auth.guard.ts
-
-核心流程：
-
-1. 使用 Reflector 读取当前 handler 上是否有 AUTH_KEY ：
-
-   ```
-   const needAuth = this.reflector.get<boolean>
-   (AUTH_KEY, context.getHandler());
-   if (!needAuth) return true; // 未标记 Auth() 的接
-   口直接放行
-   ```
-
-2. 读取请求头 Authorization ：
-
-   ```
-   const authHeader = request.headers
-   ['authorization'];
-   if (!authHeader) {
-     throw new BusinessException(ErrorCode.
-     UNAUTHORIZED);
-   }
-   ```
-
-3. 去掉 Bearer 前缀，使用 JwtService.verify 校验 token：
-
-   ```
-   const token = authHeader.replace('Bearer ', '');
-   try {
-     const user = this.jwtService.verify<JwtUser>
-     (token);
-     request.user = user;
-     return true;
-   } catch (e) {
-     throw new BusinessException(ErrorCode.
-     UNAUTHORIZED_EXPIRED);
-   }
-   ```
-
-- 成功：将解出来的 JwtUser 挂到 request.user 上，供 CurrentUser 使用。
-- 失败：抛出 UNAUTHORIZED 或 UNAUTHORIZED_EXPIRED ，交由异常过滤器统一返回。
-  使用建议：
-
-- 在需要保护的模块 Controller 上统一加 @UseGuards(AuthGuard) ，然后用 @Auth() 标记具体需要登录的接口。
-- 对于完全公开接口，可以不加 @Auth() ，守卫会自动跳过。
-
-## 七、Prisma & 数据库访问
-
-### 6.1 PrismaModule 与 PrismaService
+### 7.2 错误码体系
 
 文件：
 
-- prisma.module.ts
-- prisma.service.ts
-  要点：
+- `src/common/utils/errorCodeMap.ts`
+- `src/common/utils/errorMessageMap.ts`
+- `src/common/utils/errorCodeHttpMap.ts`
 
-- @Global() 模块，整个应用中只需引入一次 PrismaModule 即可（在 AppModule 中）。
-- PrismaService 继承自 PrismaClient ，配置了 PrismaMariaDb 适配器，从环境变量读取数据库配置。
-- 各业务模块可通过：
+规则：
 
-  ```
-  import { PrismaService } from '@common/prisma/
-  prisma.service';
+- `ErrorCode` 负责统一错误码枚举
+- `ErrorMessageMap` 负责默认错误文案
+- `ErrorCodeHttpStatusMap` 负责错误码到 HTTP 状态码映射
 
-  constructor(private readonly prisma: 
-  PrismaService) {}
-  ```
+新增业务错误时，必须同步补齐这三处映射关系。
 
-  即可访问数据库表，如 prisma.sys_users 、 prisma.user_sessions 、 prisma.email_verification_codes 等。
+### 7.3 BusinessException 统一业务异常模型
 
-## 八、日志拦截器
+文件：`src/common/exception/businessException.ts`
 
-### 7.1 LoggingInterceptor：记录每个请求耗时
+当前 `BusinessException` 在原有“错误码 + 文案 + HTTP 状态码”的基础上，新增了以下能力：
 
-文件： logging.interceptor.ts
+- `cause`：保留底层原始异常对象
+- `context`：记录业务上下文
+- `logLevel`：区分 `warn` 与 `error`
+- 兼容旧调用方式：
+  - `new BusinessException(code)`
+  - `new BusinessException(code, message)`
+- 提供 `wrapBusinessException()` 用于统一包装未知异常
 
-- 使用 Winston 记录每一个 HTTP 请求的：
-  - 请求标识：`requestId`
-  - 方法：method
-  - 路径：url
-  - 请求体：body
-  - 耗时：durationMs
-    核心逻辑：
+示例：
 
-```
-const start = Date.now();
-return next.handle().pipe(
-  tap(() => {
-    const time = Date.now() - start;
-    this.logger.info('[RequestCompleted]', {
-      requestId,
-      method,
-      url,
-      durationMs: time,
-      body,
-    });
-  }),
-);
+```ts
+throw new BusinessException(ErrorCode.AUTH_USER_EXISTS);
+
+throw new BusinessException(ErrorCode.EMAIL_SEND_FAILED, {
+  context: {
+    module: "EmailService",
+    action: "sendVerificationCode",
+    email,
+    purpose,
+  },
+});
 ```
 
-该拦截器一般在全局注册，开发者不需要在每个 Controller 手动使用。
+包装未知异常示例：
 
-## 九、开发实践建议
+```ts
+throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+  context: {
+    module: "AuthService",
+    action: "login",
+    email: loginDto.email,
+  },
+});
+```
 
-在实现新接口时，建议遵循以下模式：
+### 7.4 什么时候直接抛，什么时候包装
 
-1. 鉴权与用户信息
-   - 需要登录的接口：
-     - 在 Controller 上添加 @UseGuards(AuthGuard)
-     - 在方法上添加 @Auth()
-     - 使用 @CurrentUser('sub') 获取当前用户 ID
-   - 完全公开接口：不加 @Auth() 即可。
+建议遵循以下规则：
 
-2. 返回值
-   - 服务层返回业务结构即可，Controller 直接 return 。
-   - 无需手动构造 Result ，统一交给 ResponseInterceptor 。
+1. 纯业务校验错误，直接抛 `BusinessException`
+2. 数据库、JWT、Redis、外部接口、邮件发送等系统依赖失败，必须通过 `wrapBusinessException()` 包装
+3. 包装异常时必须附带 `context`
+4. `4xx` 类业务问题默认记为 `warn`
+5. `5xx` 类系统问题默认记为 `error`
 
-3. 错误处理
-   - 遇到业务错误，统一使用：
-     ```
-     throw new BusinessException(ErrorCode.XXX);
-     ```
-   - 如需自定义提示文案：
-     ```
-     throw new BusinessException(ErrorCode.XXX, '自
-     定义错误提示');
-     ```
+典型例子：
 
-4. 新增业务错误
-   - 在 errorCodeMap.ts 中新增 ErrorCode ；
-   - 在 errorMessageMap.ts 中添加默认文案；
-   - 在 errorCodeHttpMap.ts 中配置 HTTP 状态码；
-   - 业务代码中通过 BusinessException 抛出。
+- 用户不存在
+  - 这是业务判定，直接抛 `AUTH_USER_NOT_FOUND`
+- 数据库连接超时
+  - 这是系统问题，应该包装成统一业务异常，并保留真实 `cause`
+- SMTP 发送失败
+  - 这是系统问题，应该包装成 `EMAIL_SEND_FAILED`，并保留 `cause`
 
-5. 数据库访问
-   - 服务层通过注入 PrismaService 操作表，命名上优先对齐 schema.prisma 模型名。
+### 7.5 AllExceptionsFilter 统一异常出口
 
-6. 日志追踪
-   - 需要串联同一次请求的日志时，统一使用 `requestId`
-   - 网关或前端可主动透传 `x-request-id`
-   - 若未透传，服务端会自动生成并回写到响应头
+文件：`src/common/filter/all-exceptions.filter.ts`
+
+全局异常过滤器统一处理三类异常：
+
+1. `BusinessException`
+2. `HttpException`
+3. 未知异常
+
+其中针对 `BusinessException`，当前日志会额外输出：
+
+- `status`
+- `code`
+- `message`
+- `context`
+- `stack`
+- `causeMessage`
+- `causeStack`
+- `cause`
+
+并且会对日志字段做安全序列化，避免 `BigInt` 等值导致日志序列化失败。
+
+返回给前端时，仍然保持统一错误结构，不直接暴露内部堆栈。
+
+### 7.6 参数校验错误统一处理
+
+文件：
+
+- `src/main.ts`
+- `src/common/utils/formatValidationErrors.ts`
+
+DTO 校验失败时，系统会：
+
+- 收集所有 `class-validator` 错误
+- 拼接为可读中文提示
+- 统一转换成 `BusinessException(ErrorCode.PARAM_ERROR, message)`
+
+因此开发中：
+
+- DTO 只负责声明规则
+- Controller 不要手动捕获参数错误再改写响应
+
+## 八、鉴权体系
+
+### 8.1 Auth 装饰器
+
+文件：`src/common/decorators/auth.decorator.ts`
+
+`@Auth()` 用于标记当前接口需要登录鉴权，本质是写入 `needAuth` 元数据。
+
+### 8.2 CurrentUser 装饰器
+
+文件：`src/common/decorators/currentUser.decorator.ts`
+
+`@CurrentUser()` 用于从 `request.user` 中读取当前登录用户信息。
+
+推荐优先使用：
+
+```ts
+@CurrentUser('sub') userId: string
+```
+
+这样可以稳定拿到 JWT 中的用户主键。
+
+### 8.3 AuthGuard
+
+文件：`src/common/guards/auth.guard.ts`
+
+核心流程：
+
+1. 读取当前接口是否标记了 `@Auth()`
+2. 若未标记，则直接放行
+3. 读取 `Authorization` 请求头
+4. 去掉 `Bearer ` 前缀
+5. 使用 `JwtService.verify()` 校验 token
+6. 成功后将用户信息挂到 `request.user`
+7. 失败时抛出统一业务异常
+
+开发约定：
+
+- 需要登录的接口：
+  - 在 Controller 上使用 `@UseGuards(AuthGuard)`
+  - 在具体方法上使用 `@Auth()`
+- 完全公开接口：
+  - 不加 `@Auth()`
+
+## 九、认证链路参考
+
+文件：`src/modules/auth/auth.service.ts`
+
+认证模块目前已完成系统异常包装治理，以下方法在出现下游异常时都会保留上下文与根因：
+
+- `sendVerificationCode`
+- `register`
+- `login`
+- `refreshToken`
+- `me`
+
+推荐上下文字段示例：
+
+- `module: 'AuthService'`
+- `action: 'login'`
+- `action: 'refreshToken.verify'`
+- `email`
+- `userId`
+
+开发时应遵循：
+
+- 业务判定错误直接抛业务异常
+- JWT 校验、会话表写入、邮件发送、数据库查询失败等系统问题统一包装
+- 上下文要足够定位到具体动作，不要只写模块名
+
+## 十、邮件与验证码链路参考
+
+文件：`src/modules/email/email.service.ts`
+
+邮件模块当前具备以下行为特征：
+
+- 初始化时读取邮件配置
+- 配置不完整时，不阻塞应用启动
+- 真正调用邮件能力时，如发送器不可用，抛 `EMAIL_CONFIG_INVALID`
+- 验证码写库失败时，包装为 `EMAIL_CODE_PROCESS_FAILED`
+- 邮件发送失败时，包装为 `EMAIL_SEND_FAILED`
+
+推荐上下文字段：
+
+- `module: 'EmailService'`
+- `action: 'saveVerificationCode'`
+- `action: 'sendVerificationCode'`
+- `action: 'sendVerificationCodeFlow'`
+- `action: 'verifyCode'`
+- `email`
+- `purpose`
+
+开发建议：
+
+- 验证码链路至少分清“写库失败”和“发信失败”
+- 不要在 `catch` 里直接 `throw new BusinessException(...)` 而丢失原始错误
+- 邮件相关配置问题、网络问题、SMTP 协议问题应能在日志里区分
+
+## 十一、用户模块开发参考
+
+文件：`src/modules/user/user.service.ts`
+
+用户模块已经按相同模式治理异常，覆盖：
+
+- 创建用户
+- 更新资料
+- 修改密码
+- 重置密码
+
+开发建议：
+
+- 返回给前端的用户信息统一通过 `buildUserProfile()` 组装
+- 对外结构应稳定，不要在不同接口里返回不同命名的用户字段
+- 涉及用户关键操作时，在日志上下文中补充 `userId` 或 `email`
+
+## 十二、数据库访问约定
+
+文件：
+
+- `src/common/prisma/prisma.module.ts`
+- `src/common/prisma/prisma.service.ts`
+
+当前数据库访问约定如下：
+
+- 统一通过注入 `PrismaService` 访问数据库
+- 数据访问放在 Service 层，不放在 Controller 层
+- 表模型命名优先对齐 Prisma schema
+- 数据库异常属于系统异常，不能简单吞掉
+
+示例：
+
+```ts
+constructor(private readonly prisma: PrismaService) {}
+```
+
+开发建议：
+
+- Prisma 查询失败、连接超时、事务失败等都需要统一包装
+- 如果后续扩展仓储层，也要延续相同异常治理规则
+
+## 十三、新增后端接口的推荐写法
+
+新增接口时，建议按以下顺序实现：
+
+### 13.1 Controller 层
+
+- 负责路由、DTO、鉴权标记和参数接收
+- 正常情况直接 `return service.xxx()`
+- 不手动包装 `Result`
+- 不手动 `try/catch` 后返回自定义错误响应
+
+### 13.2 Service 层
+
+- 写核心业务逻辑
+- 业务校验错误直接抛 `BusinessException`
+- 系统调用错误统一通过 `wrapBusinessException()` 包装
+- `context` 中至少写明：
+  - `module`
+  - `action`
+  - 关键业务参数
+
+### 13.3 DTO 层
+
+- 使用 `class-validator` 声明参数规则
+- 不在 DTO 中写业务逻辑
+- 参数错误统一交给全局 `ValidationPipe`
+
+### 13.4 返回值
+
+- 返回纯业务数据
+- 成功包装交给 `ResponseInterceptor`
+- 失败包装交给 `AllExceptionsFilter`
+
+## 十五、后续建设建议
+
+建议继续将相同的异常治理与日志规范扩展到以下场景：
+
+1. Prisma 更底层的数据访问封装
+2. Redis、向量库、外部模型调用
+3. 文件上传与文档解析链路
+4. Guard、Interceptor、定时任务等基础设施层
+
+统一原则不变：
+
+1. 业务错误直接抛 `BusinessException`
+2. 系统错误必须保留 `cause`
+3. 所有包装异常都应附带 `context`
+4. 对前端保持统一响应结构
+5. 对后端日志保留足够的根因信息
+
+## 十六、相关文件索引
+
+- `apps/backend/src/main.ts`
+- `apps/backend/src/common/config/env.validation.ts`
+- `apps/backend/src/common/config/winston.config.ts`
+- `apps/backend/src/common/utils/requestId.ts`
+- `apps/backend/src/common/interceptors/logging.interceptor.ts`
+- `apps/backend/src/common/interceptors/response.interceptor.ts`
+- `apps/backend/src/common/utils/result.ts`
+- `apps/backend/src/common/exception/businessException.ts`
+- `apps/backend/src/common/filter/all-exceptions.filter.ts`
+- `apps/backend/src/common/decorators/auth.decorator.ts`
+- `apps/backend/src/common/decorators/currentUser.decorator.ts`
+- `apps/backend/src/common/guards/auth.guard.ts`
+- `apps/backend/src/modules/auth/auth.service.ts`
+- `apps/backend/src/modules/email/email.service.ts`
+- `apps/backend/src/modules/user/user.service.ts`

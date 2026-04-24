@@ -20,6 +20,11 @@ export const ErrorMessageMap: Record<ErrorCode, string> = {
   [ErrorCode.KNOWLEDGE_HAS_JOINED]: '你已加入该知识库',
   [ErrorCode.KNOWLEDGE_HAS_OWNED]: '你已拥有该知识库',
   [ErrorCode.KNOWLEDGE_NOT_JOINED]: '你尚未加入该知识库',
+  [ErrorCode.KNOWLEDGE_INVITATION_EXPIRED]: '邀请码已过期',
+  [ErrorCode.KNOWLEDGE_INVITATION_USED]: '邀请码已被使用',
+  [ErrorCode.KNOWLEDGE_INVITATION_CANCELLED]: '邀请码已被取消',
+  [ErrorCode.KNOWLEDGE_MEMBER_REMOVE_OWNER_FORBIDDEN]:
+    '不能移除知识库所有者',
 
   // 文件
   [ErrorCode.FILE_NOT_FOUND]: '文件不存在',

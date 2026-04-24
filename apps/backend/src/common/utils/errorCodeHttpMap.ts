@@ -20,6 +20,10 @@ export const ErrorCodeHttpStatusMap: Record<ErrorCode, HttpStatus> = {
   [ErrorCode.KNOWLEDGE_HAS_JOINED]: HttpStatus.BAD_REQUEST,
   [ErrorCode.KNOWLEDGE_HAS_OWNED]: HttpStatus.BAD_REQUEST,
   [ErrorCode.KNOWLEDGE_NOT_JOINED]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.KNOWLEDGE_INVITATION_EXPIRED]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.KNOWLEDGE_INVITATION_USED]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.KNOWLEDGE_INVITATION_CANCELLED]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.KNOWLEDGE_MEMBER_REMOVE_OWNER_FORBIDDEN]: HttpStatus.BAD_REQUEST,
 
   // 文件
   [ErrorCode.FILE_NOT_FOUND]: HttpStatus.NOT_FOUND,

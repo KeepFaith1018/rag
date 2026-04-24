@@ -1,4 +1,4 @@
-# 基于信息检索增强的私有知识库问答系统 - 数据库设计文档
+# 基于信息检索增强的知识库问答系统 - 数据库设计文档
 
 ## 1. 概述
 
@@ -97,31 +97,63 @@
 
 #### 表名：`b_knowledge_bases` (知识库主表)
 
+本表需要支撑两种知识库类型，以及共享知识库上的开源策略：
+
+- `private`：私有，仅创建者可访问，不参与公开搜索
+- `shared`：共享，支持邀请成员协作
+- 当 `visibility = shared` 时，可进一步通过公开配置控制：
+  - 是否可被登录用户搜索发现
+  - 是否允许登录用户直接问答
+  - 是否允许下载知识库内文件
+
 | 字段名        | 类型   | 约束 / 默认值     | 描述                          |
 | :------------ | :----- | :---------------- | :---------------------------- |
 | `name`        | String | VarChar(100)      | 知识库名称                    |
 | `description` | String | Text              | 知识库描述                    |
-| `visibility`  | String | 默认: `"private"` | 可见性（`private`, `shared`） |
+| `visibility`  | String | 默认: `"private"` | 类型（`private`, `shared`） |
 | `status`      | String | 默认: `"normal"`  | 状态（`normal`, `disabled`）  |
 | `owner_id`    | BigInt | 外键              | 创建者 ID                     |
 
+建议补充说明：
+
+- `visibility = shared` 时，成员关系由 `b_kb_members` 维护
+- 共享知识库的“是否开源”不建议再建第三种 `visibility`，而应作为共享知识库的公开访问策略字段维护
+- 向量检索时除 `kbId` 过滤外，还需结合 `visibility`、公开配置与用户身份决定是否可检索
+
 #### 表名：`b_kb_members` (知识库成员权限表)
 
-| 字段名      | 类型     | 约束 / 默认值    | 描述                                     |
-| :---------- | :------- | :--------------- | :--------------------------------------- |
-| `kb_id`     | BigInt   | 外键             | 知识库 ID                                |
-| `user_id`   | BigInt   | 外键             | 用户 ID                                  |
-| `role`      | String   | 默认: `"viewer"` | 成员角色 (`creator`, `editor`, `viewer`) |
-| `joined_at` | DateTime | 默认: `now()`    | 加入时间                                 |
+本表用于**共享知识库**协作成员管理。即使共享知识库已开启开源，也仍可通过本表维护协作者。
+
+| 字段名      | 类型     | 约束 / 默认值    | 描述                                           |
+| :---------- | :------- | :--------------- | :--------------------------------------------- |
+| `kb_id`     | BigInt   | 外键             | 知识库 ID                                      |
+| `user_id`   | BigInt   | 外键             | 用户 ID                                        |
+| `role`      | String   | 默认: `"member"` | 成员角色 (`manager`, `collaborator`, `member`) |
+| `joined_at` | DateTime | 默认: `now()`    | 加入时间                                       |
+
+说明：
+
+- `owner` 实际仍以 `b_knowledge_bases.owner_id` 为主，不建议在成员表中重复维护创建者数据
+- `publicVisitor` 不进入本表，仅在知识库公开时由业务层动态识别
+- `member` 为默认加入角色，`manager / collaborator` 由邀请链路显式指定
 
 #### 表名：`b_kb_invitations` (知识库邀请链接表)
+
+本表用于**共享知识库邀请加入**。共享知识库是否开源，不影响其邀请协作者能力。
 
 | 字段名        | 类型     | 约束 / 默认值     | 描述       |
 | :------------ | :------- | :---------------- | :--------- |
 | `invite_code` | String   | 唯一, VarChar(64) | 邀请码     |
-| `role`        | String   | 默认: `"viewer"`  | 受邀角色   |
+| `role`        | String   | 默认: `"member"`  | 受邀角色 (`manager`, `collaborator`, `member`) |
 | `expired_at`  | DateTime | 必填              | 过期时间   |
 | `is_used`     | Boolean  | 默认: `false`     | 是否已使用 |
+
+建议后续按实现复杂度评估补充以下字段：
+
+- `cancelled_at`：主动撤销邀请
+- `accepted_by`：接受邀请的用户
+- `accepted_at`：接受邀请时间
+- `status`：统一表达 `active / used / expired / cancelled`
 
 ---
 
@@ -131,11 +163,25 @@
 
 | 字段名        | 类型   | 约束 / 默认值     | 描述                                                  |
 | :------------ | :----- | :---------------- | :---------------------------------------------------- |
+| `uploader_id` | BigInt | 可空, 外键        | 上传者 ID，用于判断协作者是否只能管理自己上传的文件   |
 | `title`       | String | VarChar(255)      | 文档标题                                              |
 | `file_path`   | String | VarChar(500)      | 文件存储路径                                          |
 | `file_hash`   | String | VarChar(64)       | 文件 Hash (用于秒传/去重)                             |
-| `status`      | String | 默认: `"pending"` | 解析状态 (`pending`, `parsing`, `completed`, `error`) |
+| `status`      | String | 默认: `"pending"` | 解析状态 (`uploaded`, `queued`, `parsing`, `chunking`, `embedding`, `ready`, `failed`) |
 | `token_count` | Int    | 默认: `0`         | 文档总 Token 量                                       |
+
+说明：
+
+- `owner / manager` 可管理任意文档
+- `collaborator` 只能管理 `uploader_id = currentUserId` 的文档
+- 成员体系默认可下载文档，公开访客是否可下载由知识库 `allow_public_download` 决定
+
+建议后续按需要补充：
+
+- `uploader_id`：上传者
+- `original_filename`：原始文件名
+- `mime_type`：文件 MIME 类型
+- `parse_started_at` / `parse_finished_at`：解析耗时分析
 
 #### 表名：`b_document_chunks` (文档文本切片表)
 
@@ -146,6 +192,14 @@
 | `content`          | String | LongText          | 切片纯文本内容 |
 | `token_count`      | Int    | 默认: `0`         | 切片 Token 量  |
 | `embedding_status` | String | 默认: `"pending"` | 向量化状态     |
+
+建议补充字段以支持问答溯源与向量同步：
+
+- `page_no`
+- `char_start`
+- `char_end`
+- `vector_id`
+- `metadata_json`
 
 ---
 
