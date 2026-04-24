@@ -4,7 +4,16 @@ import ChatStream from '@/components/chat/ChatStream.vue';
 import ChatInputArea from '@/components/chat/ChatInputArea.vue';
 import { ref } from 'vue';
 
-const messages = ref([
+interface ChatMessage {
+  id: number;
+  role: 'ai' | 'user';
+  name: string;
+  content: string;
+  time?: string;
+  tag?: string;
+}
+
+const messages = ref<ChatMessage[]>([
   {
     id: 1,
     role: 'ai',

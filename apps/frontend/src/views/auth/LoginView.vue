@@ -1,9 +1,19 @@
 <script setup lang="ts">
-import { ref } from "vue";
+import { computed, ref } from "vue";
 import BaseButton from "@/components/ui/BaseButton.vue";
 import BaseInput from "@/components/ui/BaseInput.vue";
-import { useRouter } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
+import { useVerificationCountdown } from "@/composables/useVerificationCountdown";
+import { useAuthStore } from "@/stores/auth";
+import { useMessage } from "@/composables/useMessage";
+import { ApiError } from "@/types/api";
+import { VerificationPurpose } from "@/types/auth";
+
 const router = useRouter();
+const route = useRoute();
+const authStore = useAuthStore();
+const message = useMessage();
+const registerCodeCountdown = useVerificationCountdown(30);
 
 // 控制当前显示的是登录表单还是注册表单
 const isLoginMode = ref(true);
@@ -18,26 +28,251 @@ const loginForm = ref({
 // 注册表单数据
 const registerForm = ref({
   email: "",
+  username: "",
   verificationCode: "",
   password: "",
   confirmPassword: "",
 });
 
-const handleLogin = () => {
-  console.log("Login attempt:", loginForm.value);
-  // TODO: 调用后端登录 API
-  router.push("/");
+const sendCodeButtonText = computed(() => {
+  if (authStore.isSendingCode) {
+    return "发送中...";
+  }
+
+  return registerCodeCountdown.buttonText.value;
+});
+
+const isRegisterSendCodeDisabled = computed(() => {
+  return authStore.isSendingCode || registerCodeCountdown.isCountingDown.value;
+});
+
+const loginButtonText = computed(() => {
+  return authStore.isLoginSubmitting ? "登录中..." : "执行登录";
+});
+
+const registerButtonText = computed(() => {
+  return authStore.isRegisterSubmitting ? "注册中..." : "部署新账号";
+});
+
+const handleLogin = async () => {
+  const loginValidationError = validateLoginForm();
+  if (loginValidationError) {
+    message.warning(loginValidationError);
+    return;
+  }
+
+  try {
+    await authStore.login(
+      {
+        email: loginForm.value.email.trim(),
+        password: loginForm.value.password,
+      },
+      loginForm.value.rememberMe,
+    );
+
+    message.success("登录成功");
+
+    const redirect =
+      typeof route.query.redirect === "string" ? route.query.redirect : "/chat";
+
+    await router.replace(redirect);
+  } catch (error) {
+    message.error(resolveErrorMessage(error, "登录失败，请稍后重试"));
+  }
 };
 
-const handleRegister = () => {
-  console.log("Register attempt:", registerForm.value);
-  // TODO: 调用后端注册 API
+const handleRegister = async () => {
+  const registerValidationError = validateRegisterForm();
+  if (registerValidationError) {
+    message.warning(registerValidationError);
+    return;
+  }
+
+  try {
+    const result = await authStore.register({
+      email: registerForm.value.email.trim(),
+      username: registerForm.value.username.trim(),
+      code: registerForm.value.verificationCode.trim(),
+      password: registerForm.value.password,
+    });
+
+    message.success(result.message || "注册成功，请登录");
+
+    registerForm.value.verificationCode = "";
+    registerForm.value.password = "";
+    registerForm.value.confirmPassword = "";
+    isLoginMode.value = true;
+  } catch (error) {
+    message.error(resolveErrorMessage(error, "注册失败，请稍后重试"));
+  }
 };
 
-const sendVerificationCode = () => {
-  console.log("Send code to:", registerForm.value.email);
-  // TODO: 调用发送验证码 API
+const sendVerificationCode = async () => {
+  if (registerCodeCountdown.isCountingDown.value) {
+    return;
+  }
+
+  const emailValidationError = validateEmail(registerForm.value.email);
+  if (emailValidationError) {
+    message.warning(emailValidationError);
+    return;
+  }
+
+  try {
+    const result = await authStore.sendVerificationCode({
+      email: registerForm.value.email.trim(),
+      purpose: VerificationPurpose.REGISTER,
+    });
+
+    message.success(result.message || "验证码已发送，请查收邮箱");
+  } catch (error) {
+    registerCodeCountdown.start();
+    message.error(resolveErrorMessage(error, "验证码发送失败，请稍后重试"));
+  }
 };
+
+/**
+ * 校验登录表单。
+ */
+function validateLoginForm() {
+  const emailError = validateEmail(loginForm.value.email);
+  if (emailError) {
+    return emailError;
+  }
+
+  const passwordError = validatePassword(loginForm.value.password, "登录密码");
+  if (passwordError) {
+    return passwordError;
+  }
+
+  return "";
+}
+
+/**
+ * 校验注册表单。
+ */
+function validateRegisterForm() {
+  const emailError = validateEmail(registerForm.value.email);
+  if (emailError) {
+    return emailError;
+  }
+
+  const usernameError = validateUsername(registerForm.value.username);
+  if (usernameError) {
+    return usernameError;
+  }
+
+  const codeError = validateVerificationCode(
+    registerForm.value.verificationCode,
+  );
+  if (codeError) {
+    return codeError;
+  }
+
+  const passwordError = validatePassword(
+    registerForm.value.password,
+    "注册密码",
+  );
+  if (passwordError) {
+    return passwordError;
+  }
+
+  if (registerForm.value.password !== registerForm.value.confirmPassword) {
+    return "两次输入的密码不一致";
+  }
+
+  return "";
+}
+
+/**
+ * 校验邮箱格式。
+ */
+function validateEmail(value: string) {
+  const email = value.trim();
+
+  if (!email) {
+    return "请输入邮箱地址";
+  }
+
+  const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+  if (!emailPattern.test(email)) {
+    return "请输入正确的邮箱格式";
+  }
+
+  return "";
+}
+
+/**
+ * 校验用户名。
+ */
+function validateUsername(value: string) {
+  const username = value.trim();
+
+  if (!username) {
+    return "请输入用户名";
+  }
+
+  if (username.length < 2) {
+    return "用户名至少需要 2 个字符";
+  }
+
+  if (username.length > 100) {
+    return "用户名长度不能超过 100 个字符";
+  }
+
+  return "";
+}
+
+/**
+ * 校验验证码格式。
+ */
+function validateVerificationCode(value: string) {
+  const code = value.trim();
+
+  if (!code) {
+    return "请输入验证码";
+  }
+
+  if (!/^\d{6}$/.test(code)) {
+    return "验证码需为 6 位数字";
+  }
+
+  return "";
+}
+
+/**
+ * 校验密码强度。
+ */
+function validatePassword(value: string, fieldName: string) {
+  if (!value) {
+    return `请输入${fieldName}`;
+  }
+
+  if (value.length < 6) {
+    return `${fieldName}至少需要 6 位字符`;
+  }
+
+  if (value.length > 50) {
+    return `${fieldName}长度不能超过 50 位字符`;
+  }
+
+  return "";
+}
+/**
+/**
+ * 统一提取接口错误提示。
+ */
+function resolveErrorMessage(error: unknown, fallback: string) {
+  if (error instanceof ApiError) {
+    return error.message || fallback;
+  }
+
+  if (error instanceof Error) {
+    return error.message || fallback;
+  }
+
+  return fallback;
+}
 </script>
 
 <template>
@@ -201,10 +436,10 @@ const sendVerificationCode = () => {
                   class="block text-[11px] font-label uppercase tracking-[0.1em] text-on-surface-variant font-medium"
                   >密码</label
                 >
-                <a
-                  href="#"
+                <RouterLink
+                  to="/forgot-password"
                   class="text-[10px] font-label font-medium text-primary hover:text-on-surface transition-colors uppercase tracking-wider"
-                  >忘记密码？</a
+                  >忘记密码？</RouterLink
                 >
               </div>
               <BaseInput
@@ -237,8 +472,13 @@ const sendVerificationCode = () => {
             </div>
 
             <div class="pt-4">
-              <BaseButton type="submit" variant="primary" class="w-full py-3">
-                执行登录
+              <BaseButton
+                type="submit"
+                variant="primary"
+                class="w-full py-3"
+                :disabled="authStore.isLoginSubmitting"
+              >
+                {{ loginButtonText }}
                 <span class="material-symbols-outlined text-sm"
                   >arrow_forward</span
                 >
@@ -248,6 +488,19 @@ const sendVerificationCode = () => {
 
           <!-- 注册表单 -->
           <form v-else @submit.prevent="handleRegister" class="space-y-5">
+            <div class="space-y-2">
+              <label
+                class="block text-[11px] font-label uppercase tracking-[0.1em] text-on-surface-variant font-medium"
+                >用户名</label
+              >
+              <BaseInput
+                v-model="registerForm.username"
+                type="text"
+                placeholder="请输入显示名称"
+                required
+              />
+            </div>
+
             <div class="space-y-2">
               <label
                 class="block text-[11px] font-label uppercase tracking-[0.1em] text-on-surface-variant font-medium"
@@ -285,9 +538,10 @@ const sendVerificationCode = () => {
                   type="button"
                   variant="outline"
                   class="whitespace-nowrap px-6"
+                  :disabled="isRegisterSendCodeDisabled"
                   @click="sendVerificationCode"
                 >
-                  发送验证码
+                  {{ sendCodeButtonText }}
                 </BaseButton>
               </div>
             </div>
@@ -319,8 +573,13 @@ const sendVerificationCode = () => {
             </div>
 
             <div class="pt-4">
-              <BaseButton type="submit" variant="primary" class="w-full py-3">
-                部署新账号
+              <BaseButton
+                type="submit"
+                variant="primary"
+                class="w-full py-3"
+                :disabled="authStore.isRegisterSubmitting"
+              >
+                {{ registerButtonText }}
                 <span class="material-symbols-outlined text-sm"
                   >rocket_launch</span
                 >

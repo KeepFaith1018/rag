@@ -1,6 +1,7 @@
 import { createRouter, createWebHistory } from "vue-router";
+import { useAuthStore } from "@/stores/auth";
+import { pinia } from "@/stores/pinia";
 
-// 定义基础路由，配合 Phase 3/4/5 的页面规划
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
@@ -8,11 +9,25 @@ const router = createRouter({
       path: "/login",
       name: "login",
       component: () => import("@/views/auth/LoginView.vue"),
+      meta: {
+        guestOnly: true,
+      },
+    },
+    {
+      path: "/forgot-password",
+      name: "forgot-password",
+      component: () => import("@/views/auth/ForgotPasswordView.vue"),
+      meta: {
+        guestOnly: true,
+      },
     },
     {
       path: "/",
       component: () => import("@/layout/MainLayout.vue"),
       redirect: "/chat",
+      meta: {
+        requiresAuth: true,
+      },
       children: [
         {
           path: "chat",
@@ -32,6 +47,25 @@ const router = createRouter({
       ],
     },
   ],
+});
+
+router.beforeEach(async (to) => {
+  const authStore = useAuthStore(pinia);
+
+  if (to.meta.guestOnly && authStore.isAuthenticated) {
+    return "/chat";
+  }
+
+  if (to.meta.requiresAuth && !authStore.isAuthenticated) {
+    return {
+      path: "/login",
+      query: {
+        redirect: to.fullPath,
+      },
+    };
+  }
+
+  return true;
 });
 
 export default router;

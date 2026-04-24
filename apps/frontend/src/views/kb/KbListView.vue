@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import TopNavBar from "@/components/layout/TopNavBar.vue";
 import FilterBar from "@/components/kb/FilterBar.vue";
 import KbCard from "@/components/kb/KbCard.vue";
 import { ref } from "vue";

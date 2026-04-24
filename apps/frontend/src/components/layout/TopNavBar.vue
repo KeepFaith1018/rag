@@ -1,9 +1,7 @@
 <script setup lang="ts">
 import { useAppStore } from "@/stores/app";
-import { storeToRefs } from "pinia";
 
 const appStore = useAppStore();
-const { isDark } = storeToRefs(appStore);
 
 // 定义组件接收的属性
 interface Props {

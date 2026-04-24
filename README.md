@@ -49,6 +49,11 @@ Linsor AI (灵索智能) 是一个专注于极致用户体验与高效信息检�
 - [前端设计规范 (DESIGN.md)](docs/ui/DESIGN.md): 核心 UI 设计理念 (The Kinetic Blueprint)。
 - [前端页面实现规划 (ui-implementation-plan.md)](docs/ui-implementation-plan.md): 页面结构、组件拆分与主题配置方案。
 
+前端应用内的专题实现文档位于 `apps/frontend/docs/`：
+
+- [前端认证请求层设计 (auth-api-design.md)](apps/frontend/docs/auth-api-design.md): 基于 `fetch` 的双 token、自动刷新与请求排队设计。
+- [前端认证实现总结 (auth-implementation-summary-2026-04-22.md)](apps/frontend/docs/auth-implementation-summary-2026-04-22.md): 本次认证链路落地、验证结果与后续建议。
+
 ## 🚀 快速开始
 
 ### 1. 环境准备
@@ -100,6 +105,8 @@ pnpm --filter frontend dev
   - 移除冗余纹理背景，确立 Refined Minimalist (精致极简) 的 UI 风格。
   - 实现平滑的组件交互：增加 `color-mix` 动态透明度、弥散阴影 (`--shadow-glass`)、AI 思考呼吸灯 (`.ai-thinking-glow`)。
   - 优化导航结构，底部个人菜单重构为类 ChatGPT 的丝滑 Popover 弹出菜单。
+  - 完成前端认证基础设施：统一请求层、双 token、自动刷新、刷新排队、`auth store`、启动恢复登录态、路由守卫。
+  - 完成认证页面联调：登录、注册、发送验证码、忘记密码、重置密码、全局消息提示、验证码倒计时与基础表单校验。
 
 ### 2026-01: 项目初始化与后端架构
 

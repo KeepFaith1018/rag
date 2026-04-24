@@ -1,9 +1,17 @@
 <script setup lang="ts">
 import { useAppStore } from "@/stores/app";
+import { useAuthStore } from "@/stores/auth";
+import { useMessage } from "@/composables/useMessage";
 import { storeToRefs } from "pinia";
-import { ref, onMounted, onUnmounted } from "vue";
+import { computed, ref, onMounted, onUnmounted } from "vue";
+import { RouterLink, useRoute, useRouter } from "vue-router";
 
 const appStore = useAppStore();
+const authStore = useAuthStore();
+const message = useMessage();
+const route = useRoute();
+const router = useRouter();
+
 // 使用 storeToRefs 保持响应式
 const { isSidebarOpen, isDark } = storeToRefs(appStore);
 
@@ -29,28 +37,49 @@ onUnmounted(() => {
   document.removeEventListener("click", closeUserMenu);
 });
 
-// 定义导航数据结构
-const navGroups = [
-  {
-    title: "工作区",
-    items: [
-      { name: "知识库", icon: "database", path: "/kb", active: true },
-      { name: "聊天历史", icon: "history", path: "/chat", active: false },
-    ],
-  },
-  {
-    title: "最近会话",
-    items: [
-      { name: "神经优化策略", time: "今天", path: "/chat/1", active: false },
-      {
-        name: "第四季度技术路线图",
-        time: "昨天",
-        path: "/chat/2",
-        active: false,
-      },
-    ],
-  },
+interface PrimaryNavItem {
+  name: string;
+  icon: string;
+  path: string;
+}
+
+interface RecentSessionItem {
+  name: string;
+  time: string;
+  path: string;
+}
+
+const primaryNavItems: PrimaryNavItem[] = [
+  { name: "知识库", icon: "database", path: "/kb" },
+  { name: "聊天历史", icon: "history", path: "/chat" },
 ];
+
+const recentSessions: RecentSessionItem[] = [
+  { name: "神经优化策略", time: "今天", path: "/chat/1" },
+  { name: "第四季度技术路线图", time: "昨天", path: "/chat/2" },
+];
+
+const displayName = computed(() => authStore.user?.username || "未登录用户");
+const displayEmail = computed(() => authStore.user?.email || "请先登录");
+const displayRole = computed(() => authStore.user?.roles?.[0] || "guest");
+const displayAvatar = computed(() => authStore.user?.avatar || "");
+
+/**
+ * 判断主导航项是否处于激活状态。
+ */
+function isNavActive(path: string) {
+  return route.path === path || route.path.startsWith(`${path}/`);
+}
+
+/**
+ * 退出登录并返回登录页。
+ */
+async function handleLogout() {
+  authStore.logout();
+  isUserMenuOpen.value = false;
+  message.success("已退出登录");
+  await router.replace("/login");
+}
 </script>
 
 <template>
@@ -101,47 +130,47 @@ const navGroups = [
         </div>
       </div>
 
-      <!-- 动态渲染导航分组 -->
-      <nav
-        v-for="(group, idx) in navGroups"
-        :key="idx"
-        :class="idx === 0 ? 'space-y-1' : 'mt-10'"
-      >
+      <nav class="space-y-1">
         <p
-          v-if="group.title"
           class="text-[10px] font-bold uppercase tracking-widest text-outline-variant mb-3 px-4"
         >
-          {{ group.title }}
+          工作区
         </p>
 
-        <div v-if="idx === 0" class="space-y-1">
-          <!-- 主导航项 -->
-          <a
-            v-for="item in group.items"
-            :key="item.name"
-            :href="item.path"
-            :class="[
-              'flex items-center px-4 py-2.5 gap-3 rounded-md transition-all active:scale-[0.98]',
-              item.active
-                ? 'bg-primary-container text-on-primary-container mx-0'
-                : 'text-outline hover:text-on-surface hover:bg-surface-container-high',
-            ]"
+        <RouterLink
+          v-for="item in primaryNavItems"
+          :key="item.name"
+          :to="item.path"
+          :class="[
+            'flex items-center px-4 py-2.5 gap-3 rounded-md transition-all active:scale-[0.98]',
+            isNavActive(item.path)
+              ? 'bg-primary-container text-on-primary-container mx-0'
+              : 'text-outline hover:text-on-surface hover:bg-surface-container-high',
+          ]"
+        >
+          <span
+            class="material-symbols-outlined text-lg"
+            :style="
+              isNavActive(item.path) ? `font-variation-settings: 'FILL' 1;` : ''
+            "
+            >{{ item.icon }}</span
           >
-            <span
-              class="material-symbols-outlined text-lg"
-              :style="item.active ? `font-variation-settings: 'FILL' 1;` : ''"
-              >{{ item.icon }}</span
-            >
-            <span class="font-body text-sm antialiased">{{ item.name }}</span>
-          </a>
-        </div>
+          <span class="font-body text-sm antialiased">{{ item.name }}</span>
+        </RouterLink>
+      </nav>
 
-        <div v-else class="px-4 space-y-3 opacity-80">
-          <!-- 会话历史项 -->
-          <a
-            v-for="item in group.items"
+      <nav class="mt-10">
+        <p
+          class="text-[10px] font-bold uppercase tracking-widest text-outline-variant mb-3 px-4"
+        >
+          最近会话
+        </p>
+
+        <div class="px-4 space-y-3 opacity-80">
+          <RouterLink
+            v-for="item in recentSessions"
             :key="item.name"
-            :href="item.path"
+            :to="item.path"
             class="flex flex-col border-l-2 border-outline-variant/30 pl-4 py-1 hover:border-primary/50 transition-colors group cursor-pointer"
           >
             <span class="text-[10px] text-outline uppercase tracking-wider">{{
@@ -151,7 +180,7 @@ const navGroups = [
               class="text-xs text-on-surface-variant truncate group-hover:text-on-surface transition-colors"
               >{{ item.name }}</span
             >
-          </a>
+          </RouterLink>
         </div>
       </nav>
     </div>
@@ -169,9 +198,9 @@ const navGroups = [
           <div
             class="p-3 border-b border-outline-variant/10 flex items-center justify-between"
           >
-            <span class="text-xs font-semibold text-on-surface"
-              >alex.rivera@linsor.ai</span
-            >
+            <span class="text-xs font-semibold text-on-surface">{{
+              displayEmail
+            }}</span>
           </div>
           <div class="p-2 space-y-1">
             <button
@@ -206,6 +235,7 @@ const navGroups = [
           </div>
           <div class="p-2 border-t border-outline-variant/10">
             <button
+              @click="handleLogout"
               class="w-full flex items-center gap-3 px-3 py-2 text-sm text-error hover:bg-error-container/10 rounded-lg transition-colors"
             >
               <span class="material-symbols-outlined text-[18px]">logout</span>
@@ -225,7 +255,10 @@ const navGroups = [
             class="w-9 h-9 rounded-full overflow-hidden border border-outline-variant/20 flex-shrink-0"
           >
             <img
-              src="https://lh3.googleusercontent.com/aida-public/AB6AXuBK3UvrWbRJFbEnmoGfmCG231sGFDP1AZV3UqvGHP-5bMgS3MEeHPO8q5OT9FK7qrHD0Wijc4oKbn1bHzPj4U29MJpu7YXUM1dY-Ld-dOnq8_6IX8T0391nm_ke5sGwVXFelS0QdGLf57MB9lL_-1a6XuKkscu_USgi4rprpSHf1w4qmzFg6xmftyJdzZs2IYTjv30BBh4vyJ1XMQ8Z3K9uTrazHOWKyMvEzNjaplIWxDSqOcEyYISdT7uwi0zBsioomwk0DuvxrmrK"
+              :src="
+                displayAvatar ||
+                'https://placehold.co/80x80/1f2937/e5e7eb?text=U'
+              "
               alt="User profile"
               class="w-full h-full object-cover"
             />
@@ -233,9 +266,11 @@ const navGroups = [
           <div class="flex flex-col overflow-hidden text-left">
             <span
               class="text-sm font-semibold text-on-surface truncate group-hover:text-primary transition-colors"
-              >Alex Rivera</span
+              >{{ displayName }}</span
             >
-            <span class="text-[10px] text-outline truncate">Admin Access</span>
+            <span class="text-[10px] text-outline truncate">{{
+              displayRole
+            }}</span>
           </div>
         </div>
 
