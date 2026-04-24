@@ -31,6 +31,7 @@ export interface KbPermissionRequirement {
  * Guard 校验成功后可挂载到请求上下文中的权限快照。
  */
 export interface KbPermissionContext {
+  userId: string;
   kbId: string;
   accessRole: KnowledgeBaseAccessRole;
   permissions: KnowledgeBasePermissionFlags;

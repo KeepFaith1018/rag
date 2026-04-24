@@ -12,6 +12,7 @@ import { AllExceptionsFilter } from '@common/filter/all-exceptions.filter';
 import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { KnowledgeBaseModule } from './modules/knowledge-base/knowledge-base.module';
+import { DocumentModule } from './modules/document/document.module';
 
 import { JwtModule } from '@nestjs/jwt';
 
@@ -42,6 +43,7 @@ import { JwtModule } from '@nestjs/jwt';
     AuthModule,
     UserModule,
     KnowledgeBaseModule,
+    DocumentModule,
   ],
   controllers: [AppController],
   providers: [

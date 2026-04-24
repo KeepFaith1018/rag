@@ -75,6 +75,7 @@ export class KbPermissionService {
     }
 
     return {
+      userId: String(userId),
       kbId,
       accessRole,
       permissions,
