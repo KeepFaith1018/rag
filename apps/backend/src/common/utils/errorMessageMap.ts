@@ -31,6 +31,10 @@ export const ErrorMessageMap: Record<ErrorCode, string> = {
   [ErrorCode.FILE_UPLOAD_FAILED]: '文件上传失败',
   [ErrorCode.FILE_TYPE_UNSUPPORTED]: '不支持的文件类型',
   [ErrorCode.FILE_TOO_LARGE]: '文件大小超出限制',
+  [ErrorCode.FILE_UPLOAD_SESSION_NOT_FOUND]: '上传会话不存在',
+  [ErrorCode.FILE_UPLOAD_SESSION_EXPIRED]: '上传会话已过期',
+  [ErrorCode.FILE_CHUNK_INCOMPLETE]: '文件分片尚未上传完成',
+  [ErrorCode.FILE_HASH_MISMATCH]: '文件哈希校验失败',
 
   // 会话
   [ErrorCode.CONVERSATION_NOT_FOUND]: '会话不存在',

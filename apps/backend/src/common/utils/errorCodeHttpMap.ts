@@ -30,6 +30,10 @@ export const ErrorCodeHttpStatusMap: Record<ErrorCode, HttpStatus> = {
   [ErrorCode.FILE_UPLOAD_FAILED]: HttpStatus.INTERNAL_SERVER_ERROR,
   [ErrorCode.FILE_TYPE_UNSUPPORTED]: HttpStatus.BAD_REQUEST,
   [ErrorCode.FILE_TOO_LARGE]: HttpStatus.PAYLOAD_TOO_LARGE,
+  [ErrorCode.FILE_UPLOAD_SESSION_NOT_FOUND]: HttpStatus.NOT_FOUND,
+  [ErrorCode.FILE_UPLOAD_SESSION_EXPIRED]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.FILE_CHUNK_INCOMPLETE]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.FILE_HASH_MISMATCH]: HttpStatus.BAD_REQUEST,
 
   // 会话
   [ErrorCode.CONVERSATION_NOT_FOUND]: HttpStatus.NOT_FOUND,

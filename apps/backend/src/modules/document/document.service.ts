@@ -13,9 +13,11 @@ import { ListDocumentsDto } from './dto/list-documents.dto';
 import { UploadDocumentDto } from './dto/upload-document.dto';
 import { KbPermissionService } from '../knowledge-base/permission/kb-permission.service';
 import { KbPermissionContext } from '../knowledge-base/interfaces/kb-permission.interface';
-
-const MAX_DOCUMENT_FILE_SIZE = 20 * 1024 * 1024;
-const SUPPORTED_DOCUMENT_EXTENSIONS = ['.pdf', '.doc', '.docx', '.txt', '.md'];
+import {
+  MAX_DOCUMENT_FILE_SIZE,
+  resolveDocumentMimeType,
+  SUPPORTED_DOCUMENT_EXTENSIONS,
+} from './document.constants';
 
 type DocumentWithUploader = Prisma.b_documentsGetPayload<{
   include: {
@@ -391,7 +393,11 @@ export class DocumentService {
    */
   private validateAndNormalizeFile(file: UploadedDocumentFile) {
     const extension = extname(file.originalname).toLowerCase();
-    if (!SUPPORTED_DOCUMENT_EXTENSIONS.includes(extension)) {
+    if (
+      !SUPPORTED_DOCUMENT_EXTENSIONS.includes(
+        extension as (typeof SUPPORTED_DOCUMENT_EXTENSIONS)[number],
+      )
+    ) {
       throw new BusinessException(ErrorCode.FILE_TYPE_UNSUPPORTED);
     }
     if (file.size > MAX_DOCUMENT_FILE_SIZE) {
@@ -404,7 +410,7 @@ export class DocumentService {
       originalName: file.originalname,
       extension,
       fileType: extension.replace('.', ''),
-      mimeType: file.mimetype || this.resolveMimeType(extension),
+      mimeType: file.mimetype || resolveDocumentMimeType(extension),
     };
   }
 
@@ -577,24 +583,6 @@ export class DocumentService {
       return BigInt(documentId);
     } catch {
       throw new BusinessException(ErrorCode.PARAM_ERROR, '文档 ID 格式不正确');
-    }
-  }
-
-  /**
-   * 为缺失的 MIME 类型补充默认推导。
-   */
-  private resolveMimeType(extension: string) {
-    switch (extension) {
-      case '.pdf':
-        return 'application/pdf';
-      case '.doc':
-        return 'application/msword';
-      case '.docx':
-        return 'application/vnd.openxmlformats-officedocument.wordprocessingml.document';
-      case '.md':
-        return 'text/markdown';
-      default:
-        return 'text/plain';
     }
   }
 }

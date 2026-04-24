@@ -258,6 +258,41 @@ exports.Prisma.B_documentsScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.B_upload_sessionsScalarFieldEnum = {
+  id: 'id',
+  kb_id: 'kb_id',
+  user_id: 'user_id',
+  document_id: 'document_id',
+  file_name: 'file_name',
+  title: 'title',
+  file_size: 'file_size',
+  mime_type: 'mime_type',
+  file_hash: 'file_hash',
+  file_extension: 'file_extension',
+  chunk_size: 'chunk_size',
+  total_chunks: 'total_chunks',
+  uploaded_count: 'uploaded_count',
+  status: 'status',
+  storage_type: 'storage_type',
+  temp_dir: 'temp_dir',
+  completed_at: 'completed_at',
+  expired_at: 'expired_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.B_upload_chunksScalarFieldEnum = {
+  id: 'id',
+  upload_id: 'upload_id',
+  chunk_index: 'chunk_index',
+  chunk_size: 'chunk_size',
+  chunk_hash: 'chunk_hash',
+  storage_path: 'storage_path',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.B_document_chunksScalarFieldEnum = {
   id: 'id',
   doc_id: 'doc_id',
@@ -421,6 +456,23 @@ exports.Prisma.b_documentsOrderByRelevanceFieldEnum = {
   error_msg: 'error_msg'
 };
 
+exports.Prisma.b_upload_sessionsOrderByRelevanceFieldEnum = {
+  file_name: 'file_name',
+  title: 'title',
+  mime_type: 'mime_type',
+  file_hash: 'file_hash',
+  file_extension: 'file_extension',
+  status: 'status',
+  storage_type: 'storage_type',
+  temp_dir: 'temp_dir'
+};
+
+exports.Prisma.b_upload_chunksOrderByRelevanceFieldEnum = {
+  chunk_hash: 'chunk_hash',
+  storage_path: 'storage_path',
+  status: 'status'
+};
+
 exports.Prisma.b_document_chunksOrderByRelevanceFieldEnum = {
   content: 'content',
   vector_id: 'vector_id',
@@ -471,6 +523,8 @@ exports.Prisma.ModelName = {
   b_kb_members: 'b_kb_members',
   b_kb_invitations: 'b_kb_invitations',
   b_documents: 'b_documents',
+  b_upload_sessions: 'b_upload_sessions',
+  b_upload_chunks: 'b_upload_chunks',
   b_document_chunks: 'b_document_chunks',
   b_chat_sessions: 'b_chat_sessions',
   b_chat_messages: 'b_chat_messages',

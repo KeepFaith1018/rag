@@ -1,10 +1,70 @@
 <script setup lang="ts">
-import { useRouter } from "vue-router";
+import { computed, ref } from "vue";
+import { useRoute, useRouter } from "vue-router";
+import { useChunkUpload } from "@/modules/document-upload/composables/useChunkUpload";
 
 const router = useRouter();
+const route = useRoute();
+const fileInputRef = ref<HTMLInputElement | null>(null);
+const { state, isUploading, startUpload, cancel } = useChunkUpload();
+
+const kbId = computed(() => String(route.params.id || ""));
+
+const uploadStatusText = computed(() => {
+  switch (state.status) {
+    case "hashing":
+      return "正在计算文件哈希，准备执行秒传与断点续传校验";
+    case "initializing":
+      return "正在初始化上传会话";
+    case "uploading":
+      return `正在上传分片，已完成 ${state.progress}%`;
+    case "merging":
+      return "分片上传完成，正在请求服务端合并";
+    case "completed":
+      return "上传完成，文档已进入后端处理入口状态";
+    case "instantCompleted":
+      return "命中秒传，已直接复用已有源文件";
+    case "failed":
+      return state.errorMessage || "上传失败，请稍后重试";
+    default:
+      return "拖拽 PDF、Word、TXT 或 Markdown 文件至此，体验分片上传、断点续传与秒传";
+  }
+});
 
 const goBack = () => {
   router.back();
+};
+
+const openFilePicker = () => {
+  fileInputRef.value?.click();
+};
+
+const handleFileChange = async (event: Event) => {
+  const target = event.target as HTMLInputElement | null;
+  const file = target?.files?.[0];
+
+  if (!file || !kbId.value) {
+    return;
+  }
+
+  try {
+    await startUpload({
+      kbId: kbId.value,
+      file,
+    });
+  } finally {
+    if (target) {
+      target.value = "";
+    }
+  }
+};
+
+const cancelCurrentUpload = async () => {
+  if (!kbId.value || !state.uploadId) {
+    return;
+  }
+
+  await cancel(kbId.value);
 };
 </script>
 
@@ -87,7 +147,15 @@ const goBack = () => {
           <!-- Upload Zone -->
           <div
             class="bg-surface-container-low p-8 rounded-xl border border-dashed border-outline-variant/20 flex flex-col items-center justify-center group hover:border-primary/40 transition-all cursor-pointer shadow-md"
+            @click="openFilePicker"
           >
+            <input
+              ref="fileInputRef"
+              type="file"
+              class="hidden"
+              accept=".pdf,.doc,.docx,.txt,.md"
+              @change="handleFileChange"
+            />
             <div
               class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform shadow-inner"
             >
@@ -102,13 +170,96 @@ const goBack = () => {
               上传知识资产
             </h3>
             <p class="text-on-surface-variant text-sm mb-6">
-              拖拽 PDF, Markdown 或 JSON 文件至此
+              {{ uploadStatusText }}
             </p>
+            <div
+              v-if="state.status !== 'idle'"
+              class="w-full max-w-xl mb-6"
+            >
+              <div
+                class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden shadow-inner"
+              >
+                <div
+                  class="bg-primary h-full rounded-full transition-all duration-300"
+                  :style="{ width: `${state.progress}%` }"
+                ></div>
+              </div>
+              <div
+                class="mt-3 flex items-center justify-between text-xs text-on-surface-variant"
+              >
+                <span class="truncate">{{ state.fileName || '等待选择文件' }}</span>
+                <span>{{ state.progress }}%</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-3">
             <button
+              type="button"
+              @click.stop="openFilePicker"
               class="px-6 py-2 bg-surface-container-highest rounded-md text-sm font-semibold hover:bg-surface-bright transition-colors focus:outline-none shadow-sm"
             >
               浏览文件
             </button>
+              <button
+                v-if="isUploading && state.uploadId"
+                type="button"
+                @click.stop="cancelCurrentUpload"
+                class="px-6 py-2 rounded-md text-sm font-semibold border border-outline-variant/15 hover:bg-surface-container-high transition-colors focus:outline-none shadow-sm"
+              >
+                取消上传
+              </button>
+            </div>
+          </div>
+
+          <div
+            v-if="state.status !== 'idle'"
+            class="bg-surface-container-low rounded-xl overflow-hidden shadow-lg border border-outline-variant/5"
+          >
+            <div
+              class="px-6 py-4 flex justify-between items-center border-b border-outline-variant/5 bg-surface-container-high/30"
+            >
+              <h4
+                class="text-sm font-bold uppercase tracking-widest text-on-surface-variant font-label"
+              >
+                当前上传任务
+              </h4>
+              <span
+                class="px-2 py-1 rounded-full text-[10px] font-bold uppercase bg-primary/10 text-primary"
+              >
+                {{ state.status }}
+              </span>
+            </div>
+            <div class="px-6 py-5 flex items-center gap-4">
+              <div
+                class="w-10 h-10 bg-primary/10 rounded flex items-center justify-center flex-shrink-0"
+              >
+                <span class="material-symbols-outlined text-primary"
+                  >cloud_upload</span
+                >
+              </div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-2">
+                  <span class="font-semibold text-sm truncate">
+                    {{ state.fileName || "等待文件选择" }}
+                  </span>
+                  <span
+                    class="px-2 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary uppercase"
+                  >
+                    {{ state.progress }}%
+                  </span>
+                </div>
+                <div
+                  class="w-full bg-surface-container-highest h-1 rounded-full overflow-hidden shadow-inner"
+                >
+                  <div
+                    class="bg-primary h-full rounded-full transition-all duration-300"
+                    :style="{ width: `${state.progress}%` }"
+                  ></div>
+                </div>
+                <p class="text-xs text-on-surface-variant mt-2">
+                  已上传分片 {{ state.uploadedChunks.length }} / {{ state.totalChunks }}
+                </p>
+              </div>
+            </div>
           </div>
 
           <!-- Documents List -->

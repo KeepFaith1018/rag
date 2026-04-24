@@ -13,6 +13,7 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { KnowledgeBaseModule } from './modules/knowledge-base/knowledge-base.module';
 import { DocumentModule } from './modules/document/document.module';
+import { UploadModule } from './modules/upload/upload.module';
 
 import { JwtModule } from '@nestjs/jwt';
 
@@ -44,6 +45,7 @@ import { JwtModule } from '@nestjs/jwt';
     UserModule,
     KnowledgeBaseModule,
     DocumentModule,
+    UploadModule,
   ],
   controllers: [AppController],
   providers: [

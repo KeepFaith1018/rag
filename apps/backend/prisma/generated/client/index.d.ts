@@ -69,6 +69,16 @@ export type b_kb_invitations = $Result.DefaultSelection<Prisma.$b_kb_invitations
  */
 export type b_documents = $Result.DefaultSelection<Prisma.$b_documentsPayload>
 /**
+ * Model b_upload_sessions
+ * 
+ */
+export type b_upload_sessions = $Result.DefaultSelection<Prisma.$b_upload_sessionsPayload>
+/**
+ * Model b_upload_chunks
+ * 
+ */
+export type b_upload_chunks = $Result.DefaultSelection<Prisma.$b_upload_chunksPayload>
+/**
  * Model b_document_chunks
  * 
  */
@@ -325,6 +335,26 @@ export class PrismaClient<
     * ```
     */
   get b_documents(): Prisma.b_documentsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.b_upload_sessions`: Exposes CRUD operations for the **b_upload_sessions** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more B_upload_sessions
+    * const b_upload_sessions = await prisma.b_upload_sessions.findMany()
+    * ```
+    */
+  get b_upload_sessions(): Prisma.b_upload_sessionsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.b_upload_chunks`: Exposes CRUD operations for the **b_upload_chunks** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more B_upload_chunks
+    * const b_upload_chunks = await prisma.b_upload_chunks.findMany()
+    * ```
+    */
+  get b_upload_chunks(): Prisma.b_upload_chunksDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.b_document_chunks`: Exposes CRUD operations for the **b_document_chunks** model.
@@ -830,6 +860,8 @@ export namespace Prisma {
     b_kb_members: 'b_kb_members',
     b_kb_invitations: 'b_kb_invitations',
     b_documents: 'b_documents',
+    b_upload_sessions: 'b_upload_sessions',
+    b_upload_chunks: 'b_upload_chunks',
     b_document_chunks: 'b_document_chunks',
     b_chat_sessions: 'b_chat_sessions',
     b_chat_messages: 'b_chat_messages',
@@ -851,7 +883,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "b_users" | "sys_admins" | "sys_email_codes" | "b_user_sessions" | "sys_admin_sessions" | "sys_model_configs" | "b_user_model_configs" | "b_knowledge_bases" | "b_kb_members" | "b_kb_invitations" | "b_documents" | "b_document_chunks" | "b_chat_sessions" | "b_chat_messages" | "sys_audit_logs" | "sys_dict_type" | "sys_dict_item"
+      modelProps: "b_users" | "sys_admins" | "sys_email_codes" | "b_user_sessions" | "sys_admin_sessions" | "sys_model_configs" | "b_user_model_configs" | "b_knowledge_bases" | "b_kb_members" | "b_kb_invitations" | "b_documents" | "b_upload_sessions" | "b_upload_chunks" | "b_document_chunks" | "b_chat_sessions" | "b_chat_messages" | "sys_audit_logs" | "sys_dict_type" | "sys_dict_item"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1581,6 +1613,138 @@ export namespace Prisma {
           }
         }
       }
+      b_upload_sessions: {
+        payload: Prisma.$b_upload_sessionsPayload<ExtArgs>
+        fields: Prisma.b_upload_sessionsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.b_upload_sessionsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_sessionsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.b_upload_sessionsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_sessionsPayload>
+          }
+          findFirst: {
+            args: Prisma.b_upload_sessionsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_sessionsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.b_upload_sessionsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_sessionsPayload>
+          }
+          findMany: {
+            args: Prisma.b_upload_sessionsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_sessionsPayload>[]
+          }
+          create: {
+            args: Prisma.b_upload_sessionsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_sessionsPayload>
+          }
+          createMany: {
+            args: Prisma.b_upload_sessionsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.b_upload_sessionsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_sessionsPayload>
+          }
+          update: {
+            args: Prisma.b_upload_sessionsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_sessionsPayload>
+          }
+          deleteMany: {
+            args: Prisma.b_upload_sessionsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.b_upload_sessionsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.b_upload_sessionsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_sessionsPayload>
+          }
+          aggregate: {
+            args: Prisma.B_upload_sessionsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateB_upload_sessions>
+          }
+          groupBy: {
+            args: Prisma.b_upload_sessionsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<B_upload_sessionsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.b_upload_sessionsCountArgs<ExtArgs>
+            result: $Utils.Optional<B_upload_sessionsCountAggregateOutputType> | number
+          }
+        }
+      }
+      b_upload_chunks: {
+        payload: Prisma.$b_upload_chunksPayload<ExtArgs>
+        fields: Prisma.b_upload_chunksFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.b_upload_chunksFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_chunksPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.b_upload_chunksFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_chunksPayload>
+          }
+          findFirst: {
+            args: Prisma.b_upload_chunksFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_chunksPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.b_upload_chunksFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_chunksPayload>
+          }
+          findMany: {
+            args: Prisma.b_upload_chunksFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_chunksPayload>[]
+          }
+          create: {
+            args: Prisma.b_upload_chunksCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_chunksPayload>
+          }
+          createMany: {
+            args: Prisma.b_upload_chunksCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.b_upload_chunksDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_chunksPayload>
+          }
+          update: {
+            args: Prisma.b_upload_chunksUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_chunksPayload>
+          }
+          deleteMany: {
+            args: Prisma.b_upload_chunksDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.b_upload_chunksUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.b_upload_chunksUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_upload_chunksPayload>
+          }
+          aggregate: {
+            args: Prisma.B_upload_chunksAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateB_upload_chunks>
+          }
+          groupBy: {
+            args: Prisma.b_upload_chunksGroupByArgs<ExtArgs>
+            result: $Utils.Optional<B_upload_chunksGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.b_upload_chunksCountArgs<ExtArgs>
+            result: $Utils.Optional<B_upload_chunksCountAggregateOutputType> | number
+          }
+        }
+      }
       b_document_chunks: {
         payload: Prisma.$b_document_chunksPayload<ExtArgs>
         fields: Prisma.b_document_chunksFieldRefs
@@ -2096,6 +2260,8 @@ export namespace Prisma {
     b_kb_members?: b_kb_membersOmit
     b_kb_invitations?: b_kb_invitationsOmit
     b_documents?: b_documentsOmit
+    b_upload_sessions?: b_upload_sessionsOmit
+    b_upload_chunks?: b_upload_chunksOmit
     b_document_chunks?: b_document_chunksOmit
     b_chat_sessions?: b_chat_sessionsOmit
     b_chat_messages?: b_chat_messagesOmit
@@ -2186,6 +2352,7 @@ export namespace Prisma {
     kb_members: number
     knowledge_bases: number
     uploaded_documents: number
+    upload_sessions: number
     model_configs: number
     kb_invitations: number
     user_sessions: number
@@ -2196,6 +2363,7 @@ export namespace Prisma {
     kb_members?: boolean | B_usersCountOutputTypeCountKb_membersArgs
     knowledge_bases?: boolean | B_usersCountOutputTypeCountKnowledge_basesArgs
     uploaded_documents?: boolean | B_usersCountOutputTypeCountUploaded_documentsArgs
+    upload_sessions?: boolean | B_usersCountOutputTypeCountUpload_sessionsArgs
     model_configs?: boolean | B_usersCountOutputTypeCountModel_configsArgs
     kb_invitations?: boolean | B_usersCountOutputTypeCountKb_invitationsArgs
     user_sessions?: boolean | B_usersCountOutputTypeCountUser_sessionsArgs
@@ -2238,6 +2406,13 @@ export namespace Prisma {
    */
   export type B_usersCountOutputTypeCountUploaded_documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_documentsWhereInput
+  }
+
+  /**
+   * B_usersCountOutputType without action
+   */
+  export type B_usersCountOutputTypeCountUpload_sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_upload_sessionsWhereInput
   }
 
   /**
@@ -2308,12 +2483,14 @@ export namespace Prisma {
 
   export type B_knowledge_basesCountOutputType = {
     documents: number
+    upload_sessions: number
     kb_members: number
     kb_invitations: number
   }
 
   export type B_knowledge_basesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | B_knowledge_basesCountOutputTypeCountDocumentsArgs
+    upload_sessions?: boolean | B_knowledge_basesCountOutputTypeCountUpload_sessionsArgs
     kb_members?: boolean | B_knowledge_basesCountOutputTypeCountKb_membersArgs
     kb_invitations?: boolean | B_knowledge_basesCountOutputTypeCountKb_invitationsArgs
   }
@@ -2339,6 +2516,13 @@ export namespace Prisma {
   /**
    * B_knowledge_basesCountOutputType without action
    */
+  export type B_knowledge_basesCountOutputTypeCountUpload_sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_upload_sessionsWhereInput
+  }
+
+  /**
+   * B_knowledge_basesCountOutputType without action
+   */
   export type B_knowledge_basesCountOutputTypeCountKb_membersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_kb_membersWhereInput
   }
@@ -2357,10 +2541,12 @@ export namespace Prisma {
 
   export type B_documentsCountOutputType = {
     document_chunks: number
+    upload_sessions: number
   }
 
   export type B_documentsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     document_chunks?: boolean | B_documentsCountOutputTypeCountDocument_chunksArgs
+    upload_sessions?: boolean | B_documentsCountOutputTypeCountUpload_sessionsArgs
   }
 
   // Custom InputTypes
@@ -2379,6 +2565,44 @@ export namespace Prisma {
    */
   export type B_documentsCountOutputTypeCountDocument_chunksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_document_chunksWhereInput
+  }
+
+  /**
+   * B_documentsCountOutputType without action
+   */
+  export type B_documentsCountOutputTypeCountUpload_sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_upload_sessionsWhereInput
+  }
+
+
+  /**
+   * Count Type B_upload_sessionsCountOutputType
+   */
+
+  export type B_upload_sessionsCountOutputType = {
+    upload_chunks: number
+  }
+
+  export type B_upload_sessionsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    upload_chunks?: boolean | B_upload_sessionsCountOutputTypeCountUpload_chunksArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * B_upload_sessionsCountOutputType without action
+   */
+  export type B_upload_sessionsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the B_upload_sessionsCountOutputType
+     */
+    select?: B_upload_sessionsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * B_upload_sessionsCountOutputType without action
+   */
+  export type B_upload_sessionsCountOutputTypeCountUpload_chunksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_upload_chunksWhereInput
   }
 
 
@@ -2679,6 +2903,7 @@ export namespace Prisma {
     kb_members?: boolean | b_users$kb_membersArgs<ExtArgs>
     knowledge_bases?: boolean | b_users$knowledge_basesArgs<ExtArgs>
     uploaded_documents?: boolean | b_users$uploaded_documentsArgs<ExtArgs>
+    upload_sessions?: boolean | b_users$upload_sessionsArgs<ExtArgs>
     model_configs?: boolean | b_users$model_configsArgs<ExtArgs>
     kb_invitations?: boolean | b_users$kb_invitationsArgs<ExtArgs>
     user_sessions?: boolean | b_users$user_sessionsArgs<ExtArgs>
@@ -2707,6 +2932,7 @@ export namespace Prisma {
     kb_members?: boolean | b_users$kb_membersArgs<ExtArgs>
     knowledge_bases?: boolean | b_users$knowledge_basesArgs<ExtArgs>
     uploaded_documents?: boolean | b_users$uploaded_documentsArgs<ExtArgs>
+    upload_sessions?: boolean | b_users$upload_sessionsArgs<ExtArgs>
     model_configs?: boolean | b_users$model_configsArgs<ExtArgs>
     kb_invitations?: boolean | b_users$kb_invitationsArgs<ExtArgs>
     user_sessions?: boolean | b_users$user_sessionsArgs<ExtArgs>
@@ -2720,6 +2946,7 @@ export namespace Prisma {
       kb_members: Prisma.$b_kb_membersPayload<ExtArgs>[]
       knowledge_bases: Prisma.$b_knowledge_basesPayload<ExtArgs>[]
       uploaded_documents: Prisma.$b_documentsPayload<ExtArgs>[]
+      upload_sessions: Prisma.$b_upload_sessionsPayload<ExtArgs>[]
       model_configs: Prisma.$b_user_model_configsPayload<ExtArgs>[]
       kb_invitations: Prisma.$b_kb_invitationsPayload<ExtArgs>[]
       user_sessions: Prisma.$b_user_sessionsPayload<ExtArgs>[]
@@ -3080,6 +3307,7 @@ export namespace Prisma {
     kb_members<T extends b_users$kb_membersArgs<ExtArgs> = {}>(args?: Subset<T, b_users$kb_membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_kb_membersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     knowledge_bases<T extends b_users$knowledge_basesArgs<ExtArgs> = {}>(args?: Subset<T, b_users$knowledge_basesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_knowledge_basesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     uploaded_documents<T extends b_users$uploaded_documentsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$uploaded_documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_documentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    upload_sessions<T extends b_users$upload_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$upload_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     model_configs<T extends b_users$model_configsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$model_configsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_user_model_configsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     kb_invitations<T extends b_users$kb_invitationsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$kb_invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_kb_invitationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     user_sessions<T extends b_users$user_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$user_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_user_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -3559,6 +3787,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: B_documentsScalarFieldEnum | B_documentsScalarFieldEnum[]
+  }
+
+  /**
+   * b_users.upload_sessions
+   */
+  export type b_users$upload_sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    where?: b_upload_sessionsWhereInput
+    orderBy?: b_upload_sessionsOrderByWithRelationInput | b_upload_sessionsOrderByWithRelationInput[]
+    cursor?: b_upload_sessionsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_upload_sessionsScalarFieldEnum | B_upload_sessionsScalarFieldEnum[]
   }
 
   /**
@@ -9865,6 +10117,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     documents?: boolean | b_knowledge_bases$documentsArgs<ExtArgs>
+    upload_sessions?: boolean | b_knowledge_bases$upload_sessionsArgs<ExtArgs>
     kb_members?: boolean | b_knowledge_bases$kb_membersArgs<ExtArgs>
     kb_invitations?: boolean | b_knowledge_bases$kb_invitationsArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
@@ -9889,6 +10142,7 @@ export namespace Prisma {
   export type b_knowledge_basesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "name" | "description" | "visibility" | "status" | "is_public" | "allow_public_download" | "owner_id" | "created_at" | "updated_at", ExtArgs["result"]["b_knowledge_bases"]>
   export type b_knowledge_basesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     documents?: boolean | b_knowledge_bases$documentsArgs<ExtArgs>
+    upload_sessions?: boolean | b_knowledge_bases$upload_sessionsArgs<ExtArgs>
     kb_members?: boolean | b_knowledge_bases$kb_membersArgs<ExtArgs>
     kb_invitations?: boolean | b_knowledge_bases$kb_invitationsArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
@@ -9899,6 +10153,7 @@ export namespace Prisma {
     name: "b_knowledge_bases"
     objects: {
       documents: Prisma.$b_documentsPayload<ExtArgs>[]
+      upload_sessions: Prisma.$b_upload_sessionsPayload<ExtArgs>[]
       kb_members: Prisma.$b_kb_membersPayload<ExtArgs>[]
       kb_invitations: Prisma.$b_kb_invitationsPayload<ExtArgs>[]
       b_users: Prisma.$b_usersPayload<ExtArgs>
@@ -10255,6 +10510,7 @@ export namespace Prisma {
   export interface Prisma__b_knowledge_basesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     documents<T extends b_knowledge_bases$documentsArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_bases$documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_documentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    upload_sessions<T extends b_knowledge_bases$upload_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_bases$upload_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     kb_members<T extends b_knowledge_bases$kb_membersArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_bases$kb_membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_kb_membersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     kb_invitations<T extends b_knowledge_bases$kb_invitationsArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_bases$kb_invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_kb_invitationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b_users<T extends b_usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_usersDefaultArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
@@ -10661,6 +10917,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: B_documentsScalarFieldEnum | B_documentsScalarFieldEnum[]
+  }
+
+  /**
+   * b_knowledge_bases.upload_sessions
+   */
+  export type b_knowledge_bases$upload_sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    where?: b_upload_sessionsWhereInput
+    orderBy?: b_upload_sessionsOrderByWithRelationInput | b_upload_sessionsOrderByWithRelationInput[]
+    cursor?: b_upload_sessionsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_upload_sessionsScalarFieldEnum | B_upload_sessionsScalarFieldEnum[]
   }
 
   /**
@@ -13069,6 +13349,7 @@ export namespace Prisma {
     created_at?: boolean
     updated_at?: boolean
     document_chunks?: boolean | b_documents$document_chunksArgs<ExtArgs>
+    upload_sessions?: boolean | b_documents$upload_sessionsArgs<ExtArgs>
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
     b_users?: boolean | b_documents$b_usersArgs<ExtArgs>
     _count?: boolean | B_documentsCountOutputTypeDefaultArgs<ExtArgs>
@@ -13100,6 +13381,7 @@ export namespace Prisma {
   export type b_documentsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kb_id" | "uploader_id" | "title" | "original_filename" | "file_path" | "file_hash" | "file_size" | "file_type" | "mime_type" | "status" | "error_msg" | "token_count" | "parse_started_at" | "parse_finished_at" | "last_reparse_at" | "created_at" | "updated_at", ExtArgs["result"]["b_documents"]>
   export type b_documentsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     document_chunks?: boolean | b_documents$document_chunksArgs<ExtArgs>
+    upload_sessions?: boolean | b_documents$upload_sessionsArgs<ExtArgs>
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
     b_users?: boolean | b_documents$b_usersArgs<ExtArgs>
     _count?: boolean | B_documentsCountOutputTypeDefaultArgs<ExtArgs>
@@ -13109,6 +13391,7 @@ export namespace Prisma {
     name: "b_documents"
     objects: {
       document_chunks: Prisma.$b_document_chunksPayload<ExtArgs>[]
+      upload_sessions: Prisma.$b_upload_sessionsPayload<ExtArgs>[]
       b_knowledge_bases: Prisma.$b_knowledge_basesPayload<ExtArgs>
       b_users: Prisma.$b_usersPayload<ExtArgs> | null
     }
@@ -13472,6 +13755,7 @@ export namespace Prisma {
   export interface Prisma__b_documentsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     document_chunks<T extends b_documents$document_chunksArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$document_chunksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_chunksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    upload_sessions<T extends b_documents$upload_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$upload_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b_knowledge_bases<T extends b_knowledge_basesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_basesDefaultArgs<ExtArgs>>): Prisma__b_knowledge_basesClient<$Result.GetResult<Prisma.$b_knowledge_basesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     b_users<T extends b_documents$b_usersArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$b_usersArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -13888,6 +14172,30 @@ export namespace Prisma {
   }
 
   /**
+   * b_documents.upload_sessions
+   */
+  export type b_documents$upload_sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    where?: b_upload_sessionsWhereInput
+    orderBy?: b_upload_sessionsOrderByWithRelationInput | b_upload_sessionsOrderByWithRelationInput[]
+    cursor?: b_upload_sessionsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_upload_sessionsScalarFieldEnum | B_upload_sessionsScalarFieldEnum[]
+  }
+
+  /**
    * b_documents.b_users
    */
   export type b_documents$b_usersArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -13922,6 +14230,2238 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: b_documentsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model b_upload_sessions
+   */
+
+  export type AggregateB_upload_sessions = {
+    _count: B_upload_sessionsCountAggregateOutputType | null
+    _avg: B_upload_sessionsAvgAggregateOutputType | null
+    _sum: B_upload_sessionsSumAggregateOutputType | null
+    _min: B_upload_sessionsMinAggregateOutputType | null
+    _max: B_upload_sessionsMaxAggregateOutputType | null
+  }
+
+  export type B_upload_sessionsAvgAggregateOutputType = {
+    id: number | null
+    kb_id: number | null
+    user_id: number | null
+    document_id: number | null
+    file_size: number | null
+    chunk_size: number | null
+    total_chunks: number | null
+    uploaded_count: number | null
+  }
+
+  export type B_upload_sessionsSumAggregateOutputType = {
+    id: bigint | null
+    kb_id: bigint | null
+    user_id: bigint | null
+    document_id: bigint | null
+    file_size: bigint | null
+    chunk_size: number | null
+    total_chunks: number | null
+    uploaded_count: number | null
+  }
+
+  export type B_upload_sessionsMinAggregateOutputType = {
+    id: bigint | null
+    kb_id: bigint | null
+    user_id: bigint | null
+    document_id: bigint | null
+    file_name: string | null
+    title: string | null
+    file_size: bigint | null
+    mime_type: string | null
+    file_hash: string | null
+    file_extension: string | null
+    chunk_size: number | null
+    total_chunks: number | null
+    uploaded_count: number | null
+    status: string | null
+    storage_type: string | null
+    temp_dir: string | null
+    completed_at: Date | null
+    expired_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type B_upload_sessionsMaxAggregateOutputType = {
+    id: bigint | null
+    kb_id: bigint | null
+    user_id: bigint | null
+    document_id: bigint | null
+    file_name: string | null
+    title: string | null
+    file_size: bigint | null
+    mime_type: string | null
+    file_hash: string | null
+    file_extension: string | null
+    chunk_size: number | null
+    total_chunks: number | null
+    uploaded_count: number | null
+    status: string | null
+    storage_type: string | null
+    temp_dir: string | null
+    completed_at: Date | null
+    expired_at: Date | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type B_upload_sessionsCountAggregateOutputType = {
+    id: number
+    kb_id: number
+    user_id: number
+    document_id: number
+    file_name: number
+    title: number
+    file_size: number
+    mime_type: number
+    file_hash: number
+    file_extension: number
+    chunk_size: number
+    total_chunks: number
+    uploaded_count: number
+    status: number
+    storage_type: number
+    temp_dir: number
+    completed_at: number
+    expired_at: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type B_upload_sessionsAvgAggregateInputType = {
+    id?: true
+    kb_id?: true
+    user_id?: true
+    document_id?: true
+    file_size?: true
+    chunk_size?: true
+    total_chunks?: true
+    uploaded_count?: true
+  }
+
+  export type B_upload_sessionsSumAggregateInputType = {
+    id?: true
+    kb_id?: true
+    user_id?: true
+    document_id?: true
+    file_size?: true
+    chunk_size?: true
+    total_chunks?: true
+    uploaded_count?: true
+  }
+
+  export type B_upload_sessionsMinAggregateInputType = {
+    id?: true
+    kb_id?: true
+    user_id?: true
+    document_id?: true
+    file_name?: true
+    title?: true
+    file_size?: true
+    mime_type?: true
+    file_hash?: true
+    file_extension?: true
+    chunk_size?: true
+    total_chunks?: true
+    uploaded_count?: true
+    status?: true
+    storage_type?: true
+    temp_dir?: true
+    completed_at?: true
+    expired_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type B_upload_sessionsMaxAggregateInputType = {
+    id?: true
+    kb_id?: true
+    user_id?: true
+    document_id?: true
+    file_name?: true
+    title?: true
+    file_size?: true
+    mime_type?: true
+    file_hash?: true
+    file_extension?: true
+    chunk_size?: true
+    total_chunks?: true
+    uploaded_count?: true
+    status?: true
+    storage_type?: true
+    temp_dir?: true
+    completed_at?: true
+    expired_at?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type B_upload_sessionsCountAggregateInputType = {
+    id?: true
+    kb_id?: true
+    user_id?: true
+    document_id?: true
+    file_name?: true
+    title?: true
+    file_size?: true
+    mime_type?: true
+    file_hash?: true
+    file_extension?: true
+    chunk_size?: true
+    total_chunks?: true
+    uploaded_count?: true
+    status?: true
+    storage_type?: true
+    temp_dir?: true
+    completed_at?: true
+    expired_at?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type B_upload_sessionsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_upload_sessions to aggregate.
+     */
+    where?: b_upload_sessionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_upload_sessions to fetch.
+     */
+    orderBy?: b_upload_sessionsOrderByWithRelationInput | b_upload_sessionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: b_upload_sessionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_upload_sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_upload_sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned b_upload_sessions
+    **/
+    _count?: true | B_upload_sessionsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: B_upload_sessionsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: B_upload_sessionsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: B_upload_sessionsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: B_upload_sessionsMaxAggregateInputType
+  }
+
+  export type GetB_upload_sessionsAggregateType<T extends B_upload_sessionsAggregateArgs> = {
+        [P in keyof T & keyof AggregateB_upload_sessions]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateB_upload_sessions[P]>
+      : GetScalarType<T[P], AggregateB_upload_sessions[P]>
+  }
+
+
+
+
+  export type b_upload_sessionsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_upload_sessionsWhereInput
+    orderBy?: b_upload_sessionsOrderByWithAggregationInput | b_upload_sessionsOrderByWithAggregationInput[]
+    by: B_upload_sessionsScalarFieldEnum[] | B_upload_sessionsScalarFieldEnum
+    having?: b_upload_sessionsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: B_upload_sessionsCountAggregateInputType | true
+    _avg?: B_upload_sessionsAvgAggregateInputType
+    _sum?: B_upload_sessionsSumAggregateInputType
+    _min?: B_upload_sessionsMinAggregateInputType
+    _max?: B_upload_sessionsMaxAggregateInputType
+  }
+
+  export type B_upload_sessionsGroupByOutputType = {
+    id: bigint
+    kb_id: bigint
+    user_id: bigint
+    document_id: bigint | null
+    file_name: string
+    title: string | null
+    file_size: bigint
+    mime_type: string | null
+    file_hash: string
+    file_extension: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count: number
+    status: string
+    storage_type: string
+    temp_dir: string
+    completed_at: Date | null
+    expired_at: Date | null
+    created_at: Date
+    updated_at: Date
+    _count: B_upload_sessionsCountAggregateOutputType | null
+    _avg: B_upload_sessionsAvgAggregateOutputType | null
+    _sum: B_upload_sessionsSumAggregateOutputType | null
+    _min: B_upload_sessionsMinAggregateOutputType | null
+    _max: B_upload_sessionsMaxAggregateOutputType | null
+  }
+
+  type GetB_upload_sessionsGroupByPayload<T extends b_upload_sessionsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<B_upload_sessionsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof B_upload_sessionsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], B_upload_sessionsGroupByOutputType[P]>
+            : GetScalarType<T[P], B_upload_sessionsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type b_upload_sessionsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    kb_id?: boolean
+    user_id?: boolean
+    document_id?: boolean
+    file_name?: boolean
+    title?: boolean
+    file_size?: boolean
+    mime_type?: boolean
+    file_hash?: boolean
+    file_extension?: boolean
+    chunk_size?: boolean
+    total_chunks?: boolean
+    uploaded_count?: boolean
+    status?: boolean
+    storage_type?: boolean
+    temp_dir?: boolean
+    completed_at?: boolean
+    expired_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    upload_chunks?: boolean | b_upload_sessions$upload_chunksArgs<ExtArgs>
+    b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
+    b_users?: boolean | b_usersDefaultArgs<ExtArgs>
+    b_documents?: boolean | b_upload_sessions$b_documentsArgs<ExtArgs>
+    _count?: boolean | B_upload_sessionsCountOutputTypeDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["b_upload_sessions"]>
+
+
+
+  export type b_upload_sessionsSelectScalar = {
+    id?: boolean
+    kb_id?: boolean
+    user_id?: boolean
+    document_id?: boolean
+    file_name?: boolean
+    title?: boolean
+    file_size?: boolean
+    mime_type?: boolean
+    file_hash?: boolean
+    file_extension?: boolean
+    chunk_size?: boolean
+    total_chunks?: boolean
+    uploaded_count?: boolean
+    status?: boolean
+    storage_type?: boolean
+    temp_dir?: boolean
+    completed_at?: boolean
+    expired_at?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type b_upload_sessionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "kb_id" | "user_id" | "document_id" | "file_name" | "title" | "file_size" | "mime_type" | "file_hash" | "file_extension" | "chunk_size" | "total_chunks" | "uploaded_count" | "status" | "storage_type" | "temp_dir" | "completed_at" | "expired_at" | "created_at" | "updated_at", ExtArgs["result"]["b_upload_sessions"]>
+  export type b_upload_sessionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    upload_chunks?: boolean | b_upload_sessions$upload_chunksArgs<ExtArgs>
+    b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
+    b_users?: boolean | b_usersDefaultArgs<ExtArgs>
+    b_documents?: boolean | b_upload_sessions$b_documentsArgs<ExtArgs>
+    _count?: boolean | B_upload_sessionsCountOutputTypeDefaultArgs<ExtArgs>
+  }
+
+  export type $b_upload_sessionsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "b_upload_sessions"
+    objects: {
+      upload_chunks: Prisma.$b_upload_chunksPayload<ExtArgs>[]
+      b_knowledge_bases: Prisma.$b_knowledge_basesPayload<ExtArgs>
+      b_users: Prisma.$b_usersPayload<ExtArgs>
+      b_documents: Prisma.$b_documentsPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      kb_id: bigint
+      user_id: bigint
+      document_id: bigint | null
+      file_name: string
+      title: string | null
+      file_size: bigint
+      mime_type: string | null
+      file_hash: string
+      file_extension: string | null
+      chunk_size: number
+      total_chunks: number
+      uploaded_count: number
+      status: string
+      storage_type: string
+      temp_dir: string
+      completed_at: Date | null
+      expired_at: Date | null
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["b_upload_sessions"]>
+    composites: {}
+  }
+
+  type b_upload_sessionsGetPayload<S extends boolean | null | undefined | b_upload_sessionsDefaultArgs> = $Result.GetResult<Prisma.$b_upload_sessionsPayload, S>
+
+  type b_upload_sessionsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<b_upload_sessionsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: B_upload_sessionsCountAggregateInputType | true
+    }
+
+  export interface b_upload_sessionsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['b_upload_sessions'], meta: { name: 'b_upload_sessions' } }
+    /**
+     * Find zero or one B_upload_sessions that matches the filter.
+     * @param {b_upload_sessionsFindUniqueArgs} args - Arguments to find a B_upload_sessions
+     * @example
+     * // Get one B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends b_upload_sessionsFindUniqueArgs>(args: SelectSubset<T, b_upload_sessionsFindUniqueArgs<ExtArgs>>): Prisma__b_upload_sessionsClient<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one B_upload_sessions that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {b_upload_sessionsFindUniqueOrThrowArgs} args - Arguments to find a B_upload_sessions
+     * @example
+     * // Get one B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends b_upload_sessionsFindUniqueOrThrowArgs>(args: SelectSubset<T, b_upload_sessionsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__b_upload_sessionsClient<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_upload_sessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_sessionsFindFirstArgs} args - Arguments to find a B_upload_sessions
+     * @example
+     * // Get one B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends b_upload_sessionsFindFirstArgs>(args?: SelectSubset<T, b_upload_sessionsFindFirstArgs<ExtArgs>>): Prisma__b_upload_sessionsClient<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_upload_sessions that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_sessionsFindFirstOrThrowArgs} args - Arguments to find a B_upload_sessions
+     * @example
+     * // Get one B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends b_upload_sessionsFindFirstOrThrowArgs>(args?: SelectSubset<T, b_upload_sessionsFindFirstOrThrowArgs<ExtArgs>>): Prisma__b_upload_sessionsClient<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more B_upload_sessions that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_sessionsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.findMany()
+     * 
+     * // Get first 10 B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const b_upload_sessionsWithIdOnly = await prisma.b_upload_sessions.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends b_upload_sessionsFindManyArgs>(args?: SelectSubset<T, b_upload_sessionsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a B_upload_sessions.
+     * @param {b_upload_sessionsCreateArgs} args - Arguments to create a B_upload_sessions.
+     * @example
+     * // Create one B_upload_sessions
+     * const B_upload_sessions = await prisma.b_upload_sessions.create({
+     *   data: {
+     *     // ... data to create a B_upload_sessions
+     *   }
+     * })
+     * 
+     */
+    create<T extends b_upload_sessionsCreateArgs>(args: SelectSubset<T, b_upload_sessionsCreateArgs<ExtArgs>>): Prisma__b_upload_sessionsClient<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many B_upload_sessions.
+     * @param {b_upload_sessionsCreateManyArgs} args - Arguments to create many B_upload_sessions.
+     * @example
+     * // Create many B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends b_upload_sessionsCreateManyArgs>(args?: SelectSubset<T, b_upload_sessionsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a B_upload_sessions.
+     * @param {b_upload_sessionsDeleteArgs} args - Arguments to delete one B_upload_sessions.
+     * @example
+     * // Delete one B_upload_sessions
+     * const B_upload_sessions = await prisma.b_upload_sessions.delete({
+     *   where: {
+     *     // ... filter to delete one B_upload_sessions
+     *   }
+     * })
+     * 
+     */
+    delete<T extends b_upload_sessionsDeleteArgs>(args: SelectSubset<T, b_upload_sessionsDeleteArgs<ExtArgs>>): Prisma__b_upload_sessionsClient<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one B_upload_sessions.
+     * @param {b_upload_sessionsUpdateArgs} args - Arguments to update one B_upload_sessions.
+     * @example
+     * // Update one B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends b_upload_sessionsUpdateArgs>(args: SelectSubset<T, b_upload_sessionsUpdateArgs<ExtArgs>>): Prisma__b_upload_sessionsClient<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more B_upload_sessions.
+     * @param {b_upload_sessionsDeleteManyArgs} args - Arguments to filter B_upload_sessions to delete.
+     * @example
+     * // Delete a few B_upload_sessions
+     * const { count } = await prisma.b_upload_sessions.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends b_upload_sessionsDeleteManyArgs>(args?: SelectSubset<T, b_upload_sessionsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more B_upload_sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_sessionsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends b_upload_sessionsUpdateManyArgs>(args: SelectSubset<T, b_upload_sessionsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one B_upload_sessions.
+     * @param {b_upload_sessionsUpsertArgs} args - Arguments to update or create a B_upload_sessions.
+     * @example
+     * // Update or create a B_upload_sessions
+     * const b_upload_sessions = await prisma.b_upload_sessions.upsert({
+     *   create: {
+     *     // ... data to create a B_upload_sessions
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the B_upload_sessions we want to update
+     *   }
+     * })
+     */
+    upsert<T extends b_upload_sessionsUpsertArgs>(args: SelectSubset<T, b_upload_sessionsUpsertArgs<ExtArgs>>): Prisma__b_upload_sessionsClient<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of B_upload_sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_sessionsCountArgs} args - Arguments to filter B_upload_sessions to count.
+     * @example
+     * // Count the number of B_upload_sessions
+     * const count = await prisma.b_upload_sessions.count({
+     *   where: {
+     *     // ... the filter for the B_upload_sessions we want to count
+     *   }
+     * })
+    **/
+    count<T extends b_upload_sessionsCountArgs>(
+      args?: Subset<T, b_upload_sessionsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], B_upload_sessionsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a B_upload_sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {B_upload_sessionsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends B_upload_sessionsAggregateArgs>(args: Subset<T, B_upload_sessionsAggregateArgs>): Prisma.PrismaPromise<GetB_upload_sessionsAggregateType<T>>
+
+    /**
+     * Group by B_upload_sessions.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_sessionsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends b_upload_sessionsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: b_upload_sessionsGroupByArgs['orderBy'] }
+        : { orderBy?: b_upload_sessionsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, b_upload_sessionsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetB_upload_sessionsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the b_upload_sessions model
+   */
+  readonly fields: b_upload_sessionsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for b_upload_sessions.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__b_upload_sessionsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    upload_chunks<T extends b_upload_sessions$upload_chunksArgs<ExtArgs> = {}>(args?: Subset<T, b_upload_sessions$upload_chunksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    b_knowledge_bases<T extends b_knowledge_basesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_basesDefaultArgs<ExtArgs>>): Prisma__b_knowledge_basesClient<$Result.GetResult<Prisma.$b_knowledge_basesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    b_users<T extends b_usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_usersDefaultArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    b_documents<T extends b_upload_sessions$b_documentsArgs<ExtArgs> = {}>(args?: Subset<T, b_upload_sessions$b_documentsArgs<ExtArgs>>): Prisma__b_documentsClient<$Result.GetResult<Prisma.$b_documentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the b_upload_sessions model
+   */
+  interface b_upload_sessionsFieldRefs {
+    readonly id: FieldRef<"b_upload_sessions", 'BigInt'>
+    readonly kb_id: FieldRef<"b_upload_sessions", 'BigInt'>
+    readonly user_id: FieldRef<"b_upload_sessions", 'BigInt'>
+    readonly document_id: FieldRef<"b_upload_sessions", 'BigInt'>
+    readonly file_name: FieldRef<"b_upload_sessions", 'String'>
+    readonly title: FieldRef<"b_upload_sessions", 'String'>
+    readonly file_size: FieldRef<"b_upload_sessions", 'BigInt'>
+    readonly mime_type: FieldRef<"b_upload_sessions", 'String'>
+    readonly file_hash: FieldRef<"b_upload_sessions", 'String'>
+    readonly file_extension: FieldRef<"b_upload_sessions", 'String'>
+    readonly chunk_size: FieldRef<"b_upload_sessions", 'Int'>
+    readonly total_chunks: FieldRef<"b_upload_sessions", 'Int'>
+    readonly uploaded_count: FieldRef<"b_upload_sessions", 'Int'>
+    readonly status: FieldRef<"b_upload_sessions", 'String'>
+    readonly storage_type: FieldRef<"b_upload_sessions", 'String'>
+    readonly temp_dir: FieldRef<"b_upload_sessions", 'String'>
+    readonly completed_at: FieldRef<"b_upload_sessions", 'DateTime'>
+    readonly expired_at: FieldRef<"b_upload_sessions", 'DateTime'>
+    readonly created_at: FieldRef<"b_upload_sessions", 'DateTime'>
+    readonly updated_at: FieldRef<"b_upload_sessions", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * b_upload_sessions findUnique
+   */
+  export type b_upload_sessionsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_sessions to fetch.
+     */
+    where: b_upload_sessionsWhereUniqueInput
+  }
+
+  /**
+   * b_upload_sessions findUniqueOrThrow
+   */
+  export type b_upload_sessionsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_sessions to fetch.
+     */
+    where: b_upload_sessionsWhereUniqueInput
+  }
+
+  /**
+   * b_upload_sessions findFirst
+   */
+  export type b_upload_sessionsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_sessions to fetch.
+     */
+    where?: b_upload_sessionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_upload_sessions to fetch.
+     */
+    orderBy?: b_upload_sessionsOrderByWithRelationInput | b_upload_sessionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_upload_sessions.
+     */
+    cursor?: b_upload_sessionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_upload_sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_upload_sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_upload_sessions.
+     */
+    distinct?: B_upload_sessionsScalarFieldEnum | B_upload_sessionsScalarFieldEnum[]
+  }
+
+  /**
+   * b_upload_sessions findFirstOrThrow
+   */
+  export type b_upload_sessionsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_sessions to fetch.
+     */
+    where?: b_upload_sessionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_upload_sessions to fetch.
+     */
+    orderBy?: b_upload_sessionsOrderByWithRelationInput | b_upload_sessionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_upload_sessions.
+     */
+    cursor?: b_upload_sessionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_upload_sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_upload_sessions.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_upload_sessions.
+     */
+    distinct?: B_upload_sessionsScalarFieldEnum | B_upload_sessionsScalarFieldEnum[]
+  }
+
+  /**
+   * b_upload_sessions findMany
+   */
+  export type b_upload_sessionsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_sessions to fetch.
+     */
+    where?: b_upload_sessionsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_upload_sessions to fetch.
+     */
+    orderBy?: b_upload_sessionsOrderByWithRelationInput | b_upload_sessionsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing b_upload_sessions.
+     */
+    cursor?: b_upload_sessionsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_upload_sessions from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_upload_sessions.
+     */
+    skip?: number
+    distinct?: B_upload_sessionsScalarFieldEnum | B_upload_sessionsScalarFieldEnum[]
+  }
+
+  /**
+   * b_upload_sessions create
+   */
+  export type b_upload_sessionsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a b_upload_sessions.
+     */
+    data: XOR<b_upload_sessionsCreateInput, b_upload_sessionsUncheckedCreateInput>
+  }
+
+  /**
+   * b_upload_sessions createMany
+   */
+  export type b_upload_sessionsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many b_upload_sessions.
+     */
+    data: b_upload_sessionsCreateManyInput | b_upload_sessionsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * b_upload_sessions update
+   */
+  export type b_upload_sessionsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a b_upload_sessions.
+     */
+    data: XOR<b_upload_sessionsUpdateInput, b_upload_sessionsUncheckedUpdateInput>
+    /**
+     * Choose, which b_upload_sessions to update.
+     */
+    where: b_upload_sessionsWhereUniqueInput
+  }
+
+  /**
+   * b_upload_sessions updateMany
+   */
+  export type b_upload_sessionsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update b_upload_sessions.
+     */
+    data: XOR<b_upload_sessionsUpdateManyMutationInput, b_upload_sessionsUncheckedUpdateManyInput>
+    /**
+     * Filter which b_upload_sessions to update
+     */
+    where?: b_upload_sessionsWhereInput
+    /**
+     * Limit how many b_upload_sessions to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_upload_sessions upsert
+   */
+  export type b_upload_sessionsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the b_upload_sessions to update in case it exists.
+     */
+    where: b_upload_sessionsWhereUniqueInput
+    /**
+     * In case the b_upload_sessions found by the `where` argument doesn't exist, create a new b_upload_sessions with this data.
+     */
+    create: XOR<b_upload_sessionsCreateInput, b_upload_sessionsUncheckedCreateInput>
+    /**
+     * In case the b_upload_sessions was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<b_upload_sessionsUpdateInput, b_upload_sessionsUncheckedUpdateInput>
+  }
+
+  /**
+   * b_upload_sessions delete
+   */
+  export type b_upload_sessionsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+    /**
+     * Filter which b_upload_sessions to delete.
+     */
+    where: b_upload_sessionsWhereUniqueInput
+  }
+
+  /**
+   * b_upload_sessions deleteMany
+   */
+  export type b_upload_sessionsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_upload_sessions to delete
+     */
+    where?: b_upload_sessionsWhereInput
+    /**
+     * Limit how many b_upload_sessions to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_upload_sessions.upload_chunks
+   */
+  export type b_upload_sessions$upload_chunksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    where?: b_upload_chunksWhereInput
+    orderBy?: b_upload_chunksOrderByWithRelationInput | b_upload_chunksOrderByWithRelationInput[]
+    cursor?: b_upload_chunksWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_upload_chunksScalarFieldEnum | B_upload_chunksScalarFieldEnum[]
+  }
+
+  /**
+   * b_upload_sessions.b_documents
+   */
+  export type b_upload_sessions$b_documentsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_documents
+     */
+    select?: b_documentsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_documents
+     */
+    omit?: b_documentsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_documentsInclude<ExtArgs> | null
+    where?: b_documentsWhereInput
+  }
+
+  /**
+   * b_upload_sessions without action
+   */
+  export type b_upload_sessionsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_sessions
+     */
+    select?: b_upload_sessionsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_sessions
+     */
+    omit?: b_upload_sessionsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_sessionsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model b_upload_chunks
+   */
+
+  export type AggregateB_upload_chunks = {
+    _count: B_upload_chunksCountAggregateOutputType | null
+    _avg: B_upload_chunksAvgAggregateOutputType | null
+    _sum: B_upload_chunksSumAggregateOutputType | null
+    _min: B_upload_chunksMinAggregateOutputType | null
+    _max: B_upload_chunksMaxAggregateOutputType | null
+  }
+
+  export type B_upload_chunksAvgAggregateOutputType = {
+    id: number | null
+    upload_id: number | null
+    chunk_index: number | null
+    chunk_size: number | null
+  }
+
+  export type B_upload_chunksSumAggregateOutputType = {
+    id: bigint | null
+    upload_id: bigint | null
+    chunk_index: number | null
+    chunk_size: number | null
+  }
+
+  export type B_upload_chunksMinAggregateOutputType = {
+    id: bigint | null
+    upload_id: bigint | null
+    chunk_index: number | null
+    chunk_size: number | null
+    chunk_hash: string | null
+    storage_path: string | null
+    status: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type B_upload_chunksMaxAggregateOutputType = {
+    id: bigint | null
+    upload_id: bigint | null
+    chunk_index: number | null
+    chunk_size: number | null
+    chunk_hash: string | null
+    storage_path: string | null
+    status: string | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type B_upload_chunksCountAggregateOutputType = {
+    id: number
+    upload_id: number
+    chunk_index: number
+    chunk_size: number
+    chunk_hash: number
+    storage_path: number
+    status: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type B_upload_chunksAvgAggregateInputType = {
+    id?: true
+    upload_id?: true
+    chunk_index?: true
+    chunk_size?: true
+  }
+
+  export type B_upload_chunksSumAggregateInputType = {
+    id?: true
+    upload_id?: true
+    chunk_index?: true
+    chunk_size?: true
+  }
+
+  export type B_upload_chunksMinAggregateInputType = {
+    id?: true
+    upload_id?: true
+    chunk_index?: true
+    chunk_size?: true
+    chunk_hash?: true
+    storage_path?: true
+    status?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type B_upload_chunksMaxAggregateInputType = {
+    id?: true
+    upload_id?: true
+    chunk_index?: true
+    chunk_size?: true
+    chunk_hash?: true
+    storage_path?: true
+    status?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type B_upload_chunksCountAggregateInputType = {
+    id?: true
+    upload_id?: true
+    chunk_index?: true
+    chunk_size?: true
+    chunk_hash?: true
+    storage_path?: true
+    status?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type B_upload_chunksAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_upload_chunks to aggregate.
+     */
+    where?: b_upload_chunksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_upload_chunks to fetch.
+     */
+    orderBy?: b_upload_chunksOrderByWithRelationInput | b_upload_chunksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: b_upload_chunksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_upload_chunks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_upload_chunks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned b_upload_chunks
+    **/
+    _count?: true | B_upload_chunksCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: B_upload_chunksAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: B_upload_chunksSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: B_upload_chunksMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: B_upload_chunksMaxAggregateInputType
+  }
+
+  export type GetB_upload_chunksAggregateType<T extends B_upload_chunksAggregateArgs> = {
+        [P in keyof T & keyof AggregateB_upload_chunks]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateB_upload_chunks[P]>
+      : GetScalarType<T[P], AggregateB_upload_chunks[P]>
+  }
+
+
+
+
+  export type b_upload_chunksGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_upload_chunksWhereInput
+    orderBy?: b_upload_chunksOrderByWithAggregationInput | b_upload_chunksOrderByWithAggregationInput[]
+    by: B_upload_chunksScalarFieldEnum[] | B_upload_chunksScalarFieldEnum
+    having?: b_upload_chunksScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: B_upload_chunksCountAggregateInputType | true
+    _avg?: B_upload_chunksAvgAggregateInputType
+    _sum?: B_upload_chunksSumAggregateInputType
+    _min?: B_upload_chunksMinAggregateInputType
+    _max?: B_upload_chunksMaxAggregateInputType
+  }
+
+  export type B_upload_chunksGroupByOutputType = {
+    id: bigint
+    upload_id: bigint
+    chunk_index: number
+    chunk_size: number
+    chunk_hash: string | null
+    storage_path: string
+    status: string
+    created_at: Date
+    updated_at: Date
+    _count: B_upload_chunksCountAggregateOutputType | null
+    _avg: B_upload_chunksAvgAggregateOutputType | null
+    _sum: B_upload_chunksSumAggregateOutputType | null
+    _min: B_upload_chunksMinAggregateOutputType | null
+    _max: B_upload_chunksMaxAggregateOutputType | null
+  }
+
+  type GetB_upload_chunksGroupByPayload<T extends b_upload_chunksGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<B_upload_chunksGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof B_upload_chunksGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], B_upload_chunksGroupByOutputType[P]>
+            : GetScalarType<T[P], B_upload_chunksGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type b_upload_chunksSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    upload_id?: boolean
+    chunk_index?: boolean
+    chunk_size?: boolean
+    chunk_hash?: boolean
+    storage_path?: boolean
+    status?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    b_upload_sessions?: boolean | b_upload_sessionsDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["b_upload_chunks"]>
+
+
+
+  export type b_upload_chunksSelectScalar = {
+    id?: boolean
+    upload_id?: boolean
+    chunk_index?: boolean
+    chunk_size?: boolean
+    chunk_hash?: boolean
+    storage_path?: boolean
+    status?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type b_upload_chunksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "upload_id" | "chunk_index" | "chunk_size" | "chunk_hash" | "storage_path" | "status" | "created_at" | "updated_at", ExtArgs["result"]["b_upload_chunks"]>
+  export type b_upload_chunksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    b_upload_sessions?: boolean | b_upload_sessionsDefaultArgs<ExtArgs>
+  }
+
+  export type $b_upload_chunksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "b_upload_chunks"
+    objects: {
+      b_upload_sessions: Prisma.$b_upload_sessionsPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      upload_id: bigint
+      chunk_index: number
+      chunk_size: number
+      chunk_hash: string | null
+      storage_path: string
+      status: string
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["b_upload_chunks"]>
+    composites: {}
+  }
+
+  type b_upload_chunksGetPayload<S extends boolean | null | undefined | b_upload_chunksDefaultArgs> = $Result.GetResult<Prisma.$b_upload_chunksPayload, S>
+
+  type b_upload_chunksCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<b_upload_chunksFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: B_upload_chunksCountAggregateInputType | true
+    }
+
+  export interface b_upload_chunksDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['b_upload_chunks'], meta: { name: 'b_upload_chunks' } }
+    /**
+     * Find zero or one B_upload_chunks that matches the filter.
+     * @param {b_upload_chunksFindUniqueArgs} args - Arguments to find a B_upload_chunks
+     * @example
+     * // Get one B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends b_upload_chunksFindUniqueArgs>(args: SelectSubset<T, b_upload_chunksFindUniqueArgs<ExtArgs>>): Prisma__b_upload_chunksClient<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one B_upload_chunks that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {b_upload_chunksFindUniqueOrThrowArgs} args - Arguments to find a B_upload_chunks
+     * @example
+     * // Get one B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends b_upload_chunksFindUniqueOrThrowArgs>(args: SelectSubset<T, b_upload_chunksFindUniqueOrThrowArgs<ExtArgs>>): Prisma__b_upload_chunksClient<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_upload_chunks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_chunksFindFirstArgs} args - Arguments to find a B_upload_chunks
+     * @example
+     * // Get one B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends b_upload_chunksFindFirstArgs>(args?: SelectSubset<T, b_upload_chunksFindFirstArgs<ExtArgs>>): Prisma__b_upload_chunksClient<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_upload_chunks that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_chunksFindFirstOrThrowArgs} args - Arguments to find a B_upload_chunks
+     * @example
+     * // Get one B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends b_upload_chunksFindFirstOrThrowArgs>(args?: SelectSubset<T, b_upload_chunksFindFirstOrThrowArgs<ExtArgs>>): Prisma__b_upload_chunksClient<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more B_upload_chunks that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_chunksFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.findMany()
+     * 
+     * // Get first 10 B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const b_upload_chunksWithIdOnly = await prisma.b_upload_chunks.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends b_upload_chunksFindManyArgs>(args?: SelectSubset<T, b_upload_chunksFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a B_upload_chunks.
+     * @param {b_upload_chunksCreateArgs} args - Arguments to create a B_upload_chunks.
+     * @example
+     * // Create one B_upload_chunks
+     * const B_upload_chunks = await prisma.b_upload_chunks.create({
+     *   data: {
+     *     // ... data to create a B_upload_chunks
+     *   }
+     * })
+     * 
+     */
+    create<T extends b_upload_chunksCreateArgs>(args: SelectSubset<T, b_upload_chunksCreateArgs<ExtArgs>>): Prisma__b_upload_chunksClient<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many B_upload_chunks.
+     * @param {b_upload_chunksCreateManyArgs} args - Arguments to create many B_upload_chunks.
+     * @example
+     * // Create many B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends b_upload_chunksCreateManyArgs>(args?: SelectSubset<T, b_upload_chunksCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a B_upload_chunks.
+     * @param {b_upload_chunksDeleteArgs} args - Arguments to delete one B_upload_chunks.
+     * @example
+     * // Delete one B_upload_chunks
+     * const B_upload_chunks = await prisma.b_upload_chunks.delete({
+     *   where: {
+     *     // ... filter to delete one B_upload_chunks
+     *   }
+     * })
+     * 
+     */
+    delete<T extends b_upload_chunksDeleteArgs>(args: SelectSubset<T, b_upload_chunksDeleteArgs<ExtArgs>>): Prisma__b_upload_chunksClient<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one B_upload_chunks.
+     * @param {b_upload_chunksUpdateArgs} args - Arguments to update one B_upload_chunks.
+     * @example
+     * // Update one B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends b_upload_chunksUpdateArgs>(args: SelectSubset<T, b_upload_chunksUpdateArgs<ExtArgs>>): Prisma__b_upload_chunksClient<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more B_upload_chunks.
+     * @param {b_upload_chunksDeleteManyArgs} args - Arguments to filter B_upload_chunks to delete.
+     * @example
+     * // Delete a few B_upload_chunks
+     * const { count } = await prisma.b_upload_chunks.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends b_upload_chunksDeleteManyArgs>(args?: SelectSubset<T, b_upload_chunksDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more B_upload_chunks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_chunksUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends b_upload_chunksUpdateManyArgs>(args: SelectSubset<T, b_upload_chunksUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one B_upload_chunks.
+     * @param {b_upload_chunksUpsertArgs} args - Arguments to update or create a B_upload_chunks.
+     * @example
+     * // Update or create a B_upload_chunks
+     * const b_upload_chunks = await prisma.b_upload_chunks.upsert({
+     *   create: {
+     *     // ... data to create a B_upload_chunks
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the B_upload_chunks we want to update
+     *   }
+     * })
+     */
+    upsert<T extends b_upload_chunksUpsertArgs>(args: SelectSubset<T, b_upload_chunksUpsertArgs<ExtArgs>>): Prisma__b_upload_chunksClient<$Result.GetResult<Prisma.$b_upload_chunksPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of B_upload_chunks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_chunksCountArgs} args - Arguments to filter B_upload_chunks to count.
+     * @example
+     * // Count the number of B_upload_chunks
+     * const count = await prisma.b_upload_chunks.count({
+     *   where: {
+     *     // ... the filter for the B_upload_chunks we want to count
+     *   }
+     * })
+    **/
+    count<T extends b_upload_chunksCountArgs>(
+      args?: Subset<T, b_upload_chunksCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], B_upload_chunksCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a B_upload_chunks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {B_upload_chunksAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends B_upload_chunksAggregateArgs>(args: Subset<T, B_upload_chunksAggregateArgs>): Prisma.PrismaPromise<GetB_upload_chunksAggregateType<T>>
+
+    /**
+     * Group by B_upload_chunks.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_upload_chunksGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends b_upload_chunksGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: b_upload_chunksGroupByArgs['orderBy'] }
+        : { orderBy?: b_upload_chunksGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, b_upload_chunksGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetB_upload_chunksGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the b_upload_chunks model
+   */
+  readonly fields: b_upload_chunksFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for b_upload_chunks.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__b_upload_chunksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    b_upload_sessions<T extends b_upload_sessionsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_upload_sessionsDefaultArgs<ExtArgs>>): Prisma__b_upload_sessionsClient<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the b_upload_chunks model
+   */
+  interface b_upload_chunksFieldRefs {
+    readonly id: FieldRef<"b_upload_chunks", 'BigInt'>
+    readonly upload_id: FieldRef<"b_upload_chunks", 'BigInt'>
+    readonly chunk_index: FieldRef<"b_upload_chunks", 'Int'>
+    readonly chunk_size: FieldRef<"b_upload_chunks", 'Int'>
+    readonly chunk_hash: FieldRef<"b_upload_chunks", 'String'>
+    readonly storage_path: FieldRef<"b_upload_chunks", 'String'>
+    readonly status: FieldRef<"b_upload_chunks", 'String'>
+    readonly created_at: FieldRef<"b_upload_chunks", 'DateTime'>
+    readonly updated_at: FieldRef<"b_upload_chunks", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * b_upload_chunks findUnique
+   */
+  export type b_upload_chunksFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_chunks to fetch.
+     */
+    where: b_upload_chunksWhereUniqueInput
+  }
+
+  /**
+   * b_upload_chunks findUniqueOrThrow
+   */
+  export type b_upload_chunksFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_chunks to fetch.
+     */
+    where: b_upload_chunksWhereUniqueInput
+  }
+
+  /**
+   * b_upload_chunks findFirst
+   */
+  export type b_upload_chunksFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_chunks to fetch.
+     */
+    where?: b_upload_chunksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_upload_chunks to fetch.
+     */
+    orderBy?: b_upload_chunksOrderByWithRelationInput | b_upload_chunksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_upload_chunks.
+     */
+    cursor?: b_upload_chunksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_upload_chunks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_upload_chunks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_upload_chunks.
+     */
+    distinct?: B_upload_chunksScalarFieldEnum | B_upload_chunksScalarFieldEnum[]
+  }
+
+  /**
+   * b_upload_chunks findFirstOrThrow
+   */
+  export type b_upload_chunksFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_chunks to fetch.
+     */
+    where?: b_upload_chunksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_upload_chunks to fetch.
+     */
+    orderBy?: b_upload_chunksOrderByWithRelationInput | b_upload_chunksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_upload_chunks.
+     */
+    cursor?: b_upload_chunksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_upload_chunks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_upload_chunks.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_upload_chunks.
+     */
+    distinct?: B_upload_chunksScalarFieldEnum | B_upload_chunksScalarFieldEnum[]
+  }
+
+  /**
+   * b_upload_chunks findMany
+   */
+  export type b_upload_chunksFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    /**
+     * Filter, which b_upload_chunks to fetch.
+     */
+    where?: b_upload_chunksWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_upload_chunks to fetch.
+     */
+    orderBy?: b_upload_chunksOrderByWithRelationInput | b_upload_chunksOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing b_upload_chunks.
+     */
+    cursor?: b_upload_chunksWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_upload_chunks from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_upload_chunks.
+     */
+    skip?: number
+    distinct?: B_upload_chunksScalarFieldEnum | B_upload_chunksScalarFieldEnum[]
+  }
+
+  /**
+   * b_upload_chunks create
+   */
+  export type b_upload_chunksCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    /**
+     * The data needed to create a b_upload_chunks.
+     */
+    data: XOR<b_upload_chunksCreateInput, b_upload_chunksUncheckedCreateInput>
+  }
+
+  /**
+   * b_upload_chunks createMany
+   */
+  export type b_upload_chunksCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many b_upload_chunks.
+     */
+    data: b_upload_chunksCreateManyInput | b_upload_chunksCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * b_upload_chunks update
+   */
+  export type b_upload_chunksUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    /**
+     * The data needed to update a b_upload_chunks.
+     */
+    data: XOR<b_upload_chunksUpdateInput, b_upload_chunksUncheckedUpdateInput>
+    /**
+     * Choose, which b_upload_chunks to update.
+     */
+    where: b_upload_chunksWhereUniqueInput
+  }
+
+  /**
+   * b_upload_chunks updateMany
+   */
+  export type b_upload_chunksUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update b_upload_chunks.
+     */
+    data: XOR<b_upload_chunksUpdateManyMutationInput, b_upload_chunksUncheckedUpdateManyInput>
+    /**
+     * Filter which b_upload_chunks to update
+     */
+    where?: b_upload_chunksWhereInput
+    /**
+     * Limit how many b_upload_chunks to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_upload_chunks upsert
+   */
+  export type b_upload_chunksUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    /**
+     * The filter to search for the b_upload_chunks to update in case it exists.
+     */
+    where: b_upload_chunksWhereUniqueInput
+    /**
+     * In case the b_upload_chunks found by the `where` argument doesn't exist, create a new b_upload_chunks with this data.
+     */
+    create: XOR<b_upload_chunksCreateInput, b_upload_chunksUncheckedCreateInput>
+    /**
+     * In case the b_upload_chunks was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<b_upload_chunksUpdateInput, b_upload_chunksUncheckedUpdateInput>
+  }
+
+  /**
+   * b_upload_chunks delete
+   */
+  export type b_upload_chunksDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
+    /**
+     * Filter which b_upload_chunks to delete.
+     */
+    where: b_upload_chunksWhereUniqueInput
+  }
+
+  /**
+   * b_upload_chunks deleteMany
+   */
+  export type b_upload_chunksDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_upload_chunks to delete
+     */
+    where?: b_upload_chunksWhereInput
+    /**
+     * Limit how many b_upload_chunks to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_upload_chunks without action
+   */
+  export type b_upload_chunksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_upload_chunks
+     */
+    select?: b_upload_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_upload_chunks
+     */
+    omit?: b_upload_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_upload_chunksInclude<ExtArgs> | null
   }
 
 
@@ -20054,6 +22594,47 @@ export namespace Prisma {
   export type B_documentsScalarFieldEnum = (typeof B_documentsScalarFieldEnum)[keyof typeof B_documentsScalarFieldEnum]
 
 
+  export const B_upload_sessionsScalarFieldEnum: {
+    id: 'id',
+    kb_id: 'kb_id',
+    user_id: 'user_id',
+    document_id: 'document_id',
+    file_name: 'file_name',
+    title: 'title',
+    file_size: 'file_size',
+    mime_type: 'mime_type',
+    file_hash: 'file_hash',
+    file_extension: 'file_extension',
+    chunk_size: 'chunk_size',
+    total_chunks: 'total_chunks',
+    uploaded_count: 'uploaded_count',
+    status: 'status',
+    storage_type: 'storage_type',
+    temp_dir: 'temp_dir',
+    completed_at: 'completed_at',
+    expired_at: 'expired_at',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type B_upload_sessionsScalarFieldEnum = (typeof B_upload_sessionsScalarFieldEnum)[keyof typeof B_upload_sessionsScalarFieldEnum]
+
+
+  export const B_upload_chunksScalarFieldEnum: {
+    id: 'id',
+    upload_id: 'upload_id',
+    chunk_index: 'chunk_index',
+    chunk_size: 'chunk_size',
+    chunk_hash: 'chunk_hash',
+    storage_path: 'storage_path',
+    status: 'status',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type B_upload_chunksScalarFieldEnum = (typeof B_upload_chunksScalarFieldEnum)[keyof typeof B_upload_chunksScalarFieldEnum]
+
+
   export const B_document_chunksScalarFieldEnum: {
     id: 'id',
     doc_id: 'doc_id',
@@ -20283,6 +22864,29 @@ export namespace Prisma {
   export type b_documentsOrderByRelevanceFieldEnum = (typeof b_documentsOrderByRelevanceFieldEnum)[keyof typeof b_documentsOrderByRelevanceFieldEnum]
 
 
+  export const b_upload_sessionsOrderByRelevanceFieldEnum: {
+    file_name: 'file_name',
+    title: 'title',
+    mime_type: 'mime_type',
+    file_hash: 'file_hash',
+    file_extension: 'file_extension',
+    status: 'status',
+    storage_type: 'storage_type',
+    temp_dir: 'temp_dir'
+  };
+
+  export type b_upload_sessionsOrderByRelevanceFieldEnum = (typeof b_upload_sessionsOrderByRelevanceFieldEnum)[keyof typeof b_upload_sessionsOrderByRelevanceFieldEnum]
+
+
+  export const b_upload_chunksOrderByRelevanceFieldEnum: {
+    chunk_hash: 'chunk_hash',
+    storage_path: 'storage_path',
+    status: 'status'
+  };
+
+  export type b_upload_chunksOrderByRelevanceFieldEnum = (typeof b_upload_chunksOrderByRelevanceFieldEnum)[keyof typeof b_upload_chunksOrderByRelevanceFieldEnum]
+
+
   export const b_document_chunksOrderByRelevanceFieldEnum: {
     content: 'content',
     vector_id: 'vector_id',
@@ -20421,6 +23025,7 @@ export namespace Prisma {
     kb_members?: B_kb_membersListRelationFilter
     knowledge_bases?: B_knowledge_basesListRelationFilter
     uploaded_documents?: B_documentsListRelationFilter
+    upload_sessions?: B_upload_sessionsListRelationFilter
     model_configs?: B_user_model_configsListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
     user_sessions?: B_user_sessionsListRelationFilter
@@ -20442,6 +23047,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersOrderByRelationAggregateInput
     knowledge_bases?: b_knowledge_basesOrderByRelationAggregateInput
     uploaded_documents?: b_documentsOrderByRelationAggregateInput
+    upload_sessions?: b_upload_sessionsOrderByRelationAggregateInput
     model_configs?: b_user_model_configsOrderByRelationAggregateInput
     kb_invitations?: b_kb_invitationsOrderByRelationAggregateInput
     user_sessions?: b_user_sessionsOrderByRelationAggregateInput
@@ -20467,6 +23073,7 @@ export namespace Prisma {
     kb_members?: B_kb_membersListRelationFilter
     knowledge_bases?: B_knowledge_basesListRelationFilter
     uploaded_documents?: B_documentsListRelationFilter
+    upload_sessions?: B_upload_sessionsListRelationFilter
     model_configs?: B_user_model_configsListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
     user_sessions?: B_user_sessionsListRelationFilter
@@ -20968,6 +23575,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
     updated_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
     documents?: B_documentsListRelationFilter
+    upload_sessions?: B_upload_sessionsListRelationFilter
     kb_members?: B_kb_membersListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
@@ -20985,6 +23593,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     documents?: b_documentsOrderByRelationAggregateInput
+    upload_sessions?: b_upload_sessionsOrderByRelationAggregateInput
     kb_members?: b_kb_membersOrderByRelationAggregateInput
     kb_invitations?: b_kb_invitationsOrderByRelationAggregateInput
     b_users?: b_usersOrderByWithRelationInput
@@ -21006,6 +23615,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
     updated_at?: DateTimeFilter<"b_knowledge_bases"> | Date | string
     documents?: B_documentsListRelationFilter
+    upload_sessions?: B_upload_sessionsListRelationFilter
     kb_members?: B_kb_membersListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
@@ -21221,6 +23831,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"b_documents"> | Date | string
     updated_at?: DateTimeFilter<"b_documents"> | Date | string
     document_chunks?: B_document_chunksListRelationFilter
+    upload_sessions?: B_upload_sessionsListRelationFilter
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
     b_users?: XOR<B_usersNullableScalarRelationFilter, b_usersWhereInput> | null
   }
@@ -21245,6 +23856,7 @@ export namespace Prisma {
     created_at?: SortOrder
     updated_at?: SortOrder
     document_chunks?: b_document_chunksOrderByRelationAggregateInput
+    upload_sessions?: b_upload_sessionsOrderByRelationAggregateInput
     b_knowledge_bases?: b_knowledge_basesOrderByWithRelationInput
     b_users?: b_usersOrderByWithRelationInput
     _relevance?: b_documentsOrderByRelevanceInput
@@ -21273,6 +23885,7 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"b_documents"> | Date | string
     updated_at?: DateTimeFilter<"b_documents"> | Date | string
     document_chunks?: B_document_chunksListRelationFilter
+    upload_sessions?: B_upload_sessionsListRelationFilter
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
     b_users?: XOR<B_usersNullableScalarRelationFilter, b_usersWhereInput> | null
   }, "id">
@@ -21325,6 +23938,227 @@ export namespace Prisma {
     last_reparse_at?: DateTimeNullableWithAggregatesFilter<"b_documents"> | Date | string | null
     created_at?: DateTimeWithAggregatesFilter<"b_documents"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"b_documents"> | Date | string
+  }
+
+  export type b_upload_sessionsWhereInput = {
+    AND?: b_upload_sessionsWhereInput | b_upload_sessionsWhereInput[]
+    OR?: b_upload_sessionsWhereInput[]
+    NOT?: b_upload_sessionsWhereInput | b_upload_sessionsWhereInput[]
+    id?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    kb_id?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    user_id?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    document_id?: BigIntNullableFilter<"b_upload_sessions"> | bigint | number | null
+    file_name?: StringFilter<"b_upload_sessions"> | string
+    title?: StringNullableFilter<"b_upload_sessions"> | string | null
+    file_size?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    mime_type?: StringNullableFilter<"b_upload_sessions"> | string | null
+    file_hash?: StringFilter<"b_upload_sessions"> | string
+    file_extension?: StringNullableFilter<"b_upload_sessions"> | string | null
+    chunk_size?: IntFilter<"b_upload_sessions"> | number
+    total_chunks?: IntFilter<"b_upload_sessions"> | number
+    uploaded_count?: IntFilter<"b_upload_sessions"> | number
+    status?: StringFilter<"b_upload_sessions"> | string
+    storage_type?: StringFilter<"b_upload_sessions"> | string
+    temp_dir?: StringFilter<"b_upload_sessions"> | string
+    completed_at?: DateTimeNullableFilter<"b_upload_sessions"> | Date | string | null
+    expired_at?: DateTimeNullableFilter<"b_upload_sessions"> | Date | string | null
+    created_at?: DateTimeFilter<"b_upload_sessions"> | Date | string
+    updated_at?: DateTimeFilter<"b_upload_sessions"> | Date | string
+    upload_chunks?: B_upload_chunksListRelationFilter
+    b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
+    b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
+    b_documents?: XOR<B_documentsNullableScalarRelationFilter, b_documentsWhereInput> | null
+  }
+
+  export type b_upload_sessionsOrderByWithRelationInput = {
+    id?: SortOrder
+    kb_id?: SortOrder
+    user_id?: SortOrder
+    document_id?: SortOrderInput | SortOrder
+    file_name?: SortOrder
+    title?: SortOrderInput | SortOrder
+    file_size?: SortOrder
+    mime_type?: SortOrderInput | SortOrder
+    file_hash?: SortOrder
+    file_extension?: SortOrderInput | SortOrder
+    chunk_size?: SortOrder
+    total_chunks?: SortOrder
+    uploaded_count?: SortOrder
+    status?: SortOrder
+    storage_type?: SortOrder
+    temp_dir?: SortOrder
+    completed_at?: SortOrderInput | SortOrder
+    expired_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    upload_chunks?: b_upload_chunksOrderByRelationAggregateInput
+    b_knowledge_bases?: b_knowledge_basesOrderByWithRelationInput
+    b_users?: b_usersOrderByWithRelationInput
+    b_documents?: b_documentsOrderByWithRelationInput
+    _relevance?: b_upload_sessionsOrderByRelevanceInput
+  }
+
+  export type b_upload_sessionsWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: b_upload_sessionsWhereInput | b_upload_sessionsWhereInput[]
+    OR?: b_upload_sessionsWhereInput[]
+    NOT?: b_upload_sessionsWhereInput | b_upload_sessionsWhereInput[]
+    kb_id?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    user_id?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    document_id?: BigIntNullableFilter<"b_upload_sessions"> | bigint | number | null
+    file_name?: StringFilter<"b_upload_sessions"> | string
+    title?: StringNullableFilter<"b_upload_sessions"> | string | null
+    file_size?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    mime_type?: StringNullableFilter<"b_upload_sessions"> | string | null
+    file_hash?: StringFilter<"b_upload_sessions"> | string
+    file_extension?: StringNullableFilter<"b_upload_sessions"> | string | null
+    chunk_size?: IntFilter<"b_upload_sessions"> | number
+    total_chunks?: IntFilter<"b_upload_sessions"> | number
+    uploaded_count?: IntFilter<"b_upload_sessions"> | number
+    status?: StringFilter<"b_upload_sessions"> | string
+    storage_type?: StringFilter<"b_upload_sessions"> | string
+    temp_dir?: StringFilter<"b_upload_sessions"> | string
+    completed_at?: DateTimeNullableFilter<"b_upload_sessions"> | Date | string | null
+    expired_at?: DateTimeNullableFilter<"b_upload_sessions"> | Date | string | null
+    created_at?: DateTimeFilter<"b_upload_sessions"> | Date | string
+    updated_at?: DateTimeFilter<"b_upload_sessions"> | Date | string
+    upload_chunks?: B_upload_chunksListRelationFilter
+    b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
+    b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
+    b_documents?: XOR<B_documentsNullableScalarRelationFilter, b_documentsWhereInput> | null
+  }, "id">
+
+  export type b_upload_sessionsOrderByWithAggregationInput = {
+    id?: SortOrder
+    kb_id?: SortOrder
+    user_id?: SortOrder
+    document_id?: SortOrderInput | SortOrder
+    file_name?: SortOrder
+    title?: SortOrderInput | SortOrder
+    file_size?: SortOrder
+    mime_type?: SortOrderInput | SortOrder
+    file_hash?: SortOrder
+    file_extension?: SortOrderInput | SortOrder
+    chunk_size?: SortOrder
+    total_chunks?: SortOrder
+    uploaded_count?: SortOrder
+    status?: SortOrder
+    storage_type?: SortOrder
+    temp_dir?: SortOrder
+    completed_at?: SortOrderInput | SortOrder
+    expired_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: b_upload_sessionsCountOrderByAggregateInput
+    _avg?: b_upload_sessionsAvgOrderByAggregateInput
+    _max?: b_upload_sessionsMaxOrderByAggregateInput
+    _min?: b_upload_sessionsMinOrderByAggregateInput
+    _sum?: b_upload_sessionsSumOrderByAggregateInput
+  }
+
+  export type b_upload_sessionsScalarWhereWithAggregatesInput = {
+    AND?: b_upload_sessionsScalarWhereWithAggregatesInput | b_upload_sessionsScalarWhereWithAggregatesInput[]
+    OR?: b_upload_sessionsScalarWhereWithAggregatesInput[]
+    NOT?: b_upload_sessionsScalarWhereWithAggregatesInput | b_upload_sessionsScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"b_upload_sessions"> | bigint | number
+    kb_id?: BigIntWithAggregatesFilter<"b_upload_sessions"> | bigint | number
+    user_id?: BigIntWithAggregatesFilter<"b_upload_sessions"> | bigint | number
+    document_id?: BigIntNullableWithAggregatesFilter<"b_upload_sessions"> | bigint | number | null
+    file_name?: StringWithAggregatesFilter<"b_upload_sessions"> | string
+    title?: StringNullableWithAggregatesFilter<"b_upload_sessions"> | string | null
+    file_size?: BigIntWithAggregatesFilter<"b_upload_sessions"> | bigint | number
+    mime_type?: StringNullableWithAggregatesFilter<"b_upload_sessions"> | string | null
+    file_hash?: StringWithAggregatesFilter<"b_upload_sessions"> | string
+    file_extension?: StringNullableWithAggregatesFilter<"b_upload_sessions"> | string | null
+    chunk_size?: IntWithAggregatesFilter<"b_upload_sessions"> | number
+    total_chunks?: IntWithAggregatesFilter<"b_upload_sessions"> | number
+    uploaded_count?: IntWithAggregatesFilter<"b_upload_sessions"> | number
+    status?: StringWithAggregatesFilter<"b_upload_sessions"> | string
+    storage_type?: StringWithAggregatesFilter<"b_upload_sessions"> | string
+    temp_dir?: StringWithAggregatesFilter<"b_upload_sessions"> | string
+    completed_at?: DateTimeNullableWithAggregatesFilter<"b_upload_sessions"> | Date | string | null
+    expired_at?: DateTimeNullableWithAggregatesFilter<"b_upload_sessions"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"b_upload_sessions"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"b_upload_sessions"> | Date | string
+  }
+
+  export type b_upload_chunksWhereInput = {
+    AND?: b_upload_chunksWhereInput | b_upload_chunksWhereInput[]
+    OR?: b_upload_chunksWhereInput[]
+    NOT?: b_upload_chunksWhereInput | b_upload_chunksWhereInput[]
+    id?: BigIntFilter<"b_upload_chunks"> | bigint | number
+    upload_id?: BigIntFilter<"b_upload_chunks"> | bigint | number
+    chunk_index?: IntFilter<"b_upload_chunks"> | number
+    chunk_size?: IntFilter<"b_upload_chunks"> | number
+    chunk_hash?: StringNullableFilter<"b_upload_chunks"> | string | null
+    storage_path?: StringFilter<"b_upload_chunks"> | string
+    status?: StringFilter<"b_upload_chunks"> | string
+    created_at?: DateTimeFilter<"b_upload_chunks"> | Date | string
+    updated_at?: DateTimeFilter<"b_upload_chunks"> | Date | string
+    b_upload_sessions?: XOR<B_upload_sessionsScalarRelationFilter, b_upload_sessionsWhereInput>
+  }
+
+  export type b_upload_chunksOrderByWithRelationInput = {
+    id?: SortOrder
+    upload_id?: SortOrder
+    chunk_index?: SortOrder
+    chunk_size?: SortOrder
+    chunk_hash?: SortOrderInput | SortOrder
+    storage_path?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    b_upload_sessions?: b_upload_sessionsOrderByWithRelationInput
+    _relevance?: b_upload_chunksOrderByRelevanceInput
+  }
+
+  export type b_upload_chunksWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    upload_id_chunk_index?: b_upload_chunksUpload_idChunk_indexCompoundUniqueInput
+    AND?: b_upload_chunksWhereInput | b_upload_chunksWhereInput[]
+    OR?: b_upload_chunksWhereInput[]
+    NOT?: b_upload_chunksWhereInput | b_upload_chunksWhereInput[]
+    upload_id?: BigIntFilter<"b_upload_chunks"> | bigint | number
+    chunk_index?: IntFilter<"b_upload_chunks"> | number
+    chunk_size?: IntFilter<"b_upload_chunks"> | number
+    chunk_hash?: StringNullableFilter<"b_upload_chunks"> | string | null
+    storage_path?: StringFilter<"b_upload_chunks"> | string
+    status?: StringFilter<"b_upload_chunks"> | string
+    created_at?: DateTimeFilter<"b_upload_chunks"> | Date | string
+    updated_at?: DateTimeFilter<"b_upload_chunks"> | Date | string
+    b_upload_sessions?: XOR<B_upload_sessionsScalarRelationFilter, b_upload_sessionsWhereInput>
+  }, "id" | "upload_id_chunk_index">
+
+  export type b_upload_chunksOrderByWithAggregationInput = {
+    id?: SortOrder
+    upload_id?: SortOrder
+    chunk_index?: SortOrder
+    chunk_size?: SortOrder
+    chunk_hash?: SortOrderInput | SortOrder
+    storage_path?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: b_upload_chunksCountOrderByAggregateInput
+    _avg?: b_upload_chunksAvgOrderByAggregateInput
+    _max?: b_upload_chunksMaxOrderByAggregateInput
+    _min?: b_upload_chunksMinOrderByAggregateInput
+    _sum?: b_upload_chunksSumOrderByAggregateInput
+  }
+
+  export type b_upload_chunksScalarWhereWithAggregatesInput = {
+    AND?: b_upload_chunksScalarWhereWithAggregatesInput | b_upload_chunksScalarWhereWithAggregatesInput[]
+    OR?: b_upload_chunksScalarWhereWithAggregatesInput[]
+    NOT?: b_upload_chunksScalarWhereWithAggregatesInput | b_upload_chunksScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"b_upload_chunks"> | bigint | number
+    upload_id?: BigIntWithAggregatesFilter<"b_upload_chunks"> | bigint | number
+    chunk_index?: IntWithAggregatesFilter<"b_upload_chunks"> | number
+    chunk_size?: IntWithAggregatesFilter<"b_upload_chunks"> | number
+    chunk_hash?: StringNullableWithAggregatesFilter<"b_upload_chunks"> | string | null
+    storage_path?: StringWithAggregatesFilter<"b_upload_chunks"> | string
+    status?: StringWithAggregatesFilter<"b_upload_chunks"> | string
+    created_at?: DateTimeWithAggregatesFilter<"b_upload_chunks"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"b_upload_chunks"> | Date | string
   }
 
   export type b_document_chunksWhereInput = {
@@ -21774,6 +24608,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
@@ -21795,6 +24630,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -21816,6 +24652,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
@@ -21837,6 +24674,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -22376,6 +25214,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
     b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
@@ -22393,6 +25232,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
@@ -22408,6 +25248,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
@@ -22425,6 +25266,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
@@ -22635,6 +25477,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
@@ -22659,6 +25502,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsUpdateInput = {
@@ -22679,6 +25523,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
@@ -22703,6 +25548,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_documentsCreateManyInput = {
@@ -22762,6 +25608,251 @@ export namespace Prisma {
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_sessionsCreateInput = {
+    id?: bigint | number
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    upload_chunks?: b_upload_chunksCreateNestedManyWithoutB_upload_sessionsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutUpload_sessionsInput
+    b_users: b_usersCreateNestedOneWithoutUpload_sessionsInput
+    b_documents?: b_documentsCreateNestedOneWithoutUpload_sessionsInput
+  }
+
+  export type b_upload_sessionsUncheckedCreateInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    user_id: bigint | number
+    document_id?: bigint | number | null
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    upload_chunks?: b_upload_chunksUncheckedCreateNestedManyWithoutB_upload_sessionsInput
+  }
+
+  export type b_upload_sessionsUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_chunks?: b_upload_chunksUpdateManyWithoutB_upload_sessionsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutUpload_sessionsNestedInput
+    b_users?: b_usersUpdateOneRequiredWithoutUpload_sessionsNestedInput
+    b_documents?: b_documentsUpdateOneWithoutUpload_sessionsNestedInput
+  }
+
+  export type b_upload_sessionsUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    document_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_chunks?: b_upload_chunksUncheckedUpdateManyWithoutB_upload_sessionsNestedInput
+  }
+
+  export type b_upload_sessionsCreateManyInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    user_id: bigint | number
+    document_id?: bigint | number | null
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_upload_sessionsUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_sessionsUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    document_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_chunksCreateInput = {
+    id?: bigint | number
+    chunk_index: number
+    chunk_size: number
+    chunk_hash?: string | null
+    storage_path: string
+    status?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+    b_upload_sessions: b_upload_sessionsCreateNestedOneWithoutUpload_chunksInput
+  }
+
+  export type b_upload_chunksUncheckedCreateInput = {
+    id?: bigint | number
+    upload_id: bigint | number
+    chunk_index: number
+    chunk_size: number
+    chunk_hash?: string | null
+    storage_path: string
+    status?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_upload_chunksUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    chunk_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    storage_path?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_upload_sessions?: b_upload_sessionsUpdateOneRequiredWithoutUpload_chunksNestedInput
+  }
+
+  export type b_upload_chunksUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    upload_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    chunk_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    storage_path?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_chunksCreateManyInput = {
+    id?: bigint | number
+    upload_id: bigint | number
+    chunk_index: number
+    chunk_size: number
+    chunk_hash?: string | null
+    storage_path: string
+    status?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_upload_chunksUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    chunk_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    storage_path?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_chunksUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    upload_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    chunk_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    storage_path?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -23313,6 +26404,12 @@ export namespace Prisma {
     none?: b_documentsWhereInput
   }
 
+  export type B_upload_sessionsListRelationFilter = {
+    every?: b_upload_sessionsWhereInput
+    some?: b_upload_sessionsWhereInput
+    none?: b_upload_sessionsWhereInput
+  }
+
   export type B_user_model_configsListRelationFilter = {
     every?: b_user_model_configsWhereInput
     some?: b_user_model_configsWhereInput
@@ -23349,6 +26446,10 @@ export namespace Prisma {
   }
 
   export type b_documentsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type b_upload_sessionsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -24237,6 +27338,184 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type B_upload_chunksListRelationFilter = {
+    every?: b_upload_chunksWhereInput
+    some?: b_upload_chunksWhereInput
+    none?: b_upload_chunksWhereInput
+  }
+
+  export type B_documentsNullableScalarRelationFilter = {
+    is?: b_documentsWhereInput | null
+    isNot?: b_documentsWhereInput | null
+  }
+
+  export type b_upload_chunksOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type b_upload_sessionsOrderByRelevanceInput = {
+    fields: b_upload_sessionsOrderByRelevanceFieldEnum | b_upload_sessionsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type b_upload_sessionsCountOrderByAggregateInput = {
+    id?: SortOrder
+    kb_id?: SortOrder
+    user_id?: SortOrder
+    document_id?: SortOrder
+    file_name?: SortOrder
+    title?: SortOrder
+    file_size?: SortOrder
+    mime_type?: SortOrder
+    file_hash?: SortOrder
+    file_extension?: SortOrder
+    chunk_size?: SortOrder
+    total_chunks?: SortOrder
+    uploaded_count?: SortOrder
+    status?: SortOrder
+    storage_type?: SortOrder
+    temp_dir?: SortOrder
+    completed_at?: SortOrder
+    expired_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_upload_sessionsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    kb_id?: SortOrder
+    user_id?: SortOrder
+    document_id?: SortOrder
+    file_size?: SortOrder
+    chunk_size?: SortOrder
+    total_chunks?: SortOrder
+    uploaded_count?: SortOrder
+  }
+
+  export type b_upload_sessionsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    kb_id?: SortOrder
+    user_id?: SortOrder
+    document_id?: SortOrder
+    file_name?: SortOrder
+    title?: SortOrder
+    file_size?: SortOrder
+    mime_type?: SortOrder
+    file_hash?: SortOrder
+    file_extension?: SortOrder
+    chunk_size?: SortOrder
+    total_chunks?: SortOrder
+    uploaded_count?: SortOrder
+    status?: SortOrder
+    storage_type?: SortOrder
+    temp_dir?: SortOrder
+    completed_at?: SortOrder
+    expired_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_upload_sessionsMinOrderByAggregateInput = {
+    id?: SortOrder
+    kb_id?: SortOrder
+    user_id?: SortOrder
+    document_id?: SortOrder
+    file_name?: SortOrder
+    title?: SortOrder
+    file_size?: SortOrder
+    mime_type?: SortOrder
+    file_hash?: SortOrder
+    file_extension?: SortOrder
+    chunk_size?: SortOrder
+    total_chunks?: SortOrder
+    uploaded_count?: SortOrder
+    status?: SortOrder
+    storage_type?: SortOrder
+    temp_dir?: SortOrder
+    completed_at?: SortOrder
+    expired_at?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_upload_sessionsSumOrderByAggregateInput = {
+    id?: SortOrder
+    kb_id?: SortOrder
+    user_id?: SortOrder
+    document_id?: SortOrder
+    file_size?: SortOrder
+    chunk_size?: SortOrder
+    total_chunks?: SortOrder
+    uploaded_count?: SortOrder
+  }
+
+  export type B_upload_sessionsScalarRelationFilter = {
+    is?: b_upload_sessionsWhereInput
+    isNot?: b_upload_sessionsWhereInput
+  }
+
+  export type b_upload_chunksOrderByRelevanceInput = {
+    fields: b_upload_chunksOrderByRelevanceFieldEnum | b_upload_chunksOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type b_upload_chunksUpload_idChunk_indexCompoundUniqueInput = {
+    upload_id: bigint | number
+    chunk_index: number
+  }
+
+  export type b_upload_chunksCountOrderByAggregateInput = {
+    id?: SortOrder
+    upload_id?: SortOrder
+    chunk_index?: SortOrder
+    chunk_size?: SortOrder
+    chunk_hash?: SortOrder
+    storage_path?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_upload_chunksAvgOrderByAggregateInput = {
+    id?: SortOrder
+    upload_id?: SortOrder
+    chunk_index?: SortOrder
+    chunk_size?: SortOrder
+  }
+
+  export type b_upload_chunksMaxOrderByAggregateInput = {
+    id?: SortOrder
+    upload_id?: SortOrder
+    chunk_index?: SortOrder
+    chunk_size?: SortOrder
+    chunk_hash?: SortOrder
+    storage_path?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_upload_chunksMinOrderByAggregateInput = {
+    id?: SortOrder
+    upload_id?: SortOrder
+    chunk_index?: SortOrder
+    chunk_size?: SortOrder
+    chunk_hash?: SortOrder
+    storage_path?: SortOrder
+    status?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_upload_chunksSumOrderByAggregateInput = {
+    id?: SortOrder
+    upload_id?: SortOrder
+    chunk_index?: SortOrder
+    chunk_size?: SortOrder
+  }
+
   export type B_documentsScalarRelationFilter = {
     is?: b_documentsWhereInput
     isNot?: b_documentsWhereInput
@@ -24586,6 +27865,13 @@ export namespace Prisma {
     connect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
   }
 
+  export type b_upload_sessionsCreateNestedManyWithoutB_usersInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_usersInput, b_upload_sessionsUncheckedCreateWithoutB_usersInput> | b_upload_sessionsCreateWithoutB_usersInput[] | b_upload_sessionsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_usersInput | b_upload_sessionsCreateOrConnectWithoutB_usersInput[]
+    createMany?: b_upload_sessionsCreateManyB_usersInputEnvelope
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+  }
+
   export type b_user_model_configsCreateNestedManyWithoutB_usersInput = {
     create?: XOR<b_user_model_configsCreateWithoutB_usersInput, b_user_model_configsUncheckedCreateWithoutB_usersInput> | b_user_model_configsCreateWithoutB_usersInput[] | b_user_model_configsUncheckedCreateWithoutB_usersInput[]
     connectOrCreate?: b_user_model_configsCreateOrConnectWithoutB_usersInput | b_user_model_configsCreateOrConnectWithoutB_usersInput[]
@@ -24633,6 +27919,13 @@ export namespace Prisma {
     connectOrCreate?: b_documentsCreateOrConnectWithoutB_usersInput | b_documentsCreateOrConnectWithoutB_usersInput[]
     createMany?: b_documentsCreateManyB_usersInputEnvelope
     connect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+  }
+
+  export type b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_usersInput, b_upload_sessionsUncheckedCreateWithoutB_usersInput> | b_upload_sessionsCreateWithoutB_usersInput[] | b_upload_sessionsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_usersInput | b_upload_sessionsCreateOrConnectWithoutB_usersInput[]
+    createMany?: b_upload_sessionsCreateManyB_usersInputEnvelope
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
   }
 
   export type b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput = {
@@ -24744,6 +28037,20 @@ export namespace Prisma {
     deleteMany?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
   }
 
+  export type b_upload_sessionsUpdateManyWithoutB_usersNestedInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_usersInput, b_upload_sessionsUncheckedCreateWithoutB_usersInput> | b_upload_sessionsCreateWithoutB_usersInput[] | b_upload_sessionsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_usersInput | b_upload_sessionsCreateOrConnectWithoutB_usersInput[]
+    upsert?: b_upload_sessionsUpsertWithWhereUniqueWithoutB_usersInput | b_upload_sessionsUpsertWithWhereUniqueWithoutB_usersInput[]
+    createMany?: b_upload_sessionsCreateManyB_usersInputEnvelope
+    set?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    disconnect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    delete?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    update?: b_upload_sessionsUpdateWithWhereUniqueWithoutB_usersInput | b_upload_sessionsUpdateWithWhereUniqueWithoutB_usersInput[]
+    updateMany?: b_upload_sessionsUpdateManyWithWhereWithoutB_usersInput | b_upload_sessionsUpdateManyWithWhereWithoutB_usersInput[]
+    deleteMany?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
+  }
+
   export type b_user_model_configsUpdateManyWithoutB_usersNestedInput = {
     create?: XOR<b_user_model_configsCreateWithoutB_usersInput, b_user_model_configsUncheckedCreateWithoutB_usersInput> | b_user_model_configsCreateWithoutB_usersInput[] | b_user_model_configsUncheckedCreateWithoutB_usersInput[]
     connectOrCreate?: b_user_model_configsCreateOrConnectWithoutB_usersInput | b_user_model_configsCreateOrConnectWithoutB_usersInput[]
@@ -24840,6 +28147,20 @@ export namespace Prisma {
     update?: b_documentsUpdateWithWhereUniqueWithoutB_usersInput | b_documentsUpdateWithWhereUniqueWithoutB_usersInput[]
     updateMany?: b_documentsUpdateManyWithWhereWithoutB_usersInput | b_documentsUpdateManyWithWhereWithoutB_usersInput[]
     deleteMany?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
+  }
+
+  export type b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_usersInput, b_upload_sessionsUncheckedCreateWithoutB_usersInput> | b_upload_sessionsCreateWithoutB_usersInput[] | b_upload_sessionsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_usersInput | b_upload_sessionsCreateOrConnectWithoutB_usersInput[]
+    upsert?: b_upload_sessionsUpsertWithWhereUniqueWithoutB_usersInput | b_upload_sessionsUpsertWithWhereUniqueWithoutB_usersInput[]
+    createMany?: b_upload_sessionsCreateManyB_usersInputEnvelope
+    set?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    disconnect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    delete?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    update?: b_upload_sessionsUpdateWithWhereUniqueWithoutB_usersInput | b_upload_sessionsUpdateWithWhereUniqueWithoutB_usersInput[]
+    updateMany?: b_upload_sessionsUpdateManyWithWhereWithoutB_usersInput | b_upload_sessionsUpdateManyWithWhereWithoutB_usersInput[]
+    deleteMany?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
   }
 
   export type b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput = {
@@ -25017,6 +28338,13 @@ export namespace Prisma {
     connect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
   }
 
+  export type b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_knowledge_basesInput, b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput> | b_upload_sessionsCreateWithoutB_knowledge_basesInput[] | b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_knowledge_basesInput | b_upload_sessionsCreateOrConnectWithoutB_knowledge_basesInput[]
+    createMany?: b_upload_sessionsCreateManyB_knowledge_basesInputEnvelope
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+  }
+
   export type b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput = {
     create?: XOR<b_kb_membersCreateWithoutB_knowledge_basesInput, b_kb_membersUncheckedCreateWithoutB_knowledge_basesInput> | b_kb_membersCreateWithoutB_knowledge_basesInput[] | b_kb_membersUncheckedCreateWithoutB_knowledge_basesInput[]
     connectOrCreate?: b_kb_membersCreateOrConnectWithoutB_knowledge_basesInput | b_kb_membersCreateOrConnectWithoutB_knowledge_basesInput[]
@@ -25042,6 +28370,13 @@ export namespace Prisma {
     connectOrCreate?: b_documentsCreateOrConnectWithoutB_knowledge_basesInput | b_documentsCreateOrConnectWithoutB_knowledge_basesInput[]
     createMany?: b_documentsCreateManyB_knowledge_basesInputEnvelope
     connect?: b_documentsWhereUniqueInput | b_documentsWhereUniqueInput[]
+  }
+
+  export type b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_knowledge_basesInput, b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput> | b_upload_sessionsCreateWithoutB_knowledge_basesInput[] | b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_knowledge_basesInput | b_upload_sessionsCreateOrConnectWithoutB_knowledge_basesInput[]
+    createMany?: b_upload_sessionsCreateManyB_knowledge_basesInputEnvelope
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
   }
 
   export type b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput = {
@@ -25070,6 +28405,20 @@ export namespace Prisma {
     update?: b_documentsUpdateWithWhereUniqueWithoutB_knowledge_basesInput | b_documentsUpdateWithWhereUniqueWithoutB_knowledge_basesInput[]
     updateMany?: b_documentsUpdateManyWithWhereWithoutB_knowledge_basesInput | b_documentsUpdateManyWithWhereWithoutB_knowledge_basesInput[]
     deleteMany?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
+  }
+
+  export type b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_knowledge_basesInput, b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput> | b_upload_sessionsCreateWithoutB_knowledge_basesInput[] | b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_knowledge_basesInput | b_upload_sessionsCreateOrConnectWithoutB_knowledge_basesInput[]
+    upsert?: b_upload_sessionsUpsertWithWhereUniqueWithoutB_knowledge_basesInput | b_upload_sessionsUpsertWithWhereUniqueWithoutB_knowledge_basesInput[]
+    createMany?: b_upload_sessionsCreateManyB_knowledge_basesInputEnvelope
+    set?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    disconnect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    delete?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    update?: b_upload_sessionsUpdateWithWhereUniqueWithoutB_knowledge_basesInput | b_upload_sessionsUpdateWithWhereUniqueWithoutB_knowledge_basesInput[]
+    updateMany?: b_upload_sessionsUpdateManyWithWhereWithoutB_knowledge_basesInput | b_upload_sessionsUpdateManyWithWhereWithoutB_knowledge_basesInput[]
+    deleteMany?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
   }
 
   export type b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput = {
@@ -25120,6 +28469,20 @@ export namespace Prisma {
     update?: b_documentsUpdateWithWhereUniqueWithoutB_knowledge_basesInput | b_documentsUpdateWithWhereUniqueWithoutB_knowledge_basesInput[]
     updateMany?: b_documentsUpdateManyWithWhereWithoutB_knowledge_basesInput | b_documentsUpdateManyWithWhereWithoutB_knowledge_basesInput[]
     deleteMany?: b_documentsScalarWhereInput | b_documentsScalarWhereInput[]
+  }
+
+  export type b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_knowledge_basesInput, b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput> | b_upload_sessionsCreateWithoutB_knowledge_basesInput[] | b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_knowledge_basesInput | b_upload_sessionsCreateOrConnectWithoutB_knowledge_basesInput[]
+    upsert?: b_upload_sessionsUpsertWithWhereUniqueWithoutB_knowledge_basesInput | b_upload_sessionsUpsertWithWhereUniqueWithoutB_knowledge_basesInput[]
+    createMany?: b_upload_sessionsCreateManyB_knowledge_basesInputEnvelope
+    set?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    disconnect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    delete?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    update?: b_upload_sessionsUpdateWithWhereUniqueWithoutB_knowledge_basesInput | b_upload_sessionsUpdateWithWhereUniqueWithoutB_knowledge_basesInput[]
+    updateMany?: b_upload_sessionsUpdateManyWithWhereWithoutB_knowledge_basesInput | b_upload_sessionsUpdateManyWithWhereWithoutB_knowledge_basesInput[]
+    deleteMany?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
   }
 
   export type b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput = {
@@ -25225,6 +28588,13 @@ export namespace Prisma {
     connect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
   }
 
+  export type b_upload_sessionsCreateNestedManyWithoutB_documentsInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_documentsInput, b_upload_sessionsUncheckedCreateWithoutB_documentsInput> | b_upload_sessionsCreateWithoutB_documentsInput[] | b_upload_sessionsUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_documentsInput | b_upload_sessionsCreateOrConnectWithoutB_documentsInput[]
+    createMany?: b_upload_sessionsCreateManyB_documentsInputEnvelope
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+  }
+
   export type b_knowledge_basesCreateNestedOneWithoutDocumentsInput = {
     create?: XOR<b_knowledge_basesCreateWithoutDocumentsInput, b_knowledge_basesUncheckedCreateWithoutDocumentsInput>
     connectOrCreate?: b_knowledge_basesCreateOrConnectWithoutDocumentsInput
@@ -25242,6 +28612,13 @@ export namespace Prisma {
     connectOrCreate?: b_document_chunksCreateOrConnectWithoutB_documentsInput | b_document_chunksCreateOrConnectWithoutB_documentsInput[]
     createMany?: b_document_chunksCreateManyB_documentsInputEnvelope
     connect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+  }
+
+  export type b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_documentsInput, b_upload_sessionsUncheckedCreateWithoutB_documentsInput> | b_upload_sessionsCreateWithoutB_documentsInput[] | b_upload_sessionsUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_documentsInput | b_upload_sessionsCreateOrConnectWithoutB_documentsInput[]
+    createMany?: b_upload_sessionsCreateManyB_documentsInputEnvelope
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
   }
 
   export type NullableIntFieldUpdateOperationsInput = {
@@ -25264,6 +28641,20 @@ export namespace Prisma {
     update?: b_document_chunksUpdateWithWhereUniqueWithoutB_documentsInput | b_document_chunksUpdateWithWhereUniqueWithoutB_documentsInput[]
     updateMany?: b_document_chunksUpdateManyWithWhereWithoutB_documentsInput | b_document_chunksUpdateManyWithWhereWithoutB_documentsInput[]
     deleteMany?: b_document_chunksScalarWhereInput | b_document_chunksScalarWhereInput[]
+  }
+
+  export type b_upload_sessionsUpdateManyWithoutB_documentsNestedInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_documentsInput, b_upload_sessionsUncheckedCreateWithoutB_documentsInput> | b_upload_sessionsCreateWithoutB_documentsInput[] | b_upload_sessionsUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_documentsInput | b_upload_sessionsCreateOrConnectWithoutB_documentsInput[]
+    upsert?: b_upload_sessionsUpsertWithWhereUniqueWithoutB_documentsInput | b_upload_sessionsUpsertWithWhereUniqueWithoutB_documentsInput[]
+    createMany?: b_upload_sessionsCreateManyB_documentsInputEnvelope
+    set?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    disconnect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    delete?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    update?: b_upload_sessionsUpdateWithWhereUniqueWithoutB_documentsInput | b_upload_sessionsUpdateWithWhereUniqueWithoutB_documentsInput[]
+    updateMany?: b_upload_sessionsUpdateManyWithWhereWithoutB_documentsInput | b_upload_sessionsUpdateManyWithWhereWithoutB_documentsInput[]
+    deleteMany?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
   }
 
   export type b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput = {
@@ -25296,6 +28687,120 @@ export namespace Prisma {
     update?: b_document_chunksUpdateWithWhereUniqueWithoutB_documentsInput | b_document_chunksUpdateWithWhereUniqueWithoutB_documentsInput[]
     updateMany?: b_document_chunksUpdateManyWithWhereWithoutB_documentsInput | b_document_chunksUpdateManyWithWhereWithoutB_documentsInput[]
     deleteMany?: b_document_chunksScalarWhereInput | b_document_chunksScalarWhereInput[]
+  }
+
+  export type b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutB_documentsInput, b_upload_sessionsUncheckedCreateWithoutB_documentsInput> | b_upload_sessionsCreateWithoutB_documentsInput[] | b_upload_sessionsUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_documentsInput | b_upload_sessionsCreateOrConnectWithoutB_documentsInput[]
+    upsert?: b_upload_sessionsUpsertWithWhereUniqueWithoutB_documentsInput | b_upload_sessionsUpsertWithWhereUniqueWithoutB_documentsInput[]
+    createMany?: b_upload_sessionsCreateManyB_documentsInputEnvelope
+    set?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    disconnect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    delete?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+    update?: b_upload_sessionsUpdateWithWhereUniqueWithoutB_documentsInput | b_upload_sessionsUpdateWithWhereUniqueWithoutB_documentsInput[]
+    updateMany?: b_upload_sessionsUpdateManyWithWhereWithoutB_documentsInput | b_upload_sessionsUpdateManyWithWhereWithoutB_documentsInput[]
+    deleteMany?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
+  }
+
+  export type b_upload_chunksCreateNestedManyWithoutB_upload_sessionsInput = {
+    create?: XOR<b_upload_chunksCreateWithoutB_upload_sessionsInput, b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput> | b_upload_chunksCreateWithoutB_upload_sessionsInput[] | b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput[]
+    connectOrCreate?: b_upload_chunksCreateOrConnectWithoutB_upload_sessionsInput | b_upload_chunksCreateOrConnectWithoutB_upload_sessionsInput[]
+    createMany?: b_upload_chunksCreateManyB_upload_sessionsInputEnvelope
+    connect?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+  }
+
+  export type b_knowledge_basesCreateNestedOneWithoutUpload_sessionsInput = {
+    create?: XOR<b_knowledge_basesCreateWithoutUpload_sessionsInput, b_knowledge_basesUncheckedCreateWithoutUpload_sessionsInput>
+    connectOrCreate?: b_knowledge_basesCreateOrConnectWithoutUpload_sessionsInput
+    connect?: b_knowledge_basesWhereUniqueInput
+  }
+
+  export type b_usersCreateNestedOneWithoutUpload_sessionsInput = {
+    create?: XOR<b_usersCreateWithoutUpload_sessionsInput, b_usersUncheckedCreateWithoutUpload_sessionsInput>
+    connectOrCreate?: b_usersCreateOrConnectWithoutUpload_sessionsInput
+    connect?: b_usersWhereUniqueInput
+  }
+
+  export type b_documentsCreateNestedOneWithoutUpload_sessionsInput = {
+    create?: XOR<b_documentsCreateWithoutUpload_sessionsInput, b_documentsUncheckedCreateWithoutUpload_sessionsInput>
+    connectOrCreate?: b_documentsCreateOrConnectWithoutUpload_sessionsInput
+    connect?: b_documentsWhereUniqueInput
+  }
+
+  export type b_upload_chunksUncheckedCreateNestedManyWithoutB_upload_sessionsInput = {
+    create?: XOR<b_upload_chunksCreateWithoutB_upload_sessionsInput, b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput> | b_upload_chunksCreateWithoutB_upload_sessionsInput[] | b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput[]
+    connectOrCreate?: b_upload_chunksCreateOrConnectWithoutB_upload_sessionsInput | b_upload_chunksCreateOrConnectWithoutB_upload_sessionsInput[]
+    createMany?: b_upload_chunksCreateManyB_upload_sessionsInputEnvelope
+    connect?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+  }
+
+  export type b_upload_chunksUpdateManyWithoutB_upload_sessionsNestedInput = {
+    create?: XOR<b_upload_chunksCreateWithoutB_upload_sessionsInput, b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput> | b_upload_chunksCreateWithoutB_upload_sessionsInput[] | b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput[]
+    connectOrCreate?: b_upload_chunksCreateOrConnectWithoutB_upload_sessionsInput | b_upload_chunksCreateOrConnectWithoutB_upload_sessionsInput[]
+    upsert?: b_upload_chunksUpsertWithWhereUniqueWithoutB_upload_sessionsInput | b_upload_chunksUpsertWithWhereUniqueWithoutB_upload_sessionsInput[]
+    createMany?: b_upload_chunksCreateManyB_upload_sessionsInputEnvelope
+    set?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+    disconnect?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+    delete?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+    connect?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+    update?: b_upload_chunksUpdateWithWhereUniqueWithoutB_upload_sessionsInput | b_upload_chunksUpdateWithWhereUniqueWithoutB_upload_sessionsInput[]
+    updateMany?: b_upload_chunksUpdateManyWithWhereWithoutB_upload_sessionsInput | b_upload_chunksUpdateManyWithWhereWithoutB_upload_sessionsInput[]
+    deleteMany?: b_upload_chunksScalarWhereInput | b_upload_chunksScalarWhereInput[]
+  }
+
+  export type b_knowledge_basesUpdateOneRequiredWithoutUpload_sessionsNestedInput = {
+    create?: XOR<b_knowledge_basesCreateWithoutUpload_sessionsInput, b_knowledge_basesUncheckedCreateWithoutUpload_sessionsInput>
+    connectOrCreate?: b_knowledge_basesCreateOrConnectWithoutUpload_sessionsInput
+    upsert?: b_knowledge_basesUpsertWithoutUpload_sessionsInput
+    connect?: b_knowledge_basesWhereUniqueInput
+    update?: XOR<XOR<b_knowledge_basesUpdateToOneWithWhereWithoutUpload_sessionsInput, b_knowledge_basesUpdateWithoutUpload_sessionsInput>, b_knowledge_basesUncheckedUpdateWithoutUpload_sessionsInput>
+  }
+
+  export type b_usersUpdateOneRequiredWithoutUpload_sessionsNestedInput = {
+    create?: XOR<b_usersCreateWithoutUpload_sessionsInput, b_usersUncheckedCreateWithoutUpload_sessionsInput>
+    connectOrCreate?: b_usersCreateOrConnectWithoutUpload_sessionsInput
+    upsert?: b_usersUpsertWithoutUpload_sessionsInput
+    connect?: b_usersWhereUniqueInput
+    update?: XOR<XOR<b_usersUpdateToOneWithWhereWithoutUpload_sessionsInput, b_usersUpdateWithoutUpload_sessionsInput>, b_usersUncheckedUpdateWithoutUpload_sessionsInput>
+  }
+
+  export type b_documentsUpdateOneWithoutUpload_sessionsNestedInput = {
+    create?: XOR<b_documentsCreateWithoutUpload_sessionsInput, b_documentsUncheckedCreateWithoutUpload_sessionsInput>
+    connectOrCreate?: b_documentsCreateOrConnectWithoutUpload_sessionsInput
+    upsert?: b_documentsUpsertWithoutUpload_sessionsInput
+    disconnect?: b_documentsWhereInput | boolean
+    delete?: b_documentsWhereInput | boolean
+    connect?: b_documentsWhereUniqueInput
+    update?: XOR<XOR<b_documentsUpdateToOneWithWhereWithoutUpload_sessionsInput, b_documentsUpdateWithoutUpload_sessionsInput>, b_documentsUncheckedUpdateWithoutUpload_sessionsInput>
+  }
+
+  export type b_upload_chunksUncheckedUpdateManyWithoutB_upload_sessionsNestedInput = {
+    create?: XOR<b_upload_chunksCreateWithoutB_upload_sessionsInput, b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput> | b_upload_chunksCreateWithoutB_upload_sessionsInput[] | b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput[]
+    connectOrCreate?: b_upload_chunksCreateOrConnectWithoutB_upload_sessionsInput | b_upload_chunksCreateOrConnectWithoutB_upload_sessionsInput[]
+    upsert?: b_upload_chunksUpsertWithWhereUniqueWithoutB_upload_sessionsInput | b_upload_chunksUpsertWithWhereUniqueWithoutB_upload_sessionsInput[]
+    createMany?: b_upload_chunksCreateManyB_upload_sessionsInputEnvelope
+    set?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+    disconnect?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+    delete?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+    connect?: b_upload_chunksWhereUniqueInput | b_upload_chunksWhereUniqueInput[]
+    update?: b_upload_chunksUpdateWithWhereUniqueWithoutB_upload_sessionsInput | b_upload_chunksUpdateWithWhereUniqueWithoutB_upload_sessionsInput[]
+    updateMany?: b_upload_chunksUpdateManyWithWhereWithoutB_upload_sessionsInput | b_upload_chunksUpdateManyWithWhereWithoutB_upload_sessionsInput[]
+    deleteMany?: b_upload_chunksScalarWhereInput | b_upload_chunksScalarWhereInput[]
+  }
+
+  export type b_upload_sessionsCreateNestedOneWithoutUpload_chunksInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutUpload_chunksInput, b_upload_sessionsUncheckedCreateWithoutUpload_chunksInput>
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutUpload_chunksInput
+    connect?: b_upload_sessionsWhereUniqueInput
+  }
+
+  export type b_upload_sessionsUpdateOneRequiredWithoutUpload_chunksNestedInput = {
+    create?: XOR<b_upload_sessionsCreateWithoutUpload_chunksInput, b_upload_sessionsUncheckedCreateWithoutUpload_chunksInput>
+    connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutUpload_chunksInput
+    upsert?: b_upload_sessionsUpsertWithoutUpload_chunksInput
+    connect?: b_upload_sessionsWhereUniqueInput
+    update?: XOR<XOR<b_upload_sessionsUpdateToOneWithWhereWithoutUpload_chunksInput, b_upload_sessionsUpdateWithoutUpload_chunksInput>, b_upload_sessionsUncheckedUpdateWithoutUpload_chunksInput>
   }
 
   export type b_documentsCreateNestedOneWithoutDocument_chunksInput = {
@@ -25743,6 +29248,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
   }
@@ -25758,6 +29264,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
@@ -25790,6 +29297,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
   }
 
@@ -25812,6 +29320,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsCreateOrConnectWithoutB_usersInput = {
@@ -25821,6 +29330,62 @@ export namespace Prisma {
 
   export type b_documentsCreateManyB_usersInputEnvelope = {
     data: b_documentsCreateManyB_usersInput | b_documentsCreateManyB_usersInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type b_upload_sessionsCreateWithoutB_usersInput = {
+    id?: bigint | number
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    upload_chunks?: b_upload_chunksCreateNestedManyWithoutB_upload_sessionsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutUpload_sessionsInput
+    b_documents?: b_documentsCreateNestedOneWithoutUpload_sessionsInput
+  }
+
+  export type b_upload_sessionsUncheckedCreateWithoutB_usersInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    document_id?: bigint | number | null
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    upload_chunks?: b_upload_chunksUncheckedCreateNestedManyWithoutB_upload_sessionsInput
+  }
+
+  export type b_upload_sessionsCreateOrConnectWithoutB_usersInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    create: XOR<b_upload_sessionsCreateWithoutB_usersInput, b_upload_sessionsUncheckedCreateWithoutB_usersInput>
+  }
+
+  export type b_upload_sessionsCreateManyB_usersInputEnvelope = {
+    data: b_upload_sessionsCreateManyB_usersInput | b_upload_sessionsCreateManyB_usersInput[]
     skipDuplicates?: boolean
   }
 
@@ -26047,6 +29612,48 @@ export namespace Prisma {
     last_reparse_at?: DateTimeNullableFilter<"b_documents"> | Date | string | null
     created_at?: DateTimeFilter<"b_documents"> | Date | string
     updated_at?: DateTimeFilter<"b_documents"> | Date | string
+  }
+
+  export type b_upload_sessionsUpsertWithWhereUniqueWithoutB_usersInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    update: XOR<b_upload_sessionsUpdateWithoutB_usersInput, b_upload_sessionsUncheckedUpdateWithoutB_usersInput>
+    create: XOR<b_upload_sessionsCreateWithoutB_usersInput, b_upload_sessionsUncheckedCreateWithoutB_usersInput>
+  }
+
+  export type b_upload_sessionsUpdateWithWhereUniqueWithoutB_usersInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    data: XOR<b_upload_sessionsUpdateWithoutB_usersInput, b_upload_sessionsUncheckedUpdateWithoutB_usersInput>
+  }
+
+  export type b_upload_sessionsUpdateManyWithWhereWithoutB_usersInput = {
+    where: b_upload_sessionsScalarWhereInput
+    data: XOR<b_upload_sessionsUpdateManyMutationInput, b_upload_sessionsUncheckedUpdateManyWithoutB_usersInput>
+  }
+
+  export type b_upload_sessionsScalarWhereInput = {
+    AND?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
+    OR?: b_upload_sessionsScalarWhereInput[]
+    NOT?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
+    id?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    kb_id?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    user_id?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    document_id?: BigIntNullableFilter<"b_upload_sessions"> | bigint | number | null
+    file_name?: StringFilter<"b_upload_sessions"> | string
+    title?: StringNullableFilter<"b_upload_sessions"> | string | null
+    file_size?: BigIntFilter<"b_upload_sessions"> | bigint | number
+    mime_type?: StringNullableFilter<"b_upload_sessions"> | string | null
+    file_hash?: StringFilter<"b_upload_sessions"> | string
+    file_extension?: StringNullableFilter<"b_upload_sessions"> | string | null
+    chunk_size?: IntFilter<"b_upload_sessions"> | number
+    total_chunks?: IntFilter<"b_upload_sessions"> | number
+    uploaded_count?: IntFilter<"b_upload_sessions"> | number
+    status?: StringFilter<"b_upload_sessions"> | string
+    storage_type?: StringFilter<"b_upload_sessions"> | string
+    temp_dir?: StringFilter<"b_upload_sessions"> | string
+    completed_at?: DateTimeNullableFilter<"b_upload_sessions"> | Date | string | null
+    expired_at?: DateTimeNullableFilter<"b_upload_sessions"> | Date | string | null
+    created_at?: DateTimeFilter<"b_upload_sessions"> | Date | string
+    updated_at?: DateTimeFilter<"b_upload_sessions"> | Date | string
   }
 
   export type b_user_model_configsUpsertWithWhereUniqueWithoutB_usersInput = {
@@ -26276,6 +29883,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
   }
@@ -26296,6 +29904,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
   }
@@ -26332,6 +29941,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
   }
@@ -26352,6 +29962,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
   }
@@ -26432,6 +30043,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
   }
@@ -26452,6 +30064,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
   }
@@ -26488,6 +30101,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
   }
@@ -26508,6 +30122,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
   }
@@ -26530,6 +30145,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
 
@@ -26552,6 +30168,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsCreateOrConnectWithoutB_knowledge_basesInput = {
@@ -26561,6 +30178,62 @@ export namespace Prisma {
 
   export type b_documentsCreateManyB_knowledge_basesInputEnvelope = {
     data: b_documentsCreateManyB_knowledge_basesInput | b_documentsCreateManyB_knowledge_basesInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type b_upload_sessionsCreateWithoutB_knowledge_basesInput = {
+    id?: bigint | number
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    upload_chunks?: b_upload_chunksCreateNestedManyWithoutB_upload_sessionsInput
+    b_users: b_usersCreateNestedOneWithoutUpload_sessionsInput
+    b_documents?: b_documentsCreateNestedOneWithoutUpload_sessionsInput
+  }
+
+  export type b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput = {
+    id?: bigint | number
+    user_id: bigint | number
+    document_id?: bigint | number | null
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    upload_chunks?: b_upload_chunksUncheckedCreateNestedManyWithoutB_upload_sessionsInput
+  }
+
+  export type b_upload_sessionsCreateOrConnectWithoutB_knowledge_basesInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    create: XOR<b_upload_sessionsCreateWithoutB_knowledge_basesInput, b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput>
+  }
+
+  export type b_upload_sessionsCreateManyB_knowledge_basesInputEnvelope = {
+    data: b_upload_sessionsCreateManyB_knowledge_basesInput | b_upload_sessionsCreateManyB_knowledge_basesInput[]
     skipDuplicates?: boolean
   }
 
@@ -26639,6 +30312,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
@@ -26659,6 +30333,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -26683,6 +30358,22 @@ export namespace Prisma {
   export type b_documentsUpdateManyWithWhereWithoutB_knowledge_basesInput = {
     where: b_documentsScalarWhereInput
     data: XOR<b_documentsUpdateManyMutationInput, b_documentsUncheckedUpdateManyWithoutB_knowledge_basesInput>
+  }
+
+  export type b_upload_sessionsUpsertWithWhereUniqueWithoutB_knowledge_basesInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    update: XOR<b_upload_sessionsUpdateWithoutB_knowledge_basesInput, b_upload_sessionsUncheckedUpdateWithoutB_knowledge_basesInput>
+    create: XOR<b_upload_sessionsCreateWithoutB_knowledge_basesInput, b_upload_sessionsUncheckedCreateWithoutB_knowledge_basesInput>
+  }
+
+  export type b_upload_sessionsUpdateWithWhereUniqueWithoutB_knowledge_basesInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    data: XOR<b_upload_sessionsUpdateWithoutB_knowledge_basesInput, b_upload_sessionsUncheckedUpdateWithoutB_knowledge_basesInput>
+  }
+
+  export type b_upload_sessionsUpdateManyWithWhereWithoutB_knowledge_basesInput = {
+    where: b_upload_sessionsScalarWhereInput
+    data: XOR<b_upload_sessionsUpdateManyMutationInput, b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesInput>
   }
 
   export type b_kb_membersUpsertWithWhereUniqueWithoutB_knowledge_basesInput = {
@@ -26743,6 +30434,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
@@ -26763,6 +30455,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -26779,6 +30472,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
     b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
   }
@@ -26795,6 +30489,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
 
@@ -26818,6 +30513,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
@@ -26838,6 +30534,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -26870,6 +30567,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
   }
@@ -26886,6 +30584,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
@@ -26915,6 +30614,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
@@ -26935,6 +30635,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -26951,6 +30652,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
     b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
   }
@@ -26967,6 +30669,7 @@ export namespace Prisma {
     created_at?: Date | string
     updated_at?: Date | string
     documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
 
@@ -26991,6 +30694,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
   }
@@ -27011,6 +30715,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
   }
@@ -27042,6 +30747,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
   }
@@ -27058,6 +30764,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
@@ -27088,6 +30795,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
   }
@@ -27108,6 +30816,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
   }
@@ -27150,6 +30859,62 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type b_upload_sessionsCreateWithoutB_documentsInput = {
+    id?: bigint | number
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    upload_chunks?: b_upload_chunksCreateNestedManyWithoutB_upload_sessionsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutUpload_sessionsInput
+    b_users: b_usersCreateNestedOneWithoutUpload_sessionsInput
+  }
+
+  export type b_upload_sessionsUncheckedCreateWithoutB_documentsInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    user_id: bigint | number
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    upload_chunks?: b_upload_chunksUncheckedCreateNestedManyWithoutB_upload_sessionsInput
+  }
+
+  export type b_upload_sessionsCreateOrConnectWithoutB_documentsInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    create: XOR<b_upload_sessionsCreateWithoutB_documentsInput, b_upload_sessionsUncheckedCreateWithoutB_documentsInput>
+  }
+
+  export type b_upload_sessionsCreateManyB_documentsInputEnvelope = {
+    data: b_upload_sessionsCreateManyB_documentsInput | b_upload_sessionsCreateManyB_documentsInput[]
+    skipDuplicates?: boolean
+  }
+
   export type b_knowledge_basesCreateWithoutDocumentsInput = {
     id?: bigint | number
     name: string
@@ -27160,6 +30925,7 @@ export namespace Prisma {
     allow_public_download?: boolean
     created_at?: Date | string
     updated_at?: Date | string
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
     b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
@@ -27176,6 +30942,7 @@ export namespace Prisma {
     owner_id: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
@@ -27200,6 +30967,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
@@ -27220,6 +30988,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -27264,6 +31033,22 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
   }
 
+  export type b_upload_sessionsUpsertWithWhereUniqueWithoutB_documentsInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    update: XOR<b_upload_sessionsUpdateWithoutB_documentsInput, b_upload_sessionsUncheckedUpdateWithoutB_documentsInput>
+    create: XOR<b_upload_sessionsCreateWithoutB_documentsInput, b_upload_sessionsUncheckedCreateWithoutB_documentsInput>
+  }
+
+  export type b_upload_sessionsUpdateWithWhereUniqueWithoutB_documentsInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    data: XOR<b_upload_sessionsUpdateWithoutB_documentsInput, b_upload_sessionsUncheckedUpdateWithoutB_documentsInput>
+  }
+
+  export type b_upload_sessionsUpdateManyWithWhereWithoutB_documentsInput = {
+    where: b_upload_sessionsScalarWhereInput
+    data: XOR<b_upload_sessionsUpdateManyMutationInput, b_upload_sessionsUncheckedUpdateManyWithoutB_documentsInput>
+  }
+
   export type b_knowledge_basesUpsertWithoutDocumentsInput = {
     update: XOR<b_knowledge_basesUpdateWithoutDocumentsInput, b_knowledge_basesUncheckedUpdateWithoutDocumentsInput>
     create: XOR<b_knowledge_basesCreateWithoutDocumentsInput, b_knowledge_basesUncheckedCreateWithoutDocumentsInput>
@@ -27285,6 +31070,7 @@ export namespace Prisma {
     allow_public_download?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
@@ -27301,6 +31087,7 @@ export namespace Prisma {
     owner_id?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
@@ -27331,6 +31118,7 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
@@ -27351,9 +31139,465 @@ export namespace Prisma {
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+  }
+
+  export type b_upload_chunksCreateWithoutB_upload_sessionsInput = {
+    id?: bigint | number
+    chunk_index: number
+    chunk_size: number
+    chunk_hash?: string | null
+    storage_path: string
+    status?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput = {
+    id?: bigint | number
+    chunk_index: number
+    chunk_size: number
+    chunk_hash?: string | null
+    storage_path: string
+    status?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_upload_chunksCreateOrConnectWithoutB_upload_sessionsInput = {
+    where: b_upload_chunksWhereUniqueInput
+    create: XOR<b_upload_chunksCreateWithoutB_upload_sessionsInput, b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput>
+  }
+
+  export type b_upload_chunksCreateManyB_upload_sessionsInputEnvelope = {
+    data: b_upload_chunksCreateManyB_upload_sessionsInput | b_upload_chunksCreateManyB_upload_sessionsInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type b_knowledge_basesCreateWithoutUpload_sessionsInput = {
+    id?: bigint | number
+    name: string
+    description?: string | null
+    visibility?: string
+    status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
+    kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
+    kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
+    b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
+  }
+
+  export type b_knowledge_basesUncheckedCreateWithoutUpload_sessionsInput = {
+    id?: bigint | number
+    name: string
+    description?: string | null
+    visibility?: string
+    status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
+    owner_id: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+    documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+  }
+
+  export type b_knowledge_basesCreateOrConnectWithoutUpload_sessionsInput = {
+    where: b_knowledge_basesWhereUniqueInput
+    create: XOR<b_knowledge_basesCreateWithoutUpload_sessionsInput, b_knowledge_basesUncheckedCreateWithoutUpload_sessionsInput>
+  }
+
+  export type b_usersCreateWithoutUpload_sessionsInput = {
+    id?: bigint | number
+    email: string
+    password_hash: string
+    full_name?: string | null
+    avatar_url?: string | null
+    is_active?: boolean
+    daily_chat_limit?: number
+    token_quota?: bigint | number
+    used_tokens?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
+    kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
+    knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
+    user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+  }
+
+  export type b_usersUncheckedCreateWithoutUpload_sessionsInput = {
+    id?: bigint | number
+    email: string
+    password_hash: string
+    full_name?: string | null
+    avatar_url?: string | null
+    is_active?: boolean
+    daily_chat_limit?: number
+    token_quota?: bigint | number
+    used_tokens?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
+    knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
+    user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+  }
+
+  export type b_usersCreateOrConnectWithoutUpload_sessionsInput = {
+    where: b_usersWhereUniqueInput
+    create: XOR<b_usersCreateWithoutUpload_sessionsInput, b_usersUncheckedCreateWithoutUpload_sessionsInput>
+  }
+
+  export type b_documentsCreateWithoutUpload_sessionsInput = {
+    id?: bigint | number
+    title: string
+    original_filename?: string | null
+    file_path: string
+    file_hash?: string | null
+    file_size?: bigint | number | null
+    file_type?: string | null
+    mime_type?: string | null
+    status?: string
+    error_msg?: string | null
+    token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
+    b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
+  }
+
+  export type b_documentsUncheckedCreateWithoutUpload_sessionsInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    uploader_id?: bigint | number | null
+    title: string
+    original_filename?: string | null
+    file_path: string
+    file_hash?: string | null
+    file_size?: bigint | number | null
+    file_type?: string | null
+    mime_type?: string | null
+    status?: string
+    error_msg?: string | null
+    token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+  }
+
+  export type b_documentsCreateOrConnectWithoutUpload_sessionsInput = {
+    where: b_documentsWhereUniqueInput
+    create: XOR<b_documentsCreateWithoutUpload_sessionsInput, b_documentsUncheckedCreateWithoutUpload_sessionsInput>
+  }
+
+  export type b_upload_chunksUpsertWithWhereUniqueWithoutB_upload_sessionsInput = {
+    where: b_upload_chunksWhereUniqueInput
+    update: XOR<b_upload_chunksUpdateWithoutB_upload_sessionsInput, b_upload_chunksUncheckedUpdateWithoutB_upload_sessionsInput>
+    create: XOR<b_upload_chunksCreateWithoutB_upload_sessionsInput, b_upload_chunksUncheckedCreateWithoutB_upload_sessionsInput>
+  }
+
+  export type b_upload_chunksUpdateWithWhereUniqueWithoutB_upload_sessionsInput = {
+    where: b_upload_chunksWhereUniqueInput
+    data: XOR<b_upload_chunksUpdateWithoutB_upload_sessionsInput, b_upload_chunksUncheckedUpdateWithoutB_upload_sessionsInput>
+  }
+
+  export type b_upload_chunksUpdateManyWithWhereWithoutB_upload_sessionsInput = {
+    where: b_upload_chunksScalarWhereInput
+    data: XOR<b_upload_chunksUpdateManyMutationInput, b_upload_chunksUncheckedUpdateManyWithoutB_upload_sessionsInput>
+  }
+
+  export type b_upload_chunksScalarWhereInput = {
+    AND?: b_upload_chunksScalarWhereInput | b_upload_chunksScalarWhereInput[]
+    OR?: b_upload_chunksScalarWhereInput[]
+    NOT?: b_upload_chunksScalarWhereInput | b_upload_chunksScalarWhereInput[]
+    id?: BigIntFilter<"b_upload_chunks"> | bigint | number
+    upload_id?: BigIntFilter<"b_upload_chunks"> | bigint | number
+    chunk_index?: IntFilter<"b_upload_chunks"> | number
+    chunk_size?: IntFilter<"b_upload_chunks"> | number
+    chunk_hash?: StringNullableFilter<"b_upload_chunks"> | string | null
+    storage_path?: StringFilter<"b_upload_chunks"> | string
+    status?: StringFilter<"b_upload_chunks"> | string
+    created_at?: DateTimeFilter<"b_upload_chunks"> | Date | string
+    updated_at?: DateTimeFilter<"b_upload_chunks"> | Date | string
+  }
+
+  export type b_knowledge_basesUpsertWithoutUpload_sessionsInput = {
+    update: XOR<b_knowledge_basesUpdateWithoutUpload_sessionsInput, b_knowledge_basesUncheckedUpdateWithoutUpload_sessionsInput>
+    create: XOR<b_knowledge_basesCreateWithoutUpload_sessionsInput, b_knowledge_basesUncheckedCreateWithoutUpload_sessionsInput>
+    where?: b_knowledge_basesWhereInput
+  }
+
+  export type b_knowledge_basesUpdateToOneWithWhereWithoutUpload_sessionsInput = {
+    where?: b_knowledge_basesWhereInput
+    data: XOR<b_knowledge_basesUpdateWithoutUpload_sessionsInput, b_knowledge_basesUncheckedUpdateWithoutUpload_sessionsInput>
+  }
+
+  export type b_knowledge_basesUpdateWithoutUpload_sessionsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    visibility?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
+    kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
+    kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
+    b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
+  }
+
+  export type b_knowledge_basesUncheckedUpdateWithoutUpload_sessionsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    visibility?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
+    owner_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+  }
+
+  export type b_usersUpsertWithoutUpload_sessionsInput = {
+    update: XOR<b_usersUpdateWithoutUpload_sessionsInput, b_usersUncheckedUpdateWithoutUpload_sessionsInput>
+    create: XOR<b_usersCreateWithoutUpload_sessionsInput, b_usersUncheckedCreateWithoutUpload_sessionsInput>
+    where?: b_usersWhereInput
+  }
+
+  export type b_usersUpdateToOneWithWhereWithoutUpload_sessionsInput = {
+    where?: b_usersWhereInput
+    data: XOR<b_usersUpdateWithoutUpload_sessionsInput, b_usersUncheckedUpdateWithoutUpload_sessionsInput>
+  }
+
+  export type b_usersUpdateWithoutUpload_sessionsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
+    kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
+    knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
+    user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+  }
+
+  export type b_usersUncheckedUpdateWithoutUpload_sessionsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
+    knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
+    user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+  }
+
+  export type b_documentsUpsertWithoutUpload_sessionsInput = {
+    update: XOR<b_documentsUpdateWithoutUpload_sessionsInput, b_documentsUncheckedUpdateWithoutUpload_sessionsInput>
+    create: XOR<b_documentsCreateWithoutUpload_sessionsInput, b_documentsUncheckedCreateWithoutUpload_sessionsInput>
+    where?: b_documentsWhereInput
+  }
+
+  export type b_documentsUpdateToOneWithWhereWithoutUpload_sessionsInput = {
+    where?: b_documentsWhereInput
+    data: XOR<b_documentsUpdateWithoutUpload_sessionsInput, b_documentsUncheckedUpdateWithoutUpload_sessionsInput>
+  }
+
+  export type b_documentsUpdateWithoutUpload_sessionsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
+    file_path?: StringFieldUpdateOperationsInput | string
+    file_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    error_msg?: NullableStringFieldUpdateOperationsInput | string | null
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
+    b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
+  }
+
+  export type b_documentsUncheckedUpdateWithoutUpload_sessionsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    uploader_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
+    file_path?: StringFieldUpdateOperationsInput | string
+    file_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    error_msg?: NullableStringFieldUpdateOperationsInput | string | null
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+  }
+
+  export type b_upload_sessionsCreateWithoutUpload_chunksInput = {
+    id?: bigint | number
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutUpload_sessionsInput
+    b_users: b_usersCreateNestedOneWithoutUpload_sessionsInput
+    b_documents?: b_documentsCreateNestedOneWithoutUpload_sessionsInput
+  }
+
+  export type b_upload_sessionsUncheckedCreateWithoutUpload_chunksInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    user_id: bigint | number
+    document_id?: bigint | number | null
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_upload_sessionsCreateOrConnectWithoutUpload_chunksInput = {
+    where: b_upload_sessionsWhereUniqueInput
+    create: XOR<b_upload_sessionsCreateWithoutUpload_chunksInput, b_upload_sessionsUncheckedCreateWithoutUpload_chunksInput>
+  }
+
+  export type b_upload_sessionsUpsertWithoutUpload_chunksInput = {
+    update: XOR<b_upload_sessionsUpdateWithoutUpload_chunksInput, b_upload_sessionsUncheckedUpdateWithoutUpload_chunksInput>
+    create: XOR<b_upload_sessionsCreateWithoutUpload_chunksInput, b_upload_sessionsUncheckedCreateWithoutUpload_chunksInput>
+    where?: b_upload_sessionsWhereInput
+  }
+
+  export type b_upload_sessionsUpdateToOneWithWhereWithoutUpload_chunksInput = {
+    where?: b_upload_sessionsWhereInput
+    data: XOR<b_upload_sessionsUpdateWithoutUpload_chunksInput, b_upload_sessionsUncheckedUpdateWithoutUpload_chunksInput>
+  }
+
+  export type b_upload_sessionsUpdateWithoutUpload_chunksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutUpload_sessionsNestedInput
+    b_users?: b_usersUpdateOneRequiredWithoutUpload_sessionsNestedInput
+    b_documents?: b_documentsUpdateOneWithoutUpload_sessionsNestedInput
+  }
+
+  export type b_upload_sessionsUncheckedUpdateWithoutUpload_chunksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    document_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_documentsCreateWithoutDocument_chunksInput = {
@@ -27373,6 +31617,7 @@ export namespace Prisma {
     last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
@@ -27396,6 +31641,7 @@ export namespace Prisma {
     last_reparse_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsCreateOrConnectWithoutDocument_chunksInput = {
@@ -27431,6 +31677,7 @@ export namespace Prisma {
     last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
@@ -27454,6 +31701,7 @@ export namespace Prisma {
     last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_chat_messagesCreateWithoutB_chat_sessionsInput = {
@@ -27505,6 +31753,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
@@ -27525,6 +31774,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -27593,6 +31843,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
@@ -27613,6 +31864,7 @@ export namespace Prisma {
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -27777,6 +32029,28 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type b_upload_sessionsCreateManyB_usersInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    document_id?: bigint | number | null
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type b_user_model_configsCreateManyB_usersInput = {
     id?: bigint | number
     provider: string
@@ -27869,6 +32143,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
   }
@@ -27884,6 +32159,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
@@ -27918,6 +32194,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
   }
 
@@ -27940,6 +32217,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_documentsUncheckedUpdateManyWithoutB_usersInput = {
@@ -27958,6 +32236,74 @@ export namespace Prisma {
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_sessionsUpdateWithoutB_usersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_chunks?: b_upload_chunksUpdateManyWithoutB_upload_sessionsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutUpload_sessionsNestedInput
+    b_documents?: b_documentsUpdateOneWithoutUpload_sessionsNestedInput
+  }
+
+  export type b_upload_sessionsUncheckedUpdateWithoutB_usersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    document_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_chunks?: b_upload_chunksUncheckedUpdateManyWithoutB_upload_sessionsNestedInput
+  }
+
+  export type b_upload_sessionsUncheckedUpdateManyWithoutB_usersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    document_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28160,6 +32506,28 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type b_upload_sessionsCreateManyB_knowledge_basesInput = {
+    id?: bigint | number
+    user_id: bigint | number
+    document_id?: bigint | number | null
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type b_kb_membersCreateManyB_knowledge_basesInput = {
     id?: bigint | number
     user_id: bigint | number
@@ -28198,6 +32566,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
 
@@ -28220,6 +32589,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_documentsUncheckedUpdateManyWithoutB_knowledge_basesInput = {
@@ -28238,6 +32608,74 @@ export namespace Prisma {
     parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_sessionsUpdateWithoutB_knowledge_basesInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_chunks?: b_upload_chunksUpdateManyWithoutB_upload_sessionsNestedInput
+    b_users?: b_usersUpdateOneRequiredWithoutUpload_sessionsNestedInput
+    b_documents?: b_documentsUpdateOneWithoutUpload_sessionsNestedInput
+  }
+
+  export type b_upload_sessionsUncheckedUpdateWithoutB_knowledge_basesInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    document_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_chunks?: b_upload_chunksUncheckedUpdateManyWithoutB_upload_sessionsNestedInput
+  }
+
+  export type b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    document_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -28316,6 +32754,28 @@ export namespace Prisma {
     created_at?: Date | string
   }
 
+  export type b_upload_sessionsCreateManyB_documentsInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    user_id: bigint | number
+    file_name: string
+    title?: string | null
+    file_size: bigint | number
+    mime_type?: string | null
+    file_hash: string
+    file_extension?: string | null
+    chunk_size: number
+    total_chunks: number
+    uploaded_count?: number
+    status?: string
+    storage_type?: string
+    temp_dir: string
+    completed_at?: Date | string | null
+    expired_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type b_document_chunksUpdateWithoutB_documentsInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     chunk_index?: IntFieldUpdateOperationsInput | number
@@ -28356,6 +32816,118 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_sessionsUpdateWithoutB_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_chunks?: b_upload_chunksUpdateManyWithoutB_upload_sessionsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutUpload_sessionsNestedInput
+    b_users?: b_usersUpdateOneRequiredWithoutUpload_sessionsNestedInput
+  }
+
+  export type b_upload_sessionsUncheckedUpdateWithoutB_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    upload_chunks?: b_upload_chunksUncheckedUpdateManyWithoutB_upload_sessionsNestedInput
+  }
+
+  export type b_upload_sessionsUncheckedUpdateManyWithoutB_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    file_name?: StringFieldUpdateOperationsInput | string
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: BigIntFieldUpdateOperationsInput | bigint | number
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    file_hash?: StringFieldUpdateOperationsInput | string
+    file_extension?: NullableStringFieldUpdateOperationsInput | string | null
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    total_chunks?: IntFieldUpdateOperationsInput | number
+    uploaded_count?: IntFieldUpdateOperationsInput | number
+    status?: StringFieldUpdateOperationsInput | string
+    storage_type?: StringFieldUpdateOperationsInput | string
+    temp_dir?: StringFieldUpdateOperationsInput | string
+    completed_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    expired_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_chunksCreateManyB_upload_sessionsInput = {
+    id?: bigint | number
+    chunk_index: number
+    chunk_size: number
+    chunk_hash?: string | null
+    storage_path: string
+    status?: string
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_upload_chunksUpdateWithoutB_upload_sessionsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    chunk_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    storage_path?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_chunksUncheckedUpdateWithoutB_upload_sessionsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    chunk_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    storage_path?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_upload_chunksUncheckedUpdateManyWithoutB_upload_sessionsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    chunk_size?: IntFieldUpdateOperationsInput | number
+    chunk_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    storage_path?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_chat_messagesCreateManyB_chat_sessionsInput = {
