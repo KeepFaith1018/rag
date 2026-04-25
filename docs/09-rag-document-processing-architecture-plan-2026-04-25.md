@@ -470,6 +470,12 @@ kb_document_chunks
 - `pageNo`
 - `title`
 
+补充约束：
+
+- Qdrant point `id` 不直接使用业务拼接字符串
+- `vector_id` 建议使用由 `docId + chunkIndex + processingVersion` 确定性生成的稳定 UUID
+- 业务过滤与删除继续依赖 payload 中的 `kbId`、`docId`、`processingVersion`
+
 ### 10.6 检索过滤原则
 
 检索时必须同时结合：
@@ -572,7 +578,7 @@ kb_document_chunks
 - `page_no`
 - `char_start`
 - `char_end`
-- `vector_id`
+- `vector_id`，并要求其值为可重复生成的稳定 UUID
 - `metadata_json`
 - `embedding_status`
 

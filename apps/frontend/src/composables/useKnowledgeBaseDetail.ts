@@ -5,6 +5,7 @@ import {
   updateKnowledgeBase,
 } from "@/api/knowledge-base";
 import {
+  downloadKnowledgeBaseDocument,
   deleteKnowledgeBaseDocument,
   listKnowledgeBaseDocuments,
   reparseKnowledgeBaseDocument,
@@ -144,6 +145,19 @@ export function useKnowledgeBaseDetail() {
     }
   }
 
+  /**
+   * 下载知识库文档原文件。
+   */
+  async function downloadDocument(kbId: string, documentId: string) {
+    isMutating.value = true;
+
+    try {
+      return await downloadKnowledgeBaseDocument(kbId, documentId);
+    } finally {
+      isMutating.value = false;
+    }
+  }
+
   return {
     kb,
     hasKnowledgeBase,
@@ -159,5 +173,6 @@ export function useKnowledgeBaseDetail() {
     removeKnowledgeBaseItem,
     removeDocument,
     reparseDocument,
+    downloadDocument,
   };
 }

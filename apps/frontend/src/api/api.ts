@@ -24,6 +24,12 @@ type PendingRequest = {
   reject: (error: unknown) => void;
 };
 
+export type ApiBlobResponse = {
+  blob: Blob;
+  fileName: string | null;
+  mimeType: string | null;
+};
+
 let isRefreshing = false;
 let refreshPromise: Promise<string> | null = null;
 let authFailureHandler: AuthFailureHandler | null = null;
@@ -76,6 +82,55 @@ export async function apiRequest<T>(options: ApiRequestOptions): Promise<T> {
   ) {
     await ensureFreshAccessToken();
     return apiRequest<T>({
+      ...options,
+      _retry: true,
+    });
+  }
+
+  throw createApiError(response.status, result);
+}
+
+/**
+ * 拉取二进制响应，并复用统一鉴权与刷新逻辑。
+ */
+export async function apiRequestBlob(
+  options: ApiRequestOptions,
+): Promise<ApiBlobResponse> {
+  const { url, params, skipAuth, skipRefreshRetry, _retry, body, ...rest } =
+    options;
+  const requestBody = normalizeRequestBody(body);
+  const requestHeaders = createHeaders(options, requestBody);
+
+  let response: Response;
+
+  try {
+    response = await fetch(buildRequestUrl(url, params), {
+      ...rest,
+      body: requestBody,
+      headers: requestHeaders,
+    });
+  } catch (error) {
+    throw createNetworkError(error);
+  }
+
+  if (response.ok) {
+    return {
+      blob: await response.blob(),
+      fileName: resolveFileName(response.headers.get("Content-Disposition")),
+      mimeType: response.headers.get("Content-Type"),
+    };
+  }
+
+  const result = await parseApiResult<unknown>(response);
+
+  if (
+    !skipAuth &&
+    !skipRefreshRetry &&
+    !_retry &&
+    shouldRefresh(response.status, result)
+  ) {
+    await ensureFreshAccessToken();
+    return apiRequestBlob({
       ...options,
       _retry: true,
     });
@@ -388,4 +443,38 @@ function joinUrl(baseUrl: string, path: string) {
   const normalizedPath = path.startsWith("/") ? path : `/${path}`;
 
   return `${normalizedBaseUrl}${normalizedPath}`;
+}
+
+/**
+ * 从响应头中提取下载文件名。
+ */
+function resolveFileName(contentDisposition: string | null) {
+  if (!contentDisposition) {
+    return null;
+  }
+
+  const utf8Match = contentDisposition.match(/filename\*=UTF-8''([^;]+)/i);
+
+  if (utf8Match?.[1]) {
+    return safeDecodeFileName(utf8Match[1]);
+  }
+
+  const plainMatch = contentDisposition.match(/filename="?([^"]+)"?/i);
+
+  if (plainMatch?.[1]) {
+    return safeDecodeFileName(plainMatch[1]);
+  }
+
+  return null;
+}
+
+/**
+ * 安全解码文件名，避免非法编码导致下载流程中断。
+ */
+function safeDecodeFileName(fileName: string) {
+  try {
+    return decodeURIComponent(fileName);
+  } catch {
+    return fileName;
+  }
 }

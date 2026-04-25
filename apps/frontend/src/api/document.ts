@@ -1,4 +1,4 @@
-import { apiRequest } from "@/api/api";
+import { apiRequest, apiRequestBlob } from "@/api/api";
 import type { ApiQueryParams } from "@/types/api";
 import type {
   KnowledgeBaseDocumentDetail,
@@ -50,5 +50,21 @@ export function reparseKnowledgeBaseDocument(kbId: string, documentId: string) {
   return apiRequest<{ kbId: string; documentId: string; reparsed: boolean }>({
     url: `/knowledge-bases/${kbId}/documents/${documentId}/reparse`,
     method: "POST",
+  });
+}
+
+/**
+ * 下载知识库原始文档。
+ */
+export function downloadKnowledgeBaseDocument(
+  kbId: string,
+  documentId: string,
+) {
+  return apiRequestBlob({
+    url: `/knowledge-bases/${kbId}/documents/${documentId}/download`,
+    method: "GET",
+    headers: {
+      Accept: "*/*",
+    },
   });
 }

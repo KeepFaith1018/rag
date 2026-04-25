@@ -506,7 +506,7 @@ doc:10001:v:2
 | `page_no` | 回答引用页码 |
 | `char_start` | 前端高亮定位 |
 | `char_end` | 前端高亮定位 |
-| `vector_id` | 关系库与向量库映射 |
+| `vector_id` | 关系库与向量库映射，需保存为稳定 UUID，满足 Qdrant point id 约束 |
 | `metadata_json` | 存放标题路径、扩展元数据 |
 | `embedding_status` | 标识该 chunk 是否已完成向量化 |
 
@@ -571,11 +571,19 @@ type ChunkPoint = {
 
 ### 10.3 `id` 建议
 
-建议使用稳定、可追踪的 `vector id`：
+Qdrant point `id` 只能使用数值或 UUID，因此这里不应直接使用业务拼接字符串。
+
+建议使用“稳定 UUID”作为 `vector_id`，并由以下业务维度确定性生成：
 
 ```text
-doc:{docId}:chunk:{chunkId}:v:{processingVersion}
+docId + chunkIndex + processingVersion
 ```
+
+推荐实现方式：
+
+- 先将 `doc:{docId}:chunk:{chunkIndex}:v:{processingVersion}` 作为种子字符串
+- 再对该种子做哈希，生成符合 RFC 4122 的稳定 UUID
+- 将业务检索与删除所需的 `docId`、`chunkId`、`chunkIndex`、`processingVersion` 继续保存在 payload 中
 
 ### 10.4 删除策略
 
@@ -756,7 +764,7 @@ uploaded
 - 同文档同版本只允许一个 Job
 - 同阶段重复执行前，先检查目标数据是否已存在
 - 重解析时先清理旧版本数据再重新写入
-- Qdrant upsert 使用稳定 `vector_id`
+- Qdrant upsert 使用稳定 UUID `vector_id`
 
 ## 14. 关键时序图
 

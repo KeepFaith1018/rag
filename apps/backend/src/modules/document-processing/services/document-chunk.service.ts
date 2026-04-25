@@ -1,3 +1,4 @@
+import { createHash } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Prisma } from '@prisma-client';
@@ -30,6 +31,31 @@ type ChunkSourceDocument = {
   title: string;
   original_filename: string | null;
 };
+
+/**
+ * 基于文档维度生成稳定的 Qdrant point UUID，兼顾幂等写入与 Qdrant ID 约束。
+ */
+export function buildDocumentChunkVectorId(
+  documentId: bigint | string,
+  chunkIndex: number,
+  processingVersion: number,
+) {
+  const seed = `doc:${documentId.toString()}:chunk:${chunkIndex}:v:${processingVersion}`;
+  const bytes = Buffer.from(
+    createHash('sha256').update(seed).digest('hex').slice(0, 32),
+    'hex',
+  );
+
+  // 按 RFC 4122 设置 version / variant，确保生成结果可被 Qdrant 识别为 UUID。
+  bytes[6] = (bytes[6] & 0x0f) | 0x50;
+  bytes[8] = (bytes[8] & 0x3f) | 0x80;
+
+  const uuid = bytes.toString('hex');
+  return `${uuid.slice(0, 8)}-${uuid.slice(8, 12)}-${uuid.slice(
+    12,
+    16,
+  )}-${uuid.slice(16, 20)}-${uuid.slice(20, 32)}`;
+}
 
 /**
  * 负责将解析后的文档做结构化切块并落库。
@@ -65,7 +91,7 @@ export class DocumentChunkService {
     let totalTokens = 0;
     chunkDrafts.forEach((chunk, index) => {
       const tokenCount = this.estimateTokenCount(chunk.content);
-      const vectorId = `doc:${document.id.toString()}:chunk:${index}:v:${version}`;
+      const vectorId = buildDocumentChunkVectorId(document.id, index, version);
 
       rows.push({
         doc_id: document.id,
@@ -133,7 +159,9 @@ export class DocumentChunkService {
       chunkDrafts.push(...splittedChunks);
     }
 
-    return chunkDrafts.length > 0 ? chunkDrafts : this.createFallbackChunks(parsed);
+    return chunkDrafts.length > 0
+      ? chunkDrafts
+      : this.createFallbackChunks(parsed);
   }
 
   /**
@@ -199,7 +227,8 @@ export class DocumentChunkService {
         pageNo: this.resolvePageNumber(parsed, charStart, charEnd),
         charStart,
         charEnd,
-        titlePath: section?.titlePath ?? (section?.title ? [section.title] : []),
+        titlePath:
+          section?.titlePath ?? (section?.title ? [section.title] : []),
         sectionLevel: section?.level ?? null,
         chunkStrategy: 'plainText-recursive',
       });
@@ -230,7 +259,8 @@ export class DocumentChunkService {
       content: normalizedContent,
       charStart,
       charEnd,
-      pageNo: section.pageNo ?? this.resolvePageNumber(parsed, charStart, charEnd),
+      pageNo:
+        section.pageNo ?? this.resolvePageNumber(parsed, charStart, charEnd),
       titlePath: section.titlePath ?? (section.title ? [section.title] : []),
     };
   }
@@ -352,7 +382,8 @@ export class DocumentChunkService {
   ) {
     return sections.find((section) => {
       const sectionStart = section.charStart ?? 0;
-      const sectionEnd = section.charEnd ?? sectionStart + section.content.length;
+      const sectionEnd =
+        section.charEnd ?? sectionStart + section.content.length;
 
       return charStart >= sectionStart && charEnd <= sectionEnd + 2;
     });

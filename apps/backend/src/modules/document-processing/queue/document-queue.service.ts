@@ -100,7 +100,7 @@ export class DocumentQueueService implements OnModuleDestroy {
    * 统一生成文档处理任务主键，避免同文档同版本重复入队。
    */
   buildJobId(documentId: string, processingVersion: number) {
-    return `doc:${documentId}:v:${processingVersion}`;
+    return `doc-${documentId}-v-${processingVersion}`;
   }
   async onModuleDestroy() {
     await this.queue.close();

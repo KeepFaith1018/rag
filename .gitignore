@@ -37,6 +37,7 @@ coverage/
 
 # NestJS
 .nest/
+apps/backend/storage/
 
 # Editor / OS
 .DS_Store

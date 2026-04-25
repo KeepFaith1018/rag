@@ -17,10 +17,6 @@ import type {
   KnowledgeBaseMemberRole,
 } from "@/types/knowledge-base";
 
-const API_BASE_URL =
-  (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() ||
-  "http://localhost:3000/api";
-
 const router = useRouter();
 const route = useRoute();
 const message = useMessage();
@@ -377,15 +373,23 @@ async function reparseDocument(document: KnowledgeBaseDocumentItem) {
 /**
  * 下载原始文档。
  */
-function downloadDocument(document: KnowledgeBaseDocumentItem) {
+async function downloadDocument(document: KnowledgeBaseDocumentItem) {
   if (!kbId.value) {
     return;
   }
 
-  window.open(
-    `${API_BASE_URL}/knowledge-bases/${kbId.value}/documents/${document.id}/download`,
-    "_blank",
-  );
+  try {
+    const payload = await documentView.downloadDocument(
+      kbId.value,
+      document.id,
+    );
+    triggerDocumentDownload(
+      payload.blob,
+      payload.fileName || document.originalFilename || `${document.id}.bin`,
+    );
+  } catch (error) {
+    message.error(resolveErrorMessage(error, "下载文档失败"));
+  }
 }
 
 /**
@@ -584,6 +588,22 @@ function resolveErrorMessage(error: unknown, fallback: string) {
   }
 
   return fallback;
+}
+
+/**
+ * 使用 blob URL 触发浏览器下载，避免新开页面丢失鉴权头。
+ */
+function triggerDocumentDownload(blob: Blob, fileName: string) {
+  const objectUrl = window.URL.createObjectURL(blob);
+  const anchor = window.document.createElement("a");
+
+  anchor.href = objectUrl;
+  anchor.download = fileName;
+  anchor.style.display = "none";
+  window.document.body.appendChild(anchor);
+  anchor.click();
+  anchor.remove();
+  window.URL.revokeObjectURL(objectUrl);
 }
 
 watch(

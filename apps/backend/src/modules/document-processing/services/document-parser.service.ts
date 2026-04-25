@@ -1,7 +1,9 @@
+import { readFile } from 'node:fs/promises';
 import { Injectable } from '@nestjs/common';
-import { PDFLoader } from '@langchain/community/document_loaders/fs/pdf';
 import { DocxLoader } from '@langchain/community/document_loaders/fs/docx';
 import { TextLoader } from '@langchain/classic/document_loaders/fs/text';
+import { PDFParse } from 'pdf-parse';
+import type { PageTextResult } from 'pdf-parse';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 import { FileStorageService } from '@common/storage/file-storage.service';
@@ -18,7 +20,7 @@ type LoaderDocument = {
 };
 
 /**
- * 负责使用 LangChain Loader 解析文档内容。
+ * 负责统一解析文档内容。
  */
 @Injectable()
 export class DocumentParserService {
@@ -53,16 +55,18 @@ export class DocumentParserService {
   }
 
   /**
-   * 使用 LangChain PDFLoader 解析 PDF，并尽量保留页级结构。
+   * 使用 pdf-parse 解析 PDF，并尽量保留页级结构。
    */
   async parsePdf(absolutePath: string): Promise<ParsedDocument> {
+    let parser: PDFParse | null = null;
     try {
-      const loader = new PDFLoader(absolutePath, {
-        splitPages: true,
+      const fileBuffer = await readFile(absolutePath);
+      parser = new PDFParse({
+        data: new Uint8Array(fileBuffer),
       });
-      const docs = (await loader.load()) as LoaderDocument[];
+      const textResult = await parser.getText();
 
-      if (docs.length === 0) {
+      if (textResult.pages.length === 0) {
         throw new BusinessException(ErrorCode.VECTOR_FILE_IMG_EMPTY, {
           message: 'PDF 解析结果为空',
           context: {
@@ -72,7 +76,10 @@ export class DocumentParserService {
         });
       }
 
-      return this.buildParsedDocumentFromPagedDocs(docs);
+      return this.buildParsedDocumentFromPdfPages(
+        textResult.pages,
+        textResult.total,
+      );
     } catch (error) {
       throw new BusinessException(ErrorCode.VECTOR_FILE_FAILED, {
         message: 'PDF 文档解析失败',
@@ -82,6 +89,8 @@ export class DocumentParserService {
           absolutePath,
         },
       });
+    } finally {
+      await parser?.destroy();
     }
   }
 
@@ -184,20 +193,23 @@ export class DocumentParserService {
   }
 
   /**
-   * 将分页文档构造成统一的 ParsedDocument 结构。
+   * 将 PDF 分页文本构造成统一的 ParsedDocument 结构。
    */
-  private buildParsedDocumentFromPagedDocs(docs: LoaderDocument[]): ParsedDocument {
+  private buildParsedDocumentFromPdfPages(
+    pages: PageTextResult[],
+    totalPages: number,
+  ): ParsedDocument {
     const pageMap: ParsedDocument['pageMap'] = [];
     const sections: ParsedSection[] = [];
     let cursor = 0;
 
-    for (let index = 0; index < docs.length; index += 1) {
-      const pageContent = docs[index].pageContent.trim();
+    for (const page of pages) {
+      const pageContent = page.text.trim();
       if (!pageContent) {
         continue;
       }
 
-      const pageNo = this.resolvePageNumber(docs[index].metadata, index);
+      const pageNo = page.num;
       const charStart = cursor;
       const charEnd = charStart + pageContent.length;
 
@@ -225,7 +237,8 @@ export class DocumentParserService {
       sections,
       pageMap,
       metadata: {
-        loader: 'PDFLoader',
+        loader: 'pdf-parse',
+        totalPages,
       },
     };
   }
@@ -356,20 +369,4 @@ export class DocumentParserService {
     return sections;
   }
 
-  /**
-   * 尝试从 PDF 元数据中获取页码，取不到时回退到顺序页码。
-   */
-  private resolvePageNumber(
-    metadata: Record<string, unknown> | undefined,
-    index: number,
-  ) {
-    const pageCandidate =
-      typeof metadata?.page === 'number'
-        ? metadata.page
-        : typeof metadata?.pageNumber === 'number'
-          ? metadata.pageNumber
-          : undefined;
-
-    return pageCandidate && pageCandidate > 0 ? pageCandidate : index + 1;
-  }
 }

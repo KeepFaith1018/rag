@@ -15,7 +15,10 @@ import {
   DOCUMENT_VECTOR_INDEX_ERROR_CODE,
 } from '../constants/document-processing.constants';
 import { EmbeddingService } from '../../ai/embedding.service';
-import { DocumentChunkService } from './document-chunk.service';
+import {
+  buildDocumentChunkVectorId,
+  DocumentChunkService,
+} from './document-chunk.service';
 import { DocumentProcessingTaskService } from './document-processing-task.service';
 import { DocumentParserService } from './document-parser.service';
 import { DocumentProcessingStateService } from './document-processing-state.service';
@@ -208,7 +211,11 @@ export class DocumentProcessingService {
         chunks.map((chunk, index) => ({
           id:
             chunk.vector_id ||
-            `doc:${document.id.toString()}:chunk:${chunk.chunk_index}:v:${payload.processingVersion}`,
+            buildDocumentChunkVectorId(
+              document.id,
+              chunk.chunk_index,
+              payload.processingVersion,
+            ),
           vector: embeddingResult.vectors[index],
           payload: {
             kbId: document.kb_id.toString(),
