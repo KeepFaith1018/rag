@@ -9,8 +9,11 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@fontsource/inter": "^5.2.8",
+    "@fontsource/space-grotesk": "^5.2.10",
     "@vueuse/core": "^14.2.1",
     "clsx": "^2.1.1",
+    "material-symbols": "^0.44.4",
     "pinia": "^3.0.4",
     "tailwind-merge": "^3.5.0",
     "vue": "^3.5.32",

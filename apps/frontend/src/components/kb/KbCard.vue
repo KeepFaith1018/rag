@@ -102,20 +102,20 @@ function handleDelete() {
 
 <template>
   <div
-    class="group bg-surface-container-low hover:bg-surface-container-high p-8 rounded-[var(--radius-card)] transition-all duration-300 flex flex-col h-80 justify-between cursor-pointer border border-transparent hover:border-outline-variant/10"
+    class="group bg-surface-container-low hover:bg-surface-container-high p-5 rounded-[1.25rem] transition-all duration-300 flex flex-col min-h-[14rem] h-auto justify-between gap-4 cursor-pointer border border-transparent hover:border-outline-variant/10"
     :class="accentClass"
     @click="goDetail"
   >
-    <div class="flex items-start justify-between gap-4">
-      <div class="flex items-start gap-4 min-w-0">
+    <div class="flex items-start justify-between gap-3">
+      <div class="flex items-start gap-3 min-w-0 flex-1">
         <div
-          class="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:-translate-y-1 duration-300 shadow-md icon-shell"
+          class="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:-translate-y-1 duration-300 shadow-md icon-shell shrink-0"
         >
-          <span class="material-symbols-outlined icon-filled icon-mark">
+          <span class="material-symbols-outlined icon-filled icon-mark text-[1.25rem]">
             {{ iconName }}
           </span>
         </div>
-        <div class="min-w-0">
+        <div class="min-w-0 flex-1 pt-0.5">
           <div class="flex flex-wrap items-center gap-2 mb-3">
             <span class="kb-chip">
               {{ visibilityLabel }}
@@ -128,11 +128,11 @@ function handleDelete() {
             </span>
           </div>
           <h3
-            class="font-headline text-xl font-bold transition-colors duration-300 text-on-surface truncate"
+            class="font-headline text-base font-bold transition-colors duration-300 text-on-surface truncate pr-2"
           >
             {{ props.kb.name }}
           </h3>
-          <p class="text-sm text-on-surface-variant mt-2 line-clamp-2 min-h-10">
+          <p class="text-xs text-on-surface-variant mt-1.5 leading-relaxed min-h-[2.5rem] line-clamp-2">
             {{ props.kb.description || "暂无知识库说明，进入详情页后可继续完善描述与权限配置。" }}
           </p>
         </div>
@@ -159,12 +159,15 @@ function handleDelete() {
     </div>
 
     <div class="space-y-4">
-      <div class="grid grid-cols-2 gap-3">
+      <div
+        class="grid gap-3"
+        :class="props.kb.visibility === 'private' ? 'grid-cols-1' : 'grid-cols-2'"
+      >
         <div class="metric-card">
           <span class="metric-label">文档数</span>
           <span class="metric-value">{{ props.kb.documentCount }}</span>
         </div>
-        <div class="metric-card">
+        <div v-if="props.kb.visibility !== 'private'" class="metric-card">
           <span class="metric-label">成员数</span>
           <span class="metric-value">{{ props.kb.memberCount }}</span>
         </div>

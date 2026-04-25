@@ -40,6 +40,11 @@ const router = createRouter({
           component: () => import("@/views/kb/KbListView.vue"),
         },
         {
+          path: "public-kb",
+          name: "kb-square",
+          component: () => import("@/views/kb/KbListView.vue"),
+        },
+        {
           path: "kb/:id",
           name: "kb-detail",
           component: () => import("@/views/kb/KbDetailView.vue"),

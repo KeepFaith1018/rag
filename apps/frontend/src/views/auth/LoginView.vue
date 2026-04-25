@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, ref } from "vue";
+import { computed, ref, watch } from "vue";
 import BaseButton from "@/components/ui/BaseButton.vue";
 import BaseInput from "@/components/ui/BaseInput.vue";
 import { useRouter, useRoute } from "vue-router";
@@ -18,6 +18,11 @@ const registerCodeCountdown = useVerificationCountdown(30);
 // 控制当前显示的是登录表单还是注册表单
 const isLoginMode = ref(true);
 
+// 密码可见性状态
+const isLoginPasswordVisible = ref(false);
+const isRegisterPasswordVisible = ref(false);
+const isRegisterConfirmPasswordVisible = ref(false);
+
 // 登录表单数据
 const loginForm = ref({
   email: "",
@@ -32,6 +37,21 @@ const registerForm = ref({
   verificationCode: "",
   password: "",
   confirmPassword: "",
+});
+
+// 监听模式切换，清空表单数据
+watch(isLoginMode, () => {
+  loginForm.value = { email: "", password: "", rememberMe: false };
+  registerForm.value = {
+    email: "",
+    username: "",
+    verificationCode: "",
+    password: "",
+    confirmPassword: "",
+  };
+  isLoginPasswordVisible.value = false;
+  isRegisterPasswordVisible.value = false;
+  isRegisterConfirmPasswordVisible.value = false;
 });
 
 const sendCodeButtonText = computed(() => {
@@ -444,14 +464,17 @@ function resolveErrorMessage(error: unknown, fallback: string) {
               </div>
               <BaseInput
                 v-model="loginForm.password"
-                type="password"
+                :type="isLoginPasswordVisible ? 'text' : 'password'"
                 placeholder="••••••••"
                 required
               >
                 <template #icon>
                   <span
                     class="material-symbols-outlined text-lg cursor-pointer hover:text-on-surface"
-                    >visibility_off</span
+                    @click="isLoginPasswordVisible = !isLoginPasswordVisible"
+                    >{{
+                      isLoginPasswordVisible ? "visibility" : "visibility_off"
+                    }}</span
                   >
                 </template>
               </BaseInput>
@@ -553,10 +576,24 @@ function resolveErrorMessage(error: unknown, fallback: string) {
               >
               <BaseInput
                 v-model="registerForm.password"
-                type="password"
+                :type="isRegisterPasswordVisible ? 'text' : 'password'"
                 placeholder="设置高强度密码"
                 required
-              />
+              >
+                <template #icon>
+                  <span
+                    class="material-symbols-outlined text-lg cursor-pointer hover:text-on-surface"
+                    @click="
+                      isRegisterPasswordVisible = !isRegisterPasswordVisible
+                    "
+                    >{{
+                      isRegisterPasswordVisible
+                        ? "visibility"
+                        : "visibility_off"
+                    }}</span
+                  >
+                </template>
+              </BaseInput>
             </div>
 
             <div class="space-y-2">
@@ -566,10 +603,25 @@ function resolveErrorMessage(error: unknown, fallback: string) {
               >
               <BaseInput
                 v-model="registerForm.confirmPassword"
-                type="password"
+                :type="isRegisterConfirmPasswordVisible ? 'text' : 'password'"
                 placeholder="再次输入密码"
                 required
-              />
+              >
+                <template #icon>
+                  <span
+                    class="material-symbols-outlined text-lg cursor-pointer hover:text-on-surface"
+                    @click="
+                      isRegisterConfirmPasswordVisible =
+                        !isRegisterConfirmPasswordVisible
+                    "
+                    >{{
+                      isRegisterConfirmPasswordVisible
+                        ? "visibility"
+                        : "visibility_off"
+                    }}</span
+                  >
+                </template>
+              </BaseInput>
             </div>
 
             <div class="pt-4">

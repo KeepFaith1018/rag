@@ -41,6 +41,12 @@ interface PrimaryNavItem {
   name: string;
   icon: string;
   path: string;
+  children?: {
+    name: string;
+    path: string;
+    query?: Record<string, string>;
+    icon?: string;
+  }[];
 }
 
 interface RecentSessionItem {
@@ -50,7 +56,27 @@ interface RecentSessionItem {
 }
 
 const primaryNavItems: PrimaryNavItem[] = [
-  { name: "知识库", icon: "database", path: "/kb" },
+  {
+    name: "知识库",
+    icon: "database",
+    path: "/kb",
+    query: { visibility: "private" },
+    children: [
+      {
+        name: "私有知识库",
+        path: "/kb",
+        query: { visibility: "private" },
+        icon: "lock",
+      },
+      {
+        name: "共享知识库",
+        path: "/kb",
+        query: { visibility: "shared" },
+        icon: "folder_shared",
+      },
+    ],
+  },
+  { name: "知识库广场", icon: "public", path: "/public-kb" },
   { name: "聊天历史", icon: "history", path: "/chat" },
 ];
 
@@ -69,6 +95,31 @@ const displayAvatar = computed(() => authStore.user?.avatar || "");
  */
 function isNavActive(path: string) {
   return route.path === path || route.path.startsWith(`${path}/`);
+}
+
+/**
+ * 判断子导航项是否处于激活状态。
+ */
+function isChildActive(child: {
+  path: string;
+  query?: Record<string, string>;
+}) {
+  if (route.path !== child.path) {
+    return false;
+  }
+
+  if (!child.query) {
+    return Object.keys(route.query).length === 0;
+  }
+
+  for (const [key, value] of Object.entries(child.query)) {
+    if (route.query[key] !== value) {
+      return false;
+    }
+  }
+
+  // Also ensure no extra queries are present that shouldn't be
+  return Object.keys(route.query).length === Object.keys(child.query).length;
 }
 
 /**
@@ -137,26 +188,65 @@ async function handleLogout() {
           工作区
         </p>
 
-        <RouterLink
-          v-for="item in primaryNavItems"
-          :key="item.name"
-          :to="item.path"
-          :class="[
-            'flex items-center px-4 py-2.5 gap-3 rounded-md transition-all active:scale-[0.98]',
-            isNavActive(item.path)
-              ? 'bg-primary-container text-on-primary-container mx-0'
-              : 'text-outline hover:text-on-surface hover:bg-surface-container-high',
-          ]"
-        >
-          <span
-            class="material-symbols-outlined text-lg"
-            :style="
-              isNavActive(item.path) ? `font-variation-settings: 'FILL' 1;` : ''
+        <template v-for="item in primaryNavItems" :key="item.name">
+          <RouterLink
+            :to="
+              item.query ? { path: item.path, query: item.query } : item.path
             "
-            >{{ item.icon }}</span
+            :class="[
+              'flex items-center px-4 py-2.5 gap-3 rounded-md transition-all active:scale-[0.98]',
+              isNavActive(item.path)
+                ? 'bg-primary-container text-on-primary-container mx-0'
+                : 'text-outline hover:text-on-surface hover:bg-surface-container-high',
+            ]"
           >
-          <span class="font-body text-sm antialiased">{{ item.name }}</span>
-        </RouterLink>
+            <span
+              class="material-symbols-outlined text-lg"
+              :style="
+                isNavActive(item.path)
+                  ? 'font-variation-settings: \'FILL\' 1'
+                  : ''
+              "
+              >{{ item.icon }}</span
+            >
+            <span class="font-body text-sm antialiased">{{ item.name }}</span>
+          </RouterLink>
+
+          <!-- 子导航 -->
+          <div
+            v-if="item.children && isNavActive(item.path)"
+            class="flex flex-col gap-1 pl-11 pr-4 py-2 relative"
+          >
+            <!-- 树形连接线 -->
+            <div
+              class="absolute left-6 top-0 bottom-4 w-px bg-outline-variant/30"
+            ></div>
+
+            <RouterLink
+              v-for="child in item.children"
+              :key="child.name"
+              :to="{ path: child.path, query: child.query }"
+              class="flex items-center px-3 py-2 rounded-md transition-all text-xs active:scale-[0.98] relative"
+              :class="[
+                isChildActive(child)
+                  ? 'text-primary bg-primary/10 font-medium'
+                  : 'text-outline hover:text-on-surface hover:bg-surface-container-highest',
+              ]"
+            >
+              <!-- 水平连接线 -->
+              <div
+                class="absolute -left-5 top-1/2 w-4 h-px bg-outline-variant/30"
+              ></div>
+              <span
+                v-if="child.icon"
+                class="material-symbols-outlined text-[14px] mr-2"
+              >
+                {{ child.icon }}
+              </span>
+              {{ child.name }}
+            </RouterLink>
+          </div>
+        </template>
       </nav>
 
       <nav class="mt-10">

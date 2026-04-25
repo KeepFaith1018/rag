@@ -37,6 +37,7 @@ const inviteForm = reactive({
   role: "member" as KnowledgeBaseMemberRole,
   expiredInHours: 72,
 });
+const showCreateInviteModal = ref(false);
 const settingsError = ref("");
 const memberError = ref("");
 
@@ -409,6 +410,7 @@ async function createInvitation() {
     });
     await navigator.clipboard?.writeText(invitation.inviteCode);
     message.success("邀请码已生成并尝试复制到剪贴板");
+    showCreateInviteModal.value = false;
   } catch (error) {
     memberError.value = resolveErrorMessage(error, "创建邀请码失败");
   }
@@ -524,8 +526,8 @@ function getMemberRoleLabel(role: KnowledgeBaseMemberItem["role"]) {
   const map = {
     owner: "拥有者",
     manager: "管理员",
-    collaborator: "协作者",
-    member: "成员",
+    collaborator: "编辑者",
+    member: "查看者",
   } as const;
 
   return map[role];
@@ -1012,55 +1014,14 @@ onMounted(() => {
 
               <div v-if="canManageMembers" class="p-6 space-y-6">
                 <div class="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                  <!-- 当前成员 -->
                   <div
-                    class="rounded-2xl border border-outline-variant/10 bg-surface-container-high/35 p-5"
-                  >
-                    <div class="text-sm font-semibold mb-4">创建邀请</div>
-                    <div class="space-y-4">
-                      <div>
-                        <label class="field-label">角色</label>
-                        <div class="flex gap-2">
-                          <button
-                            v-for="role in [
-                              'manager',
-                              'collaborator',
-                              'member',
-                            ]"
-                            :key="role"
-                            type="button"
-                            class="filter-chip"
-                            :class="{
-                              'filter-chip-active': inviteForm.role === role,
-                            }"
-                            @click="
-                              inviteForm.role = role as KnowledgeBaseMemberRole
-                            "
-                          >
-                            {{ role }}
-                          </button>
-                        </div>
-                      </div>
-                      <div>
-                        <label class="field-label">有效时长（小时）</label>
-                        <BaseInput
-                          v-model="inviteForm.expiredInHours"
-                          type="number"
-                          placeholder="72"
-                        />
-                      </div>
-                      <BaseButton @click="createInvitation">
-                        生成邀请码
-                      </BaseButton>
-                    </div>
-                  </div>
-
-                  <div
-                    class="rounded-2xl border border-outline-variant/10 bg-surface-container-high/35 p-5"
+                    class="rounded-2xl border border-outline-variant/10 bg-surface-container-high/35 p-5 flex flex-col h-full"
                   >
                     <div class="text-sm font-semibold mb-4">当前成员</div>
                     <div
                       v-if="memberView.members.value.length"
-                      class="space-y-3"
+                      class="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar"
                     >
                       <div
                         v-for="member in memberView.members.value"
@@ -1092,51 +1053,61 @@ onMounted(() => {
                       当前没有额外成员。
                     </div>
                   </div>
-                </div>
 
-                <div
-                  class="rounded-2xl border border-outline-variant/10 bg-surface-container-high/35 p-5"
-                >
-                  <div class="text-sm font-semibold mb-4">有效邀请码</div>
+                  <!-- 有效邀请码 -->
                   <div
-                    v-if="memberView.invitations.value.length"
-                    class="space-y-3"
+                    class="rounded-2xl border border-outline-variant/10 bg-surface-container-high/35 p-5 flex flex-col h-full"
                   >
+                    <div class="flex items-center justify-between mb-4">
+                      <div class="text-sm font-semibold">有效邀请码</div>
+                      <BaseButton
+                        variant="outline"
+                        class="!px-3 !py-1.5 !text-xs"
+                        @click="showCreateInviteModal = true"
+                      >
+                        创建邀请码
+                      </BaseButton>
+                    </div>
+
                     <div
-                      v-for="invitation in memberView.invitations.value"
-                      :key="invitation.id"
-                      class="rounded-xl border border-outline-variant/10 bg-surface-container-lowest/20 px-4 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+                      v-if="memberView.invitations.value.length"
+                      class="space-y-3 flex-1 overflow-y-auto pr-2 custom-scrollbar"
                     >
-                      <div class="min-w-0">
-                        <div class="font-mono text-sm text-primary truncate">
-                          {{ invitation.inviteCode }}
+                      <div
+                        v-for="invitation in memberView.invitations.value"
+                        :key="invitation.id"
+                        class="rounded-xl border border-outline-variant/10 bg-surface-container-lowest/20 px-4 py-4 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+                      >
+                        <div class="min-w-0">
+                          <div class="font-mono text-sm text-primary truncate">
+                            {{ invitation.inviteCode }}
+                          </div>
+                          <div class="text-xs text-on-surface-variant mt-2">
+                            角色：{{ getMemberRoleLabel(invitation.role) }} ·
+                            失效时间：{{ formatDateTime(invitation.expiresAt) }}
+                          </div>
                         </div>
-                        <div class="text-xs text-on-surface-variant mt-2">
-                          角色：{{ invitation.role }} · 失效时间：{{
-                            formatDateTime(invitation.expiresAt)
-                          }}
+                        <div class="flex items-center gap-2">
+                          <BaseButton
+                            variant="outline"
+                            class="!px-3 !py-2"
+                            @click="copyInviteCode(invitation.inviteCode)"
+                          >
+                            复制
+                          </BaseButton>
+                          <BaseButton
+                            variant="outline"
+                            class="!px-3 !py-2 hover:!text-error"
+                            @click="cancelInvitation(invitation)"
+                          >
+                            取消
+                          </BaseButton>
                         </div>
-                      </div>
-                      <div class="flex items-center gap-2">
-                        <BaseButton
-                          variant="outline"
-                          class="!px-3 !py-2"
-                          @click="copyInviteCode(invitation.inviteCode)"
-                        >
-                          复制
-                        </BaseButton>
-                        <BaseButton
-                          variant="outline"
-                          class="!px-3 !py-2 hover:!text-error"
-                          @click="cancelInvitation(invitation)"
-                        >
-                          取消
-                        </BaseButton>
                       </div>
                     </div>
-                  </div>
-                  <div v-else class="text-sm text-on-surface-variant">
-                    当前没有有效邀请码。
+                    <div v-else class="text-sm text-on-surface-variant">
+                      当前没有有效邀请码。
+                    </div>
                   </div>
                 </div>
 
@@ -1390,6 +1361,132 @@ onMounted(() => {
               </p>
             </div>
           </div>
+        </div>
+      </div>
+    </div>
+    <!-- 创建邀请码弹窗 -->
+    <div
+      v-if="showCreateInviteModal"
+      class="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm flex items-center justify-center px-4"
+    >
+      <div
+        class="w-full max-w-[34rem] rounded-[20px] border border-outline-variant/10 bg-surface-container-low shadow-[0_28px_120px_rgba(0,0,0,0.35)]"
+      >
+        <div class="px-6 py-5 border-b border-outline-variant/10">
+          <div class="flex items-center justify-between gap-4">
+            <div>
+              <h3 class="font-headline text-lg font-bold">创建邀请码</h3>
+            </div>
+            <button
+              type="button"
+              class="w-8 h-8 rounded-xl hover:bg-surface-container-high transition-colors flex items-center justify-center text-on-surface-variant"
+              @click="showCreateInviteModal = false"
+            >
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="px-6 py-5 space-y-5">
+          <div>
+            <label
+              class="text-[13px] font-medium text-on-surface-variant mb-3 block"
+              >选择成员角色</label
+            >
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button
+                v-for="role in [
+                  {
+                    value: 'manager',
+                    label: '管理员',
+                    icon: 'manage_accounts',
+                    desc: '可管理设置与成员',
+                  },
+                  {
+                    value: 'collaborator',
+                    label: '编辑者',
+                    icon: 'edit',
+                    desc: '可上传及管理文档',
+                  },
+                  {
+                    value: 'member',
+                    label: '查看者',
+                    icon: 'visibility',
+                    desc: '仅可查看及下载内容',
+                  },
+                ]"
+                :key="role.value"
+                type="button"
+                class="flex flex-col items-start p-3.5 rounded-xl border transition-all text-left group"
+                :class="
+                  inviteForm.role === role.value
+                    ? 'border-primary bg-primary/5'
+                    : 'border-outline-variant/10 bg-surface-container-lowest hover:bg-surface-container-highest'
+                "
+                @click="inviteForm.role = role.value as KnowledgeBaseMemberRole"
+              >
+                <div class="flex items-center gap-2 mb-2">
+                  <span
+                    class="material-symbols-outlined text-[18px]"
+                    :class="
+                      inviteForm.role === role.value
+                        ? 'text-primary'
+                        : 'text-on-surface group-hover:text-primary transition-colors'
+                    "
+                  >
+                    {{ role.icon }}
+                  </span>
+                  <span
+                    class="text-[15px] font-bold"
+                    :class="
+                      inviteForm.role === role.value
+                        ? 'text-primary'
+                        : 'text-on-surface group-hover:text-primary transition-colors'
+                    "
+                  >
+                    {{ role.label }}
+                  </span>
+                </div>
+                <span
+                  class="text-xs leading-relaxed"
+                  :class="
+                    inviteForm.role === role.value
+                      ? 'text-primary/80'
+                      : 'text-on-surface-variant group-hover:text-on-surface transition-colors'
+                  "
+                >
+                  {{ role.desc }}
+                </span>
+              </button>
+            </div>
+          </div>
+          <div>
+            <label
+              class="text-[13px] font-medium text-on-surface-variant mb-2 block"
+              >有效时长（小时）</label
+            >
+            <BaseInput
+              v-model="inviteForm.expiredInHours"
+              type="number"
+              placeholder="72"
+              class="!py-2"
+            />
+          </div>
+        </div>
+
+        <div
+          class="px-6 py-4 border-t border-outline-variant/10 bg-surface-container-lowest/50 flex items-center justify-end gap-3 rounded-b-[20px]"
+        >
+          <BaseButton
+            variant="outline"
+            class="!py-1.5"
+            @click="showCreateInviteModal = false"
+          >
+            取消
+          </BaseButton>
+          <BaseButton class="!py-1.5" @click="createInvitation"
+            >生成邀请码</BaseButton
+          >
         </div>
       </div>
     </div>

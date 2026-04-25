@@ -1,8 +1,8 @@
 <script setup lang="ts">
 import { computed, onMounted, reactive, ref, watch } from "vue";
+import { useRoute } from "vue-router";
 import BaseButton from "@/components/ui/BaseButton.vue";
 import BaseInput from "@/components/ui/BaseInput.vue";
-import FilterBar from "@/components/kb/FilterBar.vue";
 import KbCard from "@/components/kb/KbCard.vue";
 import { useKnowledgeBaseList } from "@/composables/useKnowledgeBaseList";
 import { useMessage } from "@/composables/useMessage";
@@ -17,6 +17,7 @@ import type {
 } from "@/types/knowledge-base";
 
 const message = useMessage();
+const route = useRoute();
 const kbList = useKnowledgeBaseList();
 const searchKeyword = ref("");
 const showManageModal = ref(false);
@@ -118,7 +119,11 @@ function openCreateModal() {
   submitError.value = "";
   manageForm.name = "";
   manageForm.description = "";
-  manageForm.visibility = "private";
+
+  // 根据当前所在页面动态设置默认可见性
+  manageForm.visibility =
+    kbList.query.visibility === "shared" ? "shared" : "private";
+
   manageForm.isPublic = false;
   manageForm.allowPublicDownload = false;
   showManageModal.value = true;
@@ -155,26 +160,10 @@ function closeJoinModal() {
 }
 
 /**
- * 切换顶部作用域。
- */
-async function switchScope(scope: "mine" | "public") {
-  kbList.setScope(scope);
-  await loadList();
-}
-
-/**
  * 切换 ownership。
  */
 async function changeOwnership(ownership: KnowledgeBaseOwnership) {
   kbList.setOwnership(ownership);
-  await loadList();
-}
-
-/**
- * 切换可见性筛选。
- */
-async function changeVisibility(visibility: KnowledgeBaseVisibility | "all") {
-  kbList.setVisibility(visibility);
   await loadList();
 }
 
@@ -354,7 +343,39 @@ watch(
   },
 );
 
+watch(
+  () => [route.path, route.query],
+  ([newPath, newQuery]) => {
+    if (newPath === "/public-kb") {
+      kbList.setScope("public");
+      void loadList();
+    } else if (newPath === "/kb") {
+      kbList.setScope("mine");
+
+      const q = newQuery as Record<string, string>;
+      const ownership = (q.ownership as KnowledgeBaseOwnership) || "all";
+      const visibility =
+        (q.visibility as KnowledgeBaseVisibility | "all") || "private";
+
+      kbList.query.ownership = ownership;
+      kbList.query.visibility = visibility;
+
+      void loadList();
+    }
+  },
+  { deep: true },
+);
+
 onMounted(() => {
+  if (route.path === "/public-kb") {
+    kbList.setScope("public");
+  } else {
+    kbList.setScope("mine");
+    const q = route.query as Record<string, string>;
+    kbList.query.ownership = (q.ownership as KnowledgeBaseOwnership) || "all";
+    kbList.query.visibility =
+      (q.visibility as KnowledgeBaseVisibility | "all") || "private";
+  }
   void loadList();
 });
 </script>
@@ -368,27 +389,15 @@ onMounted(() => {
         class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4"
       >
         <div class="flex flex-col gap-3">
-          <div class="flex items-center gap-2">
-            <button
-              type="button"
-              class="scope-tab"
-              :class="{ 'scope-tab-active': kbList.scope.value === 'mine' }"
-              @click="switchScope('mine')"
-            >
-              我的知识库
-            </button>
-            <button
-              type="button"
-              class="scope-tab"
-              :class="{ 'scope-tab-active': kbList.scope.value === 'public' }"
-              @click="switchScope('public')"
-            >
-              公开知识库
-            </button>
-          </div>
-          <div class="text-sm text-on-surface-variant">
-            已接入真实知识库列表、创建/编辑/删除与邀请码加入流程。
-          </div>
+          <h1 class="text-2xl font-bold text-on-surface">
+            {{
+              kbList.isPublicScope.value
+                ? "知识库广场"
+                : kbList.query.visibility === "shared"
+                  ? "共享知识库"
+                  : "私有知识库"
+            }}
+          </h1>
         </div>
 
         <div class="flex flex-col md:flex-row md:items-center gap-3">
@@ -405,7 +414,11 @@ onMounted(() => {
               class="bg-surface-container-highest border border-outline-variant/15 rounded-xl pl-12 pr-6 py-2.5 w-full focus:ring-1 focus:ring-primary focus:outline-none text-sm transition-all placeholder:text-outline/50"
             />
           </div>
-          <BaseButton variant="outline" @click="showJoinModal = true">
+          <BaseButton
+            v-if="kbList.query.visibility === 'shared'"
+            variant="outline"
+            @click="showJoinModal = true"
+          >
             <span class="material-symbols-outlined text-[18px]">group_add</span>
             邀请码加入
           </BaseButton>
@@ -424,33 +437,40 @@ onMounted(() => {
         class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
         <div class="flex items-center gap-2 flex-wrap">
-          <button
-            v-for="option in ownershipOptions"
-            :key="option.value"
-            type="button"
-            class="ownership-chip"
-            :class="{
-              'ownership-chip-active': kbList.query.ownership === option.value,
-            }"
-            @click="changeOwnership(option.value)"
-          >
-            {{ option.label }}
-          </button>
+          <template v-if="kbList.query.visibility === 'shared'">
+            <button
+              v-for="option in ownershipOptions"
+              :key="option.value"
+              type="button"
+              class="ownership-chip"
+              :class="{
+                'ownership-chip-active':
+                  kbList.query.ownership === option.value,
+              }"
+              @click="changeOwnership(option.value)"
+            >
+              {{ option.label }}
+            </button>
+          </template>
         </div>
-        <FilterBar
-          :model-value="kbList.query.visibility"
-          :sort-label="sortLabel"
-          @update:model-value="changeVisibility"
-        />
+
+        <!-- 排序指示 -->
+        <div class="flex items-center gap-3">
+          <span
+            class="text-xs font-label uppercase tracking-widest text-outline hidden sm:inline-block"
+          >
+            排序方式：{{ sortLabel }}
+          </span>
+          <span class="material-symbols-outlined text-outline text-lg">
+            tune
+          </span>
+        </div>
       </div>
 
       <div
         v-else
         class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
       >
-        <div class="text-xs uppercase tracking-[0.24em] text-outline">
-          仅展示已公开共享知识库
-        </div>
         <div class="flex items-center gap-2">
           <button
             v-for="option in publicSortOptions"
@@ -493,9 +513,9 @@ onMounted(() => {
           class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8"
         >
           <div
-            v-for="index in 6"
-            :key="index"
-            class="h-80 rounded-[var(--radius-card)] bg-surface-container-low animate-pulse border border-outline-variant/5"
+            v-for="i in 8"
+            :key="i"
+            class="min-h-[20rem] rounded-[var(--radius-card)] bg-surface-container-low animate-pulse border border-outline-variant/5"
           ></div>
         </div>
 
@@ -511,9 +531,10 @@ onMounted(() => {
             @delete="handleDelete"
           />
 
+          <!-- 新建知识库卡片 -->
           <div
             v-if="!kbList.isPublicScope.value"
-            class="group border-2 border-dashed border-outline-variant/20 hover:border-primary/40 p-8 rounded-xl transition-all duration-300 flex flex-col items-center justify-center h-80 cursor-pointer bg-surface/40 hover:bg-surface-container-low"
+            class="group border-2 border-dashed border-outline-variant/20 hover:border-primary/40 p-6 rounded-xl transition-all duration-300 flex flex-col items-center justify-center min-h-[20rem] cursor-pointer bg-surface/40 hover:bg-surface-container-low"
             @click="openCreateModal"
           >
             <div
@@ -540,10 +561,10 @@ onMounted(() => {
 
         <div
           v-else
-          class="rounded-[var(--radius-card)] border border-dashed border-outline-variant/15 bg-surface-container-low/70 px-8 py-14 flex flex-col items-center text-center"
+          class="rounded-3xl border border-dashed border-outline-variant/15 bg-surface-container-low/70 px-6 py-10 flex flex-col items-center text-center"
         >
           <div
-            class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center mb-5"
+            class="w-16 h-16 rounded-2xl bg-surface-container-highest/50 flex items-center justify-center mb-4 text-on-surface-variant"
           >
             <span class="material-symbols-outlined text-3xl text-outline">
               database
@@ -565,11 +586,8 @@ onMounted(() => {
         </div>
 
         <div
-          class="mt-8 flex items-center justify-between gap-4 border-t border-outline-variant/10 pt-6"
+          class="mt-8 flex items-center justify-end gap-4 border-t border-outline-variant/10 pt-6"
         >
-          <div class="text-xs uppercase tracking-[0.22em] text-outline">
-            排序：{{ sortLabel }}
-          </div>
           <div class="flex items-center gap-3">
             <BaseButton
               variant="outline"
@@ -628,9 +646,6 @@ onMounted(() => {
           <div class="flex items-center justify-between gap-4">
             <div>
               <h3 class="font-headline text-2xl font-bold">{{ modalTitle }}</h3>
-              <p class="text-sm text-on-surface-variant mt-2">
-                配置知识库基础信息、可见性以及公开访问策略。
-              </p>
             </div>
             <button
               type="button"
@@ -792,30 +807,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.scope-tab {
-  border-radius: 999px;
-  border: 1px solid
-    color-mix(in srgb, var(--color-outline-variant) 16%, transparent);
-  background: color-mix(
-    in srgb,
-    var(--color-surface-container-low) 78%,
-    transparent
-  );
-  padding: 0.6rem 1rem;
-  font-size: 0.78rem;
-  font-weight: 700;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--color-on-surface-variant);
-  transition: all 0.2s ease;
-}
-
-.scope-tab-active {
-  border-color: color-mix(in srgb, var(--color-primary) 40%, transparent);
-  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
-  color: var(--color-primary);
-}
-
 .ownership-chip {
   border-radius: 999px;
   padding: 0.45rem 0.85rem;
