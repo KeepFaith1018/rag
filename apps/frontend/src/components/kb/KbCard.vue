@@ -1,117 +1,278 @@
 <script setup lang="ts">
-import { useRouter } from 'vue-router';
-
-interface KbItem {
-  id: string | number;
-  name: string;
-  type: string;
-  icon: string;
-  color: string;
-  docsCount: string;
-  size: string;
-  createdAt: string;
-  users?: string[];
-  moreUsers?: number;
-}
+import { computed } from "vue";
+import { useRouter } from "vue-router";
+import type { KnowledgeBaseListItem } from "@/types/knowledge-base";
 
 const props = defineProps<{
-  kb: KbItem;
+  kb: KnowledgeBaseListItem;
+}>();
+
+const emit = defineEmits<{
+  (event: "edit", kb: KnowledgeBaseListItem): void;
+  (event: "delete", kb: KnowledgeBaseListItem): void;
 }>();
 
 const router = useRouter();
 
-const goDetail = () => {
-  router.push(`/kb/${props.kb.id}`);
-};
+/**
+ * 角色文案映射。
+ */
+const roleLabel = computed(() => {
+  const map = {
+    owner: "拥有者",
+    manager: "管理员",
+    collaborator: "协作者",
+    member: "成员",
+    publicVisitor: "公开访问",
+  } as const;
 
-const typeLabel = props.kb.type === 'private' ? '私有' : '共享';
+  return map[props.kb.accessRole];
+});
+
+/**
+ * 类型文案。
+ */
+const visibilityLabel = computed(() =>
+  props.kb.visibility === "private" ? "私有" : "共享",
+);
+
+/**
+ * 卡片图标。
+ */
+const iconName = computed(() => {
+  if (props.kb.visibility === "private") {
+    return "lock";
+  }
+
+  return props.kb.isPublic ? "public" : "groups";
+});
+
+/**
+ * 卡片高亮色。
+ */
+const accentClass = computed(() => {
+  if (props.kb.accessRole === "owner") {
+    return "card-accent-primary";
+  }
+
+  if (props.kb.accessRole === "manager") {
+    return "card-accent-secondary";
+  }
+
+  return "card-accent-tertiary";
+});
+
+/**
+ * 跳转到详情页。
+ */
+function goDetail() {
+  void router.push(`/kb/${props.kb.id}`);
+}
+
+/**
+ * 格式化日期。
+ */
+function formatDate(value: string) {
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return value;
+  }
+
+  return new Intl.DateTimeFormat("zh-CN", {
+    month: "2-digit",
+    day: "2-digit",
+  }).format(date);
+}
+
+/**
+ * 触发编辑事件。
+ */
+function handleEdit() {
+  emit("edit", props.kb);
+}
+
+/**
+ * 触发删除事件。
+ */
+function handleDelete() {
+  emit("delete", props.kb);
+}
 </script>
 
 <template>
   <div
+    class="group bg-surface-container-low hover:bg-surface-container-high p-8 rounded-[var(--radius-card)] transition-all duration-300 flex flex-col h-80 justify-between cursor-pointer border border-transparent hover:border-outline-variant/10"
+    :class="accentClass"
     @click="goDetail"
-    class="group bg-surface-container-low hover:bg-surface-container-high p-8 rounded-[var(--radius-card)] transition-all duration-300 flex flex-col h-72 justify-between cursor-pointer border border-transparent hover:border-outline-variant/10"
-    style="box-shadow: var(--shadow-glass); transition: box-shadow 0.3s, transform 0.3s;"
-    onmouseover="this.style.boxShadow='var(--shadow-hover)'"
-    onmouseout="this.style.boxShadow='var(--shadow-glass)'"
   >
-    <div class="flex justify-between items-start">
-      <div
-        class="w-12 h-12 rounded flex items-center justify-center transition-transform group-hover:-translate-y-1 duration-300 shadow-md"
-        :class="`bg-${kb.color}-container/10`"
-      >
-        <span
-          class="material-symbols-outlined"
-          :class="`text-${kb.color}`"
-          style="font-variation-settings: 'FILL' 1;"
-        >
-          {{ kb.icon }}
-        </span>
-      </div>
-      <span
-        class="text-[10px] font-label tracking-widest uppercase px-2 py-1 rounded shadow-sm"
-        :class="`text-${kb.color} bg-${kb.color}-container/20`"
-      >
-        {{ typeLabel }}
-      </span>
-    </div>
-
-    <div class="mt-4 flex-1">
-      <h3
-        class="font-headline text-xl font-bold mb-2 transition-colors duration-300"
-        :class="`group-hover:text-${kb.color}`"
-      >
-        {{ kb.name }}
-      </h3>
-      <div class="flex items-center gap-4 text-outline text-xs mt-3">
-        <span class="flex items-center gap-1.5 opacity-80">
-          <span class="material-symbols-outlined text-[16px]">description</span>
-          {{ kb.docsCount }} 文档
-        </span>
-        <span class="flex items-center gap-1.5 opacity-80">
-          <span class="material-symbols-outlined text-[16px]">storage</span>
-          {{ kb.size }}
-        </span>
-      </div>
-    </div>
-
-    <div class="flex items-center justify-between pt-6 border-t border-outline-variant/10 mt-auto">
-      <div class="flex -space-x-2">
-        <img
-          v-for="(imgUrl, idx) in kb.users"
-          :key="idx"
-          class="w-8 h-8 rounded-full border-2 border-surface-container-low object-cover transition-transform group-hover:scale-105 duration-300"
-          :src="imgUrl"
-          alt="user"
-        />
+    <div class="flex items-start justify-between gap-4">
+      <div class="flex items-start gap-4 min-w-0">
         <div
-          v-if="kb.moreUsers"
-          class="w-8 h-8 rounded-full border-2 border-surface-container-low bg-surface-variant flex items-center justify-center text-[10px] font-bold text-on-surface-variant z-10 transition-colors group-hover:bg-surface-container-highest"
+          class="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:-translate-y-1 duration-300 shadow-md icon-shell"
         >
-          +{{ kb.moreUsers }}
+          <span class="material-symbols-outlined icon-filled icon-mark">
+            {{ iconName }}
+          </span>
+        </div>
+        <div class="min-w-0">
+          <div class="flex flex-wrap items-center gap-2 mb-3">
+            <span class="kb-chip">
+              {{ visibilityLabel }}
+            </span>
+            <span v-if="props.kb.isPublic" class="kb-chip kb-chip-public">
+              公开
+            </span>
+            <span class="kb-chip kb-chip-role">
+              {{ roleLabel }}
+            </span>
+          </div>
+          <h3
+            class="font-headline text-xl font-bold transition-colors duration-300 text-on-surface truncate"
+          >
+            {{ props.kb.name }}
+          </h3>
+          <p class="text-sm text-on-surface-variant mt-2 line-clamp-2 min-h-10">
+            {{ props.kb.description || "暂无知识库说明，进入详情页后可继续完善描述与权限配置。" }}
+          </p>
         </div>
       </div>
-      <span class="text-[10px] font-label text-outline/80 uppercase tracking-wider">创建于 {{ kb.createdAt }}</span>
+
+      <div class="flex items-center gap-1">
+        <button
+          v-if="props.kb.permissions.canManageKnowledgeBase"
+          type="button"
+          class="w-9 h-9 rounded-lg border border-outline-variant/10 hover:bg-surface-container-highest transition-colors"
+          @click.stop="handleEdit"
+        >
+          <span class="material-symbols-outlined text-[18px]">edit</span>
+        </button>
+        <button
+          v-if="props.kb.permissions.canDelete"
+          type="button"
+          class="w-9 h-9 rounded-lg border border-outline-variant/10 hover:bg-error-container/20 hover:text-error transition-colors"
+          @click.stop="handleDelete"
+        >
+          <span class="material-symbols-outlined text-[18px]">delete</span>
+        </button>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      <div class="grid grid-cols-2 gap-3">
+        <div class="metric-card">
+          <span class="metric-label">文档数</span>
+          <span class="metric-value">{{ props.kb.documentCount }}</span>
+        </div>
+        <div class="metric-card">
+          <span class="metric-label">成员数</span>
+          <span class="metric-value">{{ props.kb.memberCount }}</span>
+        </div>
+      </div>
+
+      <div class="flex items-center gap-3 text-xs text-outline">
+        <span class="inline-flex items-center gap-1.5">
+          <span class="material-symbols-outlined text-[16px]">schedule</span>
+          更新于 {{ formatDate(props.kb.updatedAt) }}
+        </span>
+        <span
+          v-if="props.kb.allowPublicDownload"
+          class="inline-flex items-center gap-1.5"
+        >
+          <span class="material-symbols-outlined text-[16px]">download</span>
+          可公开下载
+        </span>
+      </div>
+
+      <div
+        class="flex items-center justify-between pt-5 border-t border-outline-variant/10"
+      >
+        <span class="text-[10px] font-label text-outline/80 uppercase tracking-wider">
+          创建于 {{ formatDate(props.kb.createdAt) }}
+        </span>
+        <span
+          class="inline-flex items-center gap-1 text-xs text-primary group-hover:translate-x-0.5 transition-transform"
+        >
+          查看详情
+          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+        </span>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-/* Support dynamic classes for colors to adapt perfectly to Light/Dark modes */
-.bg-primary-container\/10 { background-color: color-mix(in srgb, var(--color-primary) 15%, transparent); }
-.bg-primary-container\/20 { background-color: color-mix(in srgb, var(--color-primary) 25%, transparent); }
-.text-primary { color: var(--color-primary); }
-.group-hover\:text-primary:hover { color: var(--color-primary); }
+.card-accent-primary .icon-shell {
+  background: color-mix(in srgb, var(--color-primary) 16%, transparent);
+}
 
-.bg-secondary-container\/10 { background-color: color-mix(in srgb, var(--color-secondary) 15%, transparent); }
-.bg-secondary-container\/20 { background-color: color-mix(in srgb, var(--color-secondary) 25%, transparent); }
-.bg-on-secondary-fixed-variant\/10 { background-color: color-mix(in srgb, var(--color-secondary) 15%, transparent); }
-.bg-on-secondary-fixed-variant\/20 { background-color: color-mix(in srgb, var(--color-secondary) 25%, transparent); }
-.text-secondary { color: var(--color-secondary); }
-.group-hover\:text-secondary:hover { color: var(--color-secondary); }
+.card-accent-primary .icon-mark,
+.card-accent-primary .kb-chip-role,
+.card-accent-primary .metric-value {
+  color: var(--color-primary);
+}
 
-.bg-tertiary-container\/10 { background-color: color-mix(in srgb, var(--color-tertiary) 15%, transparent); }
-.bg-tertiary-container\/20 { background-color: color-mix(in srgb, var(--color-tertiary) 25%, transparent); }
-.text-tertiary { color: var(--color-tertiary); }
-.group-hover\:text-tertiary:hover { color: var(--color-tertiary); }
+.card-accent-secondary .icon-shell {
+  background: color-mix(in srgb, var(--color-secondary) 16%, transparent);
+}
+
+.card-accent-secondary .icon-mark,
+.card-accent-secondary .kb-chip-role,
+.card-accent-secondary .metric-value {
+  color: var(--color-secondary);
+}
+
+.card-accent-tertiary .icon-shell {
+  background: color-mix(in srgb, var(--color-tertiary) 14%, transparent);
+}
+
+.card-accent-tertiary .icon-mark,
+.card-accent-tertiary .kb-chip-role,
+.card-accent-tertiary .metric-value {
+  color: var(--color-tertiary);
+}
+
+.kb-chip {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.25rem 0.55rem;
+  background: color-mix(in srgb, var(--color-outline-variant) 18%, transparent);
+  color: var(--color-on-surface-variant);
+  font-size: 0.65rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.kb-chip-public {
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary);
+}
+
+.kb-chip-role {
+  background: transparent;
+  border: 1px solid color-mix(in srgb, currentColor 24%, transparent);
+}
+
+.metric-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  border-radius: 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 14%, transparent);
+  background: color-mix(in srgb, var(--color-surface-container-high) 72%, transparent);
+  padding: 0.9rem 1rem;
+}
+
+.metric-label {
+  color: var(--color-outline);
+  font-size: 0.72rem;
+}
+
+.metric-value {
+  font-family: var(--font-headline);
+  font-size: 1.1rem;
+  font-weight: 700;
+}
 </style>

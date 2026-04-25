@@ -105,11 +105,15 @@
   - 回退读取 `BAILIAN_EMBEDDING_MODEL`
 - 新增 `getDebugSummary()` 用于联调输出
 - 数值型环境变量统一做显式 `number` 转换
+- 当前 Embedding 调用已从直接 `fetch` 百炼 OpenAI 兼容接口，升级为基于 LangChain `OpenAIEmbeddings` 的统一编排
+- 当前仍保留应用层的分批、限频、重试和异常包装
+- 当前 `totalTokens` 改为应用层近似估算值，用于治理字段与调试输出
 
 说明：
 
 - 当前真正用于文档文本向量化的仍是文本模型
 - `vision` 只是保留配置位，不代表当前文档处理链路已经切换到多模态请求格式
+- 由于当前 LangChain Embeddings 编排只覆盖文本向量，因此 `vision` 模式下会明确报配置错误，而不是静默回退
 
 ### 5.4 新增本地联调脚本
 
@@ -167,7 +171,7 @@ dry-run 输出结果已确认：
 - 当前百炼文本向量模型 `text-embedding-v4` 可正常调用
 - 当前项目配置的 `dimensions = 1024` 已生效
 - 当前批量请求可以稳定返回与输入数量一致的向量结果
-- 当前 `EmbeddingService` 的基础调用、配置读取、批量处理逻辑可用
+- 当前 `EmbeddingService` 的 LangChain 编排、配置读取、批量处理逻辑可用
 
 ### 6.3 当前未完成项
 
@@ -211,6 +215,7 @@ pnpm --filter backend run debug:bailian-embedding
 - `apps/backend/package.json`
 - `apps/backend/src/common/config/env.validation.ts`
 - `apps/backend/src/modules/ai/embedding.service.ts`
+- `pnpm-lock.yaml`
 
 ## 9. 本轮检查结果
 

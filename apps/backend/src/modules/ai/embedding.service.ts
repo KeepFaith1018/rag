@@ -1,28 +1,12 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { OpenAIEmbeddings } from '@langchain/openai';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 import {
   DOCUMENT_EMBEDDING_CONFIG_ERROR_CODE,
   DOCUMENT_EMBEDDING_ERROR_CODE,
 } from '../document-processing/constants/document-processing.constants';
-
-interface EmbeddingApiResponse {
-  data?: Array<{
-    embedding?: number[];
-    index?: number;
-  }>;
-  usage?: {
-    prompt_tokens?: number;
-    total_tokens?: number;
-  };
-  error?: {
-    code?: string;
-    message?: string;
-  };
-  code?: string;
-  message?: string;
-}
 
 interface EmbeddingRuntimeConfig {
   apiKey: string;
@@ -54,12 +38,13 @@ export class EmbeddingService {
     }
 
     const config = this.getEmbeddingConfig();
+    const embeddings = this.createEmbeddingsClient(config);
     const vectors: number[][] = [];
     let totalTokens = 0;
 
     for (let index = 0; index < texts.length; index += config.batchSize) {
       const batch = texts.slice(index, index + config.batchSize);
-      const result = await this.embedBatchWithRetry(batch, config);
+      const result = await this.embedBatchWithRetry(batch, embeddings, config);
       vectors.push(...result.vectors);
       totalTokens += result.promptTokens;
 
@@ -79,13 +64,14 @@ export class EmbeddingService {
    */
   private async embedBatchWithRetry(
     texts: string[],
+    embeddings: OpenAIEmbeddings,
     config: EmbeddingRuntimeConfig,
   ) {
     let lastError: unknown;
 
     for (let attempt = 0; attempt <= config.retryCount; attempt += 1) {
       try {
-        return await this.embedBatch(texts, config);
+        return await this.embedBatch(texts, embeddings);
       } catch (error) {
         lastError = error;
         if (attempt >= config.retryCount || !this.isRetryableError(error)) {
@@ -101,60 +87,32 @@ export class EmbeddingService {
   }
 
   /**
-   * 执行单批次百炼 Embedding 请求。
+   * 执行单批次 LangChain Embedding 请求。
    */
-  private async embedBatch(texts: string[], config: EmbeddingRuntimeConfig) {
-    const response = await fetch(`${config.baseUrl}/embeddings`, {
-      method: 'POST',
-      headers: {
-        Authorization: `Bearer ${config.apiKey}`,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        model: config.model,
-        input: texts,
-        dimensions: config.modelType === 'text' ? config.dimensions : undefined,
-        encoding_format: 'float',
-      }),
-    });
+  private async embedBatch(texts: string[], embeddings: OpenAIEmbeddings) {
+    try {
+      const vectors = await embeddings.embedDocuments(texts);
+      if (
+        vectors.length !== texts.length ||
+        vectors.some((item) => item.length === 0)
+      ) {
+        throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
+          message: 'LangChain Embedding 返回结果不完整',
+          context: {
+            internalErrorCode: DOCUMENT_EMBEDDING_ERROR_CODE,
+            expectedSize: texts.length,
+            actualSize: vectors.length,
+          },
+        });
+      }
 
-    const json = (await response.json()) as EmbeddingApiResponse;
-    if (!response.ok) {
-      throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
-        message:
-          json.message || json.error?.message || '百炼 Embedding 调用失败',
-        context: {
-          internalErrorCode: DOCUMENT_EMBEDDING_ERROR_CODE,
-          httpStatus: response.status,
-          providerCode: json.code || json.error?.code,
-        },
-      });
+      return {
+        vectors,
+        promptTokens: this.estimateBatchTokenCount(texts),
+      };
+    } catch (error) {
+      throw this.wrapEmbeddingError(error, texts.length);
     }
-
-    const orderedVectors =
-      json.data
-        ?.slice()
-        .sort((a, b) => (a.index ?? 0) - (b.index ?? 0))
-        .map((item) => item.embedding ?? []) ?? [];
-
-    if (
-      orderedVectors.length !== texts.length ||
-      orderedVectors.some((item) => item.length === 0)
-    ) {
-      throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
-        message: '百炼 Embedding 返回结果不完整',
-        context: {
-          internalErrorCode: DOCUMENT_EMBEDDING_ERROR_CODE,
-          expectedSize: texts.length,
-          actualSize: orderedVectors.length,
-        },
-      });
-    }
-
-    return {
-      vectors: orderedVectors,
-      promptTokens: json.usage?.prompt_tokens ?? json.usage?.total_tokens ?? 0,
-    };
   }
 
   /**
@@ -201,6 +159,33 @@ export class EmbeddingService {
   }
 
   /**
+   * 基于 LangChain 构建 Embeddings 客户端。
+   */
+  private createEmbeddingsClient(config: EmbeddingRuntimeConfig) {
+    if (config.modelType !== 'text') {
+      throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
+        message:
+          '当前 LangChain Embedding 编排仅支持文本向量模型，请将 BAILIAN_DOCUMENT_EMBEDDING_TYPE 设置为 text',
+        context: {
+          internalErrorCode: DOCUMENT_EMBEDDING_CONFIG_ERROR_CODE,
+          modelType: config.modelType,
+        },
+      });
+    }
+
+    return new OpenAIEmbeddings({
+      model: config.model,
+      apiKey: config.apiKey,
+      dimensions: config.dimensions,
+      batchSize: config.batchSize,
+      maxRetries: 0,
+      configuration: {
+        baseURL: config.baseUrl,
+      },
+    });
+  }
+
+  /**
    * 输出当前 Embedding 运行配置摘要，用于联调排查。
    */
   getDebugSummary() {
@@ -235,6 +220,27 @@ export class EmbeddingService {
   }
 
   /**
+   * 将 LangChain 或 OpenAI 兼容错误统一包装为业务异常。
+   */
+  private wrapEmbeddingError(error: unknown, batchSize: number) {
+    if (error instanceof BusinessException) {
+      return error;
+    }
+
+    const detail = this.extractProviderErrorDetail(error);
+    return new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
+      message: detail.message || '百炼 Embedding 调用失败',
+      cause: error,
+      context: {
+        internalErrorCode: DOCUMENT_EMBEDDING_ERROR_CODE,
+        httpStatus: detail.httpStatus,
+        providerCode: detail.providerCode,
+        batchSize,
+      },
+    });
+  }
+
+  /**
    * 统一封装睡眠等待。
    */
   private async sleep(delayMs: number) {
@@ -255,5 +261,65 @@ export class EmbeddingService {
     const parsedValue =
       typeof rawValue === 'number' ? rawValue : Number(rawValue);
     return Number.isNaN(parsedValue) ? undefined : parsedValue;
+  }
+
+  /**
+   * 轻量估算当前批次的 token 数量，用于治理字段与调试输出。
+   */
+  private estimateBatchTokenCount(texts: string[]) {
+    return texts.reduce(
+      (total, item) => total + this.estimateTokenCount(item),
+      0,
+    );
+  }
+
+  /**
+   * 当前阶段尚未直接接入 provider token usage，先用轻量估算值兜底。
+   */
+  private estimateTokenCount(content: string) {
+    return Math.max(1, Math.ceil(content.length / 4));
+  }
+
+  /**
+   * 从 LangChain/OpenAI 兼容异常中提取状态码与错误码。
+   */
+  private extractProviderErrorDetail(error: unknown) {
+    if (!error || typeof error !== 'object') {
+      return {
+        message: undefined,
+        httpStatus: undefined,
+        providerCode: undefined,
+      };
+    }
+
+    const record = error as Record<string, unknown>;
+    const nestedError =
+      record.error && typeof record.error === 'object'
+        ? (record.error as Record<string, unknown>)
+        : undefined;
+    const httpStatus =
+      typeof record.status === 'number'
+        ? record.status
+        : typeof record.statusCode === 'number'
+          ? record.statusCode
+          : undefined;
+    const providerCode =
+      typeof record.code === 'string'
+        ? record.code
+        : typeof nestedError?.code === 'string'
+          ? nestedError.code
+          : undefined;
+    const message =
+      typeof nestedError?.message === 'string'
+        ? nestedError.message
+        : typeof record.message === 'string'
+          ? record.message
+          : undefined;
+
+    return {
+      message,
+      httpStatus,
+      providerCode,
+    };
   }
 }
