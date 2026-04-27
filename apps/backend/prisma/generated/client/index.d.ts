@@ -49,6 +49,11 @@ export type sys_model_configs = $Result.DefaultSelection<Prisma.$sys_model_confi
  */
 export type b_user_model_configs = $Result.DefaultSelection<Prisma.$b_user_model_configsPayload>
 /**
+ * Model b_user_daily_quotas
+ * 
+ */
+export type b_user_daily_quotas = $Result.DefaultSelection<Prisma.$b_user_daily_quotasPayload>
+/**
  * Model b_knowledge_bases
  * 
  */
@@ -84,6 +89,11 @@ export type b_upload_chunks = $Result.DefaultSelection<Prisma.$b_upload_chunksPa
  */
 export type b_document_chunks = $Result.DefaultSelection<Prisma.$b_document_chunksPayload>
 /**
+ * Model b_document_chunk_search_index
+ * 
+ */
+export type b_document_chunk_search_index = $Result.DefaultSelection<Prisma.$b_document_chunk_search_indexPayload>
+/**
  * Model b_document_processing_tasks
  * 
  */
@@ -98,6 +108,21 @@ export type b_chat_sessions = $Result.DefaultSelection<Prisma.$b_chat_sessionsPa
  * 
  */
 export type b_chat_messages = $Result.DefaultSelection<Prisma.$b_chat_messagesPayload>
+/**
+ * Model b_chat_message_citations
+ * 
+ */
+export type b_chat_message_citations = $Result.DefaultSelection<Prisma.$b_chat_message_citationsPayload>
+/**
+ * Model b_agent_runs
+ * 
+ */
+export type b_agent_runs = $Result.DefaultSelection<Prisma.$b_agent_runsPayload>
+/**
+ * Model b_agent_steps
+ * 
+ */
+export type b_agent_steps = $Result.DefaultSelection<Prisma.$b_agent_stepsPayload>
 /**
  * Model sys_audit_logs
  * 
@@ -302,6 +327,16 @@ export class PrismaClient<
   get b_user_model_configs(): Prisma.b_user_model_configsDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.b_user_daily_quotas`: Exposes CRUD operations for the **b_user_daily_quotas** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more B_user_daily_quotas
+    * const b_user_daily_quotas = await prisma.b_user_daily_quotas.findMany()
+    * ```
+    */
+  get b_user_daily_quotas(): Prisma.b_user_daily_quotasDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.b_knowledge_bases`: Exposes CRUD operations for the **b_knowledge_bases** model.
     * Example usage:
     * ```ts
@@ -372,6 +407,16 @@ export class PrismaClient<
   get b_document_chunks(): Prisma.b_document_chunksDelegate<ExtArgs, ClientOptions>;
 
   /**
+   * `prisma.b_document_chunk_search_index`: Exposes CRUD operations for the **b_document_chunk_search_index** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more B_document_chunk_search_indices
+    * const b_document_chunk_search_indices = await prisma.b_document_chunk_search_index.findMany()
+    * ```
+    */
+  get b_document_chunk_search_index(): Prisma.b_document_chunk_search_indexDelegate<ExtArgs, ClientOptions>;
+
+  /**
    * `prisma.b_document_processing_tasks`: Exposes CRUD operations for the **b_document_processing_tasks** model.
     * Example usage:
     * ```ts
@@ -400,6 +445,36 @@ export class PrismaClient<
     * ```
     */
   get b_chat_messages(): Prisma.b_chat_messagesDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.b_chat_message_citations`: Exposes CRUD operations for the **b_chat_message_citations** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more B_chat_message_citations
+    * const b_chat_message_citations = await prisma.b_chat_message_citations.findMany()
+    * ```
+    */
+  get b_chat_message_citations(): Prisma.b_chat_message_citationsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.b_agent_runs`: Exposes CRUD operations for the **b_agent_runs** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more B_agent_runs
+    * const b_agent_runs = await prisma.b_agent_runs.findMany()
+    * ```
+    */
+  get b_agent_runs(): Prisma.b_agent_runsDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.b_agent_steps`: Exposes CRUD operations for the **b_agent_steps** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more B_agent_steps
+    * const b_agent_steps = await prisma.b_agent_steps.findMany()
+    * ```
+    */
+  get b_agent_steps(): Prisma.b_agent_stepsDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.sys_audit_logs`: Exposes CRUD operations for the **sys_audit_logs** model.
@@ -871,6 +946,7 @@ export namespace Prisma {
     sys_admin_sessions: 'sys_admin_sessions',
     sys_model_configs: 'sys_model_configs',
     b_user_model_configs: 'b_user_model_configs',
+    b_user_daily_quotas: 'b_user_daily_quotas',
     b_knowledge_bases: 'b_knowledge_bases',
     b_kb_members: 'b_kb_members',
     b_kb_invitations: 'b_kb_invitations',
@@ -878,9 +954,13 @@ export namespace Prisma {
     b_upload_sessions: 'b_upload_sessions',
     b_upload_chunks: 'b_upload_chunks',
     b_document_chunks: 'b_document_chunks',
+    b_document_chunk_search_index: 'b_document_chunk_search_index',
     b_document_processing_tasks: 'b_document_processing_tasks',
     b_chat_sessions: 'b_chat_sessions',
     b_chat_messages: 'b_chat_messages',
+    b_chat_message_citations: 'b_chat_message_citations',
+    b_agent_runs: 'b_agent_runs',
+    b_agent_steps: 'b_agent_steps',
     sys_audit_logs: 'sys_audit_logs',
     sys_dict_type: 'sys_dict_type',
     sys_dict_item: 'sys_dict_item'
@@ -899,7 +979,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "b_users" | "sys_admins" | "sys_email_codes" | "b_user_sessions" | "sys_admin_sessions" | "sys_model_configs" | "b_user_model_configs" | "b_knowledge_bases" | "b_kb_members" | "b_kb_invitations" | "b_documents" | "b_upload_sessions" | "b_upload_chunks" | "b_document_chunks" | "b_document_processing_tasks" | "b_chat_sessions" | "b_chat_messages" | "sys_audit_logs" | "sys_dict_type" | "sys_dict_item"
+      modelProps: "b_users" | "sys_admins" | "sys_email_codes" | "b_user_sessions" | "sys_admin_sessions" | "sys_model_configs" | "b_user_model_configs" | "b_user_daily_quotas" | "b_knowledge_bases" | "b_kb_members" | "b_kb_invitations" | "b_documents" | "b_upload_sessions" | "b_upload_chunks" | "b_document_chunks" | "b_document_chunk_search_index" | "b_document_processing_tasks" | "b_chat_sessions" | "b_chat_messages" | "b_chat_message_citations" | "b_agent_runs" | "b_agent_steps" | "sys_audit_logs" | "sys_dict_type" | "sys_dict_item"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1365,6 +1445,72 @@ export namespace Prisma {
           }
         }
       }
+      b_user_daily_quotas: {
+        payload: Prisma.$b_user_daily_quotasPayload<ExtArgs>
+        fields: Prisma.b_user_daily_quotasFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.b_user_daily_quotasFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_user_daily_quotasPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.b_user_daily_quotasFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_user_daily_quotasPayload>
+          }
+          findFirst: {
+            args: Prisma.b_user_daily_quotasFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_user_daily_quotasPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.b_user_daily_quotasFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_user_daily_quotasPayload>
+          }
+          findMany: {
+            args: Prisma.b_user_daily_quotasFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_user_daily_quotasPayload>[]
+          }
+          create: {
+            args: Prisma.b_user_daily_quotasCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_user_daily_quotasPayload>
+          }
+          createMany: {
+            args: Prisma.b_user_daily_quotasCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.b_user_daily_quotasDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_user_daily_quotasPayload>
+          }
+          update: {
+            args: Prisma.b_user_daily_quotasUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_user_daily_quotasPayload>
+          }
+          deleteMany: {
+            args: Prisma.b_user_daily_quotasDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.b_user_daily_quotasUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.b_user_daily_quotasUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_user_daily_quotasPayload>
+          }
+          aggregate: {
+            args: Prisma.B_user_daily_quotasAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateB_user_daily_quotas>
+          }
+          groupBy: {
+            args: Prisma.b_user_daily_quotasGroupByArgs<ExtArgs>
+            result: $Utils.Optional<B_user_daily_quotasGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.b_user_daily_quotasCountArgs<ExtArgs>
+            result: $Utils.Optional<B_user_daily_quotasCountAggregateOutputType> | number
+          }
+        }
+      }
       b_knowledge_bases: {
         payload: Prisma.$b_knowledge_basesPayload<ExtArgs>
         fields: Prisma.b_knowledge_basesFieldRefs
@@ -1827,6 +1973,72 @@ export namespace Prisma {
           }
         }
       }
+      b_document_chunk_search_index: {
+        payload: Prisma.$b_document_chunk_search_indexPayload<ExtArgs>
+        fields: Prisma.b_document_chunk_search_indexFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.b_document_chunk_search_indexFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.b_document_chunk_search_indexFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
+          }
+          findFirst: {
+            args: Prisma.b_document_chunk_search_indexFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.b_document_chunk_search_indexFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
+          }
+          findMany: {
+            args: Prisma.b_document_chunk_search_indexFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>[]
+          }
+          create: {
+            args: Prisma.b_document_chunk_search_indexCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
+          }
+          createMany: {
+            args: Prisma.b_document_chunk_search_indexCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.b_document_chunk_search_indexDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
+          }
+          update: {
+            args: Prisma.b_document_chunk_search_indexUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
+          }
+          deleteMany: {
+            args: Prisma.b_document_chunk_search_indexDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.b_document_chunk_search_indexUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.b_document_chunk_search_indexUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
+          }
+          aggregate: {
+            args: Prisma.B_document_chunk_search_indexAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateB_document_chunk_search_index>
+          }
+          groupBy: {
+            args: Prisma.b_document_chunk_search_indexGroupByArgs<ExtArgs>
+            result: $Utils.Optional<B_document_chunk_search_indexGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.b_document_chunk_search_indexCountArgs<ExtArgs>
+            result: $Utils.Optional<B_document_chunk_search_indexCountAggregateOutputType> | number
+          }
+        }
+      }
       b_document_processing_tasks: {
         payload: Prisma.$b_document_processing_tasksPayload<ExtArgs>
         fields: Prisma.b_document_processing_tasksFieldRefs
@@ -2022,6 +2234,204 @@ export namespace Prisma {
           count: {
             args: Prisma.b_chat_messagesCountArgs<ExtArgs>
             result: $Utils.Optional<B_chat_messagesCountAggregateOutputType> | number
+          }
+        }
+      }
+      b_chat_message_citations: {
+        payload: Prisma.$b_chat_message_citationsPayload<ExtArgs>
+        fields: Prisma.b_chat_message_citationsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.b_chat_message_citationsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_chat_message_citationsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.b_chat_message_citationsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_chat_message_citationsPayload>
+          }
+          findFirst: {
+            args: Prisma.b_chat_message_citationsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_chat_message_citationsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.b_chat_message_citationsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_chat_message_citationsPayload>
+          }
+          findMany: {
+            args: Prisma.b_chat_message_citationsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_chat_message_citationsPayload>[]
+          }
+          create: {
+            args: Prisma.b_chat_message_citationsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_chat_message_citationsPayload>
+          }
+          createMany: {
+            args: Prisma.b_chat_message_citationsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.b_chat_message_citationsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_chat_message_citationsPayload>
+          }
+          update: {
+            args: Prisma.b_chat_message_citationsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_chat_message_citationsPayload>
+          }
+          deleteMany: {
+            args: Prisma.b_chat_message_citationsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.b_chat_message_citationsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.b_chat_message_citationsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_chat_message_citationsPayload>
+          }
+          aggregate: {
+            args: Prisma.B_chat_message_citationsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateB_chat_message_citations>
+          }
+          groupBy: {
+            args: Prisma.b_chat_message_citationsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<B_chat_message_citationsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.b_chat_message_citationsCountArgs<ExtArgs>
+            result: $Utils.Optional<B_chat_message_citationsCountAggregateOutputType> | number
+          }
+        }
+      }
+      b_agent_runs: {
+        payload: Prisma.$b_agent_runsPayload<ExtArgs>
+        fields: Prisma.b_agent_runsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.b_agent_runsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_runsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.b_agent_runsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_runsPayload>
+          }
+          findFirst: {
+            args: Prisma.b_agent_runsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_runsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.b_agent_runsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_runsPayload>
+          }
+          findMany: {
+            args: Prisma.b_agent_runsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_runsPayload>[]
+          }
+          create: {
+            args: Prisma.b_agent_runsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_runsPayload>
+          }
+          createMany: {
+            args: Prisma.b_agent_runsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.b_agent_runsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_runsPayload>
+          }
+          update: {
+            args: Prisma.b_agent_runsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_runsPayload>
+          }
+          deleteMany: {
+            args: Prisma.b_agent_runsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.b_agent_runsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.b_agent_runsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_runsPayload>
+          }
+          aggregate: {
+            args: Prisma.B_agent_runsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateB_agent_runs>
+          }
+          groupBy: {
+            args: Prisma.b_agent_runsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<B_agent_runsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.b_agent_runsCountArgs<ExtArgs>
+            result: $Utils.Optional<B_agent_runsCountAggregateOutputType> | number
+          }
+        }
+      }
+      b_agent_steps: {
+        payload: Prisma.$b_agent_stepsPayload<ExtArgs>
+        fields: Prisma.b_agent_stepsFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.b_agent_stepsFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_stepsPayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.b_agent_stepsFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_stepsPayload>
+          }
+          findFirst: {
+            args: Prisma.b_agent_stepsFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_stepsPayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.b_agent_stepsFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_stepsPayload>
+          }
+          findMany: {
+            args: Prisma.b_agent_stepsFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_stepsPayload>[]
+          }
+          create: {
+            args: Prisma.b_agent_stepsCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_stepsPayload>
+          }
+          createMany: {
+            args: Prisma.b_agent_stepsCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.b_agent_stepsDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_stepsPayload>
+          }
+          update: {
+            args: Prisma.b_agent_stepsUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_stepsPayload>
+          }
+          deleteMany: {
+            args: Prisma.b_agent_stepsDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.b_agent_stepsUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.b_agent_stepsUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$b_agent_stepsPayload>
+          }
+          aggregate: {
+            args: Prisma.B_agent_stepsAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateB_agent_steps>
+          }
+          groupBy: {
+            args: Prisma.b_agent_stepsGroupByArgs<ExtArgs>
+            result: $Utils.Optional<B_agent_stepsGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.b_agent_stepsCountArgs<ExtArgs>
+            result: $Utils.Optional<B_agent_stepsCountAggregateOutputType> | number
           }
         }
       }
@@ -2338,6 +2748,7 @@ export namespace Prisma {
     sys_admin_sessions?: sys_admin_sessionsOmit
     sys_model_configs?: sys_model_configsOmit
     b_user_model_configs?: b_user_model_configsOmit
+    b_user_daily_quotas?: b_user_daily_quotasOmit
     b_knowledge_bases?: b_knowledge_basesOmit
     b_kb_members?: b_kb_membersOmit
     b_kb_invitations?: b_kb_invitationsOmit
@@ -2345,9 +2756,13 @@ export namespace Prisma {
     b_upload_sessions?: b_upload_sessionsOmit
     b_upload_chunks?: b_upload_chunksOmit
     b_document_chunks?: b_document_chunksOmit
+    b_document_chunk_search_index?: b_document_chunk_search_indexOmit
     b_document_processing_tasks?: b_document_processing_tasksOmit
     b_chat_sessions?: b_chat_sessionsOmit
     b_chat_messages?: b_chat_messagesOmit
+    b_chat_message_citations?: b_chat_message_citationsOmit
+    b_agent_runs?: b_agent_runsOmit
+    b_agent_steps?: b_agent_stepsOmit
     sys_audit_logs?: sys_audit_logsOmit
     sys_dict_type?: sys_dict_typeOmit
     sys_dict_item?: sys_dict_itemOmit
@@ -2437,8 +2852,10 @@ export namespace Prisma {
     uploaded_documents: number
     upload_sessions: number
     model_configs: number
+    daily_quotas: number
     kb_invitations: number
     user_sessions: number
+    agent_runs: number
   }
 
   export type B_usersCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2448,8 +2865,10 @@ export namespace Prisma {
     uploaded_documents?: boolean | B_usersCountOutputTypeCountUploaded_documentsArgs
     upload_sessions?: boolean | B_usersCountOutputTypeCountUpload_sessionsArgs
     model_configs?: boolean | B_usersCountOutputTypeCountModel_configsArgs
+    daily_quotas?: boolean | B_usersCountOutputTypeCountDaily_quotasArgs
     kb_invitations?: boolean | B_usersCountOutputTypeCountKb_invitationsArgs
     user_sessions?: boolean | B_usersCountOutputTypeCountUser_sessionsArgs
+    agent_runs?: boolean | B_usersCountOutputTypeCountAgent_runsArgs
   }
 
   // Custom InputTypes
@@ -2508,6 +2927,13 @@ export namespace Prisma {
   /**
    * B_usersCountOutputType without action
    */
+  export type B_usersCountOutputTypeCountDaily_quotasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_user_daily_quotasWhereInput
+  }
+
+  /**
+   * B_usersCountOutputType without action
+   */
   export type B_usersCountOutputTypeCountKb_invitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_kb_invitationsWhereInput
   }
@@ -2517,6 +2943,13 @@ export namespace Prisma {
    */
   export type B_usersCountOutputTypeCountUser_sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_user_sessionsWhereInput
+  }
+
+  /**
+   * B_usersCountOutputType without action
+   */
+  export type B_usersCountOutputTypeCountAgent_runsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_agent_runsWhereInput
   }
 
 
@@ -2569,6 +3002,7 @@ export namespace Prisma {
     upload_sessions: number
     kb_members: number
     kb_invitations: number
+    message_citations: number
   }
 
   export type B_knowledge_basesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -2576,6 +3010,7 @@ export namespace Prisma {
     upload_sessions?: boolean | B_knowledge_basesCountOutputTypeCountUpload_sessionsArgs
     kb_members?: boolean | B_knowledge_basesCountOutputTypeCountKb_membersArgs
     kb_invitations?: boolean | B_knowledge_basesCountOutputTypeCountKb_invitationsArgs
+    message_citations?: boolean | B_knowledge_basesCountOutputTypeCountMessage_citationsArgs
   }
 
   // Custom InputTypes
@@ -2617,6 +3052,13 @@ export namespace Prisma {
     where?: b_kb_invitationsWhereInput
   }
 
+  /**
+   * B_knowledge_basesCountOutputType without action
+   */
+  export type B_knowledge_basesCountOutputTypeCountMessage_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_chat_message_citationsWhereInput
+  }
+
 
   /**
    * Count Type B_documentsCountOutputType
@@ -2626,12 +3068,14 @@ export namespace Prisma {
     document_chunks: number
     processing_tasks: number
     upload_sessions: number
+    message_citations: number
   }
 
   export type B_documentsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     document_chunks?: boolean | B_documentsCountOutputTypeCountDocument_chunksArgs
     processing_tasks?: boolean | B_documentsCountOutputTypeCountProcessing_tasksArgs
     upload_sessions?: boolean | B_documentsCountOutputTypeCountUpload_sessionsArgs
+    message_citations?: boolean | B_documentsCountOutputTypeCountMessage_citationsArgs
   }
 
   // Custom InputTypes
@@ -2664,6 +3108,13 @@ export namespace Prisma {
    */
   export type B_documentsCountOutputTypeCountUpload_sessionsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_upload_sessionsWhereInput
+  }
+
+  /**
+   * B_documentsCountOutputType without action
+   */
+  export type B_documentsCountOutputTypeCountMessage_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_chat_message_citationsWhereInput
   }
 
 
@@ -2699,15 +3150,48 @@ export namespace Prisma {
 
 
   /**
+   * Count Type B_document_chunksCountOutputType
+   */
+
+  export type B_document_chunksCountOutputType = {
+    message_citations: number
+  }
+
+  export type B_document_chunksCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message_citations?: boolean | B_document_chunksCountOutputTypeCountMessage_citationsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * B_document_chunksCountOutputType without action
+   */
+  export type B_document_chunksCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the B_document_chunksCountOutputType
+     */
+    select?: B_document_chunksCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * B_document_chunksCountOutputType without action
+   */
+  export type B_document_chunksCountOutputTypeCountMessage_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_chat_message_citationsWhereInput
+  }
+
+
+  /**
    * Count Type B_chat_sessionsCountOutputType
    */
 
   export type B_chat_sessionsCountOutputType = {
     chat_messages: number
+    agent_runs: number
   }
 
   export type B_chat_sessionsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     chat_messages?: boolean | B_chat_sessionsCountOutputTypeCountChat_messagesArgs
+    agent_runs?: boolean | B_chat_sessionsCountOutputTypeCountAgent_runsArgs
   }
 
   // Custom InputTypes
@@ -2726,6 +3210,44 @@ export namespace Prisma {
    */
   export type B_chat_sessionsCountOutputTypeCountChat_messagesArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_chat_messagesWhereInput
+  }
+
+  /**
+   * B_chat_sessionsCountOutputType without action
+   */
+  export type B_chat_sessionsCountOutputTypeCountAgent_runsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_agent_runsWhereInput
+  }
+
+
+  /**
+   * Count Type B_chat_messagesCountOutputType
+   */
+
+  export type B_chat_messagesCountOutputType = {
+    message_citations: number
+  }
+
+  export type B_chat_messagesCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message_citations?: boolean | B_chat_messagesCountOutputTypeCountMessage_citationsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * B_chat_messagesCountOutputType without action
+   */
+  export type B_chat_messagesCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the B_chat_messagesCountOutputType
+     */
+    select?: B_chat_messagesCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * B_chat_messagesCountOutputType without action
+   */
+  export type B_chat_messagesCountOutputTypeCountMessage_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_chat_message_citationsWhereInput
   }
 
 
@@ -2747,16 +3269,10 @@ export namespace Prisma {
 
   export type B_usersAvgAggregateOutputType = {
     id: number | null
-    daily_chat_limit: number | null
-    token_quota: number | null
-    used_tokens: number | null
   }
 
   export type B_usersSumAggregateOutputType = {
     id: bigint | null
-    daily_chat_limit: number | null
-    token_quota: bigint | null
-    used_tokens: bigint | null
   }
 
   export type B_usersMinAggregateOutputType = {
@@ -2766,9 +3282,6 @@ export namespace Prisma {
     full_name: string | null
     avatar_url: string | null
     is_active: boolean | null
-    daily_chat_limit: number | null
-    token_quota: bigint | null
-    used_tokens: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -2780,9 +3293,6 @@ export namespace Prisma {
     full_name: string | null
     avatar_url: string | null
     is_active: boolean | null
-    daily_chat_limit: number | null
-    token_quota: bigint | null
-    used_tokens: bigint | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -2794,9 +3304,6 @@ export namespace Prisma {
     full_name: number
     avatar_url: number
     is_active: number
-    daily_chat_limit: number
-    token_quota: number
-    used_tokens: number
     created_at: number
     updated_at: number
     _all: number
@@ -2805,16 +3312,10 @@ export namespace Prisma {
 
   export type B_usersAvgAggregateInputType = {
     id?: true
-    daily_chat_limit?: true
-    token_quota?: true
-    used_tokens?: true
   }
 
   export type B_usersSumAggregateInputType = {
     id?: true
-    daily_chat_limit?: true
-    token_quota?: true
-    used_tokens?: true
   }
 
   export type B_usersMinAggregateInputType = {
@@ -2824,9 +3325,6 @@ export namespace Prisma {
     full_name?: true
     avatar_url?: true
     is_active?: true
-    daily_chat_limit?: true
-    token_quota?: true
-    used_tokens?: true
     created_at?: true
     updated_at?: true
   }
@@ -2838,9 +3336,6 @@ export namespace Prisma {
     full_name?: true
     avatar_url?: true
     is_active?: true
-    daily_chat_limit?: true
-    token_quota?: true
-    used_tokens?: true
     created_at?: true
     updated_at?: true
   }
@@ -2852,9 +3347,6 @@ export namespace Prisma {
     full_name?: true
     avatar_url?: true
     is_active?: true
-    daily_chat_limit?: true
-    token_quota?: true
-    used_tokens?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -2953,9 +3445,6 @@ export namespace Prisma {
     full_name: string | null
     avatar_url: string | null
     is_active: boolean
-    daily_chat_limit: number
-    token_quota: bigint
-    used_tokens: bigint
     created_at: Date
     updated_at: Date
     _count: B_usersCountAggregateOutputType | null
@@ -2986,9 +3475,6 @@ export namespace Prisma {
     full_name?: boolean
     avatar_url?: boolean
     is_active?: boolean
-    daily_chat_limit?: boolean
-    token_quota?: boolean
-    used_tokens?: boolean
     created_at?: boolean
     updated_at?: boolean
     chat_sessions?: boolean | b_users$chat_sessionsArgs<ExtArgs>
@@ -2997,8 +3483,10 @@ export namespace Prisma {
     uploaded_documents?: boolean | b_users$uploaded_documentsArgs<ExtArgs>
     upload_sessions?: boolean | b_users$upload_sessionsArgs<ExtArgs>
     model_configs?: boolean | b_users$model_configsArgs<ExtArgs>
+    daily_quotas?: boolean | b_users$daily_quotasArgs<ExtArgs>
     kb_invitations?: boolean | b_users$kb_invitationsArgs<ExtArgs>
     user_sessions?: boolean | b_users$user_sessionsArgs<ExtArgs>
+    agent_runs?: boolean | b_users$agent_runsArgs<ExtArgs>
     _count?: boolean | B_usersCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_users"]>
 
@@ -3011,14 +3499,11 @@ export namespace Prisma {
     full_name?: boolean
     avatar_url?: boolean
     is_active?: boolean
-    daily_chat_limit?: boolean
-    token_quota?: boolean
-    used_tokens?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type b_usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password_hash" | "full_name" | "avatar_url" | "is_active" | "daily_chat_limit" | "token_quota" | "used_tokens" | "created_at" | "updated_at", ExtArgs["result"]["b_users"]>
+  export type b_usersOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "email" | "password_hash" | "full_name" | "avatar_url" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["b_users"]>
   export type b_usersInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     chat_sessions?: boolean | b_users$chat_sessionsArgs<ExtArgs>
     kb_members?: boolean | b_users$kb_membersArgs<ExtArgs>
@@ -3026,8 +3511,10 @@ export namespace Prisma {
     uploaded_documents?: boolean | b_users$uploaded_documentsArgs<ExtArgs>
     upload_sessions?: boolean | b_users$upload_sessionsArgs<ExtArgs>
     model_configs?: boolean | b_users$model_configsArgs<ExtArgs>
+    daily_quotas?: boolean | b_users$daily_quotasArgs<ExtArgs>
     kb_invitations?: boolean | b_users$kb_invitationsArgs<ExtArgs>
     user_sessions?: boolean | b_users$user_sessionsArgs<ExtArgs>
+    agent_runs?: boolean | b_users$agent_runsArgs<ExtArgs>
     _count?: boolean | B_usersCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -3040,8 +3527,10 @@ export namespace Prisma {
       uploaded_documents: Prisma.$b_documentsPayload<ExtArgs>[]
       upload_sessions: Prisma.$b_upload_sessionsPayload<ExtArgs>[]
       model_configs: Prisma.$b_user_model_configsPayload<ExtArgs>[]
+      daily_quotas: Prisma.$b_user_daily_quotasPayload<ExtArgs>[]
       kb_invitations: Prisma.$b_kb_invitationsPayload<ExtArgs>[]
       user_sessions: Prisma.$b_user_sessionsPayload<ExtArgs>[]
+      agent_runs: Prisma.$b_agent_runsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
@@ -3050,9 +3539,6 @@ export namespace Prisma {
       full_name: string | null
       avatar_url: string | null
       is_active: boolean
-      daily_chat_limit: number
-      token_quota: bigint
-      used_tokens: bigint
       created_at: Date
       updated_at: Date
     }, ExtArgs["result"]["b_users"]>
@@ -3401,8 +3887,10 @@ export namespace Prisma {
     uploaded_documents<T extends b_users$uploaded_documentsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$uploaded_documentsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_documentsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     upload_sessions<T extends b_users$upload_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$upload_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     model_configs<T extends b_users$model_configsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$model_configsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_user_model_configsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    daily_quotas<T extends b_users$daily_quotasArgs<ExtArgs> = {}>(args?: Subset<T, b_users$daily_quotasArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     kb_invitations<T extends b_users$kb_invitationsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$kb_invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_kb_invitationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     user_sessions<T extends b_users$user_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$user_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_user_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    agent_runs<T extends b_users$agent_runsArgs<ExtArgs> = {}>(args?: Subset<T, b_users$agent_runsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -3438,9 +3926,6 @@ export namespace Prisma {
     readonly full_name: FieldRef<"b_users", 'String'>
     readonly avatar_url: FieldRef<"b_users", 'String'>
     readonly is_active: FieldRef<"b_users", 'Boolean'>
-    readonly daily_chat_limit: FieldRef<"b_users", 'Int'>
-    readonly token_quota: FieldRef<"b_users", 'BigInt'>
-    readonly used_tokens: FieldRef<"b_users", 'BigInt'>
     readonly created_at: FieldRef<"b_users", 'DateTime'>
     readonly updated_at: FieldRef<"b_users", 'DateTime'>
   }
@@ -3930,6 +4415,30 @@ export namespace Prisma {
   }
 
   /**
+   * b_users.daily_quotas
+   */
+  export type b_users$daily_quotasArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    where?: b_user_daily_quotasWhereInput
+    orderBy?: b_user_daily_quotasOrderByWithRelationInput | b_user_daily_quotasOrderByWithRelationInput[]
+    cursor?: b_user_daily_quotasWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_user_daily_quotasScalarFieldEnum | B_user_daily_quotasScalarFieldEnum[]
+  }
+
+  /**
    * b_users.kb_invitations
    */
   export type b_users$kb_invitationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -3975,6 +4484,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: B_user_sessionsScalarFieldEnum | B_user_sessionsScalarFieldEnum[]
+  }
+
+  /**
+   * b_users.agent_runs
+   */
+  export type b_users$agent_runsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    where?: b_agent_runsWhereInput
+    orderBy?: b_agent_runsOrderByWithRelationInput | b_agent_runsOrderByWithRelationInput[]
+    cursor?: b_agent_runsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_agent_runsScalarFieldEnum | B_agent_runsScalarFieldEnum[]
   }
 
   /**
@@ -9967,6 +10500,1033 @@ export namespace Prisma {
 
 
   /**
+   * Model b_user_daily_quotas
+   */
+
+  export type AggregateB_user_daily_quotas = {
+    _count: B_user_daily_quotasCountAggregateOutputType | null
+    _avg: B_user_daily_quotasAvgAggregateOutputType | null
+    _sum: B_user_daily_quotasSumAggregateOutputType | null
+    _min: B_user_daily_quotasMinAggregateOutputType | null
+    _max: B_user_daily_quotasMaxAggregateOutputType | null
+  }
+
+  export type B_user_daily_quotasAvgAggregateOutputType = {
+    id: number | null
+    user_id: number | null
+    daily_chat_limit: number | null
+    daily_token_quota: number | null
+    used_chat_count: number | null
+    used_token_count: number | null
+  }
+
+  export type B_user_daily_quotasSumAggregateOutputType = {
+    id: bigint | null
+    user_id: bigint | null
+    daily_chat_limit: number | null
+    daily_token_quota: bigint | null
+    used_chat_count: number | null
+    used_token_count: bigint | null
+  }
+
+  export type B_user_daily_quotasMinAggregateOutputType = {
+    id: bigint | null
+    user_id: bigint | null
+    quota_date: Date | null
+    daily_chat_limit: number | null
+    daily_token_quota: bigint | null
+    used_chat_count: number | null
+    used_token_count: bigint | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type B_user_daily_quotasMaxAggregateOutputType = {
+    id: bigint | null
+    user_id: bigint | null
+    quota_date: Date | null
+    daily_chat_limit: number | null
+    daily_token_quota: bigint | null
+    used_chat_count: number | null
+    used_token_count: bigint | null
+    created_at: Date | null
+    updated_at: Date | null
+  }
+
+  export type B_user_daily_quotasCountAggregateOutputType = {
+    id: number
+    user_id: number
+    quota_date: number
+    daily_chat_limit: number
+    daily_token_quota: number
+    used_chat_count: number
+    used_token_count: number
+    created_at: number
+    updated_at: number
+    _all: number
+  }
+
+
+  export type B_user_daily_quotasAvgAggregateInputType = {
+    id?: true
+    user_id?: true
+    daily_chat_limit?: true
+    daily_token_quota?: true
+    used_chat_count?: true
+    used_token_count?: true
+  }
+
+  export type B_user_daily_quotasSumAggregateInputType = {
+    id?: true
+    user_id?: true
+    daily_chat_limit?: true
+    daily_token_quota?: true
+    used_chat_count?: true
+    used_token_count?: true
+  }
+
+  export type B_user_daily_quotasMinAggregateInputType = {
+    id?: true
+    user_id?: true
+    quota_date?: true
+    daily_chat_limit?: true
+    daily_token_quota?: true
+    used_chat_count?: true
+    used_token_count?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type B_user_daily_quotasMaxAggregateInputType = {
+    id?: true
+    user_id?: true
+    quota_date?: true
+    daily_chat_limit?: true
+    daily_token_quota?: true
+    used_chat_count?: true
+    used_token_count?: true
+    created_at?: true
+    updated_at?: true
+  }
+
+  export type B_user_daily_quotasCountAggregateInputType = {
+    id?: true
+    user_id?: true
+    quota_date?: true
+    daily_chat_limit?: true
+    daily_token_quota?: true
+    used_chat_count?: true
+    used_token_count?: true
+    created_at?: true
+    updated_at?: true
+    _all?: true
+  }
+
+  export type B_user_daily_quotasAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_user_daily_quotas to aggregate.
+     */
+    where?: b_user_daily_quotasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_user_daily_quotas to fetch.
+     */
+    orderBy?: b_user_daily_quotasOrderByWithRelationInput | b_user_daily_quotasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: b_user_daily_quotasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_user_daily_quotas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_user_daily_quotas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned b_user_daily_quotas
+    **/
+    _count?: true | B_user_daily_quotasCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: B_user_daily_quotasAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: B_user_daily_quotasSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: B_user_daily_quotasMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: B_user_daily_quotasMaxAggregateInputType
+  }
+
+  export type GetB_user_daily_quotasAggregateType<T extends B_user_daily_quotasAggregateArgs> = {
+        [P in keyof T & keyof AggregateB_user_daily_quotas]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateB_user_daily_quotas[P]>
+      : GetScalarType<T[P], AggregateB_user_daily_quotas[P]>
+  }
+
+
+
+
+  export type b_user_daily_quotasGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_user_daily_quotasWhereInput
+    orderBy?: b_user_daily_quotasOrderByWithAggregationInput | b_user_daily_quotasOrderByWithAggregationInput[]
+    by: B_user_daily_quotasScalarFieldEnum[] | B_user_daily_quotasScalarFieldEnum
+    having?: b_user_daily_quotasScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: B_user_daily_quotasCountAggregateInputType | true
+    _avg?: B_user_daily_quotasAvgAggregateInputType
+    _sum?: B_user_daily_quotasSumAggregateInputType
+    _min?: B_user_daily_quotasMinAggregateInputType
+    _max?: B_user_daily_quotasMaxAggregateInputType
+  }
+
+  export type B_user_daily_quotasGroupByOutputType = {
+    id: bigint
+    user_id: bigint
+    quota_date: Date
+    daily_chat_limit: number
+    daily_token_quota: bigint
+    used_chat_count: number
+    used_token_count: bigint
+    created_at: Date
+    updated_at: Date
+    _count: B_user_daily_quotasCountAggregateOutputType | null
+    _avg: B_user_daily_quotasAvgAggregateOutputType | null
+    _sum: B_user_daily_quotasSumAggregateOutputType | null
+    _min: B_user_daily_quotasMinAggregateOutputType | null
+    _max: B_user_daily_quotasMaxAggregateOutputType | null
+  }
+
+  type GetB_user_daily_quotasGroupByPayload<T extends b_user_daily_quotasGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<B_user_daily_quotasGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof B_user_daily_quotasGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], B_user_daily_quotasGroupByOutputType[P]>
+            : GetScalarType<T[P], B_user_daily_quotasGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type b_user_daily_quotasSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    user_id?: boolean
+    quota_date?: boolean
+    daily_chat_limit?: boolean
+    daily_token_quota?: boolean
+    used_chat_count?: boolean
+    used_token_count?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+    b_users?: boolean | b_usersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["b_user_daily_quotas"]>
+
+
+
+  export type b_user_daily_quotasSelectScalar = {
+    id?: boolean
+    user_id?: boolean
+    quota_date?: boolean
+    daily_chat_limit?: boolean
+    daily_token_quota?: boolean
+    used_chat_count?: boolean
+    used_token_count?: boolean
+    created_at?: boolean
+    updated_at?: boolean
+  }
+
+  export type b_user_daily_quotasOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "quota_date" | "daily_chat_limit" | "daily_token_quota" | "used_chat_count" | "used_token_count" | "created_at" | "updated_at", ExtArgs["result"]["b_user_daily_quotas"]>
+  export type b_user_daily_quotasInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    b_users?: boolean | b_usersDefaultArgs<ExtArgs>
+  }
+
+  export type $b_user_daily_quotasPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "b_user_daily_quotas"
+    objects: {
+      b_users: Prisma.$b_usersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      user_id: bigint
+      quota_date: Date
+      daily_chat_limit: number
+      daily_token_quota: bigint
+      used_chat_count: number
+      used_token_count: bigint
+      created_at: Date
+      updated_at: Date
+    }, ExtArgs["result"]["b_user_daily_quotas"]>
+    composites: {}
+  }
+
+  type b_user_daily_quotasGetPayload<S extends boolean | null | undefined | b_user_daily_quotasDefaultArgs> = $Result.GetResult<Prisma.$b_user_daily_quotasPayload, S>
+
+  type b_user_daily_quotasCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<b_user_daily_quotasFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: B_user_daily_quotasCountAggregateInputType | true
+    }
+
+  export interface b_user_daily_quotasDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['b_user_daily_quotas'], meta: { name: 'b_user_daily_quotas' } }
+    /**
+     * Find zero or one B_user_daily_quotas that matches the filter.
+     * @param {b_user_daily_quotasFindUniqueArgs} args - Arguments to find a B_user_daily_quotas
+     * @example
+     * // Get one B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends b_user_daily_quotasFindUniqueArgs>(args: SelectSubset<T, b_user_daily_quotasFindUniqueArgs<ExtArgs>>): Prisma__b_user_daily_quotasClient<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one B_user_daily_quotas that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {b_user_daily_quotasFindUniqueOrThrowArgs} args - Arguments to find a B_user_daily_quotas
+     * @example
+     * // Get one B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends b_user_daily_quotasFindUniqueOrThrowArgs>(args: SelectSubset<T, b_user_daily_quotasFindUniqueOrThrowArgs<ExtArgs>>): Prisma__b_user_daily_quotasClient<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_user_daily_quotas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_user_daily_quotasFindFirstArgs} args - Arguments to find a B_user_daily_quotas
+     * @example
+     * // Get one B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends b_user_daily_quotasFindFirstArgs>(args?: SelectSubset<T, b_user_daily_quotasFindFirstArgs<ExtArgs>>): Prisma__b_user_daily_quotasClient<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_user_daily_quotas that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_user_daily_quotasFindFirstOrThrowArgs} args - Arguments to find a B_user_daily_quotas
+     * @example
+     * // Get one B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends b_user_daily_quotasFindFirstOrThrowArgs>(args?: SelectSubset<T, b_user_daily_quotasFindFirstOrThrowArgs<ExtArgs>>): Prisma__b_user_daily_quotasClient<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more B_user_daily_quotas that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_user_daily_quotasFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.findMany()
+     * 
+     * // Get first 10 B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const b_user_daily_quotasWithIdOnly = await prisma.b_user_daily_quotas.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends b_user_daily_quotasFindManyArgs>(args?: SelectSubset<T, b_user_daily_quotasFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a B_user_daily_quotas.
+     * @param {b_user_daily_quotasCreateArgs} args - Arguments to create a B_user_daily_quotas.
+     * @example
+     * // Create one B_user_daily_quotas
+     * const B_user_daily_quotas = await prisma.b_user_daily_quotas.create({
+     *   data: {
+     *     // ... data to create a B_user_daily_quotas
+     *   }
+     * })
+     * 
+     */
+    create<T extends b_user_daily_quotasCreateArgs>(args: SelectSubset<T, b_user_daily_quotasCreateArgs<ExtArgs>>): Prisma__b_user_daily_quotasClient<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many B_user_daily_quotas.
+     * @param {b_user_daily_quotasCreateManyArgs} args - Arguments to create many B_user_daily_quotas.
+     * @example
+     * // Create many B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends b_user_daily_quotasCreateManyArgs>(args?: SelectSubset<T, b_user_daily_quotasCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a B_user_daily_quotas.
+     * @param {b_user_daily_quotasDeleteArgs} args - Arguments to delete one B_user_daily_quotas.
+     * @example
+     * // Delete one B_user_daily_quotas
+     * const B_user_daily_quotas = await prisma.b_user_daily_quotas.delete({
+     *   where: {
+     *     // ... filter to delete one B_user_daily_quotas
+     *   }
+     * })
+     * 
+     */
+    delete<T extends b_user_daily_quotasDeleteArgs>(args: SelectSubset<T, b_user_daily_quotasDeleteArgs<ExtArgs>>): Prisma__b_user_daily_quotasClient<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one B_user_daily_quotas.
+     * @param {b_user_daily_quotasUpdateArgs} args - Arguments to update one B_user_daily_quotas.
+     * @example
+     * // Update one B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends b_user_daily_quotasUpdateArgs>(args: SelectSubset<T, b_user_daily_quotasUpdateArgs<ExtArgs>>): Prisma__b_user_daily_quotasClient<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more B_user_daily_quotas.
+     * @param {b_user_daily_quotasDeleteManyArgs} args - Arguments to filter B_user_daily_quotas to delete.
+     * @example
+     * // Delete a few B_user_daily_quotas
+     * const { count } = await prisma.b_user_daily_quotas.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends b_user_daily_quotasDeleteManyArgs>(args?: SelectSubset<T, b_user_daily_quotasDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more B_user_daily_quotas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_user_daily_quotasUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends b_user_daily_quotasUpdateManyArgs>(args: SelectSubset<T, b_user_daily_quotasUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one B_user_daily_quotas.
+     * @param {b_user_daily_quotasUpsertArgs} args - Arguments to update or create a B_user_daily_quotas.
+     * @example
+     * // Update or create a B_user_daily_quotas
+     * const b_user_daily_quotas = await prisma.b_user_daily_quotas.upsert({
+     *   create: {
+     *     // ... data to create a B_user_daily_quotas
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the B_user_daily_quotas we want to update
+     *   }
+     * })
+     */
+    upsert<T extends b_user_daily_quotasUpsertArgs>(args: SelectSubset<T, b_user_daily_quotasUpsertArgs<ExtArgs>>): Prisma__b_user_daily_quotasClient<$Result.GetResult<Prisma.$b_user_daily_quotasPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of B_user_daily_quotas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_user_daily_quotasCountArgs} args - Arguments to filter B_user_daily_quotas to count.
+     * @example
+     * // Count the number of B_user_daily_quotas
+     * const count = await prisma.b_user_daily_quotas.count({
+     *   where: {
+     *     // ... the filter for the B_user_daily_quotas we want to count
+     *   }
+     * })
+    **/
+    count<T extends b_user_daily_quotasCountArgs>(
+      args?: Subset<T, b_user_daily_quotasCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], B_user_daily_quotasCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a B_user_daily_quotas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {B_user_daily_quotasAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends B_user_daily_quotasAggregateArgs>(args: Subset<T, B_user_daily_quotasAggregateArgs>): Prisma.PrismaPromise<GetB_user_daily_quotasAggregateType<T>>
+
+    /**
+     * Group by B_user_daily_quotas.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_user_daily_quotasGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends b_user_daily_quotasGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: b_user_daily_quotasGroupByArgs['orderBy'] }
+        : { orderBy?: b_user_daily_quotasGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, b_user_daily_quotasGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetB_user_daily_quotasGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the b_user_daily_quotas model
+   */
+  readonly fields: b_user_daily_quotasFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for b_user_daily_quotas.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__b_user_daily_quotasClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    b_users<T extends b_usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_usersDefaultArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the b_user_daily_quotas model
+   */
+  interface b_user_daily_quotasFieldRefs {
+    readonly id: FieldRef<"b_user_daily_quotas", 'BigInt'>
+    readonly user_id: FieldRef<"b_user_daily_quotas", 'BigInt'>
+    readonly quota_date: FieldRef<"b_user_daily_quotas", 'DateTime'>
+    readonly daily_chat_limit: FieldRef<"b_user_daily_quotas", 'Int'>
+    readonly daily_token_quota: FieldRef<"b_user_daily_quotas", 'BigInt'>
+    readonly used_chat_count: FieldRef<"b_user_daily_quotas", 'Int'>
+    readonly used_token_count: FieldRef<"b_user_daily_quotas", 'BigInt'>
+    readonly created_at: FieldRef<"b_user_daily_quotas", 'DateTime'>
+    readonly updated_at: FieldRef<"b_user_daily_quotas", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * b_user_daily_quotas findUnique
+   */
+  export type b_user_daily_quotasFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    /**
+     * Filter, which b_user_daily_quotas to fetch.
+     */
+    where: b_user_daily_quotasWhereUniqueInput
+  }
+
+  /**
+   * b_user_daily_quotas findUniqueOrThrow
+   */
+  export type b_user_daily_quotasFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    /**
+     * Filter, which b_user_daily_quotas to fetch.
+     */
+    where: b_user_daily_quotasWhereUniqueInput
+  }
+
+  /**
+   * b_user_daily_quotas findFirst
+   */
+  export type b_user_daily_quotasFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    /**
+     * Filter, which b_user_daily_quotas to fetch.
+     */
+    where?: b_user_daily_quotasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_user_daily_quotas to fetch.
+     */
+    orderBy?: b_user_daily_quotasOrderByWithRelationInput | b_user_daily_quotasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_user_daily_quotas.
+     */
+    cursor?: b_user_daily_quotasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_user_daily_quotas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_user_daily_quotas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_user_daily_quotas.
+     */
+    distinct?: B_user_daily_quotasScalarFieldEnum | B_user_daily_quotasScalarFieldEnum[]
+  }
+
+  /**
+   * b_user_daily_quotas findFirstOrThrow
+   */
+  export type b_user_daily_quotasFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    /**
+     * Filter, which b_user_daily_quotas to fetch.
+     */
+    where?: b_user_daily_quotasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_user_daily_quotas to fetch.
+     */
+    orderBy?: b_user_daily_quotasOrderByWithRelationInput | b_user_daily_quotasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_user_daily_quotas.
+     */
+    cursor?: b_user_daily_quotasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_user_daily_quotas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_user_daily_quotas.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_user_daily_quotas.
+     */
+    distinct?: B_user_daily_quotasScalarFieldEnum | B_user_daily_quotasScalarFieldEnum[]
+  }
+
+  /**
+   * b_user_daily_quotas findMany
+   */
+  export type b_user_daily_quotasFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    /**
+     * Filter, which b_user_daily_quotas to fetch.
+     */
+    where?: b_user_daily_quotasWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_user_daily_quotas to fetch.
+     */
+    orderBy?: b_user_daily_quotasOrderByWithRelationInput | b_user_daily_quotasOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing b_user_daily_quotas.
+     */
+    cursor?: b_user_daily_quotasWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_user_daily_quotas from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_user_daily_quotas.
+     */
+    skip?: number
+    distinct?: B_user_daily_quotasScalarFieldEnum | B_user_daily_quotasScalarFieldEnum[]
+  }
+
+  /**
+   * b_user_daily_quotas create
+   */
+  export type b_user_daily_quotasCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    /**
+     * The data needed to create a b_user_daily_quotas.
+     */
+    data: XOR<b_user_daily_quotasCreateInput, b_user_daily_quotasUncheckedCreateInput>
+  }
+
+  /**
+   * b_user_daily_quotas createMany
+   */
+  export type b_user_daily_quotasCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many b_user_daily_quotas.
+     */
+    data: b_user_daily_quotasCreateManyInput | b_user_daily_quotasCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * b_user_daily_quotas update
+   */
+  export type b_user_daily_quotasUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    /**
+     * The data needed to update a b_user_daily_quotas.
+     */
+    data: XOR<b_user_daily_quotasUpdateInput, b_user_daily_quotasUncheckedUpdateInput>
+    /**
+     * Choose, which b_user_daily_quotas to update.
+     */
+    where: b_user_daily_quotasWhereUniqueInput
+  }
+
+  /**
+   * b_user_daily_quotas updateMany
+   */
+  export type b_user_daily_quotasUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update b_user_daily_quotas.
+     */
+    data: XOR<b_user_daily_quotasUpdateManyMutationInput, b_user_daily_quotasUncheckedUpdateManyInput>
+    /**
+     * Filter which b_user_daily_quotas to update
+     */
+    where?: b_user_daily_quotasWhereInput
+    /**
+     * Limit how many b_user_daily_quotas to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_user_daily_quotas upsert
+   */
+  export type b_user_daily_quotasUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    /**
+     * The filter to search for the b_user_daily_quotas to update in case it exists.
+     */
+    where: b_user_daily_quotasWhereUniqueInput
+    /**
+     * In case the b_user_daily_quotas found by the `where` argument doesn't exist, create a new b_user_daily_quotas with this data.
+     */
+    create: XOR<b_user_daily_quotasCreateInput, b_user_daily_quotasUncheckedCreateInput>
+    /**
+     * In case the b_user_daily_quotas was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<b_user_daily_quotasUpdateInput, b_user_daily_quotasUncheckedUpdateInput>
+  }
+
+  /**
+   * b_user_daily_quotas delete
+   */
+  export type b_user_daily_quotasDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+    /**
+     * Filter which b_user_daily_quotas to delete.
+     */
+    where: b_user_daily_quotasWhereUniqueInput
+  }
+
+  /**
+   * b_user_daily_quotas deleteMany
+   */
+  export type b_user_daily_quotasDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_user_daily_quotas to delete
+     */
+    where?: b_user_daily_quotasWhereInput
+    /**
+     * Limit how many b_user_daily_quotas to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_user_daily_quotas without action
+   */
+  export type b_user_daily_quotasDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_user_daily_quotas
+     */
+    select?: b_user_daily_quotasSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_user_daily_quotas
+     */
+    omit?: b_user_daily_quotasOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_user_daily_quotasInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Model b_knowledge_bases
    */
 
@@ -10212,6 +11772,7 @@ export namespace Prisma {
     upload_sessions?: boolean | b_knowledge_bases$upload_sessionsArgs<ExtArgs>
     kb_members?: boolean | b_knowledge_bases$kb_membersArgs<ExtArgs>
     kb_invitations?: boolean | b_knowledge_bases$kb_invitationsArgs<ExtArgs>
+    message_citations?: boolean | b_knowledge_bases$message_citationsArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
     _count?: boolean | B_knowledge_basesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_knowledge_bases"]>
@@ -10237,6 +11798,7 @@ export namespace Prisma {
     upload_sessions?: boolean | b_knowledge_bases$upload_sessionsArgs<ExtArgs>
     kb_members?: boolean | b_knowledge_bases$kb_membersArgs<ExtArgs>
     kb_invitations?: boolean | b_knowledge_bases$kb_invitationsArgs<ExtArgs>
+    message_citations?: boolean | b_knowledge_bases$message_citationsArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
     _count?: boolean | B_knowledge_basesCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -10248,6 +11810,7 @@ export namespace Prisma {
       upload_sessions: Prisma.$b_upload_sessionsPayload<ExtArgs>[]
       kb_members: Prisma.$b_kb_membersPayload<ExtArgs>[]
       kb_invitations: Prisma.$b_kb_invitationsPayload<ExtArgs>[]
+      message_citations: Prisma.$b_chat_message_citationsPayload<ExtArgs>[]
       b_users: Prisma.$b_usersPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -10605,6 +12168,7 @@ export namespace Prisma {
     upload_sessions<T extends b_knowledge_bases$upload_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_bases$upload_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     kb_members<T extends b_knowledge_bases$kb_membersArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_bases$kb_membersArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_kb_membersPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     kb_invitations<T extends b_knowledge_bases$kb_invitationsArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_bases$kb_invitationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_kb_invitationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    message_citations<T extends b_knowledge_bases$message_citationsArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_bases$message_citationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b_users<T extends b_usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_usersDefaultArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -11081,6 +12645,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: B_kb_invitationsScalarFieldEnum | B_kb_invitationsScalarFieldEnum[]
+  }
+
+  /**
+   * b_knowledge_bases.message_citations
+   */
+  export type b_knowledge_bases$message_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    where?: b_chat_message_citationsWhereInput
+    orderBy?: b_chat_message_citationsOrderByWithRelationInput | b_chat_message_citationsOrderByWithRelationInput[]
+    cursor?: b_chat_message_citationsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_chat_message_citationsScalarFieldEnum | B_chat_message_citationsScalarFieldEnum[]
   }
 
   /**
@@ -13491,6 +15079,7 @@ export namespace Prisma {
     document_chunks?: boolean | b_documents$document_chunksArgs<ExtArgs>
     processing_tasks?: boolean | b_documents$processing_tasksArgs<ExtArgs>
     upload_sessions?: boolean | b_documents$upload_sessionsArgs<ExtArgs>
+    message_citations?: boolean | b_documents$message_citationsArgs<ExtArgs>
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
     b_users?: boolean | b_documents$b_usersArgs<ExtArgs>
     _count?: boolean | B_documentsCountOutputTypeDefaultArgs<ExtArgs>
@@ -13529,6 +15118,7 @@ export namespace Prisma {
     document_chunks?: boolean | b_documents$document_chunksArgs<ExtArgs>
     processing_tasks?: boolean | b_documents$processing_tasksArgs<ExtArgs>
     upload_sessions?: boolean | b_documents$upload_sessionsArgs<ExtArgs>
+    message_citations?: boolean | b_documents$message_citationsArgs<ExtArgs>
     b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
     b_users?: boolean | b_documents$b_usersArgs<ExtArgs>
     _count?: boolean | B_documentsCountOutputTypeDefaultArgs<ExtArgs>
@@ -13540,6 +15130,7 @@ export namespace Prisma {
       document_chunks: Prisma.$b_document_chunksPayload<ExtArgs>[]
       processing_tasks: Prisma.$b_document_processing_tasksPayload<ExtArgs>[]
       upload_sessions: Prisma.$b_upload_sessionsPayload<ExtArgs>[]
+      message_citations: Prisma.$b_chat_message_citationsPayload<ExtArgs>[]
       b_knowledge_bases: Prisma.$b_knowledge_basesPayload<ExtArgs>
       b_users: Prisma.$b_usersPayload<ExtArgs> | null
     }
@@ -13910,6 +15501,7 @@ export namespace Prisma {
     document_chunks<T extends b_documents$document_chunksArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$document_chunksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_chunksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     processing_tasks<T extends b_documents$processing_tasksArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$processing_tasksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_processing_tasksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     upload_sessions<T extends b_documents$upload_sessionsArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$upload_sessionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_upload_sessionsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    message_citations<T extends b_documents$message_citationsArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$message_citationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b_knowledge_bases<T extends b_knowledge_basesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_basesDefaultArgs<ExtArgs>>): Prisma__b_knowledge_basesClient<$Result.GetResult<Prisma.$b_knowledge_basesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     b_users<T extends b_documents$b_usersArgs<ExtArgs> = {}>(args?: Subset<T, b_documents$b_usersArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
@@ -14376,6 +15968,30 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: B_upload_sessionsScalarFieldEnum | B_upload_sessionsScalarFieldEnum[]
+  }
+
+  /**
+   * b_documents.message_citations
+   */
+  export type b_documents$message_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    where?: b_chat_message_citationsWhereInput
+    orderBy?: b_chat_message_citationsOrderByWithRelationInput | b_chat_message_citationsOrderByWithRelationInput[]
+    cursor?: b_chat_message_citationsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_chat_message_citationsScalarFieldEnum | B_chat_message_citationsScalarFieldEnum[]
   }
 
   /**
@@ -16922,7 +18538,9 @@ export namespace Prisma {
     metadata_json?: boolean
     embedding_status?: boolean
     created_at?: boolean
+    message_citations?: boolean | b_document_chunks$message_citationsArgs<ExtArgs>
     b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
+    _count?: boolean | B_document_chunksCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_document_chunks"]>
 
 
@@ -16944,12 +18562,15 @@ export namespace Prisma {
 
   export type b_document_chunksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doc_id" | "chunk_index" | "content" | "token_count" | "page_no" | "char_start" | "char_end" | "vector_id" | "metadata_json" | "embedding_status" | "created_at", ExtArgs["result"]["b_document_chunks"]>
   export type b_document_chunksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    message_citations?: boolean | b_document_chunks$message_citationsArgs<ExtArgs>
     b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
+    _count?: boolean | B_document_chunksCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $b_document_chunksPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "b_document_chunks"
     objects: {
+      message_citations: Prisma.$b_chat_message_citationsPayload<ExtArgs>[]
       b_documents: Prisma.$b_documentsPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -17305,6 +18926,7 @@ export namespace Prisma {
    */
   export interface Prisma__b_document_chunksClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    message_citations<T extends b_document_chunks$message_citationsArgs<ExtArgs> = {}>(args?: Subset<T, b_document_chunks$message_citationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b_documents<T extends b_documentsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_documentsDefaultArgs<ExtArgs>>): Prisma__b_documentsClient<$Result.GetResult<Prisma.$b_documentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -17690,6 +19312,30 @@ export namespace Prisma {
   }
 
   /**
+   * b_document_chunks.message_citations
+   */
+  export type b_document_chunks$message_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    where?: b_chat_message_citationsWhereInput
+    orderBy?: b_chat_message_citationsOrderByWithRelationInput | b_chat_message_citationsOrderByWithRelationInput[]
+    cursor?: b_chat_message_citationsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_chat_message_citationsScalarFieldEnum | B_chat_message_citationsScalarFieldEnum[]
+  }
+
+  /**
    * b_document_chunks without action
    */
   export type b_document_chunksDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -17705,6 +19351,963 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: b_document_chunksInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model b_document_chunk_search_index
+   */
+
+  export type AggregateB_document_chunk_search_index = {
+    _count: B_document_chunk_search_indexCountAggregateOutputType | null
+    _avg: B_document_chunk_search_indexAvgAggregateOutputType | null
+    _sum: B_document_chunk_search_indexSumAggregateOutputType | null
+    _min: B_document_chunk_search_indexMinAggregateOutputType | null
+    _max: B_document_chunk_search_indexMaxAggregateOutputType | null
+  }
+
+  export type B_document_chunk_search_indexAvgAggregateOutputType = {
+    chunk_id: number | null
+    doc_id: number | null
+    kb_id: number | null
+  }
+
+  export type B_document_chunk_search_indexSumAggregateOutputType = {
+    chunk_id: bigint | null
+    doc_id: bigint | null
+    kb_id: bigint | null
+  }
+
+  export type B_document_chunk_search_indexMinAggregateOutputType = {
+    chunk_id: bigint | null
+    doc_id: bigint | null
+    kb_id: bigint | null
+    title: string | null
+    title_path: string | null
+    content_plain: string | null
+    keyword_text: string | null
+    created_at: Date | null
+  }
+
+  export type B_document_chunk_search_indexMaxAggregateOutputType = {
+    chunk_id: bigint | null
+    doc_id: bigint | null
+    kb_id: bigint | null
+    title: string | null
+    title_path: string | null
+    content_plain: string | null
+    keyword_text: string | null
+    created_at: Date | null
+  }
+
+  export type B_document_chunk_search_indexCountAggregateOutputType = {
+    chunk_id: number
+    doc_id: number
+    kb_id: number
+    title: number
+    title_path: number
+    content_plain: number
+    keyword_text: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type B_document_chunk_search_indexAvgAggregateInputType = {
+    chunk_id?: true
+    doc_id?: true
+    kb_id?: true
+  }
+
+  export type B_document_chunk_search_indexSumAggregateInputType = {
+    chunk_id?: true
+    doc_id?: true
+    kb_id?: true
+  }
+
+  export type B_document_chunk_search_indexMinAggregateInputType = {
+    chunk_id?: true
+    doc_id?: true
+    kb_id?: true
+    title?: true
+    title_path?: true
+    content_plain?: true
+    keyword_text?: true
+    created_at?: true
+  }
+
+  export type B_document_chunk_search_indexMaxAggregateInputType = {
+    chunk_id?: true
+    doc_id?: true
+    kb_id?: true
+    title?: true
+    title_path?: true
+    content_plain?: true
+    keyword_text?: true
+    created_at?: true
+  }
+
+  export type B_document_chunk_search_indexCountAggregateInputType = {
+    chunk_id?: true
+    doc_id?: true
+    kb_id?: true
+    title?: true
+    title_path?: true
+    content_plain?: true
+    keyword_text?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type B_document_chunk_search_indexAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_document_chunk_search_index to aggregate.
+     */
+    where?: b_document_chunk_search_indexWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_document_chunk_search_indices to fetch.
+     */
+    orderBy?: b_document_chunk_search_indexOrderByWithRelationInput | b_document_chunk_search_indexOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: b_document_chunk_search_indexWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_document_chunk_search_indices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_document_chunk_search_indices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned b_document_chunk_search_indices
+    **/
+    _count?: true | B_document_chunk_search_indexCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: B_document_chunk_search_indexAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: B_document_chunk_search_indexSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: B_document_chunk_search_indexMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: B_document_chunk_search_indexMaxAggregateInputType
+  }
+
+  export type GetB_document_chunk_search_indexAggregateType<T extends B_document_chunk_search_indexAggregateArgs> = {
+        [P in keyof T & keyof AggregateB_document_chunk_search_index]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateB_document_chunk_search_index[P]>
+      : GetScalarType<T[P], AggregateB_document_chunk_search_index[P]>
+  }
+
+
+
+
+  export type b_document_chunk_search_indexGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_document_chunk_search_indexWhereInput
+    orderBy?: b_document_chunk_search_indexOrderByWithAggregationInput | b_document_chunk_search_indexOrderByWithAggregationInput[]
+    by: B_document_chunk_search_indexScalarFieldEnum[] | B_document_chunk_search_indexScalarFieldEnum
+    having?: b_document_chunk_search_indexScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: B_document_chunk_search_indexCountAggregateInputType | true
+    _avg?: B_document_chunk_search_indexAvgAggregateInputType
+    _sum?: B_document_chunk_search_indexSumAggregateInputType
+    _min?: B_document_chunk_search_indexMinAggregateInputType
+    _max?: B_document_chunk_search_indexMaxAggregateInputType
+  }
+
+  export type B_document_chunk_search_indexGroupByOutputType = {
+    chunk_id: bigint
+    doc_id: bigint
+    kb_id: bigint
+    title: string | null
+    title_path: string | null
+    content_plain: string
+    keyword_text: string | null
+    created_at: Date
+    _count: B_document_chunk_search_indexCountAggregateOutputType | null
+    _avg: B_document_chunk_search_indexAvgAggregateOutputType | null
+    _sum: B_document_chunk_search_indexSumAggregateOutputType | null
+    _min: B_document_chunk_search_indexMinAggregateOutputType | null
+    _max: B_document_chunk_search_indexMaxAggregateOutputType | null
+  }
+
+  type GetB_document_chunk_search_indexGroupByPayload<T extends b_document_chunk_search_indexGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<B_document_chunk_search_indexGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof B_document_chunk_search_indexGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], B_document_chunk_search_indexGroupByOutputType[P]>
+            : GetScalarType<T[P], B_document_chunk_search_indexGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type b_document_chunk_search_indexSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    chunk_id?: boolean
+    doc_id?: boolean
+    kb_id?: boolean
+    title?: boolean
+    title_path?: boolean
+    content_plain?: boolean
+    keyword_text?: boolean
+    created_at?: boolean
+  }, ExtArgs["result"]["b_document_chunk_search_index"]>
+
+
+
+  export type b_document_chunk_search_indexSelectScalar = {
+    chunk_id?: boolean
+    doc_id?: boolean
+    kb_id?: boolean
+    title?: boolean
+    title_path?: boolean
+    content_plain?: boolean
+    keyword_text?: boolean
+    created_at?: boolean
+  }
+
+  export type b_document_chunk_search_indexOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"chunk_id" | "doc_id" | "kb_id" | "title" | "title_path" | "content_plain" | "keyword_text" | "created_at", ExtArgs["result"]["b_document_chunk_search_index"]>
+
+  export type $b_document_chunk_search_indexPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "b_document_chunk_search_index"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      chunk_id: bigint
+      doc_id: bigint
+      kb_id: bigint
+      title: string | null
+      title_path: string | null
+      content_plain: string
+      keyword_text: string | null
+      created_at: Date
+    }, ExtArgs["result"]["b_document_chunk_search_index"]>
+    composites: {}
+  }
+
+  type b_document_chunk_search_indexGetPayload<S extends boolean | null | undefined | b_document_chunk_search_indexDefaultArgs> = $Result.GetResult<Prisma.$b_document_chunk_search_indexPayload, S>
+
+  type b_document_chunk_search_indexCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<b_document_chunk_search_indexFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: B_document_chunk_search_indexCountAggregateInputType | true
+    }
+
+  export interface b_document_chunk_search_indexDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['b_document_chunk_search_index'], meta: { name: 'b_document_chunk_search_index' } }
+    /**
+     * Find zero or one B_document_chunk_search_index that matches the filter.
+     * @param {b_document_chunk_search_indexFindUniqueArgs} args - Arguments to find a B_document_chunk_search_index
+     * @example
+     * // Get one B_document_chunk_search_index
+     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends b_document_chunk_search_indexFindUniqueArgs>(args: SelectSubset<T, b_document_chunk_search_indexFindUniqueArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one B_document_chunk_search_index that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {b_document_chunk_search_indexFindUniqueOrThrowArgs} args - Arguments to find a B_document_chunk_search_index
+     * @example
+     * // Get one B_document_chunk_search_index
+     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends b_document_chunk_search_indexFindUniqueOrThrowArgs>(args: SelectSubset<T, b_document_chunk_search_indexFindUniqueOrThrowArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_document_chunk_search_index that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_chunk_search_indexFindFirstArgs} args - Arguments to find a B_document_chunk_search_index
+     * @example
+     * // Get one B_document_chunk_search_index
+     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends b_document_chunk_search_indexFindFirstArgs>(args?: SelectSubset<T, b_document_chunk_search_indexFindFirstArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_document_chunk_search_index that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_chunk_search_indexFindFirstOrThrowArgs} args - Arguments to find a B_document_chunk_search_index
+     * @example
+     * // Get one B_document_chunk_search_index
+     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends b_document_chunk_search_indexFindFirstOrThrowArgs>(args?: SelectSubset<T, b_document_chunk_search_indexFindFirstOrThrowArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more B_document_chunk_search_indices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_chunk_search_indexFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all B_document_chunk_search_indices
+     * const b_document_chunk_search_indices = await prisma.b_document_chunk_search_index.findMany()
+     * 
+     * // Get first 10 B_document_chunk_search_indices
+     * const b_document_chunk_search_indices = await prisma.b_document_chunk_search_index.findMany({ take: 10 })
+     * 
+     * // Only select the `chunk_id`
+     * const b_document_chunk_search_indexWithChunk_idOnly = await prisma.b_document_chunk_search_index.findMany({ select: { chunk_id: true } })
+     * 
+     */
+    findMany<T extends b_document_chunk_search_indexFindManyArgs>(args?: SelectSubset<T, b_document_chunk_search_indexFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a B_document_chunk_search_index.
+     * @param {b_document_chunk_search_indexCreateArgs} args - Arguments to create a B_document_chunk_search_index.
+     * @example
+     * // Create one B_document_chunk_search_index
+     * const B_document_chunk_search_index = await prisma.b_document_chunk_search_index.create({
+     *   data: {
+     *     // ... data to create a B_document_chunk_search_index
+     *   }
+     * })
+     * 
+     */
+    create<T extends b_document_chunk_search_indexCreateArgs>(args: SelectSubset<T, b_document_chunk_search_indexCreateArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many B_document_chunk_search_indices.
+     * @param {b_document_chunk_search_indexCreateManyArgs} args - Arguments to create many B_document_chunk_search_indices.
+     * @example
+     * // Create many B_document_chunk_search_indices
+     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends b_document_chunk_search_indexCreateManyArgs>(args?: SelectSubset<T, b_document_chunk_search_indexCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a B_document_chunk_search_index.
+     * @param {b_document_chunk_search_indexDeleteArgs} args - Arguments to delete one B_document_chunk_search_index.
+     * @example
+     * // Delete one B_document_chunk_search_index
+     * const B_document_chunk_search_index = await prisma.b_document_chunk_search_index.delete({
+     *   where: {
+     *     // ... filter to delete one B_document_chunk_search_index
+     *   }
+     * })
+     * 
+     */
+    delete<T extends b_document_chunk_search_indexDeleteArgs>(args: SelectSubset<T, b_document_chunk_search_indexDeleteArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one B_document_chunk_search_index.
+     * @param {b_document_chunk_search_indexUpdateArgs} args - Arguments to update one B_document_chunk_search_index.
+     * @example
+     * // Update one B_document_chunk_search_index
+     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends b_document_chunk_search_indexUpdateArgs>(args: SelectSubset<T, b_document_chunk_search_indexUpdateArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more B_document_chunk_search_indices.
+     * @param {b_document_chunk_search_indexDeleteManyArgs} args - Arguments to filter B_document_chunk_search_indices to delete.
+     * @example
+     * // Delete a few B_document_chunk_search_indices
+     * const { count } = await prisma.b_document_chunk_search_index.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends b_document_chunk_search_indexDeleteManyArgs>(args?: SelectSubset<T, b_document_chunk_search_indexDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more B_document_chunk_search_indices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_chunk_search_indexUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many B_document_chunk_search_indices
+     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends b_document_chunk_search_indexUpdateManyArgs>(args: SelectSubset<T, b_document_chunk_search_indexUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one B_document_chunk_search_index.
+     * @param {b_document_chunk_search_indexUpsertArgs} args - Arguments to update or create a B_document_chunk_search_index.
+     * @example
+     * // Update or create a B_document_chunk_search_index
+     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.upsert({
+     *   create: {
+     *     // ... data to create a B_document_chunk_search_index
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the B_document_chunk_search_index we want to update
+     *   }
+     * })
+     */
+    upsert<T extends b_document_chunk_search_indexUpsertArgs>(args: SelectSubset<T, b_document_chunk_search_indexUpsertArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of B_document_chunk_search_indices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_chunk_search_indexCountArgs} args - Arguments to filter B_document_chunk_search_indices to count.
+     * @example
+     * // Count the number of B_document_chunk_search_indices
+     * const count = await prisma.b_document_chunk_search_index.count({
+     *   where: {
+     *     // ... the filter for the B_document_chunk_search_indices we want to count
+     *   }
+     * })
+    **/
+    count<T extends b_document_chunk_search_indexCountArgs>(
+      args?: Subset<T, b_document_chunk_search_indexCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], B_document_chunk_search_indexCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a B_document_chunk_search_index.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {B_document_chunk_search_indexAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends B_document_chunk_search_indexAggregateArgs>(args: Subset<T, B_document_chunk_search_indexAggregateArgs>): Prisma.PrismaPromise<GetB_document_chunk_search_indexAggregateType<T>>
+
+    /**
+     * Group by B_document_chunk_search_index.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_document_chunk_search_indexGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends b_document_chunk_search_indexGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: b_document_chunk_search_indexGroupByArgs['orderBy'] }
+        : { orderBy?: b_document_chunk_search_indexGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, b_document_chunk_search_indexGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetB_document_chunk_search_indexGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the b_document_chunk_search_index model
+   */
+  readonly fields: b_document_chunk_search_indexFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for b_document_chunk_search_index.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__b_document_chunk_search_indexClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the b_document_chunk_search_index model
+   */
+  interface b_document_chunk_search_indexFieldRefs {
+    readonly chunk_id: FieldRef<"b_document_chunk_search_index", 'BigInt'>
+    readonly doc_id: FieldRef<"b_document_chunk_search_index", 'BigInt'>
+    readonly kb_id: FieldRef<"b_document_chunk_search_index", 'BigInt'>
+    readonly title: FieldRef<"b_document_chunk_search_index", 'String'>
+    readonly title_path: FieldRef<"b_document_chunk_search_index", 'String'>
+    readonly content_plain: FieldRef<"b_document_chunk_search_index", 'String'>
+    readonly keyword_text: FieldRef<"b_document_chunk_search_index", 'String'>
+    readonly created_at: FieldRef<"b_document_chunk_search_index", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * b_document_chunk_search_index findUnique
+   */
+  export type b_document_chunk_search_indexFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
+    /**
+     * Filter, which b_document_chunk_search_index to fetch.
+     */
+    where: b_document_chunk_search_indexWhereUniqueInput
+  }
+
+  /**
+   * b_document_chunk_search_index findUniqueOrThrow
+   */
+  export type b_document_chunk_search_indexFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
+    /**
+     * Filter, which b_document_chunk_search_index to fetch.
+     */
+    where: b_document_chunk_search_indexWhereUniqueInput
+  }
+
+  /**
+   * b_document_chunk_search_index findFirst
+   */
+  export type b_document_chunk_search_indexFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
+    /**
+     * Filter, which b_document_chunk_search_index to fetch.
+     */
+    where?: b_document_chunk_search_indexWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_document_chunk_search_indices to fetch.
+     */
+    orderBy?: b_document_chunk_search_indexOrderByWithRelationInput | b_document_chunk_search_indexOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_document_chunk_search_indices.
+     */
+    cursor?: b_document_chunk_search_indexWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_document_chunk_search_indices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_document_chunk_search_indices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_document_chunk_search_indices.
+     */
+    distinct?: B_document_chunk_search_indexScalarFieldEnum | B_document_chunk_search_indexScalarFieldEnum[]
+  }
+
+  /**
+   * b_document_chunk_search_index findFirstOrThrow
+   */
+  export type b_document_chunk_search_indexFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
+    /**
+     * Filter, which b_document_chunk_search_index to fetch.
+     */
+    where?: b_document_chunk_search_indexWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_document_chunk_search_indices to fetch.
+     */
+    orderBy?: b_document_chunk_search_indexOrderByWithRelationInput | b_document_chunk_search_indexOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_document_chunk_search_indices.
+     */
+    cursor?: b_document_chunk_search_indexWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_document_chunk_search_indices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_document_chunk_search_indices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_document_chunk_search_indices.
+     */
+    distinct?: B_document_chunk_search_indexScalarFieldEnum | B_document_chunk_search_indexScalarFieldEnum[]
+  }
+
+  /**
+   * b_document_chunk_search_index findMany
+   */
+  export type b_document_chunk_search_indexFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
+    /**
+     * Filter, which b_document_chunk_search_indices to fetch.
+     */
+    where?: b_document_chunk_search_indexWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_document_chunk_search_indices to fetch.
+     */
+    orderBy?: b_document_chunk_search_indexOrderByWithRelationInput | b_document_chunk_search_indexOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing b_document_chunk_search_indices.
+     */
+    cursor?: b_document_chunk_search_indexWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_document_chunk_search_indices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_document_chunk_search_indices.
+     */
+    skip?: number
+    distinct?: B_document_chunk_search_indexScalarFieldEnum | B_document_chunk_search_indexScalarFieldEnum[]
+  }
+
+  /**
+   * b_document_chunk_search_index create
+   */
+  export type b_document_chunk_search_indexCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
+    /**
+     * The data needed to create a b_document_chunk_search_index.
+     */
+    data: XOR<b_document_chunk_search_indexCreateInput, b_document_chunk_search_indexUncheckedCreateInput>
+  }
+
+  /**
+   * b_document_chunk_search_index createMany
+   */
+  export type b_document_chunk_search_indexCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many b_document_chunk_search_indices.
+     */
+    data: b_document_chunk_search_indexCreateManyInput | b_document_chunk_search_indexCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * b_document_chunk_search_index update
+   */
+  export type b_document_chunk_search_indexUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
+    /**
+     * The data needed to update a b_document_chunk_search_index.
+     */
+    data: XOR<b_document_chunk_search_indexUpdateInput, b_document_chunk_search_indexUncheckedUpdateInput>
+    /**
+     * Choose, which b_document_chunk_search_index to update.
+     */
+    where: b_document_chunk_search_indexWhereUniqueInput
+  }
+
+  /**
+   * b_document_chunk_search_index updateMany
+   */
+  export type b_document_chunk_search_indexUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update b_document_chunk_search_indices.
+     */
+    data: XOR<b_document_chunk_search_indexUpdateManyMutationInput, b_document_chunk_search_indexUncheckedUpdateManyInput>
+    /**
+     * Filter which b_document_chunk_search_indices to update
+     */
+    where?: b_document_chunk_search_indexWhereInput
+    /**
+     * Limit how many b_document_chunk_search_indices to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_document_chunk_search_index upsert
+   */
+  export type b_document_chunk_search_indexUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
+    /**
+     * The filter to search for the b_document_chunk_search_index to update in case it exists.
+     */
+    where: b_document_chunk_search_indexWhereUniqueInput
+    /**
+     * In case the b_document_chunk_search_index found by the `where` argument doesn't exist, create a new b_document_chunk_search_index with this data.
+     */
+    create: XOR<b_document_chunk_search_indexCreateInput, b_document_chunk_search_indexUncheckedCreateInput>
+    /**
+     * In case the b_document_chunk_search_index was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<b_document_chunk_search_indexUpdateInput, b_document_chunk_search_indexUncheckedUpdateInput>
+  }
+
+  /**
+   * b_document_chunk_search_index delete
+   */
+  export type b_document_chunk_search_indexDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
+    /**
+     * Filter which b_document_chunk_search_index to delete.
+     */
+    where: b_document_chunk_search_indexWhereUniqueInput
+  }
+
+  /**
+   * b_document_chunk_search_index deleteMany
+   */
+  export type b_document_chunk_search_indexDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_document_chunk_search_indices to delete
+     */
+    where?: b_document_chunk_search_indexWhereInput
+    /**
+     * Limit how many b_document_chunk_search_indices to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_document_chunk_search_index without action
+   */
+  export type b_document_chunk_search_indexDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunk_search_index
+     */
+    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunk_search_index
+     */
+    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
   }
 
 
@@ -18824,6 +21427,9 @@ export namespace Prisma {
     user_id: bigint | null
     kb_id: bigint | null
     title: string | null
+    summary_text: string | null
+    last_chat_mode: string | null
+    last_message_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -18833,6 +21439,9 @@ export namespace Prisma {
     user_id: bigint | null
     kb_id: bigint | null
     title: string | null
+    summary_text: string | null
+    last_chat_mode: string | null
+    last_message_at: Date | null
     created_at: Date | null
     updated_at: Date | null
   }
@@ -18842,6 +21451,10 @@ export namespace Prisma {
     user_id: number
     kb_id: number
     title: number
+    summary_text: number
+    last_selected_kb_ids_json: number
+    last_chat_mode: number
+    last_message_at: number
     created_at: number
     updated_at: number
     _all: number
@@ -18863,6 +21476,9 @@ export namespace Prisma {
     user_id?: true
     kb_id?: true
     title?: true
+    summary_text?: true
+    last_chat_mode?: true
+    last_message_at?: true
     created_at?: true
     updated_at?: true
   }
@@ -18872,6 +21488,9 @@ export namespace Prisma {
     user_id?: true
     kb_id?: true
     title?: true
+    summary_text?: true
+    last_chat_mode?: true
+    last_message_at?: true
     created_at?: true
     updated_at?: true
   }
@@ -18881,6 +21500,10 @@ export namespace Prisma {
     user_id?: true
     kb_id?: true
     title?: true
+    summary_text?: true
+    last_selected_kb_ids_json?: true
+    last_chat_mode?: true
+    last_message_at?: true
     created_at?: true
     updated_at?: true
     _all?: true
@@ -18977,6 +21600,10 @@ export namespace Prisma {
     user_id: bigint
     kb_id: bigint | null
     title: string
+    summary_text: string | null
+    last_selected_kb_ids_json: JsonValue | null
+    last_chat_mode: string | null
+    last_message_at: Date | null
     created_at: Date
     updated_at: Date
     _count: B_chat_sessionsCountAggregateOutputType | null
@@ -19005,9 +21632,14 @@ export namespace Prisma {
     user_id?: boolean
     kb_id?: boolean
     title?: boolean
+    summary_text?: boolean
+    last_selected_kb_ids_json?: boolean
+    last_chat_mode?: boolean
+    last_message_at?: boolean
     created_at?: boolean
     updated_at?: boolean
     chat_messages?: boolean | b_chat_sessions$chat_messagesArgs<ExtArgs>
+    agent_runs?: boolean | b_chat_sessions$agent_runsArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
     _count?: boolean | B_chat_sessionsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_chat_sessions"]>
@@ -19019,13 +21651,18 @@ export namespace Prisma {
     user_id?: boolean
     kb_id?: boolean
     title?: boolean
+    summary_text?: boolean
+    last_selected_kb_ids_json?: boolean
+    last_chat_mode?: boolean
+    last_message_at?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type b_chat_sessionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "kb_id" | "title" | "created_at" | "updated_at", ExtArgs["result"]["b_chat_sessions"]>
+  export type b_chat_sessionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "kb_id" | "title" | "summary_text" | "last_selected_kb_ids_json" | "last_chat_mode" | "last_message_at" | "created_at" | "updated_at", ExtArgs["result"]["b_chat_sessions"]>
   export type b_chat_sessionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     chat_messages?: boolean | b_chat_sessions$chat_messagesArgs<ExtArgs>
+    agent_runs?: boolean | b_chat_sessions$agent_runsArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
     _count?: boolean | B_chat_sessionsCountOutputTypeDefaultArgs<ExtArgs>
   }
@@ -19034,6 +21671,7 @@ export namespace Prisma {
     name: "b_chat_sessions"
     objects: {
       chat_messages: Prisma.$b_chat_messagesPayload<ExtArgs>[]
+      agent_runs: Prisma.$b_agent_runsPayload<ExtArgs>[]
       b_users: Prisma.$b_usersPayload<ExtArgs>
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -19041,6 +21679,10 @@ export namespace Prisma {
       user_id: bigint
       kb_id: bigint | null
       title: string
+      summary_text: string | null
+      last_selected_kb_ids_json: Prisma.JsonValue | null
+      last_chat_mode: string | null
+      last_message_at: Date | null
       created_at: Date
       updated_at: Date
     }, ExtArgs["result"]["b_chat_sessions"]>
@@ -19384,6 +22026,7 @@ export namespace Prisma {
   export interface Prisma__b_chat_sessionsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     chat_messages<T extends b_chat_sessions$chat_messagesArgs<ExtArgs> = {}>(args?: Subset<T, b_chat_sessions$chat_messagesArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_chat_messagesPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    agent_runs<T extends b_chat_sessions$agent_runsArgs<ExtArgs> = {}>(args?: Subset<T, b_chat_sessions$agent_runsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b_users<T extends b_usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_usersDefaultArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -19418,6 +22061,10 @@ export namespace Prisma {
     readonly user_id: FieldRef<"b_chat_sessions", 'BigInt'>
     readonly kb_id: FieldRef<"b_chat_sessions", 'BigInt'>
     readonly title: FieldRef<"b_chat_sessions", 'String'>
+    readonly summary_text: FieldRef<"b_chat_sessions", 'String'>
+    readonly last_selected_kb_ids_json: FieldRef<"b_chat_sessions", 'Json'>
+    readonly last_chat_mode: FieldRef<"b_chat_sessions", 'String'>
+    readonly last_message_at: FieldRef<"b_chat_sessions", 'DateTime'>
     readonly created_at: FieldRef<"b_chat_sessions", 'DateTime'>
     readonly updated_at: FieldRef<"b_chat_sessions", 'DateTime'>
   }
@@ -19787,6 +22434,30 @@ export namespace Prisma {
   }
 
   /**
+   * b_chat_sessions.agent_runs
+   */
+  export type b_chat_sessions$agent_runsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    where?: b_agent_runsWhereInput
+    orderBy?: b_agent_runsOrderByWithRelationInput | b_agent_runsOrderByWithRelationInput[]
+    cursor?: b_agent_runsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_agent_runsScalarFieldEnum | B_agent_runsScalarFieldEnum[]
+  }
+
+  /**
    * b_chat_sessions without action
    */
   export type b_chat_sessionsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -19833,6 +22504,13 @@ export namespace Prisma {
     role: string | null
     content: string | null
     tokens_used: number | null
+    message_status: string | null
+    model_name: string | null
+    finish_reason: string | null
+    trace_id: string | null
+    chat_mode: string | null
+    stream_started_at: Date | null
+    stream_finished_at: Date | null
     feedback_type: string | null
     feedback_reason: string | null
     created_at: Date | null
@@ -19844,6 +22522,13 @@ export namespace Prisma {
     role: string | null
     content: string | null
     tokens_used: number | null
+    message_status: string | null
+    model_name: string | null
+    finish_reason: string | null
+    trace_id: string | null
+    chat_mode: string | null
+    stream_started_at: Date | null
+    stream_finished_at: Date | null
     feedback_type: string | null
     feedback_reason: string | null
     created_at: Date | null
@@ -19857,6 +22542,16 @@ export namespace Prisma {
     references: number
     tool_calls: number
     tokens_used: number
+    message_status: number
+    metadata_json: number
+    model_name: number
+    finish_reason: number
+    trace_id: number
+    chat_mode: number
+    selected_kb_ids_json: number
+    resolved_kb_ids_json: number
+    stream_started_at: number
+    stream_finished_at: number
     feedback_type: number
     feedback_reason: number
     created_at: number
@@ -19880,6 +22575,13 @@ export namespace Prisma {
     role?: true
     content?: true
     tokens_used?: true
+    message_status?: true
+    model_name?: true
+    finish_reason?: true
+    trace_id?: true
+    chat_mode?: true
+    stream_started_at?: true
+    stream_finished_at?: true
     feedback_type?: true
     feedback_reason?: true
     created_at?: true
@@ -19891,6 +22593,13 @@ export namespace Prisma {
     role?: true
     content?: true
     tokens_used?: true
+    message_status?: true
+    model_name?: true
+    finish_reason?: true
+    trace_id?: true
+    chat_mode?: true
+    stream_started_at?: true
+    stream_finished_at?: true
     feedback_type?: true
     feedback_reason?: true
     created_at?: true
@@ -19904,6 +22613,16 @@ export namespace Prisma {
     references?: true
     tool_calls?: true
     tokens_used?: true
+    message_status?: true
+    metadata_json?: true
+    model_name?: true
+    finish_reason?: true
+    trace_id?: true
+    chat_mode?: true
+    selected_kb_ids_json?: true
+    resolved_kb_ids_json?: true
+    stream_started_at?: true
+    stream_finished_at?: true
     feedback_type?: true
     feedback_reason?: true
     created_at?: true
@@ -20004,6 +22723,16 @@ export namespace Prisma {
     references: JsonValue | null
     tool_calls: JsonValue | null
     tokens_used: number | null
+    message_status: string
+    metadata_json: JsonValue | null
+    model_name: string | null
+    finish_reason: string | null
+    trace_id: string | null
+    chat_mode: string | null
+    selected_kb_ids_json: JsonValue | null
+    resolved_kb_ids_json: JsonValue | null
+    stream_started_at: Date | null
+    stream_finished_at: Date | null
     feedback_type: string | null
     feedback_reason: string | null
     created_at: Date
@@ -20036,10 +22765,22 @@ export namespace Prisma {
     references?: boolean
     tool_calls?: boolean
     tokens_used?: boolean
+    message_status?: boolean
+    metadata_json?: boolean
+    model_name?: boolean
+    finish_reason?: boolean
+    trace_id?: boolean
+    chat_mode?: boolean
+    selected_kb_ids_json?: boolean
+    resolved_kb_ids_json?: boolean
+    stream_started_at?: boolean
+    stream_finished_at?: boolean
     feedback_type?: boolean
     feedback_reason?: boolean
     created_at?: boolean
     b_chat_sessions?: boolean | b_chat_sessionsDefaultArgs<ExtArgs>
+    message_citations?: boolean | b_chat_messages$message_citationsArgs<ExtArgs>
+    _count?: boolean | B_chat_messagesCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_chat_messages"]>
 
 
@@ -20052,20 +22793,33 @@ export namespace Prisma {
     references?: boolean
     tool_calls?: boolean
     tokens_used?: boolean
+    message_status?: boolean
+    metadata_json?: boolean
+    model_name?: boolean
+    finish_reason?: boolean
+    trace_id?: boolean
+    chat_mode?: boolean
+    selected_kb_ids_json?: boolean
+    resolved_kb_ids_json?: boolean
+    stream_started_at?: boolean
+    stream_finished_at?: boolean
     feedback_type?: boolean
     feedback_reason?: boolean
     created_at?: boolean
   }
 
-  export type b_chat_messagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "session_id" | "role" | "content" | "references" | "tool_calls" | "tokens_used" | "feedback_type" | "feedback_reason" | "created_at", ExtArgs["result"]["b_chat_messages"]>
+  export type b_chat_messagesOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "session_id" | "role" | "content" | "references" | "tool_calls" | "tokens_used" | "message_status" | "metadata_json" | "model_name" | "finish_reason" | "trace_id" | "chat_mode" | "selected_kb_ids_json" | "resolved_kb_ids_json" | "stream_started_at" | "stream_finished_at" | "feedback_type" | "feedback_reason" | "created_at", ExtArgs["result"]["b_chat_messages"]>
   export type b_chat_messagesInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     b_chat_sessions?: boolean | b_chat_sessionsDefaultArgs<ExtArgs>
+    message_citations?: boolean | b_chat_messages$message_citationsArgs<ExtArgs>
+    _count?: boolean | B_chat_messagesCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $b_chat_messagesPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "b_chat_messages"
     objects: {
       b_chat_sessions: Prisma.$b_chat_sessionsPayload<ExtArgs>
+      message_citations: Prisma.$b_chat_message_citationsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
@@ -20075,6 +22829,16 @@ export namespace Prisma {
       references: Prisma.JsonValue | null
       tool_calls: Prisma.JsonValue | null
       tokens_used: number | null
+      message_status: string
+      metadata_json: Prisma.JsonValue | null
+      model_name: string | null
+      finish_reason: string | null
+      trace_id: string | null
+      chat_mode: string | null
+      selected_kb_ids_json: Prisma.JsonValue | null
+      resolved_kb_ids_json: Prisma.JsonValue | null
+      stream_started_at: Date | null
+      stream_finished_at: Date | null
       feedback_type: string | null
       feedback_reason: string | null
       created_at: Date
@@ -20419,6 +23183,7 @@ export namespace Prisma {
   export interface Prisma__b_chat_messagesClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     b_chat_sessions<T extends b_chat_sessionsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_chat_sessionsDefaultArgs<ExtArgs>>): Prisma__b_chat_sessionsClient<$Result.GetResult<Prisma.$b_chat_sessionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    message_citations<T extends b_chat_messages$message_citationsArgs<ExtArgs> = {}>(args?: Subset<T, b_chat_messages$message_citationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -20455,6 +23220,16 @@ export namespace Prisma {
     readonly references: FieldRef<"b_chat_messages", 'Json'>
     readonly tool_calls: FieldRef<"b_chat_messages", 'Json'>
     readonly tokens_used: FieldRef<"b_chat_messages", 'Int'>
+    readonly message_status: FieldRef<"b_chat_messages", 'String'>
+    readonly metadata_json: FieldRef<"b_chat_messages", 'Json'>
+    readonly model_name: FieldRef<"b_chat_messages", 'String'>
+    readonly finish_reason: FieldRef<"b_chat_messages", 'String'>
+    readonly trace_id: FieldRef<"b_chat_messages", 'String'>
+    readonly chat_mode: FieldRef<"b_chat_messages", 'String'>
+    readonly selected_kb_ids_json: FieldRef<"b_chat_messages", 'Json'>
+    readonly resolved_kb_ids_json: FieldRef<"b_chat_messages", 'Json'>
+    readonly stream_started_at: FieldRef<"b_chat_messages", 'DateTime'>
+    readonly stream_finished_at: FieldRef<"b_chat_messages", 'DateTime'>
     readonly feedback_type: FieldRef<"b_chat_messages", 'String'>
     readonly feedback_reason: FieldRef<"b_chat_messages", 'String'>
     readonly created_at: FieldRef<"b_chat_messages", 'DateTime'>
@@ -20801,6 +23576,30 @@ export namespace Prisma {
   }
 
   /**
+   * b_chat_messages.message_citations
+   */
+  export type b_chat_messages$message_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    where?: b_chat_message_citationsWhereInput
+    orderBy?: b_chat_message_citationsOrderByWithRelationInput | b_chat_message_citationsOrderByWithRelationInput[]
+    cursor?: b_chat_message_citationsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_chat_message_citationsScalarFieldEnum | B_chat_message_citationsScalarFieldEnum[]
+  }
+
+  /**
    * b_chat_messages without action
    */
   export type b_chat_messagesDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -20816,6 +23615,3093 @@ export namespace Prisma {
      * Choose, which related nodes to fetch as well
      */
     include?: b_chat_messagesInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model b_chat_message_citations
+   */
+
+  export type AggregateB_chat_message_citations = {
+    _count: B_chat_message_citationsCountAggregateOutputType | null
+    _avg: B_chat_message_citationsAvgAggregateOutputType | null
+    _sum: B_chat_message_citationsSumAggregateOutputType | null
+    _min: B_chat_message_citationsMinAggregateOutputType | null
+    _max: B_chat_message_citationsMaxAggregateOutputType | null
+  }
+
+  export type B_chat_message_citationsAvgAggregateOutputType = {
+    id: number | null
+    message_id: number | null
+    kb_id: number | null
+    doc_id: number | null
+    chunk_id: number | null
+    score: number | null
+    order_no: number | null
+  }
+
+  export type B_chat_message_citationsSumAggregateOutputType = {
+    id: bigint | null
+    message_id: bigint | null
+    kb_id: bigint | null
+    doc_id: bigint | null
+    chunk_id: bigint | null
+    score: number | null
+    order_no: number | null
+  }
+
+  export type B_chat_message_citationsMinAggregateOutputType = {
+    id: bigint | null
+    message_id: bigint | null
+    kb_id: bigint | null
+    doc_id: bigint | null
+    chunk_id: bigint | null
+    score: number | null
+    quote: string | null
+    order_no: number | null
+    created_at: Date | null
+  }
+
+  export type B_chat_message_citationsMaxAggregateOutputType = {
+    id: bigint | null
+    message_id: bigint | null
+    kb_id: bigint | null
+    doc_id: bigint | null
+    chunk_id: bigint | null
+    score: number | null
+    quote: string | null
+    order_no: number | null
+    created_at: Date | null
+  }
+
+  export type B_chat_message_citationsCountAggregateOutputType = {
+    id: number
+    message_id: number
+    kb_id: number
+    doc_id: number
+    chunk_id: number
+    score: number
+    quote: number
+    order_no: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type B_chat_message_citationsAvgAggregateInputType = {
+    id?: true
+    message_id?: true
+    kb_id?: true
+    doc_id?: true
+    chunk_id?: true
+    score?: true
+    order_no?: true
+  }
+
+  export type B_chat_message_citationsSumAggregateInputType = {
+    id?: true
+    message_id?: true
+    kb_id?: true
+    doc_id?: true
+    chunk_id?: true
+    score?: true
+    order_no?: true
+  }
+
+  export type B_chat_message_citationsMinAggregateInputType = {
+    id?: true
+    message_id?: true
+    kb_id?: true
+    doc_id?: true
+    chunk_id?: true
+    score?: true
+    quote?: true
+    order_no?: true
+    created_at?: true
+  }
+
+  export type B_chat_message_citationsMaxAggregateInputType = {
+    id?: true
+    message_id?: true
+    kb_id?: true
+    doc_id?: true
+    chunk_id?: true
+    score?: true
+    quote?: true
+    order_no?: true
+    created_at?: true
+  }
+
+  export type B_chat_message_citationsCountAggregateInputType = {
+    id?: true
+    message_id?: true
+    kb_id?: true
+    doc_id?: true
+    chunk_id?: true
+    score?: true
+    quote?: true
+    order_no?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type B_chat_message_citationsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_chat_message_citations to aggregate.
+     */
+    where?: b_chat_message_citationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_chat_message_citations to fetch.
+     */
+    orderBy?: b_chat_message_citationsOrderByWithRelationInput | b_chat_message_citationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: b_chat_message_citationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_chat_message_citations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_chat_message_citations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned b_chat_message_citations
+    **/
+    _count?: true | B_chat_message_citationsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: B_chat_message_citationsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: B_chat_message_citationsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: B_chat_message_citationsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: B_chat_message_citationsMaxAggregateInputType
+  }
+
+  export type GetB_chat_message_citationsAggregateType<T extends B_chat_message_citationsAggregateArgs> = {
+        [P in keyof T & keyof AggregateB_chat_message_citations]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateB_chat_message_citations[P]>
+      : GetScalarType<T[P], AggregateB_chat_message_citations[P]>
+  }
+
+
+
+
+  export type b_chat_message_citationsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_chat_message_citationsWhereInput
+    orderBy?: b_chat_message_citationsOrderByWithAggregationInput | b_chat_message_citationsOrderByWithAggregationInput[]
+    by: B_chat_message_citationsScalarFieldEnum[] | B_chat_message_citationsScalarFieldEnum
+    having?: b_chat_message_citationsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: B_chat_message_citationsCountAggregateInputType | true
+    _avg?: B_chat_message_citationsAvgAggregateInputType
+    _sum?: B_chat_message_citationsSumAggregateInputType
+    _min?: B_chat_message_citationsMinAggregateInputType
+    _max?: B_chat_message_citationsMaxAggregateInputType
+  }
+
+  export type B_chat_message_citationsGroupByOutputType = {
+    id: bigint
+    message_id: bigint
+    kb_id: bigint
+    doc_id: bigint
+    chunk_id: bigint
+    score: number | null
+    quote: string | null
+    order_no: number
+    created_at: Date
+    _count: B_chat_message_citationsCountAggregateOutputType | null
+    _avg: B_chat_message_citationsAvgAggregateOutputType | null
+    _sum: B_chat_message_citationsSumAggregateOutputType | null
+    _min: B_chat_message_citationsMinAggregateOutputType | null
+    _max: B_chat_message_citationsMaxAggregateOutputType | null
+  }
+
+  type GetB_chat_message_citationsGroupByPayload<T extends b_chat_message_citationsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<B_chat_message_citationsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof B_chat_message_citationsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], B_chat_message_citationsGroupByOutputType[P]>
+            : GetScalarType<T[P], B_chat_message_citationsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type b_chat_message_citationsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    message_id?: boolean
+    kb_id?: boolean
+    doc_id?: boolean
+    chunk_id?: boolean
+    score?: boolean
+    quote?: boolean
+    order_no?: boolean
+    created_at?: boolean
+    b_chat_messages?: boolean | b_chat_messagesDefaultArgs<ExtArgs>
+    b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
+    b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
+    b_document_chunks?: boolean | b_document_chunksDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["b_chat_message_citations"]>
+
+
+
+  export type b_chat_message_citationsSelectScalar = {
+    id?: boolean
+    message_id?: boolean
+    kb_id?: boolean
+    doc_id?: boolean
+    chunk_id?: boolean
+    score?: boolean
+    quote?: boolean
+    order_no?: boolean
+    created_at?: boolean
+  }
+
+  export type b_chat_message_citationsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "message_id" | "kb_id" | "doc_id" | "chunk_id" | "score" | "quote" | "order_no" | "created_at", ExtArgs["result"]["b_chat_message_citations"]>
+  export type b_chat_message_citationsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    b_chat_messages?: boolean | b_chat_messagesDefaultArgs<ExtArgs>
+    b_knowledge_bases?: boolean | b_knowledge_basesDefaultArgs<ExtArgs>
+    b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
+    b_document_chunks?: boolean | b_document_chunksDefaultArgs<ExtArgs>
+  }
+
+  export type $b_chat_message_citationsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "b_chat_message_citations"
+    objects: {
+      b_chat_messages: Prisma.$b_chat_messagesPayload<ExtArgs>
+      b_knowledge_bases: Prisma.$b_knowledge_basesPayload<ExtArgs>
+      b_documents: Prisma.$b_documentsPayload<ExtArgs>
+      b_document_chunks: Prisma.$b_document_chunksPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      message_id: bigint
+      kb_id: bigint
+      doc_id: bigint
+      chunk_id: bigint
+      score: number | null
+      quote: string | null
+      order_no: number
+      created_at: Date
+    }, ExtArgs["result"]["b_chat_message_citations"]>
+    composites: {}
+  }
+
+  type b_chat_message_citationsGetPayload<S extends boolean | null | undefined | b_chat_message_citationsDefaultArgs> = $Result.GetResult<Prisma.$b_chat_message_citationsPayload, S>
+
+  type b_chat_message_citationsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<b_chat_message_citationsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: B_chat_message_citationsCountAggregateInputType | true
+    }
+
+  export interface b_chat_message_citationsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['b_chat_message_citations'], meta: { name: 'b_chat_message_citations' } }
+    /**
+     * Find zero or one B_chat_message_citations that matches the filter.
+     * @param {b_chat_message_citationsFindUniqueArgs} args - Arguments to find a B_chat_message_citations
+     * @example
+     * // Get one B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends b_chat_message_citationsFindUniqueArgs>(args: SelectSubset<T, b_chat_message_citationsFindUniqueArgs<ExtArgs>>): Prisma__b_chat_message_citationsClient<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one B_chat_message_citations that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {b_chat_message_citationsFindUniqueOrThrowArgs} args - Arguments to find a B_chat_message_citations
+     * @example
+     * // Get one B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends b_chat_message_citationsFindUniqueOrThrowArgs>(args: SelectSubset<T, b_chat_message_citationsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__b_chat_message_citationsClient<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_chat_message_citations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_chat_message_citationsFindFirstArgs} args - Arguments to find a B_chat_message_citations
+     * @example
+     * // Get one B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends b_chat_message_citationsFindFirstArgs>(args?: SelectSubset<T, b_chat_message_citationsFindFirstArgs<ExtArgs>>): Prisma__b_chat_message_citationsClient<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_chat_message_citations that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_chat_message_citationsFindFirstOrThrowArgs} args - Arguments to find a B_chat_message_citations
+     * @example
+     * // Get one B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends b_chat_message_citationsFindFirstOrThrowArgs>(args?: SelectSubset<T, b_chat_message_citationsFindFirstOrThrowArgs<ExtArgs>>): Prisma__b_chat_message_citationsClient<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more B_chat_message_citations that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_chat_message_citationsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.findMany()
+     * 
+     * // Get first 10 B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const b_chat_message_citationsWithIdOnly = await prisma.b_chat_message_citations.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends b_chat_message_citationsFindManyArgs>(args?: SelectSubset<T, b_chat_message_citationsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a B_chat_message_citations.
+     * @param {b_chat_message_citationsCreateArgs} args - Arguments to create a B_chat_message_citations.
+     * @example
+     * // Create one B_chat_message_citations
+     * const B_chat_message_citations = await prisma.b_chat_message_citations.create({
+     *   data: {
+     *     // ... data to create a B_chat_message_citations
+     *   }
+     * })
+     * 
+     */
+    create<T extends b_chat_message_citationsCreateArgs>(args: SelectSubset<T, b_chat_message_citationsCreateArgs<ExtArgs>>): Prisma__b_chat_message_citationsClient<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many B_chat_message_citations.
+     * @param {b_chat_message_citationsCreateManyArgs} args - Arguments to create many B_chat_message_citations.
+     * @example
+     * // Create many B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends b_chat_message_citationsCreateManyArgs>(args?: SelectSubset<T, b_chat_message_citationsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a B_chat_message_citations.
+     * @param {b_chat_message_citationsDeleteArgs} args - Arguments to delete one B_chat_message_citations.
+     * @example
+     * // Delete one B_chat_message_citations
+     * const B_chat_message_citations = await prisma.b_chat_message_citations.delete({
+     *   where: {
+     *     // ... filter to delete one B_chat_message_citations
+     *   }
+     * })
+     * 
+     */
+    delete<T extends b_chat_message_citationsDeleteArgs>(args: SelectSubset<T, b_chat_message_citationsDeleteArgs<ExtArgs>>): Prisma__b_chat_message_citationsClient<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one B_chat_message_citations.
+     * @param {b_chat_message_citationsUpdateArgs} args - Arguments to update one B_chat_message_citations.
+     * @example
+     * // Update one B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends b_chat_message_citationsUpdateArgs>(args: SelectSubset<T, b_chat_message_citationsUpdateArgs<ExtArgs>>): Prisma__b_chat_message_citationsClient<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more B_chat_message_citations.
+     * @param {b_chat_message_citationsDeleteManyArgs} args - Arguments to filter B_chat_message_citations to delete.
+     * @example
+     * // Delete a few B_chat_message_citations
+     * const { count } = await prisma.b_chat_message_citations.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends b_chat_message_citationsDeleteManyArgs>(args?: SelectSubset<T, b_chat_message_citationsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more B_chat_message_citations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_chat_message_citationsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends b_chat_message_citationsUpdateManyArgs>(args: SelectSubset<T, b_chat_message_citationsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one B_chat_message_citations.
+     * @param {b_chat_message_citationsUpsertArgs} args - Arguments to update or create a B_chat_message_citations.
+     * @example
+     * // Update or create a B_chat_message_citations
+     * const b_chat_message_citations = await prisma.b_chat_message_citations.upsert({
+     *   create: {
+     *     // ... data to create a B_chat_message_citations
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the B_chat_message_citations we want to update
+     *   }
+     * })
+     */
+    upsert<T extends b_chat_message_citationsUpsertArgs>(args: SelectSubset<T, b_chat_message_citationsUpsertArgs<ExtArgs>>): Prisma__b_chat_message_citationsClient<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of B_chat_message_citations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_chat_message_citationsCountArgs} args - Arguments to filter B_chat_message_citations to count.
+     * @example
+     * // Count the number of B_chat_message_citations
+     * const count = await prisma.b_chat_message_citations.count({
+     *   where: {
+     *     // ... the filter for the B_chat_message_citations we want to count
+     *   }
+     * })
+    **/
+    count<T extends b_chat_message_citationsCountArgs>(
+      args?: Subset<T, b_chat_message_citationsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], B_chat_message_citationsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a B_chat_message_citations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {B_chat_message_citationsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends B_chat_message_citationsAggregateArgs>(args: Subset<T, B_chat_message_citationsAggregateArgs>): Prisma.PrismaPromise<GetB_chat_message_citationsAggregateType<T>>
+
+    /**
+     * Group by B_chat_message_citations.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_chat_message_citationsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends b_chat_message_citationsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: b_chat_message_citationsGroupByArgs['orderBy'] }
+        : { orderBy?: b_chat_message_citationsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, b_chat_message_citationsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetB_chat_message_citationsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the b_chat_message_citations model
+   */
+  readonly fields: b_chat_message_citationsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for b_chat_message_citations.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__b_chat_message_citationsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    b_chat_messages<T extends b_chat_messagesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_chat_messagesDefaultArgs<ExtArgs>>): Prisma__b_chat_messagesClient<$Result.GetResult<Prisma.$b_chat_messagesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    b_knowledge_bases<T extends b_knowledge_basesDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_knowledge_basesDefaultArgs<ExtArgs>>): Prisma__b_knowledge_basesClient<$Result.GetResult<Prisma.$b_knowledge_basesPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    b_documents<T extends b_documentsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_documentsDefaultArgs<ExtArgs>>): Prisma__b_documentsClient<$Result.GetResult<Prisma.$b_documentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    b_document_chunks<T extends b_document_chunksDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_document_chunksDefaultArgs<ExtArgs>>): Prisma__b_document_chunksClient<$Result.GetResult<Prisma.$b_document_chunksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the b_chat_message_citations model
+   */
+  interface b_chat_message_citationsFieldRefs {
+    readonly id: FieldRef<"b_chat_message_citations", 'BigInt'>
+    readonly message_id: FieldRef<"b_chat_message_citations", 'BigInt'>
+    readonly kb_id: FieldRef<"b_chat_message_citations", 'BigInt'>
+    readonly doc_id: FieldRef<"b_chat_message_citations", 'BigInt'>
+    readonly chunk_id: FieldRef<"b_chat_message_citations", 'BigInt'>
+    readonly score: FieldRef<"b_chat_message_citations", 'Float'>
+    readonly quote: FieldRef<"b_chat_message_citations", 'String'>
+    readonly order_no: FieldRef<"b_chat_message_citations", 'Int'>
+    readonly created_at: FieldRef<"b_chat_message_citations", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * b_chat_message_citations findUnique
+   */
+  export type b_chat_message_citationsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_chat_message_citations to fetch.
+     */
+    where: b_chat_message_citationsWhereUniqueInput
+  }
+
+  /**
+   * b_chat_message_citations findUniqueOrThrow
+   */
+  export type b_chat_message_citationsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_chat_message_citations to fetch.
+     */
+    where: b_chat_message_citationsWhereUniqueInput
+  }
+
+  /**
+   * b_chat_message_citations findFirst
+   */
+  export type b_chat_message_citationsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_chat_message_citations to fetch.
+     */
+    where?: b_chat_message_citationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_chat_message_citations to fetch.
+     */
+    orderBy?: b_chat_message_citationsOrderByWithRelationInput | b_chat_message_citationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_chat_message_citations.
+     */
+    cursor?: b_chat_message_citationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_chat_message_citations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_chat_message_citations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_chat_message_citations.
+     */
+    distinct?: B_chat_message_citationsScalarFieldEnum | B_chat_message_citationsScalarFieldEnum[]
+  }
+
+  /**
+   * b_chat_message_citations findFirstOrThrow
+   */
+  export type b_chat_message_citationsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_chat_message_citations to fetch.
+     */
+    where?: b_chat_message_citationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_chat_message_citations to fetch.
+     */
+    orderBy?: b_chat_message_citationsOrderByWithRelationInput | b_chat_message_citationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_chat_message_citations.
+     */
+    cursor?: b_chat_message_citationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_chat_message_citations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_chat_message_citations.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_chat_message_citations.
+     */
+    distinct?: B_chat_message_citationsScalarFieldEnum | B_chat_message_citationsScalarFieldEnum[]
+  }
+
+  /**
+   * b_chat_message_citations findMany
+   */
+  export type b_chat_message_citationsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_chat_message_citations to fetch.
+     */
+    where?: b_chat_message_citationsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_chat_message_citations to fetch.
+     */
+    orderBy?: b_chat_message_citationsOrderByWithRelationInput | b_chat_message_citationsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing b_chat_message_citations.
+     */
+    cursor?: b_chat_message_citationsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_chat_message_citations from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_chat_message_citations.
+     */
+    skip?: number
+    distinct?: B_chat_message_citationsScalarFieldEnum | B_chat_message_citationsScalarFieldEnum[]
+  }
+
+  /**
+   * b_chat_message_citations create
+   */
+  export type b_chat_message_citationsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a b_chat_message_citations.
+     */
+    data: XOR<b_chat_message_citationsCreateInput, b_chat_message_citationsUncheckedCreateInput>
+  }
+
+  /**
+   * b_chat_message_citations createMany
+   */
+  export type b_chat_message_citationsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many b_chat_message_citations.
+     */
+    data: b_chat_message_citationsCreateManyInput | b_chat_message_citationsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * b_chat_message_citations update
+   */
+  export type b_chat_message_citationsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a b_chat_message_citations.
+     */
+    data: XOR<b_chat_message_citationsUpdateInput, b_chat_message_citationsUncheckedUpdateInput>
+    /**
+     * Choose, which b_chat_message_citations to update.
+     */
+    where: b_chat_message_citationsWhereUniqueInput
+  }
+
+  /**
+   * b_chat_message_citations updateMany
+   */
+  export type b_chat_message_citationsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update b_chat_message_citations.
+     */
+    data: XOR<b_chat_message_citationsUpdateManyMutationInput, b_chat_message_citationsUncheckedUpdateManyInput>
+    /**
+     * Filter which b_chat_message_citations to update
+     */
+    where?: b_chat_message_citationsWhereInput
+    /**
+     * Limit how many b_chat_message_citations to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_chat_message_citations upsert
+   */
+  export type b_chat_message_citationsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the b_chat_message_citations to update in case it exists.
+     */
+    where: b_chat_message_citationsWhereUniqueInput
+    /**
+     * In case the b_chat_message_citations found by the `where` argument doesn't exist, create a new b_chat_message_citations with this data.
+     */
+    create: XOR<b_chat_message_citationsCreateInput, b_chat_message_citationsUncheckedCreateInput>
+    /**
+     * In case the b_chat_message_citations was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<b_chat_message_citationsUpdateInput, b_chat_message_citationsUncheckedUpdateInput>
+  }
+
+  /**
+   * b_chat_message_citations delete
+   */
+  export type b_chat_message_citationsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+    /**
+     * Filter which b_chat_message_citations to delete.
+     */
+    where: b_chat_message_citationsWhereUniqueInput
+  }
+
+  /**
+   * b_chat_message_citations deleteMany
+   */
+  export type b_chat_message_citationsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_chat_message_citations to delete
+     */
+    where?: b_chat_message_citationsWhereInput
+    /**
+     * Limit how many b_chat_message_citations to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_chat_message_citations without action
+   */
+  export type b_chat_message_citationsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_chat_message_citations
+     */
+    select?: b_chat_message_citationsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_chat_message_citations
+     */
+    omit?: b_chat_message_citationsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_chat_message_citationsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model b_agent_runs
+   */
+
+  export type AggregateB_agent_runs = {
+    _count: B_agent_runsCountAggregateOutputType | null
+    _avg: B_agent_runsAvgAggregateOutputType | null
+    _sum: B_agent_runsSumAggregateOutputType | null
+    _min: B_agent_runsMinAggregateOutputType | null
+    _max: B_agent_runsMaxAggregateOutputType | null
+  }
+
+  export type B_agent_runsAvgAggregateOutputType = {
+    user_id: number | null
+    user_message_id: number | null
+    assistant_message_id: number | null
+    total_tokens: number | null
+    duration_ms: number | null
+  }
+
+  export type B_agent_runsSumAggregateOutputType = {
+    user_id: bigint | null
+    user_message_id: bigint | null
+    assistant_message_id: bigint | null
+    total_tokens: number | null
+    duration_ms: number | null
+  }
+
+  export type B_agent_runsMinAggregateOutputType = {
+    id: string | null
+    session_id: string | null
+    user_id: bigint | null
+    user_message_id: bigint | null
+    assistant_message_id: bigint | null
+    status: string | null
+    total_tokens: number | null
+    duration_ms: number | null
+    chat_mode: string | null
+    created_at: Date | null
+    finished_at: Date | null
+  }
+
+  export type B_agent_runsMaxAggregateOutputType = {
+    id: string | null
+    session_id: string | null
+    user_id: bigint | null
+    user_message_id: bigint | null
+    assistant_message_id: bigint | null
+    status: string | null
+    total_tokens: number | null
+    duration_ms: number | null
+    chat_mode: string | null
+    created_at: Date | null
+    finished_at: Date | null
+  }
+
+  export type B_agent_runsCountAggregateOutputType = {
+    id: number
+    session_id: number
+    user_id: number
+    user_message_id: number
+    assistant_message_id: number
+    status: number
+    total_tokens: number
+    duration_ms: number
+    chat_mode: number
+    selected_kb_ids_json: number
+    resolved_kb_ids_json: number
+    routed_query_json: number
+    metadata_json: number
+    created_at: number
+    finished_at: number
+    _all: number
+  }
+
+
+  export type B_agent_runsAvgAggregateInputType = {
+    user_id?: true
+    user_message_id?: true
+    assistant_message_id?: true
+    total_tokens?: true
+    duration_ms?: true
+  }
+
+  export type B_agent_runsSumAggregateInputType = {
+    user_id?: true
+    user_message_id?: true
+    assistant_message_id?: true
+    total_tokens?: true
+    duration_ms?: true
+  }
+
+  export type B_agent_runsMinAggregateInputType = {
+    id?: true
+    session_id?: true
+    user_id?: true
+    user_message_id?: true
+    assistant_message_id?: true
+    status?: true
+    total_tokens?: true
+    duration_ms?: true
+    chat_mode?: true
+    created_at?: true
+    finished_at?: true
+  }
+
+  export type B_agent_runsMaxAggregateInputType = {
+    id?: true
+    session_id?: true
+    user_id?: true
+    user_message_id?: true
+    assistant_message_id?: true
+    status?: true
+    total_tokens?: true
+    duration_ms?: true
+    chat_mode?: true
+    created_at?: true
+    finished_at?: true
+  }
+
+  export type B_agent_runsCountAggregateInputType = {
+    id?: true
+    session_id?: true
+    user_id?: true
+    user_message_id?: true
+    assistant_message_id?: true
+    status?: true
+    total_tokens?: true
+    duration_ms?: true
+    chat_mode?: true
+    selected_kb_ids_json?: true
+    resolved_kb_ids_json?: true
+    routed_query_json?: true
+    metadata_json?: true
+    created_at?: true
+    finished_at?: true
+    _all?: true
+  }
+
+  export type B_agent_runsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_agent_runs to aggregate.
+     */
+    where?: b_agent_runsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_agent_runs to fetch.
+     */
+    orderBy?: b_agent_runsOrderByWithRelationInput | b_agent_runsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: b_agent_runsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_agent_runs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_agent_runs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned b_agent_runs
+    **/
+    _count?: true | B_agent_runsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: B_agent_runsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: B_agent_runsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: B_agent_runsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: B_agent_runsMaxAggregateInputType
+  }
+
+  export type GetB_agent_runsAggregateType<T extends B_agent_runsAggregateArgs> = {
+        [P in keyof T & keyof AggregateB_agent_runs]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateB_agent_runs[P]>
+      : GetScalarType<T[P], AggregateB_agent_runs[P]>
+  }
+
+
+
+
+  export type b_agent_runsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_agent_runsWhereInput
+    orderBy?: b_agent_runsOrderByWithAggregationInput | b_agent_runsOrderByWithAggregationInput[]
+    by: B_agent_runsScalarFieldEnum[] | B_agent_runsScalarFieldEnum
+    having?: b_agent_runsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: B_agent_runsCountAggregateInputType | true
+    _avg?: B_agent_runsAvgAggregateInputType
+    _sum?: B_agent_runsSumAggregateInputType
+    _min?: B_agent_runsMinAggregateInputType
+    _max?: B_agent_runsMaxAggregateInputType
+  }
+
+  export type B_agent_runsGroupByOutputType = {
+    id: string
+    session_id: string
+    user_id: bigint
+    user_message_id: bigint
+    assistant_message_id: bigint | null
+    status: string
+    total_tokens: number | null
+    duration_ms: number | null
+    chat_mode: string | null
+    selected_kb_ids_json: JsonValue | null
+    resolved_kb_ids_json: JsonValue | null
+    routed_query_json: JsonValue | null
+    metadata_json: JsonValue | null
+    created_at: Date
+    finished_at: Date | null
+    _count: B_agent_runsCountAggregateOutputType | null
+    _avg: B_agent_runsAvgAggregateOutputType | null
+    _sum: B_agent_runsSumAggregateOutputType | null
+    _min: B_agent_runsMinAggregateOutputType | null
+    _max: B_agent_runsMaxAggregateOutputType | null
+  }
+
+  type GetB_agent_runsGroupByPayload<T extends b_agent_runsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<B_agent_runsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof B_agent_runsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], B_agent_runsGroupByOutputType[P]>
+            : GetScalarType<T[P], B_agent_runsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type b_agent_runsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    session_id?: boolean
+    user_id?: boolean
+    user_message_id?: boolean
+    assistant_message_id?: boolean
+    status?: boolean
+    total_tokens?: boolean
+    duration_ms?: boolean
+    chat_mode?: boolean
+    selected_kb_ids_json?: boolean
+    resolved_kb_ids_json?: boolean
+    routed_query_json?: boolean
+    metadata_json?: boolean
+    created_at?: boolean
+    finished_at?: boolean
+    b_chat_sessions?: boolean | b_chat_sessionsDefaultArgs<ExtArgs>
+    b_users?: boolean | b_usersDefaultArgs<ExtArgs>
+  }, ExtArgs["result"]["b_agent_runs"]>
+
+
+
+  export type b_agent_runsSelectScalar = {
+    id?: boolean
+    session_id?: boolean
+    user_id?: boolean
+    user_message_id?: boolean
+    assistant_message_id?: boolean
+    status?: boolean
+    total_tokens?: boolean
+    duration_ms?: boolean
+    chat_mode?: boolean
+    selected_kb_ids_json?: boolean
+    resolved_kb_ids_json?: boolean
+    routed_query_json?: boolean
+    metadata_json?: boolean
+    created_at?: boolean
+    finished_at?: boolean
+  }
+
+  export type b_agent_runsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "session_id" | "user_id" | "user_message_id" | "assistant_message_id" | "status" | "total_tokens" | "duration_ms" | "chat_mode" | "selected_kb_ids_json" | "resolved_kb_ids_json" | "routed_query_json" | "metadata_json" | "created_at" | "finished_at", ExtArgs["result"]["b_agent_runs"]>
+  export type b_agent_runsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    b_chat_sessions?: boolean | b_chat_sessionsDefaultArgs<ExtArgs>
+    b_users?: boolean | b_usersDefaultArgs<ExtArgs>
+  }
+
+  export type $b_agent_runsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "b_agent_runs"
+    objects: {
+      b_chat_sessions: Prisma.$b_chat_sessionsPayload<ExtArgs>
+      b_users: Prisma.$b_usersPayload<ExtArgs>
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      id: string
+      session_id: string
+      user_id: bigint
+      user_message_id: bigint
+      assistant_message_id: bigint | null
+      status: string
+      total_tokens: number | null
+      duration_ms: number | null
+      chat_mode: string | null
+      selected_kb_ids_json: Prisma.JsonValue | null
+      resolved_kb_ids_json: Prisma.JsonValue | null
+      routed_query_json: Prisma.JsonValue | null
+      metadata_json: Prisma.JsonValue | null
+      created_at: Date
+      finished_at: Date | null
+    }, ExtArgs["result"]["b_agent_runs"]>
+    composites: {}
+  }
+
+  type b_agent_runsGetPayload<S extends boolean | null | undefined | b_agent_runsDefaultArgs> = $Result.GetResult<Prisma.$b_agent_runsPayload, S>
+
+  type b_agent_runsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<b_agent_runsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: B_agent_runsCountAggregateInputType | true
+    }
+
+  export interface b_agent_runsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['b_agent_runs'], meta: { name: 'b_agent_runs' } }
+    /**
+     * Find zero or one B_agent_runs that matches the filter.
+     * @param {b_agent_runsFindUniqueArgs} args - Arguments to find a B_agent_runs
+     * @example
+     * // Get one B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends b_agent_runsFindUniqueArgs>(args: SelectSubset<T, b_agent_runsFindUniqueArgs<ExtArgs>>): Prisma__b_agent_runsClient<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one B_agent_runs that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {b_agent_runsFindUniqueOrThrowArgs} args - Arguments to find a B_agent_runs
+     * @example
+     * // Get one B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends b_agent_runsFindUniqueOrThrowArgs>(args: SelectSubset<T, b_agent_runsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__b_agent_runsClient<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_agent_runs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_runsFindFirstArgs} args - Arguments to find a B_agent_runs
+     * @example
+     * // Get one B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends b_agent_runsFindFirstArgs>(args?: SelectSubset<T, b_agent_runsFindFirstArgs<ExtArgs>>): Prisma__b_agent_runsClient<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_agent_runs that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_runsFindFirstOrThrowArgs} args - Arguments to find a B_agent_runs
+     * @example
+     * // Get one B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends b_agent_runsFindFirstOrThrowArgs>(args?: SelectSubset<T, b_agent_runsFindFirstOrThrowArgs<ExtArgs>>): Prisma__b_agent_runsClient<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more B_agent_runs that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_runsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.findMany()
+     * 
+     * // Get first 10 B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const b_agent_runsWithIdOnly = await prisma.b_agent_runs.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends b_agent_runsFindManyArgs>(args?: SelectSubset<T, b_agent_runsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a B_agent_runs.
+     * @param {b_agent_runsCreateArgs} args - Arguments to create a B_agent_runs.
+     * @example
+     * // Create one B_agent_runs
+     * const B_agent_runs = await prisma.b_agent_runs.create({
+     *   data: {
+     *     // ... data to create a B_agent_runs
+     *   }
+     * })
+     * 
+     */
+    create<T extends b_agent_runsCreateArgs>(args: SelectSubset<T, b_agent_runsCreateArgs<ExtArgs>>): Prisma__b_agent_runsClient<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many B_agent_runs.
+     * @param {b_agent_runsCreateManyArgs} args - Arguments to create many B_agent_runs.
+     * @example
+     * // Create many B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends b_agent_runsCreateManyArgs>(args?: SelectSubset<T, b_agent_runsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a B_agent_runs.
+     * @param {b_agent_runsDeleteArgs} args - Arguments to delete one B_agent_runs.
+     * @example
+     * // Delete one B_agent_runs
+     * const B_agent_runs = await prisma.b_agent_runs.delete({
+     *   where: {
+     *     // ... filter to delete one B_agent_runs
+     *   }
+     * })
+     * 
+     */
+    delete<T extends b_agent_runsDeleteArgs>(args: SelectSubset<T, b_agent_runsDeleteArgs<ExtArgs>>): Prisma__b_agent_runsClient<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one B_agent_runs.
+     * @param {b_agent_runsUpdateArgs} args - Arguments to update one B_agent_runs.
+     * @example
+     * // Update one B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends b_agent_runsUpdateArgs>(args: SelectSubset<T, b_agent_runsUpdateArgs<ExtArgs>>): Prisma__b_agent_runsClient<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more B_agent_runs.
+     * @param {b_agent_runsDeleteManyArgs} args - Arguments to filter B_agent_runs to delete.
+     * @example
+     * // Delete a few B_agent_runs
+     * const { count } = await prisma.b_agent_runs.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends b_agent_runsDeleteManyArgs>(args?: SelectSubset<T, b_agent_runsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more B_agent_runs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_runsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends b_agent_runsUpdateManyArgs>(args: SelectSubset<T, b_agent_runsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one B_agent_runs.
+     * @param {b_agent_runsUpsertArgs} args - Arguments to update or create a B_agent_runs.
+     * @example
+     * // Update or create a B_agent_runs
+     * const b_agent_runs = await prisma.b_agent_runs.upsert({
+     *   create: {
+     *     // ... data to create a B_agent_runs
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the B_agent_runs we want to update
+     *   }
+     * })
+     */
+    upsert<T extends b_agent_runsUpsertArgs>(args: SelectSubset<T, b_agent_runsUpsertArgs<ExtArgs>>): Prisma__b_agent_runsClient<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of B_agent_runs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_runsCountArgs} args - Arguments to filter B_agent_runs to count.
+     * @example
+     * // Count the number of B_agent_runs
+     * const count = await prisma.b_agent_runs.count({
+     *   where: {
+     *     // ... the filter for the B_agent_runs we want to count
+     *   }
+     * })
+    **/
+    count<T extends b_agent_runsCountArgs>(
+      args?: Subset<T, b_agent_runsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], B_agent_runsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a B_agent_runs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {B_agent_runsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends B_agent_runsAggregateArgs>(args: Subset<T, B_agent_runsAggregateArgs>): Prisma.PrismaPromise<GetB_agent_runsAggregateType<T>>
+
+    /**
+     * Group by B_agent_runs.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_runsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends b_agent_runsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: b_agent_runsGroupByArgs['orderBy'] }
+        : { orderBy?: b_agent_runsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, b_agent_runsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetB_agent_runsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the b_agent_runs model
+   */
+  readonly fields: b_agent_runsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for b_agent_runs.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__b_agent_runsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    b_chat_sessions<T extends b_chat_sessionsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_chat_sessionsDefaultArgs<ExtArgs>>): Prisma__b_chat_sessionsClient<$Result.GetResult<Prisma.$b_chat_sessionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    b_users<T extends b_usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_usersDefaultArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the b_agent_runs model
+   */
+  interface b_agent_runsFieldRefs {
+    readonly id: FieldRef<"b_agent_runs", 'String'>
+    readonly session_id: FieldRef<"b_agent_runs", 'String'>
+    readonly user_id: FieldRef<"b_agent_runs", 'BigInt'>
+    readonly user_message_id: FieldRef<"b_agent_runs", 'BigInt'>
+    readonly assistant_message_id: FieldRef<"b_agent_runs", 'BigInt'>
+    readonly status: FieldRef<"b_agent_runs", 'String'>
+    readonly total_tokens: FieldRef<"b_agent_runs", 'Int'>
+    readonly duration_ms: FieldRef<"b_agent_runs", 'Int'>
+    readonly chat_mode: FieldRef<"b_agent_runs", 'String'>
+    readonly selected_kb_ids_json: FieldRef<"b_agent_runs", 'Json'>
+    readonly resolved_kb_ids_json: FieldRef<"b_agent_runs", 'Json'>
+    readonly routed_query_json: FieldRef<"b_agent_runs", 'Json'>
+    readonly metadata_json: FieldRef<"b_agent_runs", 'Json'>
+    readonly created_at: FieldRef<"b_agent_runs", 'DateTime'>
+    readonly finished_at: FieldRef<"b_agent_runs", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * b_agent_runs findUnique
+   */
+  export type b_agent_runsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_agent_runs to fetch.
+     */
+    where: b_agent_runsWhereUniqueInput
+  }
+
+  /**
+   * b_agent_runs findUniqueOrThrow
+   */
+  export type b_agent_runsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_agent_runs to fetch.
+     */
+    where: b_agent_runsWhereUniqueInput
+  }
+
+  /**
+   * b_agent_runs findFirst
+   */
+  export type b_agent_runsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_agent_runs to fetch.
+     */
+    where?: b_agent_runsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_agent_runs to fetch.
+     */
+    orderBy?: b_agent_runsOrderByWithRelationInput | b_agent_runsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_agent_runs.
+     */
+    cursor?: b_agent_runsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_agent_runs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_agent_runs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_agent_runs.
+     */
+    distinct?: B_agent_runsScalarFieldEnum | B_agent_runsScalarFieldEnum[]
+  }
+
+  /**
+   * b_agent_runs findFirstOrThrow
+   */
+  export type b_agent_runsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_agent_runs to fetch.
+     */
+    where?: b_agent_runsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_agent_runs to fetch.
+     */
+    orderBy?: b_agent_runsOrderByWithRelationInput | b_agent_runsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_agent_runs.
+     */
+    cursor?: b_agent_runsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_agent_runs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_agent_runs.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_agent_runs.
+     */
+    distinct?: B_agent_runsScalarFieldEnum | B_agent_runsScalarFieldEnum[]
+  }
+
+  /**
+   * b_agent_runs findMany
+   */
+  export type b_agent_runsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    /**
+     * Filter, which b_agent_runs to fetch.
+     */
+    where?: b_agent_runsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_agent_runs to fetch.
+     */
+    orderBy?: b_agent_runsOrderByWithRelationInput | b_agent_runsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing b_agent_runs.
+     */
+    cursor?: b_agent_runsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_agent_runs from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_agent_runs.
+     */
+    skip?: number
+    distinct?: B_agent_runsScalarFieldEnum | B_agent_runsScalarFieldEnum[]
+  }
+
+  /**
+   * b_agent_runs create
+   */
+  export type b_agent_runsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    /**
+     * The data needed to create a b_agent_runs.
+     */
+    data: XOR<b_agent_runsCreateInput, b_agent_runsUncheckedCreateInput>
+  }
+
+  /**
+   * b_agent_runs createMany
+   */
+  export type b_agent_runsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many b_agent_runs.
+     */
+    data: b_agent_runsCreateManyInput | b_agent_runsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * b_agent_runs update
+   */
+  export type b_agent_runsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    /**
+     * The data needed to update a b_agent_runs.
+     */
+    data: XOR<b_agent_runsUpdateInput, b_agent_runsUncheckedUpdateInput>
+    /**
+     * Choose, which b_agent_runs to update.
+     */
+    where: b_agent_runsWhereUniqueInput
+  }
+
+  /**
+   * b_agent_runs updateMany
+   */
+  export type b_agent_runsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update b_agent_runs.
+     */
+    data: XOR<b_agent_runsUpdateManyMutationInput, b_agent_runsUncheckedUpdateManyInput>
+    /**
+     * Filter which b_agent_runs to update
+     */
+    where?: b_agent_runsWhereInput
+    /**
+     * Limit how many b_agent_runs to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_agent_runs upsert
+   */
+  export type b_agent_runsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    /**
+     * The filter to search for the b_agent_runs to update in case it exists.
+     */
+    where: b_agent_runsWhereUniqueInput
+    /**
+     * In case the b_agent_runs found by the `where` argument doesn't exist, create a new b_agent_runs with this data.
+     */
+    create: XOR<b_agent_runsCreateInput, b_agent_runsUncheckedCreateInput>
+    /**
+     * In case the b_agent_runs was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<b_agent_runsUpdateInput, b_agent_runsUncheckedUpdateInput>
+  }
+
+  /**
+   * b_agent_runs delete
+   */
+  export type b_agent_runsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+    /**
+     * Filter which b_agent_runs to delete.
+     */
+    where: b_agent_runsWhereUniqueInput
+  }
+
+  /**
+   * b_agent_runs deleteMany
+   */
+  export type b_agent_runsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_agent_runs to delete
+     */
+    where?: b_agent_runsWhereInput
+    /**
+     * Limit how many b_agent_runs to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_agent_runs without action
+   */
+  export type b_agent_runsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_runs
+     */
+    select?: b_agent_runsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_runs
+     */
+    omit?: b_agent_runsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_runsInclude<ExtArgs> | null
+  }
+
+
+  /**
+   * Model b_agent_steps
+   */
+
+  export type AggregateB_agent_steps = {
+    _count: B_agent_stepsCountAggregateOutputType | null
+    _avg: B_agent_stepsAvgAggregateOutputType | null
+    _sum: B_agent_stepsSumAggregateOutputType | null
+    _min: B_agent_stepsMinAggregateOutputType | null
+    _max: B_agent_stepsMaxAggregateOutputType | null
+  }
+
+  export type B_agent_stepsAvgAggregateOutputType = {
+    id: number | null
+    duration_ms: number | null
+  }
+
+  export type B_agent_stepsSumAggregateOutputType = {
+    id: bigint | null
+    duration_ms: number | null
+  }
+
+  export type B_agent_stepsMinAggregateOutputType = {
+    id: bigint | null
+    run_id: string | null
+    agent_name: string | null
+    step_type: string | null
+    status: string | null
+    duration_ms: number | null
+    started_at: Date | null
+    finished_at: Date | null
+  }
+
+  export type B_agent_stepsMaxAggregateOutputType = {
+    id: bigint | null
+    run_id: string | null
+    agent_name: string | null
+    step_type: string | null
+    status: string | null
+    duration_ms: number | null
+    started_at: Date | null
+    finished_at: Date | null
+  }
+
+  export type B_agent_stepsCountAggregateOutputType = {
+    id: number
+    run_id: number
+    agent_name: number
+    step_type: number
+    status: number
+    input_json: number
+    output_json: number
+    duration_ms: number
+    started_at: number
+    finished_at: number
+    _all: number
+  }
+
+
+  export type B_agent_stepsAvgAggregateInputType = {
+    id?: true
+    duration_ms?: true
+  }
+
+  export type B_agent_stepsSumAggregateInputType = {
+    id?: true
+    duration_ms?: true
+  }
+
+  export type B_agent_stepsMinAggregateInputType = {
+    id?: true
+    run_id?: true
+    agent_name?: true
+    step_type?: true
+    status?: true
+    duration_ms?: true
+    started_at?: true
+    finished_at?: true
+  }
+
+  export type B_agent_stepsMaxAggregateInputType = {
+    id?: true
+    run_id?: true
+    agent_name?: true
+    step_type?: true
+    status?: true
+    duration_ms?: true
+    started_at?: true
+    finished_at?: true
+  }
+
+  export type B_agent_stepsCountAggregateInputType = {
+    id?: true
+    run_id?: true
+    agent_name?: true
+    step_type?: true
+    status?: true
+    input_json?: true
+    output_json?: true
+    duration_ms?: true
+    started_at?: true
+    finished_at?: true
+    _all?: true
+  }
+
+  export type B_agent_stepsAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_agent_steps to aggregate.
+     */
+    where?: b_agent_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_agent_steps to fetch.
+     */
+    orderBy?: b_agent_stepsOrderByWithRelationInput | b_agent_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: b_agent_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_agent_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_agent_steps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned b_agent_steps
+    **/
+    _count?: true | B_agent_stepsCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: B_agent_stepsAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: B_agent_stepsSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: B_agent_stepsMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: B_agent_stepsMaxAggregateInputType
+  }
+
+  export type GetB_agent_stepsAggregateType<T extends B_agent_stepsAggregateArgs> = {
+        [P in keyof T & keyof AggregateB_agent_steps]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateB_agent_steps[P]>
+      : GetScalarType<T[P], AggregateB_agent_steps[P]>
+  }
+
+
+
+
+  export type b_agent_stepsGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_agent_stepsWhereInput
+    orderBy?: b_agent_stepsOrderByWithAggregationInput | b_agent_stepsOrderByWithAggregationInput[]
+    by: B_agent_stepsScalarFieldEnum[] | B_agent_stepsScalarFieldEnum
+    having?: b_agent_stepsScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: B_agent_stepsCountAggregateInputType | true
+    _avg?: B_agent_stepsAvgAggregateInputType
+    _sum?: B_agent_stepsSumAggregateInputType
+    _min?: B_agent_stepsMinAggregateInputType
+    _max?: B_agent_stepsMaxAggregateInputType
+  }
+
+  export type B_agent_stepsGroupByOutputType = {
+    id: bigint
+    run_id: string
+    agent_name: string
+    step_type: string
+    status: string
+    input_json: JsonValue | null
+    output_json: JsonValue | null
+    duration_ms: number | null
+    started_at: Date
+    finished_at: Date | null
+    _count: B_agent_stepsCountAggregateOutputType | null
+    _avg: B_agent_stepsAvgAggregateOutputType | null
+    _sum: B_agent_stepsSumAggregateOutputType | null
+    _min: B_agent_stepsMinAggregateOutputType | null
+    _max: B_agent_stepsMaxAggregateOutputType | null
+  }
+
+  type GetB_agent_stepsGroupByPayload<T extends b_agent_stepsGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<B_agent_stepsGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof B_agent_stepsGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], B_agent_stepsGroupByOutputType[P]>
+            : GetScalarType<T[P], B_agent_stepsGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type b_agent_stepsSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    id?: boolean
+    run_id?: boolean
+    agent_name?: boolean
+    step_type?: boolean
+    status?: boolean
+    input_json?: boolean
+    output_json?: boolean
+    duration_ms?: boolean
+    started_at?: boolean
+    finished_at?: boolean
+  }, ExtArgs["result"]["b_agent_steps"]>
+
+
+
+  export type b_agent_stepsSelectScalar = {
+    id?: boolean
+    run_id?: boolean
+    agent_name?: boolean
+    step_type?: boolean
+    status?: boolean
+    input_json?: boolean
+    output_json?: boolean
+    duration_ms?: boolean
+    started_at?: boolean
+    finished_at?: boolean
+  }
+
+  export type b_agent_stepsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "run_id" | "agent_name" | "step_type" | "status" | "input_json" | "output_json" | "duration_ms" | "started_at" | "finished_at", ExtArgs["result"]["b_agent_steps"]>
+
+  export type $b_agent_stepsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "b_agent_steps"
+    objects: {}
+    scalars: $Extensions.GetPayloadResult<{
+      id: bigint
+      run_id: string
+      agent_name: string
+      step_type: string
+      status: string
+      input_json: Prisma.JsonValue | null
+      output_json: Prisma.JsonValue | null
+      duration_ms: number | null
+      started_at: Date
+      finished_at: Date | null
+    }, ExtArgs["result"]["b_agent_steps"]>
+    composites: {}
+  }
+
+  type b_agent_stepsGetPayload<S extends boolean | null | undefined | b_agent_stepsDefaultArgs> = $Result.GetResult<Prisma.$b_agent_stepsPayload, S>
+
+  type b_agent_stepsCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<b_agent_stepsFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: B_agent_stepsCountAggregateInputType | true
+    }
+
+  export interface b_agent_stepsDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['b_agent_steps'], meta: { name: 'b_agent_steps' } }
+    /**
+     * Find zero or one B_agent_steps that matches the filter.
+     * @param {b_agent_stepsFindUniqueArgs} args - Arguments to find a B_agent_steps
+     * @example
+     * // Get one B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends b_agent_stepsFindUniqueArgs>(args: SelectSubset<T, b_agent_stepsFindUniqueArgs<ExtArgs>>): Prisma__b_agent_stepsClient<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one B_agent_steps that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {b_agent_stepsFindUniqueOrThrowArgs} args - Arguments to find a B_agent_steps
+     * @example
+     * // Get one B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends b_agent_stepsFindUniqueOrThrowArgs>(args: SelectSubset<T, b_agent_stepsFindUniqueOrThrowArgs<ExtArgs>>): Prisma__b_agent_stepsClient<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_agent_steps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_stepsFindFirstArgs} args - Arguments to find a B_agent_steps
+     * @example
+     * // Get one B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends b_agent_stepsFindFirstArgs>(args?: SelectSubset<T, b_agent_stepsFindFirstArgs<ExtArgs>>): Prisma__b_agent_stepsClient<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first B_agent_steps that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_stepsFindFirstOrThrowArgs} args - Arguments to find a B_agent_steps
+     * @example
+     * // Get one B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends b_agent_stepsFindFirstOrThrowArgs>(args?: SelectSubset<T, b_agent_stepsFindFirstOrThrowArgs<ExtArgs>>): Prisma__b_agent_stepsClient<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more B_agent_steps that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_stepsFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.findMany()
+     * 
+     * // Get first 10 B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.findMany({ take: 10 })
+     * 
+     * // Only select the `id`
+     * const b_agent_stepsWithIdOnly = await prisma.b_agent_steps.findMany({ select: { id: true } })
+     * 
+     */
+    findMany<T extends b_agent_stepsFindManyArgs>(args?: SelectSubset<T, b_agent_stepsFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a B_agent_steps.
+     * @param {b_agent_stepsCreateArgs} args - Arguments to create a B_agent_steps.
+     * @example
+     * // Create one B_agent_steps
+     * const B_agent_steps = await prisma.b_agent_steps.create({
+     *   data: {
+     *     // ... data to create a B_agent_steps
+     *   }
+     * })
+     * 
+     */
+    create<T extends b_agent_stepsCreateArgs>(args: SelectSubset<T, b_agent_stepsCreateArgs<ExtArgs>>): Prisma__b_agent_stepsClient<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many B_agent_steps.
+     * @param {b_agent_stepsCreateManyArgs} args - Arguments to create many B_agent_steps.
+     * @example
+     * // Create many B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends b_agent_stepsCreateManyArgs>(args?: SelectSubset<T, b_agent_stepsCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a B_agent_steps.
+     * @param {b_agent_stepsDeleteArgs} args - Arguments to delete one B_agent_steps.
+     * @example
+     * // Delete one B_agent_steps
+     * const B_agent_steps = await prisma.b_agent_steps.delete({
+     *   where: {
+     *     // ... filter to delete one B_agent_steps
+     *   }
+     * })
+     * 
+     */
+    delete<T extends b_agent_stepsDeleteArgs>(args: SelectSubset<T, b_agent_stepsDeleteArgs<ExtArgs>>): Prisma__b_agent_stepsClient<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one B_agent_steps.
+     * @param {b_agent_stepsUpdateArgs} args - Arguments to update one B_agent_steps.
+     * @example
+     * // Update one B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends b_agent_stepsUpdateArgs>(args: SelectSubset<T, b_agent_stepsUpdateArgs<ExtArgs>>): Prisma__b_agent_stepsClient<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more B_agent_steps.
+     * @param {b_agent_stepsDeleteManyArgs} args - Arguments to filter B_agent_steps to delete.
+     * @example
+     * // Delete a few B_agent_steps
+     * const { count } = await prisma.b_agent_steps.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends b_agent_stepsDeleteManyArgs>(args?: SelectSubset<T, b_agent_stepsDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more B_agent_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_stepsUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends b_agent_stepsUpdateManyArgs>(args: SelectSubset<T, b_agent_stepsUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one B_agent_steps.
+     * @param {b_agent_stepsUpsertArgs} args - Arguments to update or create a B_agent_steps.
+     * @example
+     * // Update or create a B_agent_steps
+     * const b_agent_steps = await prisma.b_agent_steps.upsert({
+     *   create: {
+     *     // ... data to create a B_agent_steps
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the B_agent_steps we want to update
+     *   }
+     * })
+     */
+    upsert<T extends b_agent_stepsUpsertArgs>(args: SelectSubset<T, b_agent_stepsUpsertArgs<ExtArgs>>): Prisma__b_agent_stepsClient<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of B_agent_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_stepsCountArgs} args - Arguments to filter B_agent_steps to count.
+     * @example
+     * // Count the number of B_agent_steps
+     * const count = await prisma.b_agent_steps.count({
+     *   where: {
+     *     // ... the filter for the B_agent_steps we want to count
+     *   }
+     * })
+    **/
+    count<T extends b_agent_stepsCountArgs>(
+      args?: Subset<T, b_agent_stepsCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], B_agent_stepsCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a B_agent_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {B_agent_stepsAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends B_agent_stepsAggregateArgs>(args: Subset<T, B_agent_stepsAggregateArgs>): Prisma.PrismaPromise<GetB_agent_stepsAggregateType<T>>
+
+    /**
+     * Group by B_agent_steps.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {b_agent_stepsGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends b_agent_stepsGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: b_agent_stepsGroupByArgs['orderBy'] }
+        : { orderBy?: b_agent_stepsGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, b_agent_stepsGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetB_agent_stepsGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the b_agent_steps model
+   */
+  readonly fields: b_agent_stepsFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for b_agent_steps.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__b_agent_stepsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the b_agent_steps model
+   */
+  interface b_agent_stepsFieldRefs {
+    readonly id: FieldRef<"b_agent_steps", 'BigInt'>
+    readonly run_id: FieldRef<"b_agent_steps", 'String'>
+    readonly agent_name: FieldRef<"b_agent_steps", 'String'>
+    readonly step_type: FieldRef<"b_agent_steps", 'String'>
+    readonly status: FieldRef<"b_agent_steps", 'String'>
+    readonly input_json: FieldRef<"b_agent_steps", 'Json'>
+    readonly output_json: FieldRef<"b_agent_steps", 'Json'>
+    readonly duration_ms: FieldRef<"b_agent_steps", 'Int'>
+    readonly started_at: FieldRef<"b_agent_steps", 'DateTime'>
+    readonly finished_at: FieldRef<"b_agent_steps", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * b_agent_steps findUnique
+   */
+  export type b_agent_stepsFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Filter, which b_agent_steps to fetch.
+     */
+    where: b_agent_stepsWhereUniqueInput
+  }
+
+  /**
+   * b_agent_steps findUniqueOrThrow
+   */
+  export type b_agent_stepsFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Filter, which b_agent_steps to fetch.
+     */
+    where: b_agent_stepsWhereUniqueInput
+  }
+
+  /**
+   * b_agent_steps findFirst
+   */
+  export type b_agent_stepsFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Filter, which b_agent_steps to fetch.
+     */
+    where?: b_agent_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_agent_steps to fetch.
+     */
+    orderBy?: b_agent_stepsOrderByWithRelationInput | b_agent_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_agent_steps.
+     */
+    cursor?: b_agent_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_agent_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_agent_steps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_agent_steps.
+     */
+    distinct?: B_agent_stepsScalarFieldEnum | B_agent_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * b_agent_steps findFirstOrThrow
+   */
+  export type b_agent_stepsFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Filter, which b_agent_steps to fetch.
+     */
+    where?: b_agent_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_agent_steps to fetch.
+     */
+    orderBy?: b_agent_stepsOrderByWithRelationInput | b_agent_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for b_agent_steps.
+     */
+    cursor?: b_agent_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_agent_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_agent_steps.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of b_agent_steps.
+     */
+    distinct?: B_agent_stepsScalarFieldEnum | B_agent_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * b_agent_steps findMany
+   */
+  export type b_agent_stepsFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Filter, which b_agent_steps to fetch.
+     */
+    where?: b_agent_stepsWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of b_agent_steps to fetch.
+     */
+    orderBy?: b_agent_stepsOrderByWithRelationInput | b_agent_stepsOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing b_agent_steps.
+     */
+    cursor?: b_agent_stepsWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` b_agent_steps from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` b_agent_steps.
+     */
+    skip?: number
+    distinct?: B_agent_stepsScalarFieldEnum | B_agent_stepsScalarFieldEnum[]
+  }
+
+  /**
+   * b_agent_steps create
+   */
+  export type b_agent_stepsCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * The data needed to create a b_agent_steps.
+     */
+    data: XOR<b_agent_stepsCreateInput, b_agent_stepsUncheckedCreateInput>
+  }
+
+  /**
+   * b_agent_steps createMany
+   */
+  export type b_agent_stepsCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many b_agent_steps.
+     */
+    data: b_agent_stepsCreateManyInput | b_agent_stepsCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * b_agent_steps update
+   */
+  export type b_agent_stepsUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * The data needed to update a b_agent_steps.
+     */
+    data: XOR<b_agent_stepsUpdateInput, b_agent_stepsUncheckedUpdateInput>
+    /**
+     * Choose, which b_agent_steps to update.
+     */
+    where: b_agent_stepsWhereUniqueInput
+  }
+
+  /**
+   * b_agent_steps updateMany
+   */
+  export type b_agent_stepsUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update b_agent_steps.
+     */
+    data: XOR<b_agent_stepsUpdateManyMutationInput, b_agent_stepsUncheckedUpdateManyInput>
+    /**
+     * Filter which b_agent_steps to update
+     */
+    where?: b_agent_stepsWhereInput
+    /**
+     * Limit how many b_agent_steps to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_agent_steps upsert
+   */
+  export type b_agent_stepsUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * The filter to search for the b_agent_steps to update in case it exists.
+     */
+    where: b_agent_stepsWhereUniqueInput
+    /**
+     * In case the b_agent_steps found by the `where` argument doesn't exist, create a new b_agent_steps with this data.
+     */
+    create: XOR<b_agent_stepsCreateInput, b_agent_stepsUncheckedCreateInput>
+    /**
+     * In case the b_agent_steps was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<b_agent_stepsUpdateInput, b_agent_stepsUncheckedUpdateInput>
+  }
+
+  /**
+   * b_agent_steps delete
+   */
+  export type b_agent_stepsDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Filter which b_agent_steps to delete.
+     */
+    where: b_agent_stepsWhereUniqueInput
+  }
+
+  /**
+   * b_agent_steps deleteMany
+   */
+  export type b_agent_stepsDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which b_agent_steps to delete
+     */
+    where?: b_agent_stepsWhereInput
+    /**
+     * Limit how many b_agent_steps to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * b_agent_steps without action
+   */
+  export type b_agent_stepsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
   }
 
 
@@ -23702,9 +29588,6 @@ export namespace Prisma {
     full_name: 'full_name',
     avatar_url: 'avatar_url',
     is_active: 'is_active',
-    daily_chat_limit: 'daily_chat_limit',
-    token_quota: 'token_quota',
-    used_tokens: 'used_tokens',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -23796,6 +29679,21 @@ export namespace Prisma {
   };
 
   export type B_user_model_configsScalarFieldEnum = (typeof B_user_model_configsScalarFieldEnum)[keyof typeof B_user_model_configsScalarFieldEnum]
+
+
+  export const B_user_daily_quotasScalarFieldEnum: {
+    id: 'id',
+    user_id: 'user_id',
+    quota_date: 'quota_date',
+    daily_chat_limit: 'daily_chat_limit',
+    daily_token_quota: 'daily_token_quota',
+    used_chat_count: 'used_chat_count',
+    used_token_count: 'used_token_count',
+    created_at: 'created_at',
+    updated_at: 'updated_at'
+  };
+
+  export type B_user_daily_quotasScalarFieldEnum = (typeof B_user_daily_quotasScalarFieldEnum)[keyof typeof B_user_daily_quotasScalarFieldEnum]
 
 
   export const B_knowledge_basesScalarFieldEnum: {
@@ -23930,6 +29828,20 @@ export namespace Prisma {
   export type B_document_chunksScalarFieldEnum = (typeof B_document_chunksScalarFieldEnum)[keyof typeof B_document_chunksScalarFieldEnum]
 
 
+  export const B_document_chunk_search_indexScalarFieldEnum: {
+    chunk_id: 'chunk_id',
+    doc_id: 'doc_id',
+    kb_id: 'kb_id',
+    title: 'title',
+    title_path: 'title_path',
+    content_plain: 'content_plain',
+    keyword_text: 'keyword_text',
+    created_at: 'created_at'
+  };
+
+  export type B_document_chunk_search_indexScalarFieldEnum = (typeof B_document_chunk_search_indexScalarFieldEnum)[keyof typeof B_document_chunk_search_indexScalarFieldEnum]
+
+
   export const B_document_processing_tasksScalarFieldEnum: {
     id: 'id',
     document_id: 'document_id',
@@ -23956,6 +29868,10 @@ export namespace Prisma {
     user_id: 'user_id',
     kb_id: 'kb_id',
     title: 'title',
+    summary_text: 'summary_text',
+    last_selected_kb_ids_json: 'last_selected_kb_ids_json',
+    last_chat_mode: 'last_chat_mode',
+    last_message_at: 'last_message_at',
     created_at: 'created_at',
     updated_at: 'updated_at'
   };
@@ -23971,12 +29887,74 @@ export namespace Prisma {
     references: 'references',
     tool_calls: 'tool_calls',
     tokens_used: 'tokens_used',
+    message_status: 'message_status',
+    metadata_json: 'metadata_json',
+    model_name: 'model_name',
+    finish_reason: 'finish_reason',
+    trace_id: 'trace_id',
+    chat_mode: 'chat_mode',
+    selected_kb_ids_json: 'selected_kb_ids_json',
+    resolved_kb_ids_json: 'resolved_kb_ids_json',
+    stream_started_at: 'stream_started_at',
+    stream_finished_at: 'stream_finished_at',
     feedback_type: 'feedback_type',
     feedback_reason: 'feedback_reason',
     created_at: 'created_at'
   };
 
   export type B_chat_messagesScalarFieldEnum = (typeof B_chat_messagesScalarFieldEnum)[keyof typeof B_chat_messagesScalarFieldEnum]
+
+
+  export const B_chat_message_citationsScalarFieldEnum: {
+    id: 'id',
+    message_id: 'message_id',
+    kb_id: 'kb_id',
+    doc_id: 'doc_id',
+    chunk_id: 'chunk_id',
+    score: 'score',
+    quote: 'quote',
+    order_no: 'order_no',
+    created_at: 'created_at'
+  };
+
+  export type B_chat_message_citationsScalarFieldEnum = (typeof B_chat_message_citationsScalarFieldEnum)[keyof typeof B_chat_message_citationsScalarFieldEnum]
+
+
+  export const B_agent_runsScalarFieldEnum: {
+    id: 'id',
+    session_id: 'session_id',
+    user_id: 'user_id',
+    user_message_id: 'user_message_id',
+    assistant_message_id: 'assistant_message_id',
+    status: 'status',
+    total_tokens: 'total_tokens',
+    duration_ms: 'duration_ms',
+    chat_mode: 'chat_mode',
+    selected_kb_ids_json: 'selected_kb_ids_json',
+    resolved_kb_ids_json: 'resolved_kb_ids_json',
+    routed_query_json: 'routed_query_json',
+    metadata_json: 'metadata_json',
+    created_at: 'created_at',
+    finished_at: 'finished_at'
+  };
+
+  export type B_agent_runsScalarFieldEnum = (typeof B_agent_runsScalarFieldEnum)[keyof typeof B_agent_runsScalarFieldEnum]
+
+
+  export const B_agent_stepsScalarFieldEnum: {
+    id: 'id',
+    run_id: 'run_id',
+    agent_name: 'agent_name',
+    step_type: 'step_type',
+    status: 'status',
+    input_json: 'input_json',
+    output_json: 'output_json',
+    duration_ms: 'duration_ms',
+    started_at: 'started_at',
+    finished_at: 'finished_at'
+  };
+
+  export type B_agent_stepsScalarFieldEnum = (typeof B_agent_stepsScalarFieldEnum)[keyof typeof B_agent_stepsScalarFieldEnum]
 
 
   export const Sys_audit_logsScalarFieldEnum: {
@@ -24197,6 +30175,16 @@ export namespace Prisma {
   export type b_document_chunksOrderByRelevanceFieldEnum = (typeof b_document_chunksOrderByRelevanceFieldEnum)[keyof typeof b_document_chunksOrderByRelevanceFieldEnum]
 
 
+  export const b_document_chunk_search_indexOrderByRelevanceFieldEnum: {
+    title: 'title',
+    title_path: 'title_path',
+    content_plain: 'content_plain',
+    keyword_text: 'keyword_text'
+  };
+
+  export type b_document_chunk_search_indexOrderByRelevanceFieldEnum = (typeof b_document_chunk_search_indexOrderByRelevanceFieldEnum)[keyof typeof b_document_chunk_search_indexOrderByRelevanceFieldEnum]
+
+
   export const b_document_processing_tasksOrderByRelevanceFieldEnum: {
     job_id: 'job_id',
     stage: 'stage',
@@ -24210,7 +30198,9 @@ export namespace Prisma {
 
   export const b_chat_sessionsOrderByRelevanceFieldEnum: {
     id: 'id',
-    title: 'title'
+    title: 'title',
+    summary_text: 'summary_text',
+    last_chat_mode: 'last_chat_mode'
   };
 
   export type b_chat_sessionsOrderByRelevanceFieldEnum = (typeof b_chat_sessionsOrderByRelevanceFieldEnum)[keyof typeof b_chat_sessionsOrderByRelevanceFieldEnum]
@@ -24220,11 +30210,43 @@ export namespace Prisma {
     session_id: 'session_id',
     role: 'role',
     content: 'content',
+    message_status: 'message_status',
+    model_name: 'model_name',
+    finish_reason: 'finish_reason',
+    trace_id: 'trace_id',
+    chat_mode: 'chat_mode',
     feedback_type: 'feedback_type',
     feedback_reason: 'feedback_reason'
   };
 
   export type b_chat_messagesOrderByRelevanceFieldEnum = (typeof b_chat_messagesOrderByRelevanceFieldEnum)[keyof typeof b_chat_messagesOrderByRelevanceFieldEnum]
+
+
+  export const b_chat_message_citationsOrderByRelevanceFieldEnum: {
+    quote: 'quote'
+  };
+
+  export type b_chat_message_citationsOrderByRelevanceFieldEnum = (typeof b_chat_message_citationsOrderByRelevanceFieldEnum)[keyof typeof b_chat_message_citationsOrderByRelevanceFieldEnum]
+
+
+  export const b_agent_runsOrderByRelevanceFieldEnum: {
+    id: 'id',
+    session_id: 'session_id',
+    status: 'status',
+    chat_mode: 'chat_mode'
+  };
+
+  export type b_agent_runsOrderByRelevanceFieldEnum = (typeof b_agent_runsOrderByRelevanceFieldEnum)[keyof typeof b_agent_runsOrderByRelevanceFieldEnum]
+
+
+  export const b_agent_stepsOrderByRelevanceFieldEnum: {
+    run_id: 'run_id',
+    agent_name: 'agent_name',
+    step_type: 'step_type',
+    status: 'status'
+  };
+
+  export type b_agent_stepsOrderByRelevanceFieldEnum = (typeof b_agent_stepsOrderByRelevanceFieldEnum)[keyof typeof b_agent_stepsOrderByRelevanceFieldEnum]
 
 
   export const sys_audit_logsOrderByRelevanceFieldEnum: {
@@ -24281,16 +30303,16 @@ export namespace Prisma {
 
 
   /**
-   * Reference to a field of type 'Int'
+   * Reference to a field of type 'DateTime'
    */
-  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
+  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
     
 
 
   /**
-   * Reference to a field of type 'DateTime'
+   * Reference to a field of type 'Int'
    */
-  export type DateTimeFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'DateTime'>
+  export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int'>
     
 
 
@@ -24328,9 +30350,6 @@ export namespace Prisma {
     full_name?: StringNullableFilter<"b_users"> | string | null
     avatar_url?: StringNullableFilter<"b_users"> | string | null
     is_active?: BoolFilter<"b_users"> | boolean
-    daily_chat_limit?: IntFilter<"b_users"> | number
-    token_quota?: BigIntFilter<"b_users"> | bigint | number
-    used_tokens?: BigIntFilter<"b_users"> | bigint | number
     created_at?: DateTimeFilter<"b_users"> | Date | string
     updated_at?: DateTimeFilter<"b_users"> | Date | string
     chat_sessions?: B_chat_sessionsListRelationFilter
@@ -24339,8 +30358,10 @@ export namespace Prisma {
     uploaded_documents?: B_documentsListRelationFilter
     upload_sessions?: B_upload_sessionsListRelationFilter
     model_configs?: B_user_model_configsListRelationFilter
+    daily_quotas?: B_user_daily_quotasListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
     user_sessions?: B_user_sessionsListRelationFilter
+    agent_runs?: B_agent_runsListRelationFilter
   }
 
   export type b_usersOrderByWithRelationInput = {
@@ -24350,9 +30371,6 @@ export namespace Prisma {
     full_name?: SortOrderInput | SortOrder
     avatar_url?: SortOrderInput | SortOrder
     is_active?: SortOrder
-    daily_chat_limit?: SortOrder
-    token_quota?: SortOrder
-    used_tokens?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     chat_sessions?: b_chat_sessionsOrderByRelationAggregateInput
@@ -24361,8 +30379,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsOrderByRelationAggregateInput
     upload_sessions?: b_upload_sessionsOrderByRelationAggregateInput
     model_configs?: b_user_model_configsOrderByRelationAggregateInput
+    daily_quotas?: b_user_daily_quotasOrderByRelationAggregateInput
     kb_invitations?: b_kb_invitationsOrderByRelationAggregateInput
     user_sessions?: b_user_sessionsOrderByRelationAggregateInput
+    agent_runs?: b_agent_runsOrderByRelationAggregateInput
     _relevance?: b_usersOrderByRelevanceInput
   }
 
@@ -24376,9 +30396,6 @@ export namespace Prisma {
     full_name?: StringNullableFilter<"b_users"> | string | null
     avatar_url?: StringNullableFilter<"b_users"> | string | null
     is_active?: BoolFilter<"b_users"> | boolean
-    daily_chat_limit?: IntFilter<"b_users"> | number
-    token_quota?: BigIntFilter<"b_users"> | bigint | number
-    used_tokens?: BigIntFilter<"b_users"> | bigint | number
     created_at?: DateTimeFilter<"b_users"> | Date | string
     updated_at?: DateTimeFilter<"b_users"> | Date | string
     chat_sessions?: B_chat_sessionsListRelationFilter
@@ -24387,8 +30404,10 @@ export namespace Prisma {
     uploaded_documents?: B_documentsListRelationFilter
     upload_sessions?: B_upload_sessionsListRelationFilter
     model_configs?: B_user_model_configsListRelationFilter
+    daily_quotas?: B_user_daily_quotasListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
     user_sessions?: B_user_sessionsListRelationFilter
+    agent_runs?: B_agent_runsListRelationFilter
   }, "id" | "email">
 
   export type b_usersOrderByWithAggregationInput = {
@@ -24398,9 +30417,6 @@ export namespace Prisma {
     full_name?: SortOrderInput | SortOrder
     avatar_url?: SortOrderInput | SortOrder
     is_active?: SortOrder
-    daily_chat_limit?: SortOrder
-    token_quota?: SortOrder
-    used_tokens?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: b_usersCountOrderByAggregateInput
@@ -24420,9 +30436,6 @@ export namespace Prisma {
     full_name?: StringNullableWithAggregatesFilter<"b_users"> | string | null
     avatar_url?: StringNullableWithAggregatesFilter<"b_users"> | string | null
     is_active?: BoolWithAggregatesFilter<"b_users"> | boolean
-    daily_chat_limit?: IntWithAggregatesFilter<"b_users"> | number
-    token_quota?: BigIntWithAggregatesFilter<"b_users"> | bigint | number
-    used_tokens?: BigIntWithAggregatesFilter<"b_users"> | bigint | number
     created_at?: DateTimeWithAggregatesFilter<"b_users"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"b_users"> | Date | string
   }
@@ -24872,6 +30885,84 @@ export namespace Prisma {
     updated_at?: DateTimeWithAggregatesFilter<"b_user_model_configs"> | Date | string
   }
 
+  export type b_user_daily_quotasWhereInput = {
+    AND?: b_user_daily_quotasWhereInput | b_user_daily_quotasWhereInput[]
+    OR?: b_user_daily_quotasWhereInput[]
+    NOT?: b_user_daily_quotasWhereInput | b_user_daily_quotasWhereInput[]
+    id?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    user_id?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    quota_date?: DateTimeFilter<"b_user_daily_quotas"> | Date | string
+    daily_chat_limit?: IntFilter<"b_user_daily_quotas"> | number
+    daily_token_quota?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    used_chat_count?: IntFilter<"b_user_daily_quotas"> | number
+    used_token_count?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    created_at?: DateTimeFilter<"b_user_daily_quotas"> | Date | string
+    updated_at?: DateTimeFilter<"b_user_daily_quotas"> | Date | string
+    b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
+  }
+
+  export type b_user_daily_quotasOrderByWithRelationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    quota_date?: SortOrder
+    daily_chat_limit?: SortOrder
+    daily_token_quota?: SortOrder
+    used_chat_count?: SortOrder
+    used_token_count?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    b_users?: b_usersOrderByWithRelationInput
+  }
+
+  export type b_user_daily_quotasWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    user_id_quota_date?: b_user_daily_quotasUser_idQuota_dateCompoundUniqueInput
+    AND?: b_user_daily_quotasWhereInput | b_user_daily_quotasWhereInput[]
+    OR?: b_user_daily_quotasWhereInput[]
+    NOT?: b_user_daily_quotasWhereInput | b_user_daily_quotasWhereInput[]
+    user_id?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    quota_date?: DateTimeFilter<"b_user_daily_quotas"> | Date | string
+    daily_chat_limit?: IntFilter<"b_user_daily_quotas"> | number
+    daily_token_quota?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    used_chat_count?: IntFilter<"b_user_daily_quotas"> | number
+    used_token_count?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    created_at?: DateTimeFilter<"b_user_daily_quotas"> | Date | string
+    updated_at?: DateTimeFilter<"b_user_daily_quotas"> | Date | string
+    b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
+  }, "id" | "user_id_quota_date">
+
+  export type b_user_daily_quotasOrderByWithAggregationInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    quota_date?: SortOrder
+    daily_chat_limit?: SortOrder
+    daily_token_quota?: SortOrder
+    used_chat_count?: SortOrder
+    used_token_count?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+    _count?: b_user_daily_quotasCountOrderByAggregateInput
+    _avg?: b_user_daily_quotasAvgOrderByAggregateInput
+    _max?: b_user_daily_quotasMaxOrderByAggregateInput
+    _min?: b_user_daily_quotasMinOrderByAggregateInput
+    _sum?: b_user_daily_quotasSumOrderByAggregateInput
+  }
+
+  export type b_user_daily_quotasScalarWhereWithAggregatesInput = {
+    AND?: b_user_daily_quotasScalarWhereWithAggregatesInput | b_user_daily_quotasScalarWhereWithAggregatesInput[]
+    OR?: b_user_daily_quotasScalarWhereWithAggregatesInput[]
+    NOT?: b_user_daily_quotasScalarWhereWithAggregatesInput | b_user_daily_quotasScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"b_user_daily_quotas"> | bigint | number
+    user_id?: BigIntWithAggregatesFilter<"b_user_daily_quotas"> | bigint | number
+    quota_date?: DateTimeWithAggregatesFilter<"b_user_daily_quotas"> | Date | string
+    daily_chat_limit?: IntWithAggregatesFilter<"b_user_daily_quotas"> | number
+    daily_token_quota?: BigIntWithAggregatesFilter<"b_user_daily_quotas"> | bigint | number
+    used_chat_count?: IntWithAggregatesFilter<"b_user_daily_quotas"> | number
+    used_token_count?: BigIntWithAggregatesFilter<"b_user_daily_quotas"> | bigint | number
+    created_at?: DateTimeWithAggregatesFilter<"b_user_daily_quotas"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"b_user_daily_quotas"> | Date | string
+  }
+
   export type b_knowledge_basesWhereInput = {
     AND?: b_knowledge_basesWhereInput | b_knowledge_basesWhereInput[]
     OR?: b_knowledge_basesWhereInput[]
@@ -24890,6 +30981,7 @@ export namespace Prisma {
     upload_sessions?: B_upload_sessionsListRelationFilter
     kb_members?: B_kb_membersListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
+    message_citations?: B_chat_message_citationsListRelationFilter
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
   }
 
@@ -24908,6 +31000,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsOrderByRelationAggregateInput
     kb_members?: b_kb_membersOrderByRelationAggregateInput
     kb_invitations?: b_kb_invitationsOrderByRelationAggregateInput
+    message_citations?: b_chat_message_citationsOrderByRelationAggregateInput
     b_users?: b_usersOrderByWithRelationInput
     _relevance?: b_knowledge_basesOrderByRelevanceInput
   }
@@ -24930,6 +31023,7 @@ export namespace Prisma {
     upload_sessions?: B_upload_sessionsListRelationFilter
     kb_members?: B_kb_membersListRelationFilter
     kb_invitations?: B_kb_invitationsListRelationFilter
+    message_citations?: B_chat_message_citationsListRelationFilter
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
   }, "id">
 
@@ -25150,6 +31244,7 @@ export namespace Prisma {
     document_chunks?: B_document_chunksListRelationFilter
     processing_tasks?: B_document_processing_tasksListRelationFilter
     upload_sessions?: B_upload_sessionsListRelationFilter
+    message_citations?: B_chat_message_citationsListRelationFilter
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
     b_users?: XOR<B_usersNullableScalarRelationFilter, b_usersWhereInput> | null
   }
@@ -25181,6 +31276,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksOrderByRelationAggregateInput
     processing_tasks?: b_document_processing_tasksOrderByRelationAggregateInput
     upload_sessions?: b_upload_sessionsOrderByRelationAggregateInput
+    message_citations?: b_chat_message_citationsOrderByRelationAggregateInput
     b_knowledge_bases?: b_knowledge_basesOrderByWithRelationInput
     b_users?: b_usersOrderByWithRelationInput
     _relevance?: b_documentsOrderByRelevanceInput
@@ -25216,6 +31312,7 @@ export namespace Prisma {
     document_chunks?: B_document_chunksListRelationFilter
     processing_tasks?: B_document_processing_tasksListRelationFilter
     upload_sessions?: B_upload_sessionsListRelationFilter
+    message_citations?: B_chat_message_citationsListRelationFilter
     b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
     b_users?: XOR<B_usersNullableScalarRelationFilter, b_usersWhereInput> | null
   }, "id">
@@ -25517,6 +31614,7 @@ export namespace Prisma {
     metadata_json?: JsonNullableFilter<"b_document_chunks">
     embedding_status?: StringFilter<"b_document_chunks"> | string
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
+    message_citations?: B_chat_message_citationsListRelationFilter
     b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
   }
 
@@ -25533,6 +31631,7 @@ export namespace Prisma {
     metadata_json?: SortOrderInput | SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
+    message_citations?: b_chat_message_citationsOrderByRelationAggregateInput
     b_documents?: b_documentsOrderByWithRelationInput
     _relevance?: b_document_chunksOrderByRelevanceInput
   }
@@ -25553,6 +31652,7 @@ export namespace Prisma {
     metadata_json?: JsonNullableFilter<"b_document_chunks">
     embedding_status?: StringFilter<"b_document_chunks"> | string
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
+    message_citations?: B_chat_message_citationsListRelationFilter
     b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
   }, "id">
 
@@ -25592,6 +31692,76 @@ export namespace Prisma {
     metadata_json?: JsonNullableWithAggregatesFilter<"b_document_chunks">
     embedding_status?: StringWithAggregatesFilter<"b_document_chunks"> | string
     created_at?: DateTimeWithAggregatesFilter<"b_document_chunks"> | Date | string
+  }
+
+  export type b_document_chunk_search_indexWhereInput = {
+    AND?: b_document_chunk_search_indexWhereInput | b_document_chunk_search_indexWhereInput[]
+    OR?: b_document_chunk_search_indexWhereInput[]
+    NOT?: b_document_chunk_search_indexWhereInput | b_document_chunk_search_indexWhereInput[]
+    chunk_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
+    doc_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
+    kb_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
+    title?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
+    title_path?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
+    content_plain?: StringFilter<"b_document_chunk_search_index"> | string
+    keyword_text?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
+    created_at?: DateTimeFilter<"b_document_chunk_search_index"> | Date | string
+  }
+
+  export type b_document_chunk_search_indexOrderByWithRelationInput = {
+    chunk_id?: SortOrder
+    doc_id?: SortOrder
+    kb_id?: SortOrder
+    title?: SortOrderInput | SortOrder
+    title_path?: SortOrderInput | SortOrder
+    content_plain?: SortOrder
+    keyword_text?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    _relevance?: b_document_chunk_search_indexOrderByRelevanceInput
+  }
+
+  export type b_document_chunk_search_indexWhereUniqueInput = Prisma.AtLeast<{
+    chunk_id?: bigint | number
+    AND?: b_document_chunk_search_indexWhereInput | b_document_chunk_search_indexWhereInput[]
+    OR?: b_document_chunk_search_indexWhereInput[]
+    NOT?: b_document_chunk_search_indexWhereInput | b_document_chunk_search_indexWhereInput[]
+    doc_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
+    kb_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
+    title?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
+    title_path?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
+    content_plain?: StringFilter<"b_document_chunk_search_index"> | string
+    keyword_text?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
+    created_at?: DateTimeFilter<"b_document_chunk_search_index"> | Date | string
+  }, "chunk_id">
+
+  export type b_document_chunk_search_indexOrderByWithAggregationInput = {
+    chunk_id?: SortOrder
+    doc_id?: SortOrder
+    kb_id?: SortOrder
+    title?: SortOrderInput | SortOrder
+    title_path?: SortOrderInput | SortOrder
+    content_plain?: SortOrder
+    keyword_text?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    _count?: b_document_chunk_search_indexCountOrderByAggregateInput
+    _avg?: b_document_chunk_search_indexAvgOrderByAggregateInput
+    _max?: b_document_chunk_search_indexMaxOrderByAggregateInput
+    _min?: b_document_chunk_search_indexMinOrderByAggregateInput
+    _sum?: b_document_chunk_search_indexSumOrderByAggregateInput
+  }
+
+  export type b_document_chunk_search_indexScalarWhereWithAggregatesInput = {
+    AND?: b_document_chunk_search_indexScalarWhereWithAggregatesInput | b_document_chunk_search_indexScalarWhereWithAggregatesInput[]
+    OR?: b_document_chunk_search_indexScalarWhereWithAggregatesInput[]
+    NOT?: b_document_chunk_search_indexScalarWhereWithAggregatesInput | b_document_chunk_search_indexScalarWhereWithAggregatesInput[]
+    chunk_id?: BigIntWithAggregatesFilter<"b_document_chunk_search_index"> | bigint | number
+    doc_id?: BigIntWithAggregatesFilter<"b_document_chunk_search_index"> | bigint | number
+    kb_id?: BigIntWithAggregatesFilter<"b_document_chunk_search_index"> | bigint | number
+    title?: StringNullableWithAggregatesFilter<"b_document_chunk_search_index"> | string | null
+    title_path?: StringNullableWithAggregatesFilter<"b_document_chunk_search_index"> | string | null
+    content_plain?: StringWithAggregatesFilter<"b_document_chunk_search_index"> | string
+    keyword_text?: StringNullableWithAggregatesFilter<"b_document_chunk_search_index"> | string | null
+    created_at?: DateTimeWithAggregatesFilter<"b_document_chunk_search_index"> | Date | string
   }
 
   export type b_document_processing_tasksWhereInput = {
@@ -25711,9 +31881,14 @@ export namespace Prisma {
     user_id?: BigIntFilter<"b_chat_sessions"> | bigint | number
     kb_id?: BigIntNullableFilter<"b_chat_sessions"> | bigint | number | null
     title?: StringFilter<"b_chat_sessions"> | string
+    summary_text?: StringNullableFilter<"b_chat_sessions"> | string | null
+    last_selected_kb_ids_json?: JsonNullableFilter<"b_chat_sessions">
+    last_chat_mode?: StringNullableFilter<"b_chat_sessions"> | string | null
+    last_message_at?: DateTimeNullableFilter<"b_chat_sessions"> | Date | string | null
     created_at?: DateTimeFilter<"b_chat_sessions"> | Date | string
     updated_at?: DateTimeFilter<"b_chat_sessions"> | Date | string
     chat_messages?: B_chat_messagesListRelationFilter
+    agent_runs?: B_agent_runsListRelationFilter
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
   }
 
@@ -25722,9 +31897,14 @@ export namespace Prisma {
     user_id?: SortOrder
     kb_id?: SortOrderInput | SortOrder
     title?: SortOrder
+    summary_text?: SortOrderInput | SortOrder
+    last_selected_kb_ids_json?: SortOrderInput | SortOrder
+    last_chat_mode?: SortOrderInput | SortOrder
+    last_message_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     chat_messages?: b_chat_messagesOrderByRelationAggregateInput
+    agent_runs?: b_agent_runsOrderByRelationAggregateInput
     b_users?: b_usersOrderByWithRelationInput
     _relevance?: b_chat_sessionsOrderByRelevanceInput
   }
@@ -25737,9 +31917,14 @@ export namespace Prisma {
     user_id?: BigIntFilter<"b_chat_sessions"> | bigint | number
     kb_id?: BigIntNullableFilter<"b_chat_sessions"> | bigint | number | null
     title?: StringFilter<"b_chat_sessions"> | string
+    summary_text?: StringNullableFilter<"b_chat_sessions"> | string | null
+    last_selected_kb_ids_json?: JsonNullableFilter<"b_chat_sessions">
+    last_chat_mode?: StringNullableFilter<"b_chat_sessions"> | string | null
+    last_message_at?: DateTimeNullableFilter<"b_chat_sessions"> | Date | string | null
     created_at?: DateTimeFilter<"b_chat_sessions"> | Date | string
     updated_at?: DateTimeFilter<"b_chat_sessions"> | Date | string
     chat_messages?: B_chat_messagesListRelationFilter
+    agent_runs?: B_agent_runsListRelationFilter
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
   }, "id">
 
@@ -25748,6 +31933,10 @@ export namespace Prisma {
     user_id?: SortOrder
     kb_id?: SortOrderInput | SortOrder
     title?: SortOrder
+    summary_text?: SortOrderInput | SortOrder
+    last_selected_kb_ids_json?: SortOrderInput | SortOrder
+    last_chat_mode?: SortOrderInput | SortOrder
+    last_message_at?: SortOrderInput | SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
     _count?: b_chat_sessionsCountOrderByAggregateInput
@@ -25765,6 +31954,10 @@ export namespace Prisma {
     user_id?: BigIntWithAggregatesFilter<"b_chat_sessions"> | bigint | number
     kb_id?: BigIntNullableWithAggregatesFilter<"b_chat_sessions"> | bigint | number | null
     title?: StringWithAggregatesFilter<"b_chat_sessions"> | string
+    summary_text?: StringNullableWithAggregatesFilter<"b_chat_sessions"> | string | null
+    last_selected_kb_ids_json?: JsonNullableWithAggregatesFilter<"b_chat_sessions">
+    last_chat_mode?: StringNullableWithAggregatesFilter<"b_chat_sessions"> | string | null
+    last_message_at?: DateTimeNullableWithAggregatesFilter<"b_chat_sessions"> | Date | string | null
     created_at?: DateTimeWithAggregatesFilter<"b_chat_sessions"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"b_chat_sessions"> | Date | string
   }
@@ -25780,10 +31973,21 @@ export namespace Prisma {
     references?: JsonNullableFilter<"b_chat_messages">
     tool_calls?: JsonNullableFilter<"b_chat_messages">
     tokens_used?: IntNullableFilter<"b_chat_messages"> | number | null
+    message_status?: StringFilter<"b_chat_messages"> | string
+    metadata_json?: JsonNullableFilter<"b_chat_messages">
+    model_name?: StringNullableFilter<"b_chat_messages"> | string | null
+    finish_reason?: StringNullableFilter<"b_chat_messages"> | string | null
+    trace_id?: StringNullableFilter<"b_chat_messages"> | string | null
+    chat_mode?: StringNullableFilter<"b_chat_messages"> | string | null
+    selected_kb_ids_json?: JsonNullableFilter<"b_chat_messages">
+    resolved_kb_ids_json?: JsonNullableFilter<"b_chat_messages">
+    stream_started_at?: DateTimeNullableFilter<"b_chat_messages"> | Date | string | null
+    stream_finished_at?: DateTimeNullableFilter<"b_chat_messages"> | Date | string | null
     feedback_type?: StringNullableFilter<"b_chat_messages"> | string | null
     feedback_reason?: StringNullableFilter<"b_chat_messages"> | string | null
     created_at?: DateTimeFilter<"b_chat_messages"> | Date | string
     b_chat_sessions?: XOR<B_chat_sessionsScalarRelationFilter, b_chat_sessionsWhereInput>
+    message_citations?: B_chat_message_citationsListRelationFilter
   }
 
   export type b_chat_messagesOrderByWithRelationInput = {
@@ -25794,10 +31998,21 @@ export namespace Prisma {
     references?: SortOrderInput | SortOrder
     tool_calls?: SortOrderInput | SortOrder
     tokens_used?: SortOrderInput | SortOrder
+    message_status?: SortOrder
+    metadata_json?: SortOrderInput | SortOrder
+    model_name?: SortOrderInput | SortOrder
+    finish_reason?: SortOrderInput | SortOrder
+    trace_id?: SortOrderInput | SortOrder
+    chat_mode?: SortOrderInput | SortOrder
+    selected_kb_ids_json?: SortOrderInput | SortOrder
+    resolved_kb_ids_json?: SortOrderInput | SortOrder
+    stream_started_at?: SortOrderInput | SortOrder
+    stream_finished_at?: SortOrderInput | SortOrder
     feedback_type?: SortOrderInput | SortOrder
     feedback_reason?: SortOrderInput | SortOrder
     created_at?: SortOrder
     b_chat_sessions?: b_chat_sessionsOrderByWithRelationInput
+    message_citations?: b_chat_message_citationsOrderByRelationAggregateInput
     _relevance?: b_chat_messagesOrderByRelevanceInput
   }
 
@@ -25812,10 +32027,21 @@ export namespace Prisma {
     references?: JsonNullableFilter<"b_chat_messages">
     tool_calls?: JsonNullableFilter<"b_chat_messages">
     tokens_used?: IntNullableFilter<"b_chat_messages"> | number | null
+    message_status?: StringFilter<"b_chat_messages"> | string
+    metadata_json?: JsonNullableFilter<"b_chat_messages">
+    model_name?: StringNullableFilter<"b_chat_messages"> | string | null
+    finish_reason?: StringNullableFilter<"b_chat_messages"> | string | null
+    trace_id?: StringNullableFilter<"b_chat_messages"> | string | null
+    chat_mode?: StringNullableFilter<"b_chat_messages"> | string | null
+    selected_kb_ids_json?: JsonNullableFilter<"b_chat_messages">
+    resolved_kb_ids_json?: JsonNullableFilter<"b_chat_messages">
+    stream_started_at?: DateTimeNullableFilter<"b_chat_messages"> | Date | string | null
+    stream_finished_at?: DateTimeNullableFilter<"b_chat_messages"> | Date | string | null
     feedback_type?: StringNullableFilter<"b_chat_messages"> | string | null
     feedback_reason?: StringNullableFilter<"b_chat_messages"> | string | null
     created_at?: DateTimeFilter<"b_chat_messages"> | Date | string
     b_chat_sessions?: XOR<B_chat_sessionsScalarRelationFilter, b_chat_sessionsWhereInput>
+    message_citations?: B_chat_message_citationsListRelationFilter
   }, "id">
 
   export type b_chat_messagesOrderByWithAggregationInput = {
@@ -25826,6 +32052,16 @@ export namespace Prisma {
     references?: SortOrderInput | SortOrder
     tool_calls?: SortOrderInput | SortOrder
     tokens_used?: SortOrderInput | SortOrder
+    message_status?: SortOrder
+    metadata_json?: SortOrderInput | SortOrder
+    model_name?: SortOrderInput | SortOrder
+    finish_reason?: SortOrderInput | SortOrder
+    trace_id?: SortOrderInput | SortOrder
+    chat_mode?: SortOrderInput | SortOrder
+    selected_kb_ids_json?: SortOrderInput | SortOrder
+    resolved_kb_ids_json?: SortOrderInput | SortOrder
+    stream_started_at?: SortOrderInput | SortOrder
+    stream_finished_at?: SortOrderInput | SortOrder
     feedback_type?: SortOrderInput | SortOrder
     feedback_reason?: SortOrderInput | SortOrder
     created_at?: SortOrder
@@ -25847,9 +32083,297 @@ export namespace Prisma {
     references?: JsonNullableWithAggregatesFilter<"b_chat_messages">
     tool_calls?: JsonNullableWithAggregatesFilter<"b_chat_messages">
     tokens_used?: IntNullableWithAggregatesFilter<"b_chat_messages"> | number | null
+    message_status?: StringWithAggregatesFilter<"b_chat_messages"> | string
+    metadata_json?: JsonNullableWithAggregatesFilter<"b_chat_messages">
+    model_name?: StringNullableWithAggregatesFilter<"b_chat_messages"> | string | null
+    finish_reason?: StringNullableWithAggregatesFilter<"b_chat_messages"> | string | null
+    trace_id?: StringNullableWithAggregatesFilter<"b_chat_messages"> | string | null
+    chat_mode?: StringNullableWithAggregatesFilter<"b_chat_messages"> | string | null
+    selected_kb_ids_json?: JsonNullableWithAggregatesFilter<"b_chat_messages">
+    resolved_kb_ids_json?: JsonNullableWithAggregatesFilter<"b_chat_messages">
+    stream_started_at?: DateTimeNullableWithAggregatesFilter<"b_chat_messages"> | Date | string | null
+    stream_finished_at?: DateTimeNullableWithAggregatesFilter<"b_chat_messages"> | Date | string | null
     feedback_type?: StringNullableWithAggregatesFilter<"b_chat_messages"> | string | null
     feedback_reason?: StringNullableWithAggregatesFilter<"b_chat_messages"> | string | null
     created_at?: DateTimeWithAggregatesFilter<"b_chat_messages"> | Date | string
+  }
+
+  export type b_chat_message_citationsWhereInput = {
+    AND?: b_chat_message_citationsWhereInput | b_chat_message_citationsWhereInput[]
+    OR?: b_chat_message_citationsWhereInput[]
+    NOT?: b_chat_message_citationsWhereInput | b_chat_message_citationsWhereInput[]
+    id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    message_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    kb_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    doc_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    chunk_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    score?: FloatNullableFilter<"b_chat_message_citations"> | number | null
+    quote?: StringNullableFilter<"b_chat_message_citations"> | string | null
+    order_no?: IntFilter<"b_chat_message_citations"> | number
+    created_at?: DateTimeFilter<"b_chat_message_citations"> | Date | string
+    b_chat_messages?: XOR<B_chat_messagesScalarRelationFilter, b_chat_messagesWhereInput>
+    b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
+    b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
+    b_document_chunks?: XOR<B_document_chunksScalarRelationFilter, b_document_chunksWhereInput>
+  }
+
+  export type b_chat_message_citationsOrderByWithRelationInput = {
+    id?: SortOrder
+    message_id?: SortOrder
+    kb_id?: SortOrder
+    doc_id?: SortOrder
+    chunk_id?: SortOrder
+    score?: SortOrderInput | SortOrder
+    quote?: SortOrderInput | SortOrder
+    order_no?: SortOrder
+    created_at?: SortOrder
+    b_chat_messages?: b_chat_messagesOrderByWithRelationInput
+    b_knowledge_bases?: b_knowledge_basesOrderByWithRelationInput
+    b_documents?: b_documentsOrderByWithRelationInput
+    b_document_chunks?: b_document_chunksOrderByWithRelationInput
+    _relevance?: b_chat_message_citationsOrderByRelevanceInput
+  }
+
+  export type b_chat_message_citationsWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: b_chat_message_citationsWhereInput | b_chat_message_citationsWhereInput[]
+    OR?: b_chat_message_citationsWhereInput[]
+    NOT?: b_chat_message_citationsWhereInput | b_chat_message_citationsWhereInput[]
+    message_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    kb_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    doc_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    chunk_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    score?: FloatNullableFilter<"b_chat_message_citations"> | number | null
+    quote?: StringNullableFilter<"b_chat_message_citations"> | string | null
+    order_no?: IntFilter<"b_chat_message_citations"> | number
+    created_at?: DateTimeFilter<"b_chat_message_citations"> | Date | string
+    b_chat_messages?: XOR<B_chat_messagesScalarRelationFilter, b_chat_messagesWhereInput>
+    b_knowledge_bases?: XOR<B_knowledge_basesScalarRelationFilter, b_knowledge_basesWhereInput>
+    b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
+    b_document_chunks?: XOR<B_document_chunksScalarRelationFilter, b_document_chunksWhereInput>
+  }, "id">
+
+  export type b_chat_message_citationsOrderByWithAggregationInput = {
+    id?: SortOrder
+    message_id?: SortOrder
+    kb_id?: SortOrder
+    doc_id?: SortOrder
+    chunk_id?: SortOrder
+    score?: SortOrderInput | SortOrder
+    quote?: SortOrderInput | SortOrder
+    order_no?: SortOrder
+    created_at?: SortOrder
+    _count?: b_chat_message_citationsCountOrderByAggregateInput
+    _avg?: b_chat_message_citationsAvgOrderByAggregateInput
+    _max?: b_chat_message_citationsMaxOrderByAggregateInput
+    _min?: b_chat_message_citationsMinOrderByAggregateInput
+    _sum?: b_chat_message_citationsSumOrderByAggregateInput
+  }
+
+  export type b_chat_message_citationsScalarWhereWithAggregatesInput = {
+    AND?: b_chat_message_citationsScalarWhereWithAggregatesInput | b_chat_message_citationsScalarWhereWithAggregatesInput[]
+    OR?: b_chat_message_citationsScalarWhereWithAggregatesInput[]
+    NOT?: b_chat_message_citationsScalarWhereWithAggregatesInput | b_chat_message_citationsScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"b_chat_message_citations"> | bigint | number
+    message_id?: BigIntWithAggregatesFilter<"b_chat_message_citations"> | bigint | number
+    kb_id?: BigIntWithAggregatesFilter<"b_chat_message_citations"> | bigint | number
+    doc_id?: BigIntWithAggregatesFilter<"b_chat_message_citations"> | bigint | number
+    chunk_id?: BigIntWithAggregatesFilter<"b_chat_message_citations"> | bigint | number
+    score?: FloatNullableWithAggregatesFilter<"b_chat_message_citations"> | number | null
+    quote?: StringNullableWithAggregatesFilter<"b_chat_message_citations"> | string | null
+    order_no?: IntWithAggregatesFilter<"b_chat_message_citations"> | number
+    created_at?: DateTimeWithAggregatesFilter<"b_chat_message_citations"> | Date | string
+  }
+
+  export type b_agent_runsWhereInput = {
+    AND?: b_agent_runsWhereInput | b_agent_runsWhereInput[]
+    OR?: b_agent_runsWhereInput[]
+    NOT?: b_agent_runsWhereInput | b_agent_runsWhereInput[]
+    id?: StringFilter<"b_agent_runs"> | string
+    session_id?: StringFilter<"b_agent_runs"> | string
+    user_id?: BigIntFilter<"b_agent_runs"> | bigint | number
+    user_message_id?: BigIntFilter<"b_agent_runs"> | bigint | number
+    assistant_message_id?: BigIntNullableFilter<"b_agent_runs"> | bigint | number | null
+    status?: StringFilter<"b_agent_runs"> | string
+    total_tokens?: IntNullableFilter<"b_agent_runs"> | number | null
+    duration_ms?: IntNullableFilter<"b_agent_runs"> | number | null
+    chat_mode?: StringNullableFilter<"b_agent_runs"> | string | null
+    selected_kb_ids_json?: JsonNullableFilter<"b_agent_runs">
+    resolved_kb_ids_json?: JsonNullableFilter<"b_agent_runs">
+    routed_query_json?: JsonNullableFilter<"b_agent_runs">
+    metadata_json?: JsonNullableFilter<"b_agent_runs">
+    created_at?: DateTimeFilter<"b_agent_runs"> | Date | string
+    finished_at?: DateTimeNullableFilter<"b_agent_runs"> | Date | string | null
+    b_chat_sessions?: XOR<B_chat_sessionsScalarRelationFilter, b_chat_sessionsWhereInput>
+    b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
+  }
+
+  export type b_agent_runsOrderByWithRelationInput = {
+    id?: SortOrder
+    session_id?: SortOrder
+    user_id?: SortOrder
+    user_message_id?: SortOrder
+    assistant_message_id?: SortOrderInput | SortOrder
+    status?: SortOrder
+    total_tokens?: SortOrderInput | SortOrder
+    duration_ms?: SortOrderInput | SortOrder
+    chat_mode?: SortOrderInput | SortOrder
+    selected_kb_ids_json?: SortOrderInput | SortOrder
+    resolved_kb_ids_json?: SortOrderInput | SortOrder
+    routed_query_json?: SortOrderInput | SortOrder
+    metadata_json?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    finished_at?: SortOrderInput | SortOrder
+    b_chat_sessions?: b_chat_sessionsOrderByWithRelationInput
+    b_users?: b_usersOrderByWithRelationInput
+    _relevance?: b_agent_runsOrderByRelevanceInput
+  }
+
+  export type b_agent_runsWhereUniqueInput = Prisma.AtLeast<{
+    id?: string
+    AND?: b_agent_runsWhereInput | b_agent_runsWhereInput[]
+    OR?: b_agent_runsWhereInput[]
+    NOT?: b_agent_runsWhereInput | b_agent_runsWhereInput[]
+    session_id?: StringFilter<"b_agent_runs"> | string
+    user_id?: BigIntFilter<"b_agent_runs"> | bigint | number
+    user_message_id?: BigIntFilter<"b_agent_runs"> | bigint | number
+    assistant_message_id?: BigIntNullableFilter<"b_agent_runs"> | bigint | number | null
+    status?: StringFilter<"b_agent_runs"> | string
+    total_tokens?: IntNullableFilter<"b_agent_runs"> | number | null
+    duration_ms?: IntNullableFilter<"b_agent_runs"> | number | null
+    chat_mode?: StringNullableFilter<"b_agent_runs"> | string | null
+    selected_kb_ids_json?: JsonNullableFilter<"b_agent_runs">
+    resolved_kb_ids_json?: JsonNullableFilter<"b_agent_runs">
+    routed_query_json?: JsonNullableFilter<"b_agent_runs">
+    metadata_json?: JsonNullableFilter<"b_agent_runs">
+    created_at?: DateTimeFilter<"b_agent_runs"> | Date | string
+    finished_at?: DateTimeNullableFilter<"b_agent_runs"> | Date | string | null
+    b_chat_sessions?: XOR<B_chat_sessionsScalarRelationFilter, b_chat_sessionsWhereInput>
+    b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
+  }, "id">
+
+  export type b_agent_runsOrderByWithAggregationInput = {
+    id?: SortOrder
+    session_id?: SortOrder
+    user_id?: SortOrder
+    user_message_id?: SortOrder
+    assistant_message_id?: SortOrderInput | SortOrder
+    status?: SortOrder
+    total_tokens?: SortOrderInput | SortOrder
+    duration_ms?: SortOrderInput | SortOrder
+    chat_mode?: SortOrderInput | SortOrder
+    selected_kb_ids_json?: SortOrderInput | SortOrder
+    resolved_kb_ids_json?: SortOrderInput | SortOrder
+    routed_query_json?: SortOrderInput | SortOrder
+    metadata_json?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    finished_at?: SortOrderInput | SortOrder
+    _count?: b_agent_runsCountOrderByAggregateInput
+    _avg?: b_agent_runsAvgOrderByAggregateInput
+    _max?: b_agent_runsMaxOrderByAggregateInput
+    _min?: b_agent_runsMinOrderByAggregateInput
+    _sum?: b_agent_runsSumOrderByAggregateInput
+  }
+
+  export type b_agent_runsScalarWhereWithAggregatesInput = {
+    AND?: b_agent_runsScalarWhereWithAggregatesInput | b_agent_runsScalarWhereWithAggregatesInput[]
+    OR?: b_agent_runsScalarWhereWithAggregatesInput[]
+    NOT?: b_agent_runsScalarWhereWithAggregatesInput | b_agent_runsScalarWhereWithAggregatesInput[]
+    id?: StringWithAggregatesFilter<"b_agent_runs"> | string
+    session_id?: StringWithAggregatesFilter<"b_agent_runs"> | string
+    user_id?: BigIntWithAggregatesFilter<"b_agent_runs"> | bigint | number
+    user_message_id?: BigIntWithAggregatesFilter<"b_agent_runs"> | bigint | number
+    assistant_message_id?: BigIntNullableWithAggregatesFilter<"b_agent_runs"> | bigint | number | null
+    status?: StringWithAggregatesFilter<"b_agent_runs"> | string
+    total_tokens?: IntNullableWithAggregatesFilter<"b_agent_runs"> | number | null
+    duration_ms?: IntNullableWithAggregatesFilter<"b_agent_runs"> | number | null
+    chat_mode?: StringNullableWithAggregatesFilter<"b_agent_runs"> | string | null
+    selected_kb_ids_json?: JsonNullableWithAggregatesFilter<"b_agent_runs">
+    resolved_kb_ids_json?: JsonNullableWithAggregatesFilter<"b_agent_runs">
+    routed_query_json?: JsonNullableWithAggregatesFilter<"b_agent_runs">
+    metadata_json?: JsonNullableWithAggregatesFilter<"b_agent_runs">
+    created_at?: DateTimeWithAggregatesFilter<"b_agent_runs"> | Date | string
+    finished_at?: DateTimeNullableWithAggregatesFilter<"b_agent_runs"> | Date | string | null
+  }
+
+  export type b_agent_stepsWhereInput = {
+    AND?: b_agent_stepsWhereInput | b_agent_stepsWhereInput[]
+    OR?: b_agent_stepsWhereInput[]
+    NOT?: b_agent_stepsWhereInput | b_agent_stepsWhereInput[]
+    id?: BigIntFilter<"b_agent_steps"> | bigint | number
+    run_id?: StringFilter<"b_agent_steps"> | string
+    agent_name?: StringFilter<"b_agent_steps"> | string
+    step_type?: StringFilter<"b_agent_steps"> | string
+    status?: StringFilter<"b_agent_steps"> | string
+    input_json?: JsonNullableFilter<"b_agent_steps">
+    output_json?: JsonNullableFilter<"b_agent_steps">
+    duration_ms?: IntNullableFilter<"b_agent_steps"> | number | null
+    started_at?: DateTimeFilter<"b_agent_steps"> | Date | string
+    finished_at?: DateTimeNullableFilter<"b_agent_steps"> | Date | string | null
+  }
+
+  export type b_agent_stepsOrderByWithRelationInput = {
+    id?: SortOrder
+    run_id?: SortOrder
+    agent_name?: SortOrder
+    step_type?: SortOrder
+    status?: SortOrder
+    input_json?: SortOrderInput | SortOrder
+    output_json?: SortOrderInput | SortOrder
+    duration_ms?: SortOrderInput | SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrderInput | SortOrder
+    _relevance?: b_agent_stepsOrderByRelevanceInput
+  }
+
+  export type b_agent_stepsWhereUniqueInput = Prisma.AtLeast<{
+    id?: bigint | number
+    AND?: b_agent_stepsWhereInput | b_agent_stepsWhereInput[]
+    OR?: b_agent_stepsWhereInput[]
+    NOT?: b_agent_stepsWhereInput | b_agent_stepsWhereInput[]
+    run_id?: StringFilter<"b_agent_steps"> | string
+    agent_name?: StringFilter<"b_agent_steps"> | string
+    step_type?: StringFilter<"b_agent_steps"> | string
+    status?: StringFilter<"b_agent_steps"> | string
+    input_json?: JsonNullableFilter<"b_agent_steps">
+    output_json?: JsonNullableFilter<"b_agent_steps">
+    duration_ms?: IntNullableFilter<"b_agent_steps"> | number | null
+    started_at?: DateTimeFilter<"b_agent_steps"> | Date | string
+    finished_at?: DateTimeNullableFilter<"b_agent_steps"> | Date | string | null
+  }, "id">
+
+  export type b_agent_stepsOrderByWithAggregationInput = {
+    id?: SortOrder
+    run_id?: SortOrder
+    agent_name?: SortOrder
+    step_type?: SortOrder
+    status?: SortOrder
+    input_json?: SortOrderInput | SortOrder
+    output_json?: SortOrderInput | SortOrder
+    duration_ms?: SortOrderInput | SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrderInput | SortOrder
+    _count?: b_agent_stepsCountOrderByAggregateInput
+    _avg?: b_agent_stepsAvgOrderByAggregateInput
+    _max?: b_agent_stepsMaxOrderByAggregateInput
+    _min?: b_agent_stepsMinOrderByAggregateInput
+    _sum?: b_agent_stepsSumOrderByAggregateInput
+  }
+
+  export type b_agent_stepsScalarWhereWithAggregatesInput = {
+    AND?: b_agent_stepsScalarWhereWithAggregatesInput | b_agent_stepsScalarWhereWithAggregatesInput[]
+    OR?: b_agent_stepsScalarWhereWithAggregatesInput[]
+    NOT?: b_agent_stepsScalarWhereWithAggregatesInput | b_agent_stepsScalarWhereWithAggregatesInput[]
+    id?: BigIntWithAggregatesFilter<"b_agent_steps"> | bigint | number
+    run_id?: StringWithAggregatesFilter<"b_agent_steps"> | string
+    agent_name?: StringWithAggregatesFilter<"b_agent_steps"> | string
+    step_type?: StringWithAggregatesFilter<"b_agent_steps"> | string
+    status?: StringWithAggregatesFilter<"b_agent_steps"> | string
+    input_json?: JsonNullableWithAggregatesFilter<"b_agent_steps">
+    output_json?: JsonNullableWithAggregatesFilter<"b_agent_steps">
+    duration_ms?: IntNullableWithAggregatesFilter<"b_agent_steps"> | number | null
+    started_at?: DateTimeWithAggregatesFilter<"b_agent_steps"> | Date | string
+    finished_at?: DateTimeNullableWithAggregatesFilter<"b_agent_steps"> | Date | string | null
   }
 
   export type sys_audit_logsWhereInput = {
@@ -26048,9 +32572,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
@@ -26059,8 +32580,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUncheckedCreateInput = {
@@ -26070,9 +32593,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -26081,8 +32601,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUpdateInput = {
@@ -26092,9 +32614,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
@@ -26103,8 +32622,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersUncheckedUpdateInput = {
@@ -26114,9 +32635,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -26125,8 +32643,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersCreateManyInput = {
@@ -26136,9 +32656,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -26150,9 +32667,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26164,9 +32678,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -26652,6 +33163,89 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type b_user_daily_quotasCreateInput = {
+    id?: bigint | number
+    quota_date: Date | string
+    daily_chat_limit?: number
+    daily_token_quota?: bigint | number
+    used_chat_count?: number
+    used_token_count?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+    b_users: b_usersCreateNestedOneWithoutDaily_quotasInput
+  }
+
+  export type b_user_daily_quotasUncheckedCreateInput = {
+    id?: bigint | number
+    user_id: bigint | number
+    quota_date: Date | string
+    daily_chat_limit?: number
+    daily_token_quota?: bigint | number
+    used_chat_count?: number
+    used_token_count?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_user_daily_quotasUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    quota_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    daily_token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_chat_count?: IntFieldUpdateOperationsInput | number
+    used_token_count?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_users?: b_usersUpdateOneRequiredWithoutDaily_quotasNestedInput
+  }
+
+  export type b_user_daily_quotasUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    quota_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    daily_token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_chat_count?: IntFieldUpdateOperationsInput | number
+    used_token_count?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_user_daily_quotasCreateManyInput = {
+    id?: bigint | number
+    user_id: bigint | number
+    quota_date: Date | string
+    daily_chat_limit?: number
+    daily_token_quota?: bigint | number
+    used_chat_count?: number
+    used_token_count?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_user_daily_quotasUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    quota_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    daily_token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_chat_count?: IntFieldUpdateOperationsInput | number
+    used_token_count?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_user_daily_quotasUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    quota_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    daily_token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_chat_count?: IntFieldUpdateOperationsInput | number
+    used_token_count?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type b_knowledge_basesCreateInput = {
     id?: bigint | number
     name: string
@@ -26666,6 +33260,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_knowledge_basesInput
     b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
   }
 
@@ -26684,6 +33279,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
 
   export type b_knowledge_basesUpdateInput = {
@@ -26700,6 +33296,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_knowledge_basesNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
   }
 
@@ -26718,6 +33315,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
   export type b_knowledge_basesCreateManyInput = {
@@ -26933,6 +33531,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
     processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
@@ -26964,6 +33563,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
     processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsUpdateInput = {
@@ -26991,6 +33591,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
     processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
@@ -27022,6 +33623,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
     processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_documentsCreateManyInput = {
@@ -27357,6 +33959,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_document_chunksInput
     b_documents: b_documentsCreateNestedOneWithoutDocument_chunksInput
   }
 
@@ -27373,6 +33976,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_document_chunksInput
   }
 
   export type b_document_chunksUpdateInput = {
@@ -27387,6 +33991,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_document_chunksNestedInput
     b_documents?: b_documentsUpdateOneRequiredWithoutDocument_chunksNestedInput
   }
 
@@ -27403,6 +34008,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksNestedInput
   }
 
   export type b_document_chunksCreateManyInput = {
@@ -27446,6 +34052,83 @@ export namespace Prisma {
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_chunk_search_indexCreateInput = {
+    chunk_id: bigint | number
+    doc_id: bigint | number
+    kb_id: bigint | number
+    title?: string | null
+    title_path?: string | null
+    content_plain: string
+    keyword_text?: string | null
+    created_at?: Date | string
+  }
+
+  export type b_document_chunk_search_indexUncheckedCreateInput = {
+    chunk_id: bigint | number
+    doc_id: bigint | number
+    kb_id: bigint | number
+    title?: string | null
+    title_path?: string | null
+    content_plain: string
+    keyword_text?: string | null
+    created_at?: Date | string
+  }
+
+  export type b_document_chunk_search_indexUpdateInput = {
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    title_path?: NullableStringFieldUpdateOperationsInput | string | null
+    content_plain?: StringFieldUpdateOperationsInput | string
+    keyword_text?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_chunk_search_indexUncheckedUpdateInput = {
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    title_path?: NullableStringFieldUpdateOperationsInput | string | null
+    content_plain?: StringFieldUpdateOperationsInput | string
+    keyword_text?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_chunk_search_indexCreateManyInput = {
+    chunk_id: bigint | number
+    doc_id: bigint | number
+    kb_id: bigint | number
+    title?: string | null
+    title_path?: string | null
+    content_plain: string
+    keyword_text?: string | null
+    created_at?: Date | string
+  }
+
+  export type b_document_chunk_search_indexUpdateManyMutationInput = {
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    title_path?: NullableStringFieldUpdateOperationsInput | string | null
+    content_plain?: StringFieldUpdateOperationsInput | string
+    keyword_text?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_chunk_search_indexUncheckedUpdateManyInput = {
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: NullableStringFieldUpdateOperationsInput | string | null
+    title_path?: NullableStringFieldUpdateOperationsInput | string | null
+    content_plain?: StringFieldUpdateOperationsInput | string
+    keyword_text?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -27578,9 +34261,14 @@ export namespace Prisma {
     id: string
     kb_id?: bigint | number | null
     title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     chat_messages?: b_chat_messagesCreateNestedManyWithoutB_chat_sessionsInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_chat_sessionsInput
     b_users: b_usersCreateNestedOneWithoutChat_sessionsInput
   }
 
@@ -27589,18 +34277,28 @@ export namespace Prisma {
     user_id: bigint | number
     kb_id?: bigint | number | null
     title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     chat_messages?: b_chat_messagesUncheckedCreateNestedManyWithoutB_chat_sessionsInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_chat_sessionsInput
   }
 
   export type b_chat_sessionsUpdateInput = {
     id?: StringFieldUpdateOperationsInput | string
     kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_messages?: b_chat_messagesUpdateManyWithoutB_chat_sessionsNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_chat_sessionsNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutChat_sessionsNestedInput
   }
 
@@ -27609,9 +34307,14 @@ export namespace Prisma {
     user_id?: BigIntFieldUpdateOperationsInput | bigint | number
     kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_messages?: b_chat_messagesUncheckedUpdateManyWithoutB_chat_sessionsNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_chat_sessionsNestedInput
   }
 
   export type b_chat_sessionsCreateManyInput = {
@@ -27619,6 +34322,10 @@ export namespace Prisma {
     user_id: bigint | number
     kb_id?: bigint | number | null
     title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -27627,6 +34334,10 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27636,6 +34347,10 @@ export namespace Prisma {
     user_id?: BigIntFieldUpdateOperationsInput | bigint | number
     kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -27647,10 +34362,21 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: number | null
+    message_status?: string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: string | null
+    finish_reason?: string | null
+    trace_id?: string | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: Date | string | null
+    stream_finished_at?: Date | string | null
     feedback_type?: string | null
     feedback_reason?: string | null
     created_at?: Date | string
     b_chat_sessions: b_chat_sessionsCreateNestedOneWithoutChat_messagesInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_chat_messagesInput
   }
 
   export type b_chat_messagesUncheckedCreateInput = {
@@ -27661,9 +34387,20 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: number | null
+    message_status?: string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: string | null
+    finish_reason?: string | null
+    trace_id?: string | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: Date | string | null
+    stream_finished_at?: Date | string | null
     feedback_type?: string | null
     feedback_reason?: string | null
     created_at?: Date | string
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_chat_messagesInput
   }
 
   export type b_chat_messagesUpdateInput = {
@@ -27673,10 +34410,21 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: NullableIntFieldUpdateOperationsInput | number | null
+    message_status?: StringFieldUpdateOperationsInput | string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: NullableStringFieldUpdateOperationsInput | string | null
+    finish_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    trace_id?: NullableStringFieldUpdateOperationsInput | string | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stream_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedback_type?: NullableStringFieldUpdateOperationsInput | string | null
     feedback_reason?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     b_chat_sessions?: b_chat_sessionsUpdateOneRequiredWithoutChat_messagesNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_chat_messagesNestedInput
   }
 
   export type b_chat_messagesUncheckedUpdateInput = {
@@ -27687,9 +34435,20 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: NullableIntFieldUpdateOperationsInput | number | null
+    message_status?: StringFieldUpdateOperationsInput | string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: NullableStringFieldUpdateOperationsInput | string | null
+    finish_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    trace_id?: NullableStringFieldUpdateOperationsInput | string | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stream_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedback_type?: NullableStringFieldUpdateOperationsInput | string | null
     feedback_reason?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_chat_messagesNestedInput
   }
 
   export type b_chat_messagesCreateManyInput = {
@@ -27700,6 +34459,16 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: number | null
+    message_status?: string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: string | null
+    finish_reason?: string | null
+    trace_id?: string | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: Date | string | null
+    stream_finished_at?: Date | string | null
     feedback_type?: string | null
     feedback_reason?: string | null
     created_at?: Date | string
@@ -27712,6 +34481,16 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: NullableIntFieldUpdateOperationsInput | number | null
+    message_status?: StringFieldUpdateOperationsInput | string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: NullableStringFieldUpdateOperationsInput | string | null
+    finish_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    trace_id?: NullableStringFieldUpdateOperationsInput | string | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stream_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedback_type?: NullableStringFieldUpdateOperationsInput | string | null
     feedback_reason?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -27725,9 +34504,314 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: NullableIntFieldUpdateOperationsInput | number | null
+    message_status?: StringFieldUpdateOperationsInput | string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: NullableStringFieldUpdateOperationsInput | string | null
+    finish_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    trace_id?: NullableStringFieldUpdateOperationsInput | string | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stream_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedback_type?: NullableStringFieldUpdateOperationsInput | string | null
     feedback_reason?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_chat_message_citationsCreateInput = {
+    id?: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+    b_chat_messages: b_chat_messagesCreateNestedOneWithoutMessage_citationsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutMessage_citationsInput
+    b_documents: b_documentsCreateNestedOneWithoutMessage_citationsInput
+    b_document_chunks: b_document_chunksCreateNestedOneWithoutMessage_citationsInput
+  }
+
+  export type b_chat_message_citationsUncheckedCreateInput = {
+    id?: bigint | number
+    message_id: bigint | number
+    kb_id: bigint | number
+    doc_id: bigint | number
+    chunk_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
+  export type b_chat_message_citationsUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_chat_messages?: b_chat_messagesUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_documents?: b_documentsUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_document_chunks?: b_document_chunksUpdateOneRequiredWithoutMessage_citationsNestedInput
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_chat_message_citationsCreateManyInput = {
+    id?: bigint | number
+    message_id: bigint | number
+    kb_id: bigint | number
+    doc_id: bigint | number
+    chunk_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
+  export type b_chat_message_citationsUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_agent_runsCreateInput = {
+    id: string
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+    b_chat_sessions: b_chat_sessionsCreateNestedOneWithoutAgent_runsInput
+    b_users: b_usersCreateNestedOneWithoutAgent_runsInput
+  }
+
+  export type b_agent_runsUncheckedCreateInput = {
+    id: string
+    session_id: string
+    user_id: bigint | number
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_runsUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    b_chat_sessions?: b_chat_sessionsUpdateOneRequiredWithoutAgent_runsNestedInput
+    b_users?: b_usersUpdateOneRequiredWithoutAgent_runsNestedInput
+  }
+
+  export type b_agent_runsUncheckedUpdateInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    session_id?: StringFieldUpdateOperationsInput | string
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_runsCreateManyInput = {
+    id: string
+    session_id: string
+    user_id: bigint | number
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_runsUpdateManyMutationInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_runsUncheckedUpdateManyInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    session_id?: StringFieldUpdateOperationsInput | string
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_stepsCreateInput = {
+    id?: bigint | number
+    run_id: string
+    agent_name: string
+    step_type: string
+    status: string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: number | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_stepsUncheckedCreateInput = {
+    id?: bigint | number
+    run_id: string
+    agent_name: string
+    step_type: string
+    status: string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: number | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_stepsUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    run_id?: StringFieldUpdateOperationsInput | string
+    agent_name?: StringFieldUpdateOperationsInput | string
+    step_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_stepsUncheckedUpdateInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    run_id?: StringFieldUpdateOperationsInput | string
+    agent_name?: StringFieldUpdateOperationsInput | string
+    step_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_stepsCreateManyInput = {
+    id?: bigint | number
+    run_id: string
+    agent_name: string
+    step_type: string
+    status: string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: number | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_stepsUpdateManyMutationInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    run_id?: StringFieldUpdateOperationsInput | string
+    agent_name?: StringFieldUpdateOperationsInput | string
+    step_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_stepsUncheckedUpdateManyInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    run_id?: StringFieldUpdateOperationsInput | string
+    agent_name?: StringFieldUpdateOperationsInput | string
+    step_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type sys_audit_logsCreateInput = {
@@ -27971,17 +35055,6 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type IntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type DateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -28029,6 +35102,12 @@ export namespace Prisma {
     none?: b_user_model_configsWhereInput
   }
 
+  export type B_user_daily_quotasListRelationFilter = {
+    every?: b_user_daily_quotasWhereInput
+    some?: b_user_daily_quotasWhereInput
+    none?: b_user_daily_quotasWhereInput
+  }
+
   export type B_kb_invitationsListRelationFilter = {
     every?: b_kb_invitationsWhereInput
     some?: b_kb_invitationsWhereInput
@@ -28039,6 +35118,12 @@ export namespace Prisma {
     every?: b_user_sessionsWhereInput
     some?: b_user_sessionsWhereInput
     none?: b_user_sessionsWhereInput
+  }
+
+  export type B_agent_runsListRelationFilter = {
+    every?: b_agent_runsWhereInput
+    some?: b_agent_runsWhereInput
+    none?: b_agent_runsWhereInput
   }
 
   export type SortOrderInput = {
@@ -28070,11 +35155,19 @@ export namespace Prisma {
     _count?: SortOrder
   }
 
+  export type b_user_daily_quotasOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type b_kb_invitationsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
   export type b_user_sessionsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
+  export type b_agent_runsOrderByRelationAggregateInput = {
     _count?: SortOrder
   }
 
@@ -28091,18 +35184,12 @@ export namespace Prisma {
     full_name?: SortOrder
     avatar_url?: SortOrder
     is_active?: SortOrder
-    daily_chat_limit?: SortOrder
-    token_quota?: SortOrder
-    used_tokens?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type b_usersAvgOrderByAggregateInput = {
     id?: SortOrder
-    daily_chat_limit?: SortOrder
-    token_quota?: SortOrder
-    used_tokens?: SortOrder
   }
 
   export type b_usersMaxOrderByAggregateInput = {
@@ -28112,9 +35199,6 @@ export namespace Prisma {
     full_name?: SortOrder
     avatar_url?: SortOrder
     is_active?: SortOrder
-    daily_chat_limit?: SortOrder
-    token_quota?: SortOrder
-    used_tokens?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -28126,18 +35210,12 @@ export namespace Prisma {
     full_name?: SortOrder
     avatar_url?: SortOrder
     is_active?: SortOrder
-    daily_chat_limit?: SortOrder
-    token_quota?: SortOrder
-    used_tokens?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
 
   export type b_usersSumOrderByAggregateInput = {
     id?: SortOrder
-    daily_chat_limit?: SortOrder
-    token_quota?: SortOrder
-    used_tokens?: SortOrder
   }
 
   export type BigIntWithAggregatesFilter<$PrismaModel = never> = {
@@ -28198,22 +35276,6 @@ export namespace Prisma {
     _count?: NestedIntFilter<$PrismaModel>
     _min?: NestedBoolFilter<$PrismaModel>
     _max?: NestedBoolFilter<$PrismaModel>
-  }
-
-  export type IntWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
-    _count?: NestedIntFilter<$PrismaModel>
-    _avg?: NestedFloatFilter<$PrismaModel>
-    _sum?: NestedIntFilter<$PrismaModel>
-    _min?: NestedIntFilter<$PrismaModel>
-    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type DateTimeWithAggregatesFilter<$PrismaModel = never> = {
@@ -28294,6 +35356,17 @@ export namespace Prisma {
     id?: SortOrder
   }
 
+  export type IntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
+  }
+
   export type sys_email_codesOrderByRelevanceInput = {
     fields: sys_email_codesOrderByRelevanceFieldEnum | sys_email_codesOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -28338,6 +35411,22 @@ export namespace Prisma {
   export type sys_email_codesSumOrderByAggregateInput = {
     id?: SortOrder
     purpose?: SortOrder
+  }
+
+  export type IntWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntWithAggregatesFilter<$PrismaModel> | number
+    _count?: NestedIntFilter<$PrismaModel>
+    _avg?: NestedFloatFilter<$PrismaModel>
+    _sum?: NestedIntFilter<$PrismaModel>
+    _min?: NestedIntFilter<$PrismaModel>
+    _max?: NestedIntFilter<$PrismaModel>
   }
 
   export type B_usersScalarRelationFilter = {
@@ -28601,6 +35690,75 @@ export namespace Prisma {
   export type b_user_model_configsSumOrderByAggregateInput = {
     id?: SortOrder
     user_id?: SortOrder
+  }
+
+  export type b_user_daily_quotasUser_idQuota_dateCompoundUniqueInput = {
+    user_id: bigint | number
+    quota_date: Date | string
+  }
+
+  export type b_user_daily_quotasCountOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    quota_date?: SortOrder
+    daily_chat_limit?: SortOrder
+    daily_token_quota?: SortOrder
+    used_chat_count?: SortOrder
+    used_token_count?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_user_daily_quotasAvgOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    daily_chat_limit?: SortOrder
+    daily_token_quota?: SortOrder
+    used_chat_count?: SortOrder
+    used_token_count?: SortOrder
+  }
+
+  export type b_user_daily_quotasMaxOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    quota_date?: SortOrder
+    daily_chat_limit?: SortOrder
+    daily_token_quota?: SortOrder
+    used_chat_count?: SortOrder
+    used_token_count?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_user_daily_quotasMinOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    quota_date?: SortOrder
+    daily_chat_limit?: SortOrder
+    daily_token_quota?: SortOrder
+    used_chat_count?: SortOrder
+    used_token_count?: SortOrder
+    created_at?: SortOrder
+    updated_at?: SortOrder
+  }
+
+  export type b_user_daily_quotasSumOrderByAggregateInput = {
+    id?: SortOrder
+    user_id?: SortOrder
+    daily_chat_limit?: SortOrder
+    daily_token_quota?: SortOrder
+    used_chat_count?: SortOrder
+    used_token_count?: SortOrder
+  }
+
+  export type B_chat_message_citationsListRelationFilter = {
+    every?: b_chat_message_citationsWhereInput
+    some?: b_chat_message_citationsWhereInput
+    none?: b_chat_message_citationsWhereInput
+  }
+
+  export type b_chat_message_citationsOrderByRelationAggregateInput = {
+    _count?: SortOrder
   }
 
   export type b_knowledge_basesOrderByRelevanceInput = {
@@ -29232,6 +36390,57 @@ export namespace Prisma {
     char_end?: SortOrder
   }
 
+  export type b_document_chunk_search_indexOrderByRelevanceInput = {
+    fields: b_document_chunk_search_indexOrderByRelevanceFieldEnum | b_document_chunk_search_indexOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type b_document_chunk_search_indexCountOrderByAggregateInput = {
+    chunk_id?: SortOrder
+    doc_id?: SortOrder
+    kb_id?: SortOrder
+    title?: SortOrder
+    title_path?: SortOrder
+    content_plain?: SortOrder
+    keyword_text?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type b_document_chunk_search_indexAvgOrderByAggregateInput = {
+    chunk_id?: SortOrder
+    doc_id?: SortOrder
+    kb_id?: SortOrder
+  }
+
+  export type b_document_chunk_search_indexMaxOrderByAggregateInput = {
+    chunk_id?: SortOrder
+    doc_id?: SortOrder
+    kb_id?: SortOrder
+    title?: SortOrder
+    title_path?: SortOrder
+    content_plain?: SortOrder
+    keyword_text?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type b_document_chunk_search_indexMinOrderByAggregateInput = {
+    chunk_id?: SortOrder
+    doc_id?: SortOrder
+    kb_id?: SortOrder
+    title?: SortOrder
+    title_path?: SortOrder
+    content_plain?: SortOrder
+    keyword_text?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type b_document_chunk_search_indexSumOrderByAggregateInput = {
+    chunk_id?: SortOrder
+    doc_id?: SortOrder
+    kb_id?: SortOrder
+  }
+
   export type b_document_processing_tasksOrderByRelevanceInput = {
     fields: b_document_processing_tasksOrderByRelevanceFieldEnum | b_document_processing_tasksOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -29336,6 +36545,10 @@ export namespace Prisma {
     user_id?: SortOrder
     kb_id?: SortOrder
     title?: SortOrder
+    summary_text?: SortOrder
+    last_selected_kb_ids_json?: SortOrder
+    last_chat_mode?: SortOrder
+    last_message_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -29350,6 +36563,9 @@ export namespace Prisma {
     user_id?: SortOrder
     kb_id?: SortOrder
     title?: SortOrder
+    summary_text?: SortOrder
+    last_chat_mode?: SortOrder
+    last_message_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -29359,6 +36575,9 @@ export namespace Prisma {
     user_id?: SortOrder
     kb_id?: SortOrder
     title?: SortOrder
+    summary_text?: SortOrder
+    last_chat_mode?: SortOrder
+    last_message_at?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
   }
@@ -29387,6 +36606,16 @@ export namespace Prisma {
     references?: SortOrder
     tool_calls?: SortOrder
     tokens_used?: SortOrder
+    message_status?: SortOrder
+    metadata_json?: SortOrder
+    model_name?: SortOrder
+    finish_reason?: SortOrder
+    trace_id?: SortOrder
+    chat_mode?: SortOrder
+    selected_kb_ids_json?: SortOrder
+    resolved_kb_ids_json?: SortOrder
+    stream_started_at?: SortOrder
+    stream_finished_at?: SortOrder
     feedback_type?: SortOrder
     feedback_reason?: SortOrder
     created_at?: SortOrder
@@ -29403,6 +36632,13 @@ export namespace Prisma {
     role?: SortOrder
     content?: SortOrder
     tokens_used?: SortOrder
+    message_status?: SortOrder
+    model_name?: SortOrder
+    finish_reason?: SortOrder
+    trace_id?: SortOrder
+    chat_mode?: SortOrder
+    stream_started_at?: SortOrder
+    stream_finished_at?: SortOrder
     feedback_type?: SortOrder
     feedback_reason?: SortOrder
     created_at?: SortOrder
@@ -29414,6 +36650,13 @@ export namespace Prisma {
     role?: SortOrder
     content?: SortOrder
     tokens_used?: SortOrder
+    message_status?: SortOrder
+    model_name?: SortOrder
+    finish_reason?: SortOrder
+    trace_id?: SortOrder
+    chat_mode?: SortOrder
+    stream_started_at?: SortOrder
+    stream_finished_at?: SortOrder
     feedback_type?: SortOrder
     feedback_reason?: SortOrder
     created_at?: SortOrder
@@ -29422,6 +36665,224 @@ export namespace Prisma {
   export type b_chat_messagesSumOrderByAggregateInput = {
     id?: SortOrder
     tokens_used?: SortOrder
+  }
+
+  export type FloatNullableFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableFilter<$PrismaModel> | number | null
+  }
+
+  export type B_chat_messagesScalarRelationFilter = {
+    is?: b_chat_messagesWhereInput
+    isNot?: b_chat_messagesWhereInput
+  }
+
+  export type B_document_chunksScalarRelationFilter = {
+    is?: b_document_chunksWhereInput
+    isNot?: b_document_chunksWhereInput
+  }
+
+  export type b_chat_message_citationsOrderByRelevanceInput = {
+    fields: b_chat_message_citationsOrderByRelevanceFieldEnum | b_chat_message_citationsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type b_chat_message_citationsCountOrderByAggregateInput = {
+    id?: SortOrder
+    message_id?: SortOrder
+    kb_id?: SortOrder
+    doc_id?: SortOrder
+    chunk_id?: SortOrder
+    score?: SortOrder
+    quote?: SortOrder
+    order_no?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type b_chat_message_citationsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    message_id?: SortOrder
+    kb_id?: SortOrder
+    doc_id?: SortOrder
+    chunk_id?: SortOrder
+    score?: SortOrder
+    order_no?: SortOrder
+  }
+
+  export type b_chat_message_citationsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    message_id?: SortOrder
+    kb_id?: SortOrder
+    doc_id?: SortOrder
+    chunk_id?: SortOrder
+    score?: SortOrder
+    quote?: SortOrder
+    order_no?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type b_chat_message_citationsMinOrderByAggregateInput = {
+    id?: SortOrder
+    message_id?: SortOrder
+    kb_id?: SortOrder
+    doc_id?: SortOrder
+    chunk_id?: SortOrder
+    score?: SortOrder
+    quote?: SortOrder
+    order_no?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type b_chat_message_citationsSumOrderByAggregateInput = {
+    id?: SortOrder
+    message_id?: SortOrder
+    kb_id?: SortOrder
+    doc_id?: SortOrder
+    chunk_id?: SortOrder
+    score?: SortOrder
+    order_no?: SortOrder
+  }
+
+  export type FloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
+  export type b_agent_runsOrderByRelevanceInput = {
+    fields: b_agent_runsOrderByRelevanceFieldEnum | b_agent_runsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type b_agent_runsCountOrderByAggregateInput = {
+    id?: SortOrder
+    session_id?: SortOrder
+    user_id?: SortOrder
+    user_message_id?: SortOrder
+    assistant_message_id?: SortOrder
+    status?: SortOrder
+    total_tokens?: SortOrder
+    duration_ms?: SortOrder
+    chat_mode?: SortOrder
+    selected_kb_ids_json?: SortOrder
+    resolved_kb_ids_json?: SortOrder
+    routed_query_json?: SortOrder
+    metadata_json?: SortOrder
+    created_at?: SortOrder
+    finished_at?: SortOrder
+  }
+
+  export type b_agent_runsAvgOrderByAggregateInput = {
+    user_id?: SortOrder
+    user_message_id?: SortOrder
+    assistant_message_id?: SortOrder
+    total_tokens?: SortOrder
+    duration_ms?: SortOrder
+  }
+
+  export type b_agent_runsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    session_id?: SortOrder
+    user_id?: SortOrder
+    user_message_id?: SortOrder
+    assistant_message_id?: SortOrder
+    status?: SortOrder
+    total_tokens?: SortOrder
+    duration_ms?: SortOrder
+    chat_mode?: SortOrder
+    created_at?: SortOrder
+    finished_at?: SortOrder
+  }
+
+  export type b_agent_runsMinOrderByAggregateInput = {
+    id?: SortOrder
+    session_id?: SortOrder
+    user_id?: SortOrder
+    user_message_id?: SortOrder
+    assistant_message_id?: SortOrder
+    status?: SortOrder
+    total_tokens?: SortOrder
+    duration_ms?: SortOrder
+    chat_mode?: SortOrder
+    created_at?: SortOrder
+    finished_at?: SortOrder
+  }
+
+  export type b_agent_runsSumOrderByAggregateInput = {
+    user_id?: SortOrder
+    user_message_id?: SortOrder
+    assistant_message_id?: SortOrder
+    total_tokens?: SortOrder
+    duration_ms?: SortOrder
+  }
+
+  export type b_agent_stepsOrderByRelevanceInput = {
+    fields: b_agent_stepsOrderByRelevanceFieldEnum | b_agent_stepsOrderByRelevanceFieldEnum[]
+    sort: SortOrder
+    search: string
+  }
+
+  export type b_agent_stepsCountOrderByAggregateInput = {
+    id?: SortOrder
+    run_id?: SortOrder
+    agent_name?: SortOrder
+    step_type?: SortOrder
+    status?: SortOrder
+    input_json?: SortOrder
+    output_json?: SortOrder
+    duration_ms?: SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrder
+  }
+
+  export type b_agent_stepsAvgOrderByAggregateInput = {
+    id?: SortOrder
+    duration_ms?: SortOrder
+  }
+
+  export type b_agent_stepsMaxOrderByAggregateInput = {
+    id?: SortOrder
+    run_id?: SortOrder
+    agent_name?: SortOrder
+    step_type?: SortOrder
+    status?: SortOrder
+    duration_ms?: SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrder
+  }
+
+  export type b_agent_stepsMinOrderByAggregateInput = {
+    id?: SortOrder
+    run_id?: SortOrder
+    agent_name?: SortOrder
+    step_type?: SortOrder
+    status?: SortOrder
+    duration_ms?: SortOrder
+    started_at?: SortOrder
+    finished_at?: SortOrder
+  }
+
+  export type b_agent_stepsSumOrderByAggregateInput = {
+    id?: SortOrder
+    duration_ms?: SortOrder
   }
 
   export type Sys_adminsNullableScalarRelationFilter = {
@@ -29604,6 +37065,13 @@ export namespace Prisma {
     connect?: b_user_model_configsWhereUniqueInput | b_user_model_configsWhereUniqueInput[]
   }
 
+  export type b_user_daily_quotasCreateNestedManyWithoutB_usersInput = {
+    create?: XOR<b_user_daily_quotasCreateWithoutB_usersInput, b_user_daily_quotasUncheckedCreateWithoutB_usersInput> | b_user_daily_quotasCreateWithoutB_usersInput[] | b_user_daily_quotasUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_user_daily_quotasCreateOrConnectWithoutB_usersInput | b_user_daily_quotasCreateOrConnectWithoutB_usersInput[]
+    createMany?: b_user_daily_quotasCreateManyB_usersInputEnvelope
+    connect?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+  }
+
   export type b_kb_invitationsCreateNestedManyWithoutB_usersInput = {
     create?: XOR<b_kb_invitationsCreateWithoutB_usersInput, b_kb_invitationsUncheckedCreateWithoutB_usersInput> | b_kb_invitationsCreateWithoutB_usersInput[] | b_kb_invitationsUncheckedCreateWithoutB_usersInput[]
     connectOrCreate?: b_kb_invitationsCreateOrConnectWithoutB_usersInput | b_kb_invitationsCreateOrConnectWithoutB_usersInput[]
@@ -29616,6 +37084,13 @@ export namespace Prisma {
     connectOrCreate?: b_user_sessionsCreateOrConnectWithoutB_usersInput | b_user_sessionsCreateOrConnectWithoutB_usersInput[]
     createMany?: b_user_sessionsCreateManyB_usersInputEnvelope
     connect?: b_user_sessionsWhereUniqueInput | b_user_sessionsWhereUniqueInput[]
+  }
+
+  export type b_agent_runsCreateNestedManyWithoutB_usersInput = {
+    create?: XOR<b_agent_runsCreateWithoutB_usersInput, b_agent_runsUncheckedCreateWithoutB_usersInput> | b_agent_runsCreateWithoutB_usersInput[] | b_agent_runsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutB_usersInput | b_agent_runsCreateOrConnectWithoutB_usersInput[]
+    createMany?: b_agent_runsCreateManyB_usersInputEnvelope
+    connect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
   }
 
   export type b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput = {
@@ -29660,6 +37135,13 @@ export namespace Prisma {
     connect?: b_user_model_configsWhereUniqueInput | b_user_model_configsWhereUniqueInput[]
   }
 
+  export type b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput = {
+    create?: XOR<b_user_daily_quotasCreateWithoutB_usersInput, b_user_daily_quotasUncheckedCreateWithoutB_usersInput> | b_user_daily_quotasCreateWithoutB_usersInput[] | b_user_daily_quotasUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_user_daily_quotasCreateOrConnectWithoutB_usersInput | b_user_daily_quotasCreateOrConnectWithoutB_usersInput[]
+    createMany?: b_user_daily_quotasCreateManyB_usersInputEnvelope
+    connect?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+  }
+
   export type b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput = {
     create?: XOR<b_kb_invitationsCreateWithoutB_usersInput, b_kb_invitationsUncheckedCreateWithoutB_usersInput> | b_kb_invitationsCreateWithoutB_usersInput[] | b_kb_invitationsUncheckedCreateWithoutB_usersInput[]
     connectOrCreate?: b_kb_invitationsCreateOrConnectWithoutB_usersInput | b_kb_invitationsCreateOrConnectWithoutB_usersInput[]
@@ -29672,6 +37154,13 @@ export namespace Prisma {
     connectOrCreate?: b_user_sessionsCreateOrConnectWithoutB_usersInput | b_user_sessionsCreateOrConnectWithoutB_usersInput[]
     createMany?: b_user_sessionsCreateManyB_usersInputEnvelope
     connect?: b_user_sessionsWhereUniqueInput | b_user_sessionsWhereUniqueInput[]
+  }
+
+  export type b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput = {
+    create?: XOR<b_agent_runsCreateWithoutB_usersInput, b_agent_runsUncheckedCreateWithoutB_usersInput> | b_agent_runsCreateWithoutB_usersInput[] | b_agent_runsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutB_usersInput | b_agent_runsCreateOrConnectWithoutB_usersInput[]
+    createMany?: b_agent_runsCreateManyB_usersInputEnvelope
+    connect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
   }
 
   export type BigIntFieldUpdateOperationsInput = {
@@ -29692,14 +37181,6 @@ export namespace Prisma {
 
   export type BoolFieldUpdateOperationsInput = {
     set?: boolean
-  }
-
-  export type IntFieldUpdateOperationsInput = {
-    set?: number
-    increment?: number
-    decrement?: number
-    multiply?: number
-    divide?: number
   }
 
   export type DateTimeFieldUpdateOperationsInput = {
@@ -29790,6 +37271,20 @@ export namespace Prisma {
     deleteMany?: b_user_model_configsScalarWhereInput | b_user_model_configsScalarWhereInput[]
   }
 
+  export type b_user_daily_quotasUpdateManyWithoutB_usersNestedInput = {
+    create?: XOR<b_user_daily_quotasCreateWithoutB_usersInput, b_user_daily_quotasUncheckedCreateWithoutB_usersInput> | b_user_daily_quotasCreateWithoutB_usersInput[] | b_user_daily_quotasUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_user_daily_quotasCreateOrConnectWithoutB_usersInput | b_user_daily_quotasCreateOrConnectWithoutB_usersInput[]
+    upsert?: b_user_daily_quotasUpsertWithWhereUniqueWithoutB_usersInput | b_user_daily_quotasUpsertWithWhereUniqueWithoutB_usersInput[]
+    createMany?: b_user_daily_quotasCreateManyB_usersInputEnvelope
+    set?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+    disconnect?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+    delete?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+    connect?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+    update?: b_user_daily_quotasUpdateWithWhereUniqueWithoutB_usersInput | b_user_daily_quotasUpdateWithWhereUniqueWithoutB_usersInput[]
+    updateMany?: b_user_daily_quotasUpdateManyWithWhereWithoutB_usersInput | b_user_daily_quotasUpdateManyWithWhereWithoutB_usersInput[]
+    deleteMany?: b_user_daily_quotasScalarWhereInput | b_user_daily_quotasScalarWhereInput[]
+  }
+
   export type b_kb_invitationsUpdateManyWithoutB_usersNestedInput = {
     create?: XOR<b_kb_invitationsCreateWithoutB_usersInput, b_kb_invitationsUncheckedCreateWithoutB_usersInput> | b_kb_invitationsCreateWithoutB_usersInput[] | b_kb_invitationsUncheckedCreateWithoutB_usersInput[]
     connectOrCreate?: b_kb_invitationsCreateOrConnectWithoutB_usersInput | b_kb_invitationsCreateOrConnectWithoutB_usersInput[]
@@ -29816,6 +37311,20 @@ export namespace Prisma {
     update?: b_user_sessionsUpdateWithWhereUniqueWithoutB_usersInput | b_user_sessionsUpdateWithWhereUniqueWithoutB_usersInput[]
     updateMany?: b_user_sessionsUpdateManyWithWhereWithoutB_usersInput | b_user_sessionsUpdateManyWithWhereWithoutB_usersInput[]
     deleteMany?: b_user_sessionsScalarWhereInput | b_user_sessionsScalarWhereInput[]
+  }
+
+  export type b_agent_runsUpdateManyWithoutB_usersNestedInput = {
+    create?: XOR<b_agent_runsCreateWithoutB_usersInput, b_agent_runsUncheckedCreateWithoutB_usersInput> | b_agent_runsCreateWithoutB_usersInput[] | b_agent_runsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutB_usersInput | b_agent_runsCreateOrConnectWithoutB_usersInput[]
+    upsert?: b_agent_runsUpsertWithWhereUniqueWithoutB_usersInput | b_agent_runsUpsertWithWhereUniqueWithoutB_usersInput[]
+    createMany?: b_agent_runsCreateManyB_usersInputEnvelope
+    set?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    disconnect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    delete?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    connect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    update?: b_agent_runsUpdateWithWhereUniqueWithoutB_usersInput | b_agent_runsUpdateWithWhereUniqueWithoutB_usersInput[]
+    updateMany?: b_agent_runsUpdateManyWithWhereWithoutB_usersInput | b_agent_runsUpdateManyWithWhereWithoutB_usersInput[]
+    deleteMany?: b_agent_runsScalarWhereInput | b_agent_runsScalarWhereInput[]
   }
 
   export type b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput = {
@@ -29902,6 +37411,20 @@ export namespace Prisma {
     deleteMany?: b_user_model_configsScalarWhereInput | b_user_model_configsScalarWhereInput[]
   }
 
+  export type b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput = {
+    create?: XOR<b_user_daily_quotasCreateWithoutB_usersInput, b_user_daily_quotasUncheckedCreateWithoutB_usersInput> | b_user_daily_quotasCreateWithoutB_usersInput[] | b_user_daily_quotasUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_user_daily_quotasCreateOrConnectWithoutB_usersInput | b_user_daily_quotasCreateOrConnectWithoutB_usersInput[]
+    upsert?: b_user_daily_quotasUpsertWithWhereUniqueWithoutB_usersInput | b_user_daily_quotasUpsertWithWhereUniqueWithoutB_usersInput[]
+    createMany?: b_user_daily_quotasCreateManyB_usersInputEnvelope
+    set?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+    disconnect?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+    delete?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+    connect?: b_user_daily_quotasWhereUniqueInput | b_user_daily_quotasWhereUniqueInput[]
+    update?: b_user_daily_quotasUpdateWithWhereUniqueWithoutB_usersInput | b_user_daily_quotasUpdateWithWhereUniqueWithoutB_usersInput[]
+    updateMany?: b_user_daily_quotasUpdateManyWithWhereWithoutB_usersInput | b_user_daily_quotasUpdateManyWithWhereWithoutB_usersInput[]
+    deleteMany?: b_user_daily_quotasScalarWhereInput | b_user_daily_quotasScalarWhereInput[]
+  }
+
   export type b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput = {
     create?: XOR<b_kb_invitationsCreateWithoutB_usersInput, b_kb_invitationsUncheckedCreateWithoutB_usersInput> | b_kb_invitationsCreateWithoutB_usersInput[] | b_kb_invitationsUncheckedCreateWithoutB_usersInput[]
     connectOrCreate?: b_kb_invitationsCreateOrConnectWithoutB_usersInput | b_kb_invitationsCreateOrConnectWithoutB_usersInput[]
@@ -29928,6 +37451,20 @@ export namespace Prisma {
     update?: b_user_sessionsUpdateWithWhereUniqueWithoutB_usersInput | b_user_sessionsUpdateWithWhereUniqueWithoutB_usersInput[]
     updateMany?: b_user_sessionsUpdateManyWithWhereWithoutB_usersInput | b_user_sessionsUpdateManyWithWhereWithoutB_usersInput[]
     deleteMany?: b_user_sessionsScalarWhereInput | b_user_sessionsScalarWhereInput[]
+  }
+
+  export type b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput = {
+    create?: XOR<b_agent_runsCreateWithoutB_usersInput, b_agent_runsUncheckedCreateWithoutB_usersInput> | b_agent_runsCreateWithoutB_usersInput[] | b_agent_runsUncheckedCreateWithoutB_usersInput[]
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutB_usersInput | b_agent_runsCreateOrConnectWithoutB_usersInput[]
+    upsert?: b_agent_runsUpsertWithWhereUniqueWithoutB_usersInput | b_agent_runsUpsertWithWhereUniqueWithoutB_usersInput[]
+    createMany?: b_agent_runsCreateManyB_usersInputEnvelope
+    set?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    disconnect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    delete?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    connect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    update?: b_agent_runsUpdateWithWhereUniqueWithoutB_usersInput | b_agent_runsUpdateWithWhereUniqueWithoutB_usersInput[]
+    updateMany?: b_agent_runsUpdateManyWithWhereWithoutB_usersInput | b_agent_runsUpdateManyWithWhereWithoutB_usersInput[]
+    deleteMany?: b_agent_runsScalarWhereInput | b_agent_runsScalarWhereInput[]
   }
 
   export type sys_audit_logsCreateNestedManyWithoutSys_adminsInput = {
@@ -30014,6 +37551,14 @@ export namespace Prisma {
     deleteMany?: sys_admin_sessionsScalarWhereInput | sys_admin_sessionsScalarWhereInput[]
   }
 
+  export type IntFieldUpdateOperationsInput = {
+    set?: number
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
   export type b_usersCreateNestedOneWithoutUser_sessionsInput = {
     create?: XOR<b_usersCreateWithoutUser_sessionsInput, b_usersUncheckedCreateWithoutUser_sessionsInput>
     connectOrCreate?: b_usersCreateOrConnectWithoutUser_sessionsInput
@@ -30056,6 +37601,20 @@ export namespace Prisma {
     update?: XOR<XOR<b_usersUpdateToOneWithWhereWithoutModel_configsInput, b_usersUpdateWithoutModel_configsInput>, b_usersUncheckedUpdateWithoutModel_configsInput>
   }
 
+  export type b_usersCreateNestedOneWithoutDaily_quotasInput = {
+    create?: XOR<b_usersCreateWithoutDaily_quotasInput, b_usersUncheckedCreateWithoutDaily_quotasInput>
+    connectOrCreate?: b_usersCreateOrConnectWithoutDaily_quotasInput
+    connect?: b_usersWhereUniqueInput
+  }
+
+  export type b_usersUpdateOneRequiredWithoutDaily_quotasNestedInput = {
+    create?: XOR<b_usersCreateWithoutDaily_quotasInput, b_usersUncheckedCreateWithoutDaily_quotasInput>
+    connectOrCreate?: b_usersCreateOrConnectWithoutDaily_quotasInput
+    upsert?: b_usersUpsertWithoutDaily_quotasInput
+    connect?: b_usersWhereUniqueInput
+    update?: XOR<XOR<b_usersUpdateToOneWithWhereWithoutDaily_quotasInput, b_usersUpdateWithoutDaily_quotasInput>, b_usersUncheckedUpdateWithoutDaily_quotasInput>
+  }
+
   export type b_documentsCreateNestedManyWithoutB_knowledge_basesInput = {
     create?: XOR<b_documentsCreateWithoutB_knowledge_basesInput, b_documentsUncheckedCreateWithoutB_knowledge_basesInput> | b_documentsCreateWithoutB_knowledge_basesInput[] | b_documentsUncheckedCreateWithoutB_knowledge_basesInput[]
     connectOrCreate?: b_documentsCreateOrConnectWithoutB_knowledge_basesInput | b_documentsCreateOrConnectWithoutB_knowledge_basesInput[]
@@ -30082,6 +37641,13 @@ export namespace Prisma {
     connectOrCreate?: b_kb_invitationsCreateOrConnectWithoutB_knowledge_basesInput | b_kb_invitationsCreateOrConnectWithoutB_knowledge_basesInput[]
     createMany?: b_kb_invitationsCreateManyB_knowledge_basesInputEnvelope
     connect?: b_kb_invitationsWhereUniqueInput | b_kb_invitationsWhereUniqueInput[]
+  }
+
+  export type b_chat_message_citationsCreateNestedManyWithoutB_knowledge_basesInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_knowledge_basesInput, b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput> | b_chat_message_citationsCreateWithoutB_knowledge_basesInput[] | b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_knowledge_basesInput | b_chat_message_citationsCreateOrConnectWithoutB_knowledge_basesInput[]
+    createMany?: b_chat_message_citationsCreateManyB_knowledge_basesInputEnvelope
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
   }
 
   export type b_usersCreateNestedOneWithoutKnowledge_basesInput = {
@@ -30116,6 +37682,13 @@ export namespace Prisma {
     connectOrCreate?: b_kb_invitationsCreateOrConnectWithoutB_knowledge_basesInput | b_kb_invitationsCreateOrConnectWithoutB_knowledge_basesInput[]
     createMany?: b_kb_invitationsCreateManyB_knowledge_basesInputEnvelope
     connect?: b_kb_invitationsWhereUniqueInput | b_kb_invitationsWhereUniqueInput[]
+  }
+
+  export type b_chat_message_citationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_knowledge_basesInput, b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput> | b_chat_message_citationsCreateWithoutB_knowledge_basesInput[] | b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_knowledge_basesInput | b_chat_message_citationsCreateOrConnectWithoutB_knowledge_basesInput[]
+    createMany?: b_chat_message_citationsCreateManyB_knowledge_basesInputEnvelope
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
   }
 
   export type b_documentsUpdateManyWithoutB_knowledge_basesNestedInput = {
@@ -30172,6 +37745,20 @@ export namespace Prisma {
     update?: b_kb_invitationsUpdateWithWhereUniqueWithoutB_knowledge_basesInput | b_kb_invitationsUpdateWithWhereUniqueWithoutB_knowledge_basesInput[]
     updateMany?: b_kb_invitationsUpdateManyWithWhereWithoutB_knowledge_basesInput | b_kb_invitationsUpdateManyWithWhereWithoutB_knowledge_basesInput[]
     deleteMany?: b_kb_invitationsScalarWhereInput | b_kb_invitationsScalarWhereInput[]
+  }
+
+  export type b_chat_message_citationsUpdateManyWithoutB_knowledge_basesNestedInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_knowledge_basesInput, b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput> | b_chat_message_citationsCreateWithoutB_knowledge_basesInput[] | b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_knowledge_basesInput | b_chat_message_citationsCreateOrConnectWithoutB_knowledge_basesInput[]
+    upsert?: b_chat_message_citationsUpsertWithWhereUniqueWithoutB_knowledge_basesInput | b_chat_message_citationsUpsertWithWhereUniqueWithoutB_knowledge_basesInput[]
+    createMany?: b_chat_message_citationsCreateManyB_knowledge_basesInputEnvelope
+    set?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    disconnect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    delete?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    update?: b_chat_message_citationsUpdateWithWhereUniqueWithoutB_knowledge_basesInput | b_chat_message_citationsUpdateWithWhereUniqueWithoutB_knowledge_basesInput[]
+    updateMany?: b_chat_message_citationsUpdateManyWithWhereWithoutB_knowledge_basesInput | b_chat_message_citationsUpdateManyWithWhereWithoutB_knowledge_basesInput[]
+    deleteMany?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
   }
 
   export type b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput = {
@@ -30236,6 +37823,20 @@ export namespace Prisma {
     update?: b_kb_invitationsUpdateWithWhereUniqueWithoutB_knowledge_basesInput | b_kb_invitationsUpdateWithWhereUniqueWithoutB_knowledge_basesInput[]
     updateMany?: b_kb_invitationsUpdateManyWithWhereWithoutB_knowledge_basesInput | b_kb_invitationsUpdateManyWithWhereWithoutB_knowledge_basesInput[]
     deleteMany?: b_kb_invitationsScalarWhereInput | b_kb_invitationsScalarWhereInput[]
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_knowledge_basesInput, b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput> | b_chat_message_citationsCreateWithoutB_knowledge_basesInput[] | b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_knowledge_basesInput | b_chat_message_citationsCreateOrConnectWithoutB_knowledge_basesInput[]
+    upsert?: b_chat_message_citationsUpsertWithWhereUniqueWithoutB_knowledge_basesInput | b_chat_message_citationsUpsertWithWhereUniqueWithoutB_knowledge_basesInput[]
+    createMany?: b_chat_message_citationsCreateManyB_knowledge_basesInputEnvelope
+    set?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    disconnect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    delete?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    update?: b_chat_message_citationsUpdateWithWhereUniqueWithoutB_knowledge_basesInput | b_chat_message_citationsUpdateWithWhereUniqueWithoutB_knowledge_basesInput[]
+    updateMany?: b_chat_message_citationsUpdateManyWithWhereWithoutB_knowledge_basesInput | b_chat_message_citationsUpdateManyWithWhereWithoutB_knowledge_basesInput[]
+    deleteMany?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
   }
 
   export type b_knowledge_basesCreateNestedOneWithoutKb_membersInput = {
@@ -30327,6 +37928,13 @@ export namespace Prisma {
     connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
   }
 
+  export type b_chat_message_citationsCreateNestedManyWithoutB_documentsInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_documentsInput, b_chat_message_citationsUncheckedCreateWithoutB_documentsInput> | b_chat_message_citationsCreateWithoutB_documentsInput[] | b_chat_message_citationsUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_documentsInput | b_chat_message_citationsCreateOrConnectWithoutB_documentsInput[]
+    createMany?: b_chat_message_citationsCreateManyB_documentsInputEnvelope
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+  }
+
   export type b_knowledge_basesCreateNestedOneWithoutDocumentsInput = {
     create?: XOR<b_knowledge_basesCreateWithoutDocumentsInput, b_knowledge_basesUncheckedCreateWithoutDocumentsInput>
     connectOrCreate?: b_knowledge_basesCreateOrConnectWithoutDocumentsInput
@@ -30358,6 +37966,13 @@ export namespace Prisma {
     connectOrCreate?: b_upload_sessionsCreateOrConnectWithoutB_documentsInput | b_upload_sessionsCreateOrConnectWithoutB_documentsInput[]
     createMany?: b_upload_sessionsCreateManyB_documentsInputEnvelope
     connect?: b_upload_sessionsWhereUniqueInput | b_upload_sessionsWhereUniqueInput[]
+  }
+
+  export type b_chat_message_citationsUncheckedCreateNestedManyWithoutB_documentsInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_documentsInput, b_chat_message_citationsUncheckedCreateWithoutB_documentsInput> | b_chat_message_citationsCreateWithoutB_documentsInput[] | b_chat_message_citationsUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_documentsInput | b_chat_message_citationsCreateOrConnectWithoutB_documentsInput[]
+    createMany?: b_chat_message_citationsCreateManyB_documentsInputEnvelope
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
   }
 
   export type NullableIntFieldUpdateOperationsInput = {
@@ -30408,6 +38023,20 @@ export namespace Prisma {
     update?: b_upload_sessionsUpdateWithWhereUniqueWithoutB_documentsInput | b_upload_sessionsUpdateWithWhereUniqueWithoutB_documentsInput[]
     updateMany?: b_upload_sessionsUpdateManyWithWhereWithoutB_documentsInput | b_upload_sessionsUpdateManyWithWhereWithoutB_documentsInput[]
     deleteMany?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
+  }
+
+  export type b_chat_message_citationsUpdateManyWithoutB_documentsNestedInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_documentsInput, b_chat_message_citationsUncheckedCreateWithoutB_documentsInput> | b_chat_message_citationsCreateWithoutB_documentsInput[] | b_chat_message_citationsUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_documentsInput | b_chat_message_citationsCreateOrConnectWithoutB_documentsInput[]
+    upsert?: b_chat_message_citationsUpsertWithWhereUniqueWithoutB_documentsInput | b_chat_message_citationsUpsertWithWhereUniqueWithoutB_documentsInput[]
+    createMany?: b_chat_message_citationsCreateManyB_documentsInputEnvelope
+    set?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    disconnect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    delete?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    update?: b_chat_message_citationsUpdateWithWhereUniqueWithoutB_documentsInput | b_chat_message_citationsUpdateWithWhereUniqueWithoutB_documentsInput[]
+    updateMany?: b_chat_message_citationsUpdateManyWithWhereWithoutB_documentsInput | b_chat_message_citationsUpdateManyWithWhereWithoutB_documentsInput[]
+    deleteMany?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
   }
 
   export type b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput = {
@@ -30468,6 +38097,20 @@ export namespace Prisma {
     update?: b_upload_sessionsUpdateWithWhereUniqueWithoutB_documentsInput | b_upload_sessionsUpdateWithWhereUniqueWithoutB_documentsInput[]
     updateMany?: b_upload_sessionsUpdateManyWithWhereWithoutB_documentsInput | b_upload_sessionsUpdateManyWithWhereWithoutB_documentsInput[]
     deleteMany?: b_upload_sessionsScalarWhereInput | b_upload_sessionsScalarWhereInput[]
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsNestedInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_documentsInput, b_chat_message_citationsUncheckedCreateWithoutB_documentsInput> | b_chat_message_citationsCreateWithoutB_documentsInput[] | b_chat_message_citationsUncheckedCreateWithoutB_documentsInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_documentsInput | b_chat_message_citationsCreateOrConnectWithoutB_documentsInput[]
+    upsert?: b_chat_message_citationsUpsertWithWhereUniqueWithoutB_documentsInput | b_chat_message_citationsUpsertWithWhereUniqueWithoutB_documentsInput[]
+    createMany?: b_chat_message_citationsCreateManyB_documentsInputEnvelope
+    set?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    disconnect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    delete?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    update?: b_chat_message_citationsUpdateWithWhereUniqueWithoutB_documentsInput | b_chat_message_citationsUpdateWithWhereUniqueWithoutB_documentsInput[]
+    updateMany?: b_chat_message_citationsUpdateManyWithWhereWithoutB_documentsInput | b_chat_message_citationsUpdateManyWithWhereWithoutB_documentsInput[]
+    deleteMany?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
   }
 
   export type b_upload_chunksCreateNestedManyWithoutB_upload_sessionsInput = {
@@ -30570,10 +38213,38 @@ export namespace Prisma {
     update?: XOR<XOR<b_upload_sessionsUpdateToOneWithWhereWithoutUpload_chunksInput, b_upload_sessionsUpdateWithoutUpload_chunksInput>, b_upload_sessionsUncheckedUpdateWithoutUpload_chunksInput>
   }
 
+  export type b_chat_message_citationsCreateNestedManyWithoutB_document_chunksInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput> | b_chat_message_citationsCreateWithoutB_document_chunksInput[] | b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput | b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput[]
+    createMany?: b_chat_message_citationsCreateManyB_document_chunksInputEnvelope
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+  }
+
   export type b_documentsCreateNestedOneWithoutDocument_chunksInput = {
     create?: XOR<b_documentsCreateWithoutDocument_chunksInput, b_documentsUncheckedCreateWithoutDocument_chunksInput>
     connectOrCreate?: b_documentsCreateOrConnectWithoutDocument_chunksInput
     connect?: b_documentsWhereUniqueInput
+  }
+
+  export type b_chat_message_citationsUncheckedCreateNestedManyWithoutB_document_chunksInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput> | b_chat_message_citationsCreateWithoutB_document_chunksInput[] | b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput | b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput[]
+    createMany?: b_chat_message_citationsCreateManyB_document_chunksInputEnvelope
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+  }
+
+  export type b_chat_message_citationsUpdateManyWithoutB_document_chunksNestedInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput> | b_chat_message_citationsCreateWithoutB_document_chunksInput[] | b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput | b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput[]
+    upsert?: b_chat_message_citationsUpsertWithWhereUniqueWithoutB_document_chunksInput | b_chat_message_citationsUpsertWithWhereUniqueWithoutB_document_chunksInput[]
+    createMany?: b_chat_message_citationsCreateManyB_document_chunksInputEnvelope
+    set?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    disconnect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    delete?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    update?: b_chat_message_citationsUpdateWithWhereUniqueWithoutB_document_chunksInput | b_chat_message_citationsUpdateWithWhereUniqueWithoutB_document_chunksInput[]
+    updateMany?: b_chat_message_citationsUpdateManyWithWhereWithoutB_document_chunksInput | b_chat_message_citationsUpdateManyWithWhereWithoutB_document_chunksInput[]
+    deleteMany?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
   }
 
   export type b_documentsUpdateOneRequiredWithoutDocument_chunksNestedInput = {
@@ -30582,6 +38253,20 @@ export namespace Prisma {
     upsert?: b_documentsUpsertWithoutDocument_chunksInput
     connect?: b_documentsWhereUniqueInput
     update?: XOR<XOR<b_documentsUpdateToOneWithWhereWithoutDocument_chunksInput, b_documentsUpdateWithoutDocument_chunksInput>, b_documentsUncheckedUpdateWithoutDocument_chunksInput>
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksNestedInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput> | b_chat_message_citationsCreateWithoutB_document_chunksInput[] | b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput | b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput[]
+    upsert?: b_chat_message_citationsUpsertWithWhereUniqueWithoutB_document_chunksInput | b_chat_message_citationsUpsertWithWhereUniqueWithoutB_document_chunksInput[]
+    createMany?: b_chat_message_citationsCreateManyB_document_chunksInputEnvelope
+    set?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    disconnect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    delete?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    update?: b_chat_message_citationsUpdateWithWhereUniqueWithoutB_document_chunksInput | b_chat_message_citationsUpdateWithWhereUniqueWithoutB_document_chunksInput[]
+    updateMany?: b_chat_message_citationsUpdateManyWithWhereWithoutB_document_chunksInput | b_chat_message_citationsUpdateManyWithWhereWithoutB_document_chunksInput[]
+    deleteMany?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
   }
 
   export type b_documentsCreateNestedOneWithoutProcessing_tasksInput = {
@@ -30605,6 +38290,13 @@ export namespace Prisma {
     connect?: b_chat_messagesWhereUniqueInput | b_chat_messagesWhereUniqueInput[]
   }
 
+  export type b_agent_runsCreateNestedManyWithoutB_chat_sessionsInput = {
+    create?: XOR<b_agent_runsCreateWithoutB_chat_sessionsInput, b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput> | b_agent_runsCreateWithoutB_chat_sessionsInput[] | b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput[]
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput | b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput[]
+    createMany?: b_agent_runsCreateManyB_chat_sessionsInputEnvelope
+    connect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+  }
+
   export type b_usersCreateNestedOneWithoutChat_sessionsInput = {
     create?: XOR<b_usersCreateWithoutChat_sessionsInput, b_usersUncheckedCreateWithoutChat_sessionsInput>
     connectOrCreate?: b_usersCreateOrConnectWithoutChat_sessionsInput
@@ -30616,6 +38308,13 @@ export namespace Prisma {
     connectOrCreate?: b_chat_messagesCreateOrConnectWithoutB_chat_sessionsInput | b_chat_messagesCreateOrConnectWithoutB_chat_sessionsInput[]
     createMany?: b_chat_messagesCreateManyB_chat_sessionsInputEnvelope
     connect?: b_chat_messagesWhereUniqueInput | b_chat_messagesWhereUniqueInput[]
+  }
+
+  export type b_agent_runsUncheckedCreateNestedManyWithoutB_chat_sessionsInput = {
+    create?: XOR<b_agent_runsCreateWithoutB_chat_sessionsInput, b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput> | b_agent_runsCreateWithoutB_chat_sessionsInput[] | b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput[]
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput | b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput[]
+    createMany?: b_agent_runsCreateManyB_chat_sessionsInputEnvelope
+    connect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
   }
 
   export type b_chat_messagesUpdateManyWithoutB_chat_sessionsNestedInput = {
@@ -30630,6 +38329,20 @@ export namespace Prisma {
     update?: b_chat_messagesUpdateWithWhereUniqueWithoutB_chat_sessionsInput | b_chat_messagesUpdateWithWhereUniqueWithoutB_chat_sessionsInput[]
     updateMany?: b_chat_messagesUpdateManyWithWhereWithoutB_chat_sessionsInput | b_chat_messagesUpdateManyWithWhereWithoutB_chat_sessionsInput[]
     deleteMany?: b_chat_messagesScalarWhereInput | b_chat_messagesScalarWhereInput[]
+  }
+
+  export type b_agent_runsUpdateManyWithoutB_chat_sessionsNestedInput = {
+    create?: XOR<b_agent_runsCreateWithoutB_chat_sessionsInput, b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput> | b_agent_runsCreateWithoutB_chat_sessionsInput[] | b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput[]
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput | b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput[]
+    upsert?: b_agent_runsUpsertWithWhereUniqueWithoutB_chat_sessionsInput | b_agent_runsUpsertWithWhereUniqueWithoutB_chat_sessionsInput[]
+    createMany?: b_agent_runsCreateManyB_chat_sessionsInputEnvelope
+    set?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    disconnect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    delete?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    connect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    update?: b_agent_runsUpdateWithWhereUniqueWithoutB_chat_sessionsInput | b_agent_runsUpdateWithWhereUniqueWithoutB_chat_sessionsInput[]
+    updateMany?: b_agent_runsUpdateManyWithWhereWithoutB_chat_sessionsInput | b_agent_runsUpdateManyWithWhereWithoutB_chat_sessionsInput[]
+    deleteMany?: b_agent_runsScalarWhereInput | b_agent_runsScalarWhereInput[]
   }
 
   export type b_usersUpdateOneRequiredWithoutChat_sessionsNestedInput = {
@@ -30654,10 +38367,38 @@ export namespace Prisma {
     deleteMany?: b_chat_messagesScalarWhereInput | b_chat_messagesScalarWhereInput[]
   }
 
+  export type b_agent_runsUncheckedUpdateManyWithoutB_chat_sessionsNestedInput = {
+    create?: XOR<b_agent_runsCreateWithoutB_chat_sessionsInput, b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput> | b_agent_runsCreateWithoutB_chat_sessionsInput[] | b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput[]
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput | b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput[]
+    upsert?: b_agent_runsUpsertWithWhereUniqueWithoutB_chat_sessionsInput | b_agent_runsUpsertWithWhereUniqueWithoutB_chat_sessionsInput[]
+    createMany?: b_agent_runsCreateManyB_chat_sessionsInputEnvelope
+    set?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    disconnect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    delete?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    connect?: b_agent_runsWhereUniqueInput | b_agent_runsWhereUniqueInput[]
+    update?: b_agent_runsUpdateWithWhereUniqueWithoutB_chat_sessionsInput | b_agent_runsUpdateWithWhereUniqueWithoutB_chat_sessionsInput[]
+    updateMany?: b_agent_runsUpdateManyWithWhereWithoutB_chat_sessionsInput | b_agent_runsUpdateManyWithWhereWithoutB_chat_sessionsInput[]
+    deleteMany?: b_agent_runsScalarWhereInput | b_agent_runsScalarWhereInput[]
+  }
+
   export type b_chat_sessionsCreateNestedOneWithoutChat_messagesInput = {
     create?: XOR<b_chat_sessionsCreateWithoutChat_messagesInput, b_chat_sessionsUncheckedCreateWithoutChat_messagesInput>
     connectOrCreate?: b_chat_sessionsCreateOrConnectWithoutChat_messagesInput
     connect?: b_chat_sessionsWhereUniqueInput
+  }
+
+  export type b_chat_message_citationsCreateNestedManyWithoutB_chat_messagesInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_chat_messagesInput, b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput> | b_chat_message_citationsCreateWithoutB_chat_messagesInput[] | b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_chat_messagesInput | b_chat_message_citationsCreateOrConnectWithoutB_chat_messagesInput[]
+    createMany?: b_chat_message_citationsCreateManyB_chat_messagesInputEnvelope
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+  }
+
+  export type b_chat_message_citationsUncheckedCreateNestedManyWithoutB_chat_messagesInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_chat_messagesInput, b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput> | b_chat_message_citationsCreateWithoutB_chat_messagesInput[] | b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_chat_messagesInput | b_chat_message_citationsCreateOrConnectWithoutB_chat_messagesInput[]
+    createMany?: b_chat_message_citationsCreateManyB_chat_messagesInputEnvelope
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
   }
 
   export type b_chat_sessionsUpdateOneRequiredWithoutChat_messagesNestedInput = {
@@ -30666,6 +38407,126 @@ export namespace Prisma {
     upsert?: b_chat_sessionsUpsertWithoutChat_messagesInput
     connect?: b_chat_sessionsWhereUniqueInput
     update?: XOR<XOR<b_chat_sessionsUpdateToOneWithWhereWithoutChat_messagesInput, b_chat_sessionsUpdateWithoutChat_messagesInput>, b_chat_sessionsUncheckedUpdateWithoutChat_messagesInput>
+  }
+
+  export type b_chat_message_citationsUpdateManyWithoutB_chat_messagesNestedInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_chat_messagesInput, b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput> | b_chat_message_citationsCreateWithoutB_chat_messagesInput[] | b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_chat_messagesInput | b_chat_message_citationsCreateOrConnectWithoutB_chat_messagesInput[]
+    upsert?: b_chat_message_citationsUpsertWithWhereUniqueWithoutB_chat_messagesInput | b_chat_message_citationsUpsertWithWhereUniqueWithoutB_chat_messagesInput[]
+    createMany?: b_chat_message_citationsCreateManyB_chat_messagesInputEnvelope
+    set?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    disconnect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    delete?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    update?: b_chat_message_citationsUpdateWithWhereUniqueWithoutB_chat_messagesInput | b_chat_message_citationsUpdateWithWhereUniqueWithoutB_chat_messagesInput[]
+    updateMany?: b_chat_message_citationsUpdateManyWithWhereWithoutB_chat_messagesInput | b_chat_message_citationsUpdateManyWithWhereWithoutB_chat_messagesInput[]
+    deleteMany?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateManyWithoutB_chat_messagesNestedInput = {
+    create?: XOR<b_chat_message_citationsCreateWithoutB_chat_messagesInput, b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput> | b_chat_message_citationsCreateWithoutB_chat_messagesInput[] | b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput[]
+    connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_chat_messagesInput | b_chat_message_citationsCreateOrConnectWithoutB_chat_messagesInput[]
+    upsert?: b_chat_message_citationsUpsertWithWhereUniqueWithoutB_chat_messagesInput | b_chat_message_citationsUpsertWithWhereUniqueWithoutB_chat_messagesInput[]
+    createMany?: b_chat_message_citationsCreateManyB_chat_messagesInputEnvelope
+    set?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    disconnect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    delete?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+    update?: b_chat_message_citationsUpdateWithWhereUniqueWithoutB_chat_messagesInput | b_chat_message_citationsUpdateWithWhereUniqueWithoutB_chat_messagesInput[]
+    updateMany?: b_chat_message_citationsUpdateManyWithWhereWithoutB_chat_messagesInput | b_chat_message_citationsUpdateManyWithWhereWithoutB_chat_messagesInput[]
+    deleteMany?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
+  }
+
+  export type b_chat_messagesCreateNestedOneWithoutMessage_citationsInput = {
+    create?: XOR<b_chat_messagesCreateWithoutMessage_citationsInput, b_chat_messagesUncheckedCreateWithoutMessage_citationsInput>
+    connectOrCreate?: b_chat_messagesCreateOrConnectWithoutMessage_citationsInput
+    connect?: b_chat_messagesWhereUniqueInput
+  }
+
+  export type b_knowledge_basesCreateNestedOneWithoutMessage_citationsInput = {
+    create?: XOR<b_knowledge_basesCreateWithoutMessage_citationsInput, b_knowledge_basesUncheckedCreateWithoutMessage_citationsInput>
+    connectOrCreate?: b_knowledge_basesCreateOrConnectWithoutMessage_citationsInput
+    connect?: b_knowledge_basesWhereUniqueInput
+  }
+
+  export type b_documentsCreateNestedOneWithoutMessage_citationsInput = {
+    create?: XOR<b_documentsCreateWithoutMessage_citationsInput, b_documentsUncheckedCreateWithoutMessage_citationsInput>
+    connectOrCreate?: b_documentsCreateOrConnectWithoutMessage_citationsInput
+    connect?: b_documentsWhereUniqueInput
+  }
+
+  export type b_document_chunksCreateNestedOneWithoutMessage_citationsInput = {
+    create?: XOR<b_document_chunksCreateWithoutMessage_citationsInput, b_document_chunksUncheckedCreateWithoutMessage_citationsInput>
+    connectOrCreate?: b_document_chunksCreateOrConnectWithoutMessage_citationsInput
+    connect?: b_document_chunksWhereUniqueInput
+  }
+
+  export type NullableFloatFieldUpdateOperationsInput = {
+    set?: number | null
+    increment?: number
+    decrement?: number
+    multiply?: number
+    divide?: number
+  }
+
+  export type b_chat_messagesUpdateOneRequiredWithoutMessage_citationsNestedInput = {
+    create?: XOR<b_chat_messagesCreateWithoutMessage_citationsInput, b_chat_messagesUncheckedCreateWithoutMessage_citationsInput>
+    connectOrCreate?: b_chat_messagesCreateOrConnectWithoutMessage_citationsInput
+    upsert?: b_chat_messagesUpsertWithoutMessage_citationsInput
+    connect?: b_chat_messagesWhereUniqueInput
+    update?: XOR<XOR<b_chat_messagesUpdateToOneWithWhereWithoutMessage_citationsInput, b_chat_messagesUpdateWithoutMessage_citationsInput>, b_chat_messagesUncheckedUpdateWithoutMessage_citationsInput>
+  }
+
+  export type b_knowledge_basesUpdateOneRequiredWithoutMessage_citationsNestedInput = {
+    create?: XOR<b_knowledge_basesCreateWithoutMessage_citationsInput, b_knowledge_basesUncheckedCreateWithoutMessage_citationsInput>
+    connectOrCreate?: b_knowledge_basesCreateOrConnectWithoutMessage_citationsInput
+    upsert?: b_knowledge_basesUpsertWithoutMessage_citationsInput
+    connect?: b_knowledge_basesWhereUniqueInput
+    update?: XOR<XOR<b_knowledge_basesUpdateToOneWithWhereWithoutMessage_citationsInput, b_knowledge_basesUpdateWithoutMessage_citationsInput>, b_knowledge_basesUncheckedUpdateWithoutMessage_citationsInput>
+  }
+
+  export type b_documentsUpdateOneRequiredWithoutMessage_citationsNestedInput = {
+    create?: XOR<b_documentsCreateWithoutMessage_citationsInput, b_documentsUncheckedCreateWithoutMessage_citationsInput>
+    connectOrCreate?: b_documentsCreateOrConnectWithoutMessage_citationsInput
+    upsert?: b_documentsUpsertWithoutMessage_citationsInput
+    connect?: b_documentsWhereUniqueInput
+    update?: XOR<XOR<b_documentsUpdateToOneWithWhereWithoutMessage_citationsInput, b_documentsUpdateWithoutMessage_citationsInput>, b_documentsUncheckedUpdateWithoutMessage_citationsInput>
+  }
+
+  export type b_document_chunksUpdateOneRequiredWithoutMessage_citationsNestedInput = {
+    create?: XOR<b_document_chunksCreateWithoutMessage_citationsInput, b_document_chunksUncheckedCreateWithoutMessage_citationsInput>
+    connectOrCreate?: b_document_chunksCreateOrConnectWithoutMessage_citationsInput
+    upsert?: b_document_chunksUpsertWithoutMessage_citationsInput
+    connect?: b_document_chunksWhereUniqueInput
+    update?: XOR<XOR<b_document_chunksUpdateToOneWithWhereWithoutMessage_citationsInput, b_document_chunksUpdateWithoutMessage_citationsInput>, b_document_chunksUncheckedUpdateWithoutMessage_citationsInput>
+  }
+
+  export type b_chat_sessionsCreateNestedOneWithoutAgent_runsInput = {
+    create?: XOR<b_chat_sessionsCreateWithoutAgent_runsInput, b_chat_sessionsUncheckedCreateWithoutAgent_runsInput>
+    connectOrCreate?: b_chat_sessionsCreateOrConnectWithoutAgent_runsInput
+    connect?: b_chat_sessionsWhereUniqueInput
+  }
+
+  export type b_usersCreateNestedOneWithoutAgent_runsInput = {
+    create?: XOR<b_usersCreateWithoutAgent_runsInput, b_usersUncheckedCreateWithoutAgent_runsInput>
+    connectOrCreate?: b_usersCreateOrConnectWithoutAgent_runsInput
+    connect?: b_usersWhereUniqueInput
+  }
+
+  export type b_chat_sessionsUpdateOneRequiredWithoutAgent_runsNestedInput = {
+    create?: XOR<b_chat_sessionsCreateWithoutAgent_runsInput, b_chat_sessionsUncheckedCreateWithoutAgent_runsInput>
+    connectOrCreate?: b_chat_sessionsCreateOrConnectWithoutAgent_runsInput
+    upsert?: b_chat_sessionsUpsertWithoutAgent_runsInput
+    connect?: b_chat_sessionsWhereUniqueInput
+    update?: XOR<XOR<b_chat_sessionsUpdateToOneWithWhereWithoutAgent_runsInput, b_chat_sessionsUpdateWithoutAgent_runsInput>, b_chat_sessionsUncheckedUpdateWithoutAgent_runsInput>
+  }
+
+  export type b_usersUpdateOneRequiredWithoutAgent_runsNestedInput = {
+    create?: XOR<b_usersCreateWithoutAgent_runsInput, b_usersUncheckedCreateWithoutAgent_runsInput>
+    connectOrCreate?: b_usersCreateOrConnectWithoutAgent_runsInput
+    upsert?: b_usersUpsertWithoutAgent_runsInput
+    connect?: b_usersWhereUniqueInput
+    update?: XOR<XOR<b_usersUpdateToOneWithWhereWithoutAgent_runsInput, b_usersUpdateWithoutAgent_runsInput>, b_usersUncheckedUpdateWithoutAgent_runsInput>
   }
 
   export type sys_adminsCreateNestedOneWithoutAudit_logsInput = {
@@ -30730,17 +38591,6 @@ export namespace Prisma {
     not?: NestedBoolFilter<$PrismaModel> | boolean
   }
 
-  export type NestedIntFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel>
-    in?: number[]
-    notIn?: number[]
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntFilter<$PrismaModel> | number
-  }
-
   export type NestedDateTimeFilter<$PrismaModel = never> = {
     equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
     in?: Date[] | string[]
@@ -30766,6 +38616,17 @@ export namespace Prisma {
     _sum?: NestedBigIntFilter<$PrismaModel>
     _min?: NestedBigIntFilter<$PrismaModel>
     _max?: NestedBigIntFilter<$PrismaModel>
+  }
+
+  export type NestedIntFilter<$PrismaModel = never> = {
+    equals?: number | IntFieldRefInput<$PrismaModel>
+    in?: number[]
+    notIn?: number[]
+    lt?: number | IntFieldRefInput<$PrismaModel>
+    lte?: number | IntFieldRefInput<$PrismaModel>
+    gt?: number | IntFieldRefInput<$PrismaModel>
+    gte?: number | IntFieldRefInput<$PrismaModel>
+    not?: NestedIntFilter<$PrismaModel> | number
   }
 
   export type NestedFloatFilter<$PrismaModel = never> = {
@@ -30834,6 +38695,20 @@ export namespace Prisma {
     _max?: NestedBoolFilter<$PrismaModel>
   }
 
+  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    in?: Date[] | string[]
+    notIn?: Date[] | string[]
+    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
+    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
+    _count?: NestedIntFilter<$PrismaModel>
+    _min?: NestedDateTimeFilter<$PrismaModel>
+    _max?: NestedDateTimeFilter<$PrismaModel>
+  }
+
   export type NestedIntWithAggregatesFilter<$PrismaModel = never> = {
     equals?: number | IntFieldRefInput<$PrismaModel>
     in?: number[]
@@ -30848,20 +38723,6 @@ export namespace Prisma {
     _sum?: NestedIntFilter<$PrismaModel>
     _min?: NestedIntFilter<$PrismaModel>
     _max?: NestedIntFilter<$PrismaModel>
-  }
-
-  export type NestedDateTimeWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    in?: Date[] | string[]
-    notIn?: Date[] | string[]
-    lt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    lte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gt?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    gte?: Date | string | DateTimeFieldRefInput<$PrismaModel>
-    not?: NestedDateTimeWithAggregatesFilter<$PrismaModel> | Date | string
-    _count?: NestedIntFilter<$PrismaModel>
-    _min?: NestedDateTimeFilter<$PrismaModel>
-    _max?: NestedDateTimeFilter<$PrismaModel>
   }
   export type NestedJsonNullableFilter<$PrismaModel = never> =
     | PatchUndefined<
@@ -30966,22 +38827,48 @@ export namespace Prisma {
     _max?: NestedIntNullableFilter<$PrismaModel>
   }
 
+  export type NestedFloatNullableWithAggregatesFilter<$PrismaModel = never> = {
+    equals?: number | FloatFieldRefInput<$PrismaModel> | null
+    in?: number[] | null
+    notIn?: number[] | null
+    lt?: number | FloatFieldRefInput<$PrismaModel>
+    lte?: number | FloatFieldRefInput<$PrismaModel>
+    gt?: number | FloatFieldRefInput<$PrismaModel>
+    gte?: number | FloatFieldRefInput<$PrismaModel>
+    not?: NestedFloatNullableWithAggregatesFilter<$PrismaModel> | number | null
+    _count?: NestedIntNullableFilter<$PrismaModel>
+    _avg?: NestedFloatNullableFilter<$PrismaModel>
+    _sum?: NestedFloatNullableFilter<$PrismaModel>
+    _min?: NestedFloatNullableFilter<$PrismaModel>
+    _max?: NestedFloatNullableFilter<$PrismaModel>
+  }
+
   export type b_chat_sessionsCreateWithoutB_usersInput = {
     id: string
     kb_id?: bigint | number | null
     title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     chat_messages?: b_chat_messagesCreateNestedManyWithoutB_chat_sessionsInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_chat_sessionsInput
   }
 
   export type b_chat_sessionsUncheckedCreateWithoutB_usersInput = {
     id: string
     kb_id?: bigint | number | null
     title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
     chat_messages?: b_chat_messagesUncheckedCreateNestedManyWithoutB_chat_sessionsInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_chat_sessionsInput
   }
 
   export type b_chat_sessionsCreateOrConnectWithoutB_usersInput = {
@@ -31032,6 +38919,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_knowledge_basesInput
   }
 
   export type b_knowledge_basesUncheckedCreateWithoutB_usersInput = {
@@ -31048,6 +38936,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
 
   export type b_knowledge_basesCreateOrConnectWithoutB_usersInput = {
@@ -31085,6 +38974,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
     processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
   }
 
@@ -31114,6 +39004,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
     processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsCreateOrConnectWithoutB_usersInput = {
@@ -31214,6 +39105,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type b_user_daily_quotasCreateWithoutB_usersInput = {
+    id?: bigint | number
+    quota_date: Date | string
+    daily_chat_limit?: number
+    daily_token_quota?: bigint | number
+    used_chat_count?: number
+    used_token_count?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_user_daily_quotasUncheckedCreateWithoutB_usersInput = {
+    id?: bigint | number
+    quota_date: Date | string
+    daily_chat_limit?: number
+    daily_token_quota?: bigint | number
+    used_chat_count?: number
+    used_token_count?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
+  export type b_user_daily_quotasCreateOrConnectWithoutB_usersInput = {
+    where: b_user_daily_quotasWhereUniqueInput
+    create: XOR<b_user_daily_quotasCreateWithoutB_usersInput, b_user_daily_quotasUncheckedCreateWithoutB_usersInput>
+  }
+
+  export type b_user_daily_quotasCreateManyB_usersInputEnvelope = {
+    data: b_user_daily_quotasCreateManyB_usersInput | b_user_daily_quotasCreateManyB_usersInput[]
+    skipDuplicates?: boolean
+  }
+
   export type b_kb_invitationsCreateWithoutB_usersInput = {
     id?: bigint | number
     invite_code: string
@@ -31280,6 +39203,50 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type b_agent_runsCreateWithoutB_usersInput = {
+    id: string
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+    b_chat_sessions: b_chat_sessionsCreateNestedOneWithoutAgent_runsInput
+  }
+
+  export type b_agent_runsUncheckedCreateWithoutB_usersInput = {
+    id: string
+    session_id: string
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_runsCreateOrConnectWithoutB_usersInput = {
+    where: b_agent_runsWhereUniqueInput
+    create: XOR<b_agent_runsCreateWithoutB_usersInput, b_agent_runsUncheckedCreateWithoutB_usersInput>
+  }
+
+  export type b_agent_runsCreateManyB_usersInputEnvelope = {
+    data: b_agent_runsCreateManyB_usersInput | b_agent_runsCreateManyB_usersInput[]
+    skipDuplicates?: boolean
+  }
+
   export type b_chat_sessionsUpsertWithWhereUniqueWithoutB_usersInput = {
     where: b_chat_sessionsWhereUniqueInput
     update: XOR<b_chat_sessionsUpdateWithoutB_usersInput, b_chat_sessionsUncheckedUpdateWithoutB_usersInput>
@@ -31304,6 +39271,10 @@ export namespace Prisma {
     user_id?: BigIntFilter<"b_chat_sessions"> | bigint | number
     kb_id?: BigIntNullableFilter<"b_chat_sessions"> | bigint | number | null
     title?: StringFilter<"b_chat_sessions"> | string
+    summary_text?: StringNullableFilter<"b_chat_sessions"> | string | null
+    last_selected_kb_ids_json?: JsonNullableFilter<"b_chat_sessions">
+    last_chat_mode?: StringNullableFilter<"b_chat_sessions"> | string | null
+    last_message_at?: DateTimeNullableFilter<"b_chat_sessions"> | Date | string | null
     created_at?: DateTimeFilter<"b_chat_sessions"> | Date | string
     updated_at?: DateTimeFilter<"b_chat_sessions"> | Date | string
   }
@@ -31485,6 +39456,37 @@ export namespace Prisma {
     updated_at?: DateTimeFilter<"b_user_model_configs"> | Date | string
   }
 
+  export type b_user_daily_quotasUpsertWithWhereUniqueWithoutB_usersInput = {
+    where: b_user_daily_quotasWhereUniqueInput
+    update: XOR<b_user_daily_quotasUpdateWithoutB_usersInput, b_user_daily_quotasUncheckedUpdateWithoutB_usersInput>
+    create: XOR<b_user_daily_quotasCreateWithoutB_usersInput, b_user_daily_quotasUncheckedCreateWithoutB_usersInput>
+  }
+
+  export type b_user_daily_quotasUpdateWithWhereUniqueWithoutB_usersInput = {
+    where: b_user_daily_quotasWhereUniqueInput
+    data: XOR<b_user_daily_quotasUpdateWithoutB_usersInput, b_user_daily_quotasUncheckedUpdateWithoutB_usersInput>
+  }
+
+  export type b_user_daily_quotasUpdateManyWithWhereWithoutB_usersInput = {
+    where: b_user_daily_quotasScalarWhereInput
+    data: XOR<b_user_daily_quotasUpdateManyMutationInput, b_user_daily_quotasUncheckedUpdateManyWithoutB_usersInput>
+  }
+
+  export type b_user_daily_quotasScalarWhereInput = {
+    AND?: b_user_daily_quotasScalarWhereInput | b_user_daily_quotasScalarWhereInput[]
+    OR?: b_user_daily_quotasScalarWhereInput[]
+    NOT?: b_user_daily_quotasScalarWhereInput | b_user_daily_quotasScalarWhereInput[]
+    id?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    user_id?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    quota_date?: DateTimeFilter<"b_user_daily_quotas"> | Date | string
+    daily_chat_limit?: IntFilter<"b_user_daily_quotas"> | number
+    daily_token_quota?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    used_chat_count?: IntFilter<"b_user_daily_quotas"> | number
+    used_token_count?: BigIntFilter<"b_user_daily_quotas"> | bigint | number
+    created_at?: DateTimeFilter<"b_user_daily_quotas"> | Date | string
+    updated_at?: DateTimeFilter<"b_user_daily_quotas"> | Date | string
+  }
+
   export type b_kb_invitationsUpsertWithWhereUniqueWithoutB_usersInput = {
     where: b_kb_invitationsWhereUniqueInput
     update: XOR<b_kb_invitationsUpdateWithoutB_usersInput, b_kb_invitationsUncheckedUpdateWithoutB_usersInput>
@@ -31546,6 +39548,43 @@ export namespace Prisma {
     revoked?: BoolFilter<"b_user_sessions"> | boolean
     expired_at?: DateTimeFilter<"b_user_sessions"> | Date | string
     created_at?: DateTimeFilter<"b_user_sessions"> | Date | string
+  }
+
+  export type b_agent_runsUpsertWithWhereUniqueWithoutB_usersInput = {
+    where: b_agent_runsWhereUniqueInput
+    update: XOR<b_agent_runsUpdateWithoutB_usersInput, b_agent_runsUncheckedUpdateWithoutB_usersInput>
+    create: XOR<b_agent_runsCreateWithoutB_usersInput, b_agent_runsUncheckedCreateWithoutB_usersInput>
+  }
+
+  export type b_agent_runsUpdateWithWhereUniqueWithoutB_usersInput = {
+    where: b_agent_runsWhereUniqueInput
+    data: XOR<b_agent_runsUpdateWithoutB_usersInput, b_agent_runsUncheckedUpdateWithoutB_usersInput>
+  }
+
+  export type b_agent_runsUpdateManyWithWhereWithoutB_usersInput = {
+    where: b_agent_runsScalarWhereInput
+    data: XOR<b_agent_runsUpdateManyMutationInput, b_agent_runsUncheckedUpdateManyWithoutB_usersInput>
+  }
+
+  export type b_agent_runsScalarWhereInput = {
+    AND?: b_agent_runsScalarWhereInput | b_agent_runsScalarWhereInput[]
+    OR?: b_agent_runsScalarWhereInput[]
+    NOT?: b_agent_runsScalarWhereInput | b_agent_runsScalarWhereInput[]
+    id?: StringFilter<"b_agent_runs"> | string
+    session_id?: StringFilter<"b_agent_runs"> | string
+    user_id?: BigIntFilter<"b_agent_runs"> | bigint | number
+    user_message_id?: BigIntFilter<"b_agent_runs"> | bigint | number
+    assistant_message_id?: BigIntNullableFilter<"b_agent_runs"> | bigint | number | null
+    status?: StringFilter<"b_agent_runs"> | string
+    total_tokens?: IntNullableFilter<"b_agent_runs"> | number | null
+    duration_ms?: IntNullableFilter<"b_agent_runs"> | number | null
+    chat_mode?: StringNullableFilter<"b_agent_runs"> | string | null
+    selected_kb_ids_json?: JsonNullableFilter<"b_agent_runs">
+    resolved_kb_ids_json?: JsonNullableFilter<"b_agent_runs">
+    routed_query_json?: JsonNullableFilter<"b_agent_runs">
+    metadata_json?: JsonNullableFilter<"b_agent_runs">
+    created_at?: DateTimeFilter<"b_agent_runs"> | Date | string
+    finished_at?: DateTimeNullableFilter<"b_agent_runs"> | Date | string | null
   }
 
   export type sys_audit_logsCreateWithoutSys_adminsInput = {
@@ -31672,9 +39711,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
@@ -31683,7 +39719,9 @@ export namespace Prisma {
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUncheckedCreateWithoutUser_sessionsInput = {
@@ -31693,9 +39731,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -31704,7 +39739,9 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersCreateOrConnectWithoutUser_sessionsInput = {
@@ -31730,9 +39767,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
@@ -31741,7 +39775,9 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersUncheckedUpdateWithoutUser_sessionsInput = {
@@ -31751,9 +39787,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -31762,7 +39795,9 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type sys_adminsCreateWithoutAdmin_sessionsInput = {
@@ -31832,9 +39867,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
@@ -31842,8 +39874,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUncheckedCreateWithoutModel_configsInput = {
@@ -31853,9 +39887,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -31863,8 +39894,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersCreateOrConnectWithoutModel_configsInput = {
@@ -31890,9 +39923,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
@@ -31900,8 +39930,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersUncheckedUpdateWithoutModel_configsInput = {
@@ -31911,9 +39943,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -31921,8 +39950,106 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
+  }
+
+  export type b_usersCreateWithoutDaily_quotasInput = {
+    id?: bigint | number
+    email: string
+    password_hash: string
+    full_name?: string | null
+    avatar_url?: string | null
+    is_active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
+    kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
+    knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
+    model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
+    user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
+  }
+
+  export type b_usersUncheckedCreateWithoutDaily_quotasInput = {
+    id?: bigint | number
+    email: string
+    password_hash: string
+    full_name?: string | null
+    avatar_url?: string | null
+    is_active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
+    knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
+    user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
+  }
+
+  export type b_usersCreateOrConnectWithoutDaily_quotasInput = {
+    where: b_usersWhereUniqueInput
+    create: XOR<b_usersCreateWithoutDaily_quotasInput, b_usersUncheckedCreateWithoutDaily_quotasInput>
+  }
+
+  export type b_usersUpsertWithoutDaily_quotasInput = {
+    update: XOR<b_usersUpdateWithoutDaily_quotasInput, b_usersUncheckedUpdateWithoutDaily_quotasInput>
+    create: XOR<b_usersCreateWithoutDaily_quotasInput, b_usersUncheckedCreateWithoutDaily_quotasInput>
+    where?: b_usersWhereInput
+  }
+
+  export type b_usersUpdateToOneWithWhereWithoutDaily_quotasInput = {
+    where?: b_usersWhereInput
+    data: XOR<b_usersUpdateWithoutDaily_quotasInput, b_usersUncheckedUpdateWithoutDaily_quotasInput>
+  }
+
+  export type b_usersUpdateWithoutDaily_quotasInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
+    kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
+    knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
+    model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
+    user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
+  }
+
+  export type b_usersUncheckedUpdateWithoutDaily_quotasInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
+    knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
+    user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_documentsCreateWithoutB_knowledge_basesInput = {
@@ -31950,6 +40077,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
     processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_documentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
 
@@ -31979,6 +40107,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
     processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsCreateOrConnectWithoutB_knowledge_basesInput = {
@@ -32107,6 +40236,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type b_chat_message_citationsCreateWithoutB_knowledge_basesInput = {
+    id?: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+    b_chat_messages: b_chat_messagesCreateNestedOneWithoutMessage_citationsInput
+    b_documents: b_documentsCreateNestedOneWithoutMessage_citationsInput
+    b_document_chunks: b_document_chunksCreateNestedOneWithoutMessage_citationsInput
+  }
+
+  export type b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput = {
+    id?: bigint | number
+    message_id: bigint | number
+    doc_id: bigint | number
+    chunk_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
+  export type b_chat_message_citationsCreateOrConnectWithoutB_knowledge_basesInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    create: XOR<b_chat_message_citationsCreateWithoutB_knowledge_basesInput, b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput>
+  }
+
+  export type b_chat_message_citationsCreateManyB_knowledge_basesInputEnvelope = {
+    data: b_chat_message_citationsCreateManyB_knowledge_basesInput | b_chat_message_citationsCreateManyB_knowledge_basesInput[]
+    skipDuplicates?: boolean
+  }
+
   export type b_usersCreateWithoutKnowledge_basesInput = {
     id?: bigint | number
     email: string
@@ -32114,9 +40275,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
@@ -32124,8 +40282,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUncheckedCreateWithoutKnowledge_basesInput = {
@@ -32135,9 +40295,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -32145,8 +40302,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersCreateOrConnectWithoutKnowledge_basesInput = {
@@ -32218,6 +40377,37 @@ export namespace Prisma {
     data: XOR<b_kb_invitationsUpdateManyMutationInput, b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesInput>
   }
 
+  export type b_chat_message_citationsUpsertWithWhereUniqueWithoutB_knowledge_basesInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    update: XOR<b_chat_message_citationsUpdateWithoutB_knowledge_basesInput, b_chat_message_citationsUncheckedUpdateWithoutB_knowledge_basesInput>
+    create: XOR<b_chat_message_citationsCreateWithoutB_knowledge_basesInput, b_chat_message_citationsUncheckedCreateWithoutB_knowledge_basesInput>
+  }
+
+  export type b_chat_message_citationsUpdateWithWhereUniqueWithoutB_knowledge_basesInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    data: XOR<b_chat_message_citationsUpdateWithoutB_knowledge_basesInput, b_chat_message_citationsUncheckedUpdateWithoutB_knowledge_basesInput>
+  }
+
+  export type b_chat_message_citationsUpdateManyWithWhereWithoutB_knowledge_basesInput = {
+    where: b_chat_message_citationsScalarWhereInput
+    data: XOR<b_chat_message_citationsUpdateManyMutationInput, b_chat_message_citationsUncheckedUpdateManyWithoutB_knowledge_basesInput>
+  }
+
+  export type b_chat_message_citationsScalarWhereInput = {
+    AND?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
+    OR?: b_chat_message_citationsScalarWhereInput[]
+    NOT?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
+    id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    message_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    kb_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    doc_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    chunk_id?: BigIntFilter<"b_chat_message_citations"> | bigint | number
+    score?: FloatNullableFilter<"b_chat_message_citations"> | number | null
+    quote?: StringNullableFilter<"b_chat_message_citations"> | string | null
+    order_no?: IntFilter<"b_chat_message_citations"> | number
+    created_at?: DateTimeFilter<"b_chat_message_citations"> | Date | string
+  }
+
   export type b_usersUpsertWithoutKnowledge_basesInput = {
     update: XOR<b_usersUpdateWithoutKnowledge_basesInput, b_usersUncheckedUpdateWithoutKnowledge_basesInput>
     create: XOR<b_usersCreateWithoutKnowledge_basesInput, b_usersUncheckedCreateWithoutKnowledge_basesInput>
@@ -32236,9 +40426,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
@@ -32246,8 +40433,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersUncheckedUpdateWithoutKnowledge_basesInput = {
@@ -32257,9 +40446,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -32267,8 +40453,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_knowledge_basesCreateWithoutKb_membersInput = {
@@ -32284,6 +40472,7 @@ export namespace Prisma {
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_knowledge_basesInput
     b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
   }
 
@@ -32301,6 +40490,7 @@ export namespace Prisma {
     documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
 
   export type b_knowledge_basesCreateOrConnectWithoutKb_membersInput = {
@@ -32315,9 +40505,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
@@ -32325,8 +40512,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUncheckedCreateWithoutKb_membersInput = {
@@ -32336,9 +40525,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -32346,8 +40532,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersCreateOrConnectWithoutKb_membersInput = {
@@ -32379,6 +40567,7 @@ export namespace Prisma {
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_knowledge_basesNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
   }
 
@@ -32396,6 +40585,7 @@ export namespace Prisma {
     documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
   export type b_usersUpsertWithoutKb_membersInput = {
@@ -32416,9 +40606,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
@@ -32426,8 +40613,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersUncheckedUpdateWithoutKb_membersInput = {
@@ -32437,9 +40626,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -32447,8 +40633,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_knowledge_basesCreateWithoutKb_invitationsInput = {
@@ -32464,6 +40652,7 @@ export namespace Prisma {
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_knowledge_basesInput
     b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
   }
 
@@ -32481,6 +40670,7 @@ export namespace Prisma {
     documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
 
   export type b_knowledge_basesCreateOrConnectWithoutKb_invitationsInput = {
@@ -32495,9 +40685,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
@@ -32506,7 +40693,9 @@ export namespace Prisma {
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUncheckedCreateWithoutKb_invitationsInput = {
@@ -32516,9 +40705,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -32527,7 +40713,9 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersCreateOrConnectWithoutKb_invitationsInput = {
@@ -32559,6 +40747,7 @@ export namespace Prisma {
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_knowledge_basesNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
   }
 
@@ -32576,6 +40765,7 @@ export namespace Prisma {
     documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
   export type b_usersUpsertWithoutKb_invitationsInput = {
@@ -32596,9 +40786,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
@@ -32607,7 +40794,9 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersUncheckedUpdateWithoutKb_invitationsInput = {
@@ -32617,9 +40806,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -32628,7 +40814,9 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_document_chunksCreateWithoutB_documentsInput = {
@@ -32643,6 +40831,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_document_chunksInput
   }
 
   export type b_document_chunksUncheckedCreateWithoutB_documentsInput = {
@@ -32657,6 +40846,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: string
     created_at?: Date | string
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_document_chunksInput
   }
 
   export type b_document_chunksCreateOrConnectWithoutB_documentsInput = {
@@ -32769,6 +40959,38 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type b_chat_message_citationsCreateWithoutB_documentsInput = {
+    id?: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+    b_chat_messages: b_chat_messagesCreateNestedOneWithoutMessage_citationsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutMessage_citationsInput
+    b_document_chunks: b_document_chunksCreateNestedOneWithoutMessage_citationsInput
+  }
+
+  export type b_chat_message_citationsUncheckedCreateWithoutB_documentsInput = {
+    id?: bigint | number
+    message_id: bigint | number
+    kb_id: bigint | number
+    chunk_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
+  export type b_chat_message_citationsCreateOrConnectWithoutB_documentsInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    create: XOR<b_chat_message_citationsCreateWithoutB_documentsInput, b_chat_message_citationsUncheckedCreateWithoutB_documentsInput>
+  }
+
+  export type b_chat_message_citationsCreateManyB_documentsInputEnvelope = {
+    data: b_chat_message_citationsCreateManyB_documentsInput | b_chat_message_citationsCreateManyB_documentsInput[]
+    skipDuplicates?: boolean
+  }
+
   export type b_knowledge_basesCreateWithoutDocumentsInput = {
     id?: bigint | number
     name: string
@@ -32782,6 +41004,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_knowledge_basesInput
     b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
   }
 
@@ -32799,6 +41022,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
 
   export type b_knowledge_basesCreateOrConnectWithoutDocumentsInput = {
@@ -32813,9 +41037,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
@@ -32823,8 +41044,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUncheckedCreateWithoutUploaded_documentsInput = {
@@ -32834,9 +41057,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -32844,8 +41064,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersCreateOrConnectWithoutUploaded_documentsInput = {
@@ -32940,6 +41162,22 @@ export namespace Prisma {
     data: XOR<b_upload_sessionsUpdateManyMutationInput, b_upload_sessionsUncheckedUpdateManyWithoutB_documentsInput>
   }
 
+  export type b_chat_message_citationsUpsertWithWhereUniqueWithoutB_documentsInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    update: XOR<b_chat_message_citationsUpdateWithoutB_documentsInput, b_chat_message_citationsUncheckedUpdateWithoutB_documentsInput>
+    create: XOR<b_chat_message_citationsCreateWithoutB_documentsInput, b_chat_message_citationsUncheckedCreateWithoutB_documentsInput>
+  }
+
+  export type b_chat_message_citationsUpdateWithWhereUniqueWithoutB_documentsInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    data: XOR<b_chat_message_citationsUpdateWithoutB_documentsInput, b_chat_message_citationsUncheckedUpdateWithoutB_documentsInput>
+  }
+
+  export type b_chat_message_citationsUpdateManyWithWhereWithoutB_documentsInput = {
+    where: b_chat_message_citationsScalarWhereInput
+    data: XOR<b_chat_message_citationsUpdateManyMutationInput, b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsInput>
+  }
+
   export type b_knowledge_basesUpsertWithoutDocumentsInput = {
     update: XOR<b_knowledge_basesUpdateWithoutDocumentsInput, b_knowledge_basesUncheckedUpdateWithoutDocumentsInput>
     create: XOR<b_knowledge_basesCreateWithoutDocumentsInput, b_knowledge_basesUncheckedCreateWithoutDocumentsInput>
@@ -32964,6 +41202,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_knowledge_basesNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
   }
 
@@ -32981,6 +41220,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
   export type b_usersUpsertWithoutUploaded_documentsInput = {
@@ -33001,9 +41241,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
@@ -33011,8 +41248,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersUncheckedUpdateWithoutUploaded_documentsInput = {
@@ -33022,9 +41261,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -33032,8 +41268,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_upload_chunksCreateWithoutB_upload_sessionsInput = {
@@ -33081,6 +41319,7 @@ export namespace Prisma {
     documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_knowledge_basesInput
     b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
   }
 
@@ -33098,6 +41337,7 @@ export namespace Prisma {
     documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
   }
 
   export type b_knowledge_basesCreateOrConnectWithoutUpload_sessionsInput = {
@@ -33112,9 +41352,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
@@ -33122,8 +41359,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUncheckedCreateWithoutUpload_sessionsInput = {
@@ -33133,9 +41372,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
@@ -33143,8 +41379,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersCreateOrConnectWithoutUpload_sessionsInput = {
@@ -33176,6 +41414,7 @@ export namespace Prisma {
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
     processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
@@ -33206,6 +41445,7 @@ export namespace Prisma {
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
     processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsCreateOrConnectWithoutUpload_sessionsInput = {
@@ -33268,6 +41508,7 @@ export namespace Prisma {
     documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_knowledge_basesNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
   }
 
@@ -33285,6 +41526,7 @@ export namespace Prisma {
     documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
   export type b_usersUpsertWithoutUpload_sessionsInput = {
@@ -33305,9 +41547,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
@@ -33315,8 +41554,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersUncheckedUpdateWithoutUpload_sessionsInput = {
@@ -33326,9 +41567,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
@@ -33336,8 +41574,10 @@ export namespace Prisma {
     knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_documentsUpsertWithoutUpload_sessionsInput = {
@@ -33375,6 +41615,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
     processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
@@ -33405,6 +41646,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
     processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_upload_sessionsCreateWithoutUpload_chunksInput = {
@@ -33515,6 +41757,38 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type b_chat_message_citationsCreateWithoutB_document_chunksInput = {
+    id?: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+    b_chat_messages: b_chat_messagesCreateNestedOneWithoutMessage_citationsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutMessage_citationsInput
+    b_documents: b_documentsCreateNestedOneWithoutMessage_citationsInput
+  }
+
+  export type b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput = {
+    id?: bigint | number
+    message_id: bigint | number
+    kb_id: bigint | number
+    doc_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
+  export type b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    create: XOR<b_chat_message_citationsCreateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput>
+  }
+
+  export type b_chat_message_citationsCreateManyB_document_chunksInputEnvelope = {
+    data: b_chat_message_citationsCreateManyB_document_chunksInput | b_chat_message_citationsCreateManyB_document_chunksInput[]
+    skipDuplicates?: boolean
+  }
+
   export type b_documentsCreateWithoutDocument_chunksInput = {
     id?: bigint | number
     title: string
@@ -33539,6 +41813,7 @@ export namespace Prisma {
     updated_at?: Date | string
     processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
@@ -33569,11 +41844,28 @@ export namespace Prisma {
     updated_at?: Date | string
     processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsCreateOrConnectWithoutDocument_chunksInput = {
     where: b_documentsWhereUniqueInput
     create: XOR<b_documentsCreateWithoutDocument_chunksInput, b_documentsUncheckedCreateWithoutDocument_chunksInput>
+  }
+
+  export type b_chat_message_citationsUpsertWithWhereUniqueWithoutB_document_chunksInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    update: XOR<b_chat_message_citationsUpdateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedUpdateWithoutB_document_chunksInput>
+    create: XOR<b_chat_message_citationsCreateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput>
+  }
+
+  export type b_chat_message_citationsUpdateWithWhereUniqueWithoutB_document_chunksInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    data: XOR<b_chat_message_citationsUpdateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedUpdateWithoutB_document_chunksInput>
+  }
+
+  export type b_chat_message_citationsUpdateManyWithWhereWithoutB_document_chunksInput = {
+    where: b_chat_message_citationsScalarWhereInput
+    data: XOR<b_chat_message_citationsUpdateManyMutationInput, b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksInput>
   }
 
   export type b_documentsUpsertWithoutDocument_chunksInput = {
@@ -33611,6 +41903,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
@@ -33641,6 +41934,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_documentsCreateWithoutProcessing_tasksInput = {
@@ -33667,6 +41961,7 @@ export namespace Prisma {
     updated_at?: Date | string
     document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_documentsInput
     b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
     b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
   }
@@ -33697,6 +41992,7 @@ export namespace Prisma {
     updated_at?: Date | string
     document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_documentsInput
   }
 
   export type b_documentsCreateOrConnectWithoutProcessing_tasksInput = {
@@ -33739,6 +42035,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
@@ -33769,6 +42066,7 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_chat_messagesCreateWithoutB_chat_sessionsInput = {
@@ -33778,9 +42076,20 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: number | null
+    message_status?: string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: string | null
+    finish_reason?: string | null
+    trace_id?: string | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: Date | string | null
+    stream_finished_at?: Date | string | null
     feedback_type?: string | null
     feedback_reason?: string | null
     created_at?: Date | string
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_chat_messagesInput
   }
 
   export type b_chat_messagesUncheckedCreateWithoutB_chat_sessionsInput = {
@@ -33790,9 +42099,20 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: number | null
+    message_status?: string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: string | null
+    finish_reason?: string | null
+    trace_id?: string | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: Date | string | null
+    stream_finished_at?: Date | string | null
     feedback_type?: string | null
     feedback_reason?: string | null
     created_at?: Date | string
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_chat_messagesInput
   }
 
   export type b_chat_messagesCreateOrConnectWithoutB_chat_sessionsInput = {
@@ -33805,6 +42125,50 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type b_agent_runsCreateWithoutB_chat_sessionsInput = {
+    id: string
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+    b_users: b_usersCreateNestedOneWithoutAgent_runsInput
+  }
+
+  export type b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput = {
+    id: string
+    user_id: bigint | number
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput = {
+    where: b_agent_runsWhereUniqueInput
+    create: XOR<b_agent_runsCreateWithoutB_chat_sessionsInput, b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput>
+  }
+
+  export type b_agent_runsCreateManyB_chat_sessionsInputEnvelope = {
+    data: b_agent_runsCreateManyB_chat_sessionsInput | b_agent_runsCreateManyB_chat_sessionsInput[]
+    skipDuplicates?: boolean
+  }
+
   export type b_usersCreateWithoutChat_sessionsInput = {
     id?: bigint | number
     email: string
@@ -33812,9 +42176,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
@@ -33822,8 +42183,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersUncheckedCreateWithoutChat_sessionsInput = {
@@ -33833,9 +42196,6 @@ export namespace Prisma {
     full_name?: string | null
     avatar_url?: string | null
     is_active?: boolean
-    daily_chat_limit?: number
-    token_quota?: bigint | number
-    used_tokens?: bigint | number
     created_at?: Date | string
     updated_at?: Date | string
     kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
@@ -33843,8 +42203,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
     upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
     model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
     kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
     user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_usersInput
   }
 
   export type b_usersCreateOrConnectWithoutChat_sessionsInput = {
@@ -33879,9 +42241,35 @@ export namespace Prisma {
     references?: JsonNullableFilter<"b_chat_messages">
     tool_calls?: JsonNullableFilter<"b_chat_messages">
     tokens_used?: IntNullableFilter<"b_chat_messages"> | number | null
+    message_status?: StringFilter<"b_chat_messages"> | string
+    metadata_json?: JsonNullableFilter<"b_chat_messages">
+    model_name?: StringNullableFilter<"b_chat_messages"> | string | null
+    finish_reason?: StringNullableFilter<"b_chat_messages"> | string | null
+    trace_id?: StringNullableFilter<"b_chat_messages"> | string | null
+    chat_mode?: StringNullableFilter<"b_chat_messages"> | string | null
+    selected_kb_ids_json?: JsonNullableFilter<"b_chat_messages">
+    resolved_kb_ids_json?: JsonNullableFilter<"b_chat_messages">
+    stream_started_at?: DateTimeNullableFilter<"b_chat_messages"> | Date | string | null
+    stream_finished_at?: DateTimeNullableFilter<"b_chat_messages"> | Date | string | null
     feedback_type?: StringNullableFilter<"b_chat_messages"> | string | null
     feedback_reason?: StringNullableFilter<"b_chat_messages"> | string | null
     created_at?: DateTimeFilter<"b_chat_messages"> | Date | string
+  }
+
+  export type b_agent_runsUpsertWithWhereUniqueWithoutB_chat_sessionsInput = {
+    where: b_agent_runsWhereUniqueInput
+    update: XOR<b_agent_runsUpdateWithoutB_chat_sessionsInput, b_agent_runsUncheckedUpdateWithoutB_chat_sessionsInput>
+    create: XOR<b_agent_runsCreateWithoutB_chat_sessionsInput, b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput>
+  }
+
+  export type b_agent_runsUpdateWithWhereUniqueWithoutB_chat_sessionsInput = {
+    where: b_agent_runsWhereUniqueInput
+    data: XOR<b_agent_runsUpdateWithoutB_chat_sessionsInput, b_agent_runsUncheckedUpdateWithoutB_chat_sessionsInput>
+  }
+
+  export type b_agent_runsUpdateManyWithWhereWithoutB_chat_sessionsInput = {
+    where: b_agent_runsScalarWhereInput
+    data: XOR<b_agent_runsUpdateManyMutationInput, b_agent_runsUncheckedUpdateManyWithoutB_chat_sessionsInput>
   }
 
   export type b_usersUpsertWithoutChat_sessionsInput = {
@@ -33902,9 +42290,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
@@ -33912,8 +42297,10 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_usersUncheckedUpdateWithoutChat_sessionsInput = {
@@ -33923,9 +42310,6 @@ export namespace Prisma {
     full_name?: NullableStringFieldUpdateOperationsInput | string | null
     avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
-    daily_chat_limit?: IntFieldUpdateOperationsInput | number
-    token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
-    used_tokens?: BigIntFieldUpdateOperationsInput | bigint | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
@@ -33933,16 +42317,23 @@ export namespace Prisma {
     uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
     model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type b_chat_sessionsCreateWithoutChat_messagesInput = {
     id: string
     kb_id?: bigint | number | null
     title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
+    agent_runs?: b_agent_runsCreateNestedManyWithoutB_chat_sessionsInput
     b_users: b_usersCreateNestedOneWithoutChat_sessionsInput
   }
 
@@ -33951,13 +42342,50 @@ export namespace Prisma {
     user_id: bigint | number
     kb_id?: bigint | number | null
     title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
+    agent_runs?: b_agent_runsUncheckedCreateNestedManyWithoutB_chat_sessionsInput
   }
 
   export type b_chat_sessionsCreateOrConnectWithoutChat_messagesInput = {
     where: b_chat_sessionsWhereUniqueInput
     create: XOR<b_chat_sessionsCreateWithoutChat_messagesInput, b_chat_sessionsUncheckedCreateWithoutChat_messagesInput>
+  }
+
+  export type b_chat_message_citationsCreateWithoutB_chat_messagesInput = {
+    id?: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutMessage_citationsInput
+    b_documents: b_documentsCreateNestedOneWithoutMessage_citationsInput
+    b_document_chunks: b_document_chunksCreateNestedOneWithoutMessage_citationsInput
+  }
+
+  export type b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    doc_id: bigint | number
+    chunk_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
+  export type b_chat_message_citationsCreateOrConnectWithoutB_chat_messagesInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    create: XOR<b_chat_message_citationsCreateWithoutB_chat_messagesInput, b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput>
+  }
+
+  export type b_chat_message_citationsCreateManyB_chat_messagesInputEnvelope = {
+    data: b_chat_message_citationsCreateManyB_chat_messagesInput | b_chat_message_citationsCreateManyB_chat_messagesInput[]
+    skipDuplicates?: boolean
   }
 
   export type b_chat_sessionsUpsertWithoutChat_messagesInput = {
@@ -33975,8 +42403,13 @@ export namespace Prisma {
     id?: StringFieldUpdateOperationsInput | string
     kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    agent_runs?: b_agent_runsUpdateManyWithoutB_chat_sessionsNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutChat_sessionsNestedInput
   }
 
@@ -33985,8 +42418,597 @@ export namespace Prisma {
     user_id?: BigIntFieldUpdateOperationsInput | bigint | number
     kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_chat_sessionsNestedInput
+  }
+
+  export type b_chat_message_citationsUpsertWithWhereUniqueWithoutB_chat_messagesInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    update: XOR<b_chat_message_citationsUpdateWithoutB_chat_messagesInput, b_chat_message_citationsUncheckedUpdateWithoutB_chat_messagesInput>
+    create: XOR<b_chat_message_citationsCreateWithoutB_chat_messagesInput, b_chat_message_citationsUncheckedCreateWithoutB_chat_messagesInput>
+  }
+
+  export type b_chat_message_citationsUpdateWithWhereUniqueWithoutB_chat_messagesInput = {
+    where: b_chat_message_citationsWhereUniqueInput
+    data: XOR<b_chat_message_citationsUpdateWithoutB_chat_messagesInput, b_chat_message_citationsUncheckedUpdateWithoutB_chat_messagesInput>
+  }
+
+  export type b_chat_message_citationsUpdateManyWithWhereWithoutB_chat_messagesInput = {
+    where: b_chat_message_citationsScalarWhereInput
+    data: XOR<b_chat_message_citationsUpdateManyMutationInput, b_chat_message_citationsUncheckedUpdateManyWithoutB_chat_messagesInput>
+  }
+
+  export type b_chat_messagesCreateWithoutMessage_citationsInput = {
+    id?: bigint | number
+    role: string
+    content: string
+    references?: NullableJsonNullValueInput | InputJsonValue
+    tool_calls?: NullableJsonNullValueInput | InputJsonValue
+    tokens_used?: number | null
+    message_status?: string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: string | null
+    finish_reason?: string | null
+    trace_id?: string | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: Date | string | null
+    stream_finished_at?: Date | string | null
+    feedback_type?: string | null
+    feedback_reason?: string | null
+    created_at?: Date | string
+    b_chat_sessions: b_chat_sessionsCreateNestedOneWithoutChat_messagesInput
+  }
+
+  export type b_chat_messagesUncheckedCreateWithoutMessage_citationsInput = {
+    id?: bigint | number
+    session_id: string
+    role: string
+    content: string
+    references?: NullableJsonNullValueInput | InputJsonValue
+    tool_calls?: NullableJsonNullValueInput | InputJsonValue
+    tokens_used?: number | null
+    message_status?: string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: string | null
+    finish_reason?: string | null
+    trace_id?: string | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: Date | string | null
+    stream_finished_at?: Date | string | null
+    feedback_type?: string | null
+    feedback_reason?: string | null
+    created_at?: Date | string
+  }
+
+  export type b_chat_messagesCreateOrConnectWithoutMessage_citationsInput = {
+    where: b_chat_messagesWhereUniqueInput
+    create: XOR<b_chat_messagesCreateWithoutMessage_citationsInput, b_chat_messagesUncheckedCreateWithoutMessage_citationsInput>
+  }
+
+  export type b_knowledge_basesCreateWithoutMessage_citationsInput = {
+    id?: bigint | number
+    name: string
+    description?: string | null
+    visibility?: string
+    status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    documents?: b_documentsCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_knowledge_basesInput
+    kb_members?: b_kb_membersCreateNestedManyWithoutB_knowledge_basesInput
+    kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_knowledge_basesInput
+    b_users: b_usersCreateNestedOneWithoutKnowledge_basesInput
+  }
+
+  export type b_knowledge_basesUncheckedCreateWithoutMessage_citationsInput = {
+    id?: bigint | number
+    name: string
+    description?: string | null
+    visibility?: string
+    status?: string
+    is_public?: boolean
+    allow_public_download?: boolean
+    owner_id: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+    documents?: b_documentsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+    kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_knowledge_basesInput
+  }
+
+  export type b_knowledge_basesCreateOrConnectWithoutMessage_citationsInput = {
+    where: b_knowledge_basesWhereUniqueInput
+    create: XOR<b_knowledge_basesCreateWithoutMessage_citationsInput, b_knowledge_basesUncheckedCreateWithoutMessage_citationsInput>
+  }
+
+  export type b_documentsCreateWithoutMessage_citationsInput = {
+    id?: bigint | number
+    title: string
+    original_filename?: string | null
+    file_path: string
+    file_hash?: string | null
+    file_size?: bigint | number | null
+    file_type?: string | null
+    mime_type?: string | null
+    status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
+    error_msg?: string | null
+    token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    document_chunks?: b_document_chunksCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_documentsInput
+    b_knowledge_bases: b_knowledge_basesCreateNestedOneWithoutDocumentsInput
+    b_users?: b_usersCreateNestedOneWithoutUploaded_documentsInput
+  }
+
+  export type b_documentsUncheckedCreateWithoutMessage_citationsInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    uploader_id?: bigint | number | null
+    title: string
+    original_filename?: string | null
+    file_path: string
+    file_hash?: string | null
+    file_size?: bigint | number | null
+    file_type?: string | null
+    mime_type?: string | null
+    status?: string
+    processing_version?: number
+    current_stage?: string
+    last_error_stage?: string | null
+    retry_count?: number
+    last_error_code?: string | null
+    error_msg?: string | null
+    token_count?: number | null
+    parse_started_at?: Date | string | null
+    parse_finished_at?: Date | string | null
+    last_reparse_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    document_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutB_documentsInput
+    processing_tasks?: b_document_processing_tasksUncheckedCreateNestedManyWithoutB_documentsInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_documentsInput
+  }
+
+  export type b_documentsCreateOrConnectWithoutMessage_citationsInput = {
+    where: b_documentsWhereUniqueInput
+    create: XOR<b_documentsCreateWithoutMessage_citationsInput, b_documentsUncheckedCreateWithoutMessage_citationsInput>
+  }
+
+  export type b_document_chunksCreateWithoutMessage_citationsInput = {
+    id?: bigint | number
+    chunk_index: number
+    content: string
+    token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    embedding_status?: string
+    created_at?: Date | string
+    b_documents: b_documentsCreateNestedOneWithoutDocument_chunksInput
+  }
+
+  export type b_document_chunksUncheckedCreateWithoutMessage_citationsInput = {
+    id?: bigint | number
+    doc_id: bigint | number
+    chunk_index: number
+    content: string
+    token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    embedding_status?: string
+    created_at?: Date | string
+  }
+
+  export type b_document_chunksCreateOrConnectWithoutMessage_citationsInput = {
+    where: b_document_chunksWhereUniqueInput
+    create: XOR<b_document_chunksCreateWithoutMessage_citationsInput, b_document_chunksUncheckedCreateWithoutMessage_citationsInput>
+  }
+
+  export type b_chat_messagesUpsertWithoutMessage_citationsInput = {
+    update: XOR<b_chat_messagesUpdateWithoutMessage_citationsInput, b_chat_messagesUncheckedUpdateWithoutMessage_citationsInput>
+    create: XOR<b_chat_messagesCreateWithoutMessage_citationsInput, b_chat_messagesUncheckedCreateWithoutMessage_citationsInput>
+    where?: b_chat_messagesWhereInput
+  }
+
+  export type b_chat_messagesUpdateToOneWithWhereWithoutMessage_citationsInput = {
+    where?: b_chat_messagesWhereInput
+    data: XOR<b_chat_messagesUpdateWithoutMessage_citationsInput, b_chat_messagesUncheckedUpdateWithoutMessage_citationsInput>
+  }
+
+  export type b_chat_messagesUpdateWithoutMessage_citationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    role?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    references?: NullableJsonNullValueInput | InputJsonValue
+    tool_calls?: NullableJsonNullValueInput | InputJsonValue
+    tokens_used?: NullableIntFieldUpdateOperationsInput | number | null
+    message_status?: StringFieldUpdateOperationsInput | string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: NullableStringFieldUpdateOperationsInput | string | null
+    finish_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    trace_id?: NullableStringFieldUpdateOperationsInput | string | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stream_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedback_type?: NullableStringFieldUpdateOperationsInput | string | null
+    feedback_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_chat_sessions?: b_chat_sessionsUpdateOneRequiredWithoutChat_messagesNestedInput
+  }
+
+  export type b_chat_messagesUncheckedUpdateWithoutMessage_citationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    session_id?: StringFieldUpdateOperationsInput | string
+    role?: StringFieldUpdateOperationsInput | string
+    content?: StringFieldUpdateOperationsInput | string
+    references?: NullableJsonNullValueInput | InputJsonValue
+    tool_calls?: NullableJsonNullValueInput | InputJsonValue
+    tokens_used?: NullableIntFieldUpdateOperationsInput | number | null
+    message_status?: StringFieldUpdateOperationsInput | string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: NullableStringFieldUpdateOperationsInput | string | null
+    finish_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    trace_id?: NullableStringFieldUpdateOperationsInput | string | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stream_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    feedback_type?: NullableStringFieldUpdateOperationsInput | string | null
+    feedback_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_knowledge_basesUpsertWithoutMessage_citationsInput = {
+    update: XOR<b_knowledge_basesUpdateWithoutMessage_citationsInput, b_knowledge_basesUncheckedUpdateWithoutMessage_citationsInput>
+    create: XOR<b_knowledge_basesCreateWithoutMessage_citationsInput, b_knowledge_basesUncheckedCreateWithoutMessage_citationsInput>
+    where?: b_knowledge_basesWhereInput
+  }
+
+  export type b_knowledge_basesUpdateToOneWithWhereWithoutMessage_citationsInput = {
+    where?: b_knowledge_basesWhereInput
+    data: XOR<b_knowledge_basesUpdateWithoutMessage_citationsInput, b_knowledge_basesUncheckedUpdateWithoutMessage_citationsInput>
+  }
+
+  export type b_knowledge_basesUpdateWithoutMessage_citationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    visibility?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    documents?: b_documentsUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
+    kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
+    kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
+    b_users?: b_usersUpdateOneRequiredWithoutKnowledge_basesNestedInput
+  }
+
+  export type b_knowledge_basesUncheckedUpdateWithoutMessage_citationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    name?: StringFieldUpdateOperationsInput | string
+    description?: NullableStringFieldUpdateOperationsInput | string | null
+    visibility?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    is_public?: BoolFieldUpdateOperationsInput | boolean
+    allow_public_download?: BoolFieldUpdateOperationsInput | boolean
+    owner_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    documents?: b_documentsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+  }
+
+  export type b_documentsUpsertWithoutMessage_citationsInput = {
+    update: XOR<b_documentsUpdateWithoutMessage_citationsInput, b_documentsUncheckedUpdateWithoutMessage_citationsInput>
+    create: XOR<b_documentsCreateWithoutMessage_citationsInput, b_documentsUncheckedCreateWithoutMessage_citationsInput>
+    where?: b_documentsWhereInput
+  }
+
+  export type b_documentsUpdateToOneWithWhereWithoutMessage_citationsInput = {
+    where?: b_documentsWhereInput
+    data: XOR<b_documentsUpdateWithoutMessage_citationsInput, b_documentsUncheckedUpdateWithoutMessage_citationsInput>
+  }
+
+  export type b_documentsUpdateWithoutMessage_citationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
+    file_path?: StringFieldUpdateOperationsInput | string
+    file_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_msg?: NullableStringFieldUpdateOperationsInput | string | null
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
+    b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
+  }
+
+  export type b_documentsUncheckedUpdateWithoutMessage_citationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    uploader_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    original_filename?: NullableStringFieldUpdateOperationsInput | string | null
+    file_path?: StringFieldUpdateOperationsInput | string
+    file_hash?: NullableStringFieldUpdateOperationsInput | string | null
+    file_size?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    file_type?: NullableStringFieldUpdateOperationsInput | string | null
+    mime_type?: NullableStringFieldUpdateOperationsInput | string | null
+    status?: StringFieldUpdateOperationsInput | string
+    processing_version?: IntFieldUpdateOperationsInput | number
+    current_stage?: StringFieldUpdateOperationsInput | string
+    last_error_stage?: NullableStringFieldUpdateOperationsInput | string | null
+    retry_count?: IntFieldUpdateOperationsInput | number
+    last_error_code?: NullableStringFieldUpdateOperationsInput | string | null
+    error_msg?: NullableStringFieldUpdateOperationsInput | string | null
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    parse_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    parse_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    last_reparse_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
+    processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
+  }
+
+  export type b_document_chunksUpsertWithoutMessage_citationsInput = {
+    update: XOR<b_document_chunksUpdateWithoutMessage_citationsInput, b_document_chunksUncheckedUpdateWithoutMessage_citationsInput>
+    create: XOR<b_document_chunksCreateWithoutMessage_citationsInput, b_document_chunksUncheckedCreateWithoutMessage_citationsInput>
+    where?: b_document_chunksWhereInput
+  }
+
+  export type b_document_chunksUpdateToOneWithWhereWithoutMessage_citationsInput = {
+    where?: b_document_chunksWhereInput
+    data: XOR<b_document_chunksUpdateWithoutMessage_citationsInput, b_document_chunksUncheckedUpdateWithoutMessage_citationsInput>
+  }
+
+  export type b_document_chunksUpdateWithoutMessage_citationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    embedding_status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_documents?: b_documentsUpdateOneRequiredWithoutDocument_chunksNestedInput
+  }
+
+  export type b_document_chunksUncheckedUpdateWithoutMessage_citationsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    embedding_status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_chat_sessionsCreateWithoutAgent_runsInput = {
+    id: string
+    kb_id?: bigint | number | null
+    title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_messages?: b_chat_messagesCreateNestedManyWithoutB_chat_sessionsInput
+    b_users: b_usersCreateNestedOneWithoutChat_sessionsInput
+  }
+
+  export type b_chat_sessionsUncheckedCreateWithoutAgent_runsInput = {
+    id: string
+    user_id: bigint | number
+    kb_id?: bigint | number | null
+    title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_messages?: b_chat_messagesUncheckedCreateNestedManyWithoutB_chat_sessionsInput
+  }
+
+  export type b_chat_sessionsCreateOrConnectWithoutAgent_runsInput = {
+    where: b_chat_sessionsWhereUniqueInput
+    create: XOR<b_chat_sessionsCreateWithoutAgent_runsInput, b_chat_sessionsUncheckedCreateWithoutAgent_runsInput>
+  }
+
+  export type b_usersCreateWithoutAgent_runsInput = {
+    id?: bigint | number
+    email: string
+    password_hash: string
+    full_name?: string | null
+    avatar_url?: string | null
+    is_active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_sessions?: b_chat_sessionsCreateNestedManyWithoutB_usersInput
+    kb_members?: b_kb_membersCreateNestedManyWithoutB_usersInput
+    knowledge_bases?: b_knowledge_basesCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsCreateNestedManyWithoutB_usersInput
+    model_configs?: b_user_model_configsCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasCreateNestedManyWithoutB_usersInput
+    kb_invitations?: b_kb_invitationsCreateNestedManyWithoutB_usersInput
+    user_sessions?: b_user_sessionsCreateNestedManyWithoutB_usersInput
+  }
+
+  export type b_usersUncheckedCreateWithoutAgent_runsInput = {
+    id?: bigint | number
+    email: string
+    password_hash: string
+    full_name?: string | null
+    avatar_url?: string | null
+    is_active?: boolean
+    created_at?: Date | string
+    updated_at?: Date | string
+    chat_sessions?: b_chat_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    kb_members?: b_kb_membersUncheckedCreateNestedManyWithoutB_usersInput
+    knowledge_bases?: b_knowledge_basesUncheckedCreateNestedManyWithoutB_usersInput
+    uploaded_documents?: b_documentsUncheckedCreateNestedManyWithoutB_usersInput
+    upload_sessions?: b_upload_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+    model_configs?: b_user_model_configsUncheckedCreateNestedManyWithoutB_usersInput
+    daily_quotas?: b_user_daily_quotasUncheckedCreateNestedManyWithoutB_usersInput
+    kb_invitations?: b_kb_invitationsUncheckedCreateNestedManyWithoutB_usersInput
+    user_sessions?: b_user_sessionsUncheckedCreateNestedManyWithoutB_usersInput
+  }
+
+  export type b_usersCreateOrConnectWithoutAgent_runsInput = {
+    where: b_usersWhereUniqueInput
+    create: XOR<b_usersCreateWithoutAgent_runsInput, b_usersUncheckedCreateWithoutAgent_runsInput>
+  }
+
+  export type b_chat_sessionsUpsertWithoutAgent_runsInput = {
+    update: XOR<b_chat_sessionsUpdateWithoutAgent_runsInput, b_chat_sessionsUncheckedUpdateWithoutAgent_runsInput>
+    create: XOR<b_chat_sessionsCreateWithoutAgent_runsInput, b_chat_sessionsUncheckedCreateWithoutAgent_runsInput>
+    where?: b_chat_sessionsWhereInput
+  }
+
+  export type b_chat_sessionsUpdateToOneWithWhereWithoutAgent_runsInput = {
+    where?: b_chat_sessionsWhereInput
+    data: XOR<b_chat_sessionsUpdateWithoutAgent_runsInput, b_chat_sessionsUncheckedUpdateWithoutAgent_runsInput>
+  }
+
+  export type b_chat_sessionsUpdateWithoutAgent_runsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_messages?: b_chat_messagesUpdateManyWithoutB_chat_sessionsNestedInput
+    b_users?: b_usersUpdateOneRequiredWithoutChat_sessionsNestedInput
+  }
+
+  export type b_chat_sessionsUncheckedUpdateWithoutAgent_runsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_messages?: b_chat_messagesUncheckedUpdateManyWithoutB_chat_sessionsNestedInput
+  }
+
+  export type b_usersUpsertWithoutAgent_runsInput = {
+    update: XOR<b_usersUpdateWithoutAgent_runsInput, b_usersUncheckedUpdateWithoutAgent_runsInput>
+    create: XOR<b_usersCreateWithoutAgent_runsInput, b_usersUncheckedCreateWithoutAgent_runsInput>
+    where?: b_usersWhereInput
+  }
+
+  export type b_usersUpdateToOneWithWhereWithoutAgent_runsInput = {
+    where?: b_usersWhereInput
+    data: XOR<b_usersUpdateWithoutAgent_runsInput, b_usersUncheckedUpdateWithoutAgent_runsInput>
+  }
+
+  export type b_usersUpdateWithoutAgent_runsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_sessions?: b_chat_sessionsUpdateManyWithoutB_usersNestedInput
+    kb_members?: b_kb_membersUpdateManyWithoutB_usersNestedInput
+    knowledge_bases?: b_knowledge_basesUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUpdateManyWithoutB_usersNestedInput
+    model_configs?: b_user_model_configsUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUpdateManyWithoutB_usersNestedInput
+    kb_invitations?: b_kb_invitationsUpdateManyWithoutB_usersNestedInput
+    user_sessions?: b_user_sessionsUpdateManyWithoutB_usersNestedInput
+  }
+
+  export type b_usersUncheckedUpdateWithoutAgent_runsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    email?: StringFieldUpdateOperationsInput | string
+    password_hash?: StringFieldUpdateOperationsInput | string
+    full_name?: NullableStringFieldUpdateOperationsInput | string | null
+    avatar_url?: NullableStringFieldUpdateOperationsInput | string | null
+    is_active?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    chat_sessions?: b_chat_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_usersNestedInput
+    knowledge_bases?: b_knowledge_basesUncheckedUpdateManyWithoutB_usersNestedInput
+    uploaded_documents?: b_documentsUncheckedUpdateManyWithoutB_usersNestedInput
+    upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+    model_configs?: b_user_model_configsUncheckedUpdateManyWithoutB_usersNestedInput
+    daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
+    kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
+    user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
   }
 
   export type sys_adminsCreateWithoutAudit_logsInput = {
@@ -34053,6 +43075,10 @@ export namespace Prisma {
     id: string
     kb_id?: bigint | number | null
     title?: string
+    summary_text?: string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: string | null
+    last_message_at?: Date | string | null
     created_at?: Date | string
     updated_at?: Date | string
   }
@@ -34134,6 +43160,17 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type b_user_daily_quotasCreateManyB_usersInput = {
+    id?: bigint | number
+    quota_date: Date | string
+    daily_chat_limit?: number
+    daily_token_quota?: bigint | number
+    used_chat_count?: number
+    used_token_count?: bigint | number
+    created_at?: Date | string
+    updated_at?: Date | string
+  }
+
   export type b_kb_invitationsCreateManyB_usersInput = {
     id?: bigint | number
     kb_id: bigint | number
@@ -34157,28 +43194,59 @@ export namespace Prisma {
     created_at?: Date | string
   }
 
+  export type b_agent_runsCreateManyB_usersInput = {
+    id: string
+    session_id: string
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
   export type b_chat_sessionsUpdateWithoutB_usersInput = {
     id?: StringFieldUpdateOperationsInput | string
     kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_messages?: b_chat_messagesUpdateManyWithoutB_chat_sessionsNestedInput
+    agent_runs?: b_agent_runsUpdateManyWithoutB_chat_sessionsNestedInput
   }
 
   export type b_chat_sessionsUncheckedUpdateWithoutB_usersInput = {
     id?: StringFieldUpdateOperationsInput | string
     kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     chat_messages?: b_chat_messagesUncheckedUpdateManyWithoutB_chat_sessionsNestedInput
+    agent_runs?: b_agent_runsUncheckedUpdateManyWithoutB_chat_sessionsNestedInput
   }
 
   export type b_chat_sessionsUncheckedUpdateManyWithoutB_usersInput = {
     id?: StringFieldUpdateOperationsInput | string
     kb_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
     title?: StringFieldUpdateOperationsInput | string
+    summary_text?: NullableStringFieldUpdateOperationsInput | string | null
+    last_selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    last_chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    last_message_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -34218,6 +43286,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
   export type b_knowledge_basesUncheckedUpdateWithoutB_usersInput = {
@@ -34234,6 +43303,7 @@ export namespace Prisma {
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_members?: b_kb_membersUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_knowledge_basesNestedInput
   }
 
   export type b_knowledge_basesUncheckedUpdateManyWithoutB_usersInput = {
@@ -34273,6 +43343,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
     processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_documentsNestedInput
     b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutDocumentsNestedInput
   }
 
@@ -34302,6 +43373,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
     processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_documentsUncheckedUpdateManyWithoutB_usersInput = {
@@ -34430,6 +43502,39 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type b_user_daily_quotasUpdateWithoutB_usersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    quota_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    daily_token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_chat_count?: IntFieldUpdateOperationsInput | number
+    used_token_count?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_user_daily_quotasUncheckedUpdateWithoutB_usersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    quota_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    daily_token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_chat_count?: IntFieldUpdateOperationsInput | number
+    used_token_count?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_user_daily_quotasUncheckedUpdateManyWithoutB_usersInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    quota_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    daily_chat_limit?: IntFieldUpdateOperationsInput | number
+    daily_token_quota?: BigIntFieldUpdateOperationsInput | bigint | number
+    used_chat_count?: IntFieldUpdateOperationsInput | number
+    used_token_count?: BigIntFieldUpdateOperationsInput | bigint | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type b_kb_invitationsUpdateWithoutB_usersInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     invite_code?: StringFieldUpdateOperationsInput | string
@@ -34497,6 +43602,57 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_agent_runsUpdateWithoutB_usersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    b_chat_sessions?: b_chat_sessionsUpdateOneRequiredWithoutAgent_runsNestedInput
+  }
+
+  export type b_agent_runsUncheckedUpdateWithoutB_usersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    session_id?: StringFieldUpdateOperationsInput | string
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_runsUncheckedUpdateManyWithoutB_usersInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    session_id?: StringFieldUpdateOperationsInput | string
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type sys_audit_logsCreateManySys_adminsInput = {
@@ -34642,6 +43798,17 @@ export namespace Prisma {
     created_at?: Date | string
   }
 
+  export type b_chat_message_citationsCreateManyB_knowledge_basesInput = {
+    id?: bigint | number
+    message_id: bigint | number
+    doc_id: bigint | number
+    chunk_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
   export type b_documentsUpdateWithoutB_knowledge_basesInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     title?: StringFieldUpdateOperationsInput | string
@@ -34667,6 +43834,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksUpdateManyWithoutB_documentsNestedInput
     processing_tasks?: b_document_processing_tasksUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_documentsNestedInput
     b_users?: b_usersUpdateOneWithoutUploaded_documentsNestedInput
   }
 
@@ -34696,6 +43864,7 @@ export namespace Prisma {
     document_chunks?: b_document_chunksUncheckedUpdateManyWithoutB_documentsNestedInput
     processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsNestedInput
   }
 
   export type b_documentsUncheckedUpdateManyWithoutB_knowledge_basesInput = {
@@ -34851,6 +44020,39 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type b_chat_message_citationsUpdateWithoutB_knowledge_basesInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_chat_messages?: b_chat_messagesUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_documents?: b_documentsUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_document_chunks?: b_document_chunksUpdateOneRequiredWithoutMessage_citationsNestedInput
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateWithoutB_knowledge_basesInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateManyWithoutB_knowledge_basesInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type b_document_chunksCreateManyB_documentsInput = {
     id?: bigint | number
     chunk_index: number
@@ -34904,6 +44106,17 @@ export namespace Prisma {
     updated_at?: Date | string
   }
 
+  export type b_chat_message_citationsCreateManyB_documentsInput = {
+    id?: bigint | number
+    message_id: bigint | number
+    kb_id: bigint | number
+    chunk_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
   export type b_document_chunksUpdateWithoutB_documentsInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     chunk_index?: IntFieldUpdateOperationsInput | number
@@ -34916,6 +44129,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_document_chunksNestedInput
   }
 
   export type b_document_chunksUncheckedUpdateWithoutB_documentsInput = {
@@ -34930,6 +44144,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksNestedInput
   }
 
   export type b_document_chunksUncheckedUpdateManyWithoutB_documentsInput = {
@@ -35065,6 +44280,39 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type b_chat_message_citationsUpdateWithoutB_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_chat_messages?: b_chat_messagesUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_document_chunks?: b_document_chunksUpdateOneRequiredWithoutMessage_citationsNestedInput
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateWithoutB_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type b_upload_chunksCreateManyB_upload_sessionsInput = {
     id?: bigint | number
     chunk_index: number
@@ -35109,6 +44357,50 @@ export namespace Prisma {
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
+  export type b_chat_message_citationsCreateManyB_document_chunksInput = {
+    id?: bigint | number
+    message_id: bigint | number
+    kb_id: bigint | number
+    doc_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
+  export type b_chat_message_citationsUpdateWithoutB_document_chunksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_chat_messages?: b_chat_messagesUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_documents?: b_documentsUpdateOneRequiredWithoutMessage_citationsNestedInput
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateWithoutB_document_chunksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type b_chat_messagesCreateManyB_chat_sessionsInput = {
     id?: bigint | number
     role: string
@@ -35116,9 +44408,36 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: number | null
+    message_status?: string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: string | null
+    finish_reason?: string | null
+    trace_id?: string | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: Date | string | null
+    stream_finished_at?: Date | string | null
     feedback_type?: string | null
     feedback_reason?: string | null
     created_at?: Date | string
+  }
+
+  export type b_agent_runsCreateManyB_chat_sessionsInput = {
+    id: string
+    user_id: bigint | number
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
   }
 
   export type b_chat_messagesUpdateWithoutB_chat_sessionsInput = {
@@ -35128,9 +44447,20 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: NullableIntFieldUpdateOperationsInput | number | null
+    message_status?: StringFieldUpdateOperationsInput | string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: NullableStringFieldUpdateOperationsInput | string | null
+    finish_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    trace_id?: NullableStringFieldUpdateOperationsInput | string | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stream_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedback_type?: NullableStringFieldUpdateOperationsInput | string | null
     feedback_reason?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_chat_messagesNestedInput
   }
 
   export type b_chat_messagesUncheckedUpdateWithoutB_chat_sessionsInput = {
@@ -35140,9 +44470,20 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: NullableIntFieldUpdateOperationsInput | number | null
+    message_status?: StringFieldUpdateOperationsInput | string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: NullableStringFieldUpdateOperationsInput | string | null
+    finish_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    trace_id?: NullableStringFieldUpdateOperationsInput | string | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stream_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedback_type?: NullableStringFieldUpdateOperationsInput | string | null
     feedback_reason?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_chat_messagesNestedInput
   }
 
   export type b_chat_messagesUncheckedUpdateManyWithoutB_chat_sessionsInput = {
@@ -35152,8 +44493,113 @@ export namespace Prisma {
     references?: NullableJsonNullValueInput | InputJsonValue
     tool_calls?: NullableJsonNullValueInput | InputJsonValue
     tokens_used?: NullableIntFieldUpdateOperationsInput | number | null
+    message_status?: StringFieldUpdateOperationsInput | string
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    model_name?: NullableStringFieldUpdateOperationsInput | string | null
+    finish_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    trace_id?: NullableStringFieldUpdateOperationsInput | string | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    stream_started_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    stream_finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     feedback_type?: NullableStringFieldUpdateOperationsInput | string | null
     feedback_reason?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_agent_runsUpdateWithoutB_chat_sessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    b_users?: b_usersUpdateOneRequiredWithoutAgent_runsNestedInput
+  }
+
+  export type b_agent_runsUncheckedUpdateWithoutB_chat_sessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_runsUncheckedUpdateManyWithoutB_chat_sessionsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_chat_message_citationsCreateManyB_chat_messagesInput = {
+    id?: bigint | number
+    kb_id: bigint | number
+    doc_id: bigint | number
+    chunk_id: bigint | number
+    score?: number | null
+    quote?: string | null
+    order_no?: number
+    created_at?: Date | string
+  }
+
+  export type b_chat_message_citationsUpdateWithoutB_chat_messagesInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    b_knowledge_bases?: b_knowledge_basesUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_documents?: b_documentsUpdateOneRequiredWithoutMessage_citationsNestedInput
+    b_document_chunks?: b_document_chunksUpdateOneRequiredWithoutMessage_citationsNestedInput
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateWithoutB_chat_messagesInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_chat_message_citationsUncheckedUpdateManyWithoutB_chat_messagesInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    score?: NullableFloatFieldUpdateOperationsInput | number | null
+    quote?: NullableStringFieldUpdateOperationsInput | string | null
+    order_no?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

@@ -5,23 +5,21 @@
     "types": [
       "vite/client"
     ],
-    /* Path Aliases */
-    "baseUrl": ".",
     "paths": {
       "@/*": [
-        "src/*"
+        "./src/*"
       ],
       "@components/*": [
-        "src/components/*"
+        "./src/components/*"
       ],
       "@views/*": [
-        "src/views/*"
+        "./src/views/*"
       ],
       "@stores/*": [
-        "src/stores/*"
+        "./src/stores/*"
       ],
       "@assets/*": [
-        "src/assets/*"
+        "./src/assets/*"
       ]
     },
     /* Linting */

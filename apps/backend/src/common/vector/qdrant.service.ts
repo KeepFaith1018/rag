@@ -12,6 +12,31 @@ export interface QdrantChunkPoint {
   payload: Record<string, unknown>;
 }
 
+/** 向量检索返回的候选分片 */
+export interface DenseHit {
+  /** Qdrant point id */
+  pointId: string;
+  /** 知识库 ID */
+  kbId: string;
+  /** 文档 ID */
+  docId: string;
+  /** 分片 ID */
+  chunkId: string;
+  /** 分片文本内容 */
+  content: string;
+  /** 相似度分数 */
+  score: number;
+  /** 载荷中的附加信息 */
+  payload: Record<string, unknown>;
+}
+
+export interface SearchChunkVectorsParams {
+  vector: number[];
+  kbIds: string[];
+  topK: number;
+  scoreThreshold?: number;
+}
+
 /**
  * 负责统一封装 Qdrant collection 初始化、写入与删除逻辑。
  */
@@ -167,6 +192,59 @@ export class QdrantService {
           internalErrorCode: DOCUMENT_VECTOR_INDEX_ERROR_CODE,
           documentId,
           processingVersion,
+        },
+      });
+    }
+  }
+
+  /**
+   * 向量相似度检索，支持多知识库过滤与分数阈值。
+   */
+  async searchChunkVectors(params: SearchChunkVectorsParams): Promise<DenseHit[]> {
+    try {
+      const kbFilters = params.kbIds.map((kbId) => ({
+        key: 'kbId',
+        match: { value: kbId },
+      }));
+
+      const filter = kbFilters.length > 0
+        ? { should: kbFilters }
+        : undefined;
+
+      const results = await this.client.search(
+        QDRANT_DOCUMENT_COLLECTION_NAME,
+        {
+          vector: params.vector,
+          limit: params.topK,
+          score_threshold: params.scoreThreshold,
+          filter,
+          with_payload: true,
+        },
+      );
+
+      return results.map((r) => {
+        const payload = (r.payload ?? {}) as Record<string, unknown>;
+        return {
+          pointId: String(r.id),
+          kbId: String(payload['kbId'] ?? ''),
+          docId: String(payload['docId'] ?? ''),
+          chunkId: String(payload['chunkId'] ?? ''),
+          content: String(payload['content'] ?? ''),
+          score: r.score,
+          payload,
+        };
+      });
+    } catch (error) {
+      if (error instanceof BusinessException) {
+        throw error;
+      }
+
+      throw new BusinessException(ErrorCode.VECTOR_SEARCH_FAILED, {
+        message: 'Qdrant 向量检索失败',
+        cause: error,
+        context: {
+          kbIds: params.kbIds,
+          topK: params.topK,
         },
       });
     }

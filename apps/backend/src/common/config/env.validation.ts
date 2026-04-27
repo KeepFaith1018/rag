@@ -31,4 +31,8 @@ export const configValidationSchema = Joi.object({
     .integer()
     .positive()
     .optional(),
+
+  LLM_MODEL: Joi.string().optional(),
+  OPENAI_API_KEY: Joi.string().optional(),
+  OPENAI_BASE_URL: Joi.string().uri().optional(),
 });

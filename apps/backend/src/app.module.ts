@@ -15,6 +15,9 @@ import { KnowledgeBaseModule } from './modules/knowledge-base/knowledge-base.mod
 import { DocumentModule } from './modules/document/document.module';
 import { UploadModule } from './modules/upload/upload.module';
 import { DocumentProcessingModule } from './modules/document-processing/document-processing.module';
+import { ChatModule } from './modules/chat/chat.module';
+import { RetrievalModule } from './modules/retrieval/retrieval.module';
+import { AgentModule } from './modules/agent/agent.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { JwtModule } from '@nestjs/jwt';
@@ -50,6 +53,9 @@ import { JwtModule } from '@nestjs/jwt';
     DocumentProcessingModule,
     DocumentModule,
     UploadModule,
+    ChatModule,
+    RetrievalModule,
+    AgentModule,
   ],
   controllers: [AppController],
   providers: [

@@ -1,0 +1,17 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(pnpm --filter backend build)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(npx prisma *)",
+      "WebFetch(domain:ai-sdk.dev)",
+      "WebSearch",
+      "Bash(pnpm add *)",
+      "Bash(pnpm --filter frontend add @ai-sdk/vue)",
+      "Bash(pnpm --filter frontend vue-tsc --noEmit)",
+      "Bash(pnpm --filter frontend remove @ai-sdk/vue)",
+      "Bash(pnpm --filter frontend build)"
+    ]
+  }
+}

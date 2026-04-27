@@ -20,11 +20,6 @@ model b_users {
   avatar_url    String? @db.VarChar(500)
   is_active     Boolean @default(true)
 
-  // 防盗刷配额机制 (Quota Limits)
-  daily_chat_limit Int    @default(50)
-  token_quota      BigInt @default(1000000)
-  used_tokens      BigInt @default(0)
-
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
 
@@ -35,8 +30,10 @@ model b_users {
   uploaded_documents b_documents[]          @relation("document_uploader")
   upload_sessions    b_upload_sessions[]    @relation("upload_session_user")
   model_configs      b_user_model_configs[]
+  daily_quotas       b_user_daily_quotas[]
   kb_invitations     b_kb_invitations[]
   user_sessions      b_user_sessions[]
+  agent_runs         b_agent_runs[]
 }
 
 // 后台管理系统用户（系统的超级管理员与运营人员）
@@ -133,6 +130,23 @@ model b_user_model_configs {
   @@index([user_id], map: "idx_user_model")
 }
 
+model b_user_daily_quotas {
+  id                BigInt   @id @default(autoincrement())
+  user_id           BigInt
+  quota_date        DateTime @db.Date
+  daily_chat_limit  Int      @default(50)
+  daily_token_quota BigInt   @default(1000000)
+  used_chat_count   Int      @default(0)
+  used_token_count  BigInt   @default(0)
+  created_at        DateTime @default(now()) @db.DateTime(0)
+  updated_at        DateTime @default(now()) @db.DateTime(0)
+
+  b_users b_users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_user_daily_quota_user")
+
+  @@unique([user_id, quota_date], map: "uk_user_daily_quota")
+  @@index([quota_date], map: "idx_daily_quota_date")
+}
+
 // ==========================================================
 // 3. 知识库与协作模块 (Knowledge Base & Collaboration)
 // ==========================================================
@@ -152,10 +166,11 @@ model b_knowledge_bases {
   created_at DateTime @default(now()) @db.DateTime(0)
   updated_at DateTime @default(now()) @db.DateTime(0)
 
-  documents       b_documents[]
-  upload_sessions b_upload_sessions[]
-  kb_members      b_kb_members[]
-  kb_invitations  b_kb_invitations[]
+  documents         b_documents[]
+  upload_sessions   b_upload_sessions[]
+  kb_members        b_kb_members[]
+  kb_invitations    b_kb_invitations[]
+  message_citations b_chat_message_citations[]
 
   b_users b_users @relation(fields: [owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_kb_owner")
 
@@ -205,35 +220,36 @@ model b_kb_invitations {
 // ==========================================================
 
 model b_documents {
-  id                BigInt    @id @default(autoincrement())
-  kb_id             BigInt
-  uploader_id       BigInt?
-  title             String    @db.VarChar(255)
-  original_filename String?   @db.VarChar(255)
-  file_path         String    @db.VarChar(500)
-  file_hash         String?   @db.VarChar(64)
-  file_size         BigInt?   @default(0)
-  file_type         String?   @db.VarChar(20)
-  mime_type         String?   @db.VarChar(100)
-  status            String    @default("pending") @db.VarChar(50)
-  processing_version Int      @default(1)
-  current_stage     String    @default("uploaded") @db.VarChar(50)
-  last_error_stage  String?   @db.VarChar(50)
-  retry_count       Int       @default(0)
-  last_error_code   String?   @db.VarChar(100)
-  error_msg         String?   @db.Text
-  token_count       Int?      @default(0)
-  parse_started_at  DateTime?
-  parse_finished_at DateTime?
-  last_reparse_at   DateTime?
-  created_at        DateTime  @default(now()) @db.DateTime(0)
-  updated_at        DateTime  @default(now()) @db.DateTime(0)
+  id                 BigInt    @id @default(autoincrement())
+  kb_id              BigInt
+  uploader_id        BigInt?
+  title              String    @db.VarChar(255)
+  original_filename  String?   @db.VarChar(255)
+  file_path          String    @db.VarChar(500)
+  file_hash          String?   @db.VarChar(64)
+  file_size          BigInt?   @default(0)
+  file_type          String?   @db.VarChar(20)
+  mime_type          String?   @db.VarChar(100)
+  status             String    @default("pending") @db.VarChar(50)
+  processing_version Int       @default(1)
+  current_stage      String    @default("uploaded") @db.VarChar(50)
+  last_error_stage   String?   @db.VarChar(50)
+  retry_count        Int       @default(0)
+  last_error_code    String?   @db.VarChar(100)
+  error_msg          String?   @db.Text
+  token_count        Int?      @default(0)
+  parse_started_at   DateTime?
+  parse_finished_at  DateTime?
+  last_reparse_at    DateTime?
+  created_at         DateTime  @default(now()) @db.DateTime(0)
+  updated_at         DateTime  @default(now()) @db.DateTime(0)
 
-  document_chunks    b_document_chunks[]
-  processing_tasks   b_document_processing_tasks[]
-  upload_sessions    b_upload_sessions[]
-  b_knowledge_bases  b_knowledge_bases   @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_doc_kb")
-  b_users            b_users?            @relation("document_uploader", fields: [uploader_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_doc_uploader")
+  document_chunks   b_document_chunks[]
+  processing_tasks  b_document_processing_tasks[]
+  upload_sessions   b_upload_sessions[]
+  message_citations b_chat_message_citations[]
+  b_knowledge_bases b_knowledge_bases             @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_doc_kb")
+  b_users           b_users?                      @relation("document_uploader", fields: [uploader_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: "fk_doc_uploader")
 
   @@index([kb_id], map: "idx_kb_id")
   @@index([uploader_id], map: "idx_doc_uploader_id")
@@ -305,10 +321,25 @@ model b_document_chunks {
   embedding_status String   @default("pending") @db.VarChar(20)
   created_at       DateTime @default(now()) @db.DateTime(0)
 
-  b_documents b_documents @relation(fields: [doc_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chunk_doc")
+  message_citations b_chat_message_citations[]
+  b_documents       b_documents                @relation(fields: [doc_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chunk_doc")
 
   @@index([doc_id, chunk_index], map: "idx_doc_chunk")
   @@index([vector_id], map: "idx_chunk_vector_id")
+}
+
+model b_document_chunk_search_index {
+  chunk_id      BigInt   @id
+  doc_id        BigInt
+  kb_id         BigInt
+  title         String?  @db.VarChar(255)
+  title_path    String?  @db.VarChar(500)
+  content_plain String   @db.LongText
+  keyword_text  String?  @db.Text
+  created_at    DateTime @default(now()) @db.DateTime(0)
+
+  @@index([doc_id], map: "idx_chunk_search_doc")
+  @@index([kb_id], map: "idx_chunk_search_kb")
 }
 
 model b_document_processing_tasks {
@@ -341,17 +372,23 @@ model b_document_processing_tasks {
 // ==========================================================
 
 model b_chat_sessions {
-  id         String   @id @db.Char(36)
-  user_id    BigInt
-  kb_id      BigInt?
-  title      String   @default("新会话") @db.VarChar(100)
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
+  id                        String    @id @db.Char(36)
+  user_id                   BigInt
+  kb_id                     BigInt?
+  title                     String    @default("新会话") @db.VarChar(100)
+  summary_text              String?   @db.Text
+  last_selected_kb_ids_json Json?
+  last_chat_mode            String?   @db.VarChar(20)
+  last_message_at           DateTime? @db.DateTime(0)
+  created_at                DateTime  @default(now()) @db.DateTime(0)
+  updated_at                DateTime  @default(now()) @db.DateTime(0)
 
   chat_messages b_chat_messages[]
+  agent_runs    b_agent_runs[]
   b_users       b_users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_user")
 
   @@index([user_id], map: "idx_user_chat")
+  @@index([user_id, updated_at], map: "idx_chat_user_updated")
 }
 
 model b_chat_messages {
@@ -360,17 +397,94 @@ model b_chat_messages {
   role       String @db.VarChar(50)
   content    String @db.Text
 
-  references  Json?
-  tool_calls  Json?
-  tokens_used Int?  @default(0)
+  references           Json?
+  tool_calls           Json?
+  tokens_used          Int?      @default(0)
+  message_status       String    @default("completed") @db.VarChar(30)
+  metadata_json        Json?
+  model_name           String?   @db.VarChar(100)
+  finish_reason        String?   @db.VarChar(30)
+  trace_id             String?   @db.Char(36)
+  chat_mode            String?   @db.VarChar(20)
+  selected_kb_ids_json Json?
+  resolved_kb_ids_json Json?
+  stream_started_at    DateTime? @db.DateTime(0)
+  stream_finished_at   DateTime? @db.DateTime(0)
 
   feedback_type   String? @db.VarChar(20)
   feedback_reason String? @db.Text
 
-  created_at      DateTime        @default(now()) @db.DateTime(0)
-  b_chat_sessions b_chat_sessions @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_msg_session")
+  created_at        DateTime                   @default(now()) @db.DateTime(0)
+  b_chat_sessions   b_chat_sessions            @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_msg_session")
+  message_citations b_chat_message_citations[]
 
   @@index([session_id], map: "idx_session_msg")
+  @@index([session_id, created_at], map: "idx_session_msg_created")
+  @@index([trace_id], map: "idx_msg_trace")
+  @@index([message_status], map: "idx_msg_status")
+}
+
+model b_chat_message_citations {
+  id         BigInt   @id @default(autoincrement())
+  message_id BigInt
+  kb_id      BigInt
+  doc_id     BigInt
+  chunk_id   BigInt
+  score      Float?
+  quote      String?  @db.Text
+  order_no   Int      @default(0)
+  created_at DateTime @default(now()) @db.DateTime(0)
+
+  b_chat_messages   b_chat_messages   @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_citation_message")
+  b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_citation_kb")
+  b_documents       b_documents       @relation(fields: [doc_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_citation_doc")
+  b_document_chunks b_document_chunks @relation(fields: [chunk_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_chat_citation_chunk")
+
+  @@index([message_id], map: "idx_chat_citation_message")
+  @@index([doc_id], map: "idx_chat_citation_doc")
+  @@index([chunk_id], map: "idx_chat_citation_chunk")
+  @@index([kb_id], map: "idx_chat_citation_kb")
+}
+
+model b_agent_runs {
+  id                   String    @id @db.Char(36)
+  session_id           String    @db.Char(36)
+  user_id              BigInt
+  user_message_id      BigInt
+  assistant_message_id BigInt?
+  status               String    @db.VarChar(30)
+  total_tokens         Int?      @default(0)
+  duration_ms          Int?
+  chat_mode            String?   @db.VarChar(20)
+  selected_kb_ids_json Json?
+  resolved_kb_ids_json Json?
+  routed_query_json    Json?
+  metadata_json        Json?
+  created_at           DateTime  @default(now()) @db.DateTime(0)
+  finished_at          DateTime? @db.DateTime(0)
+
+  b_chat_sessions b_chat_sessions @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_agent_run_session")
+  b_users         b_users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: "fk_agent_run_user")
+
+  @@index([session_id], map: "idx_agent_run_session")
+  @@index([user_id], map: "idx_agent_run_user")
+  @@index([status], map: "idx_agent_run_status")
+}
+
+model b_agent_steps {
+  id          BigInt    @id @default(autoincrement())
+  run_id      String    @db.Char(36)
+  agent_name  String    @db.VarChar(50)
+  step_type   String    @db.VarChar(50)
+  status      String    @db.VarChar(30)
+  input_json  Json?
+  output_json Json?
+  duration_ms Int?
+  started_at  DateTime  @default(now()) @db.DateTime(0)
+  finished_at DateTime? @db.DateTime(0)
+
+  @@index([run_id], map: "idx_agent_step_run")
+  @@index([agent_name], map: "idx_agent_step_agent")
 }
 
 // ==========================================================

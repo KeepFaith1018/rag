@@ -4,23 +4,32 @@ import {
   Injectable,
   NestInterceptor,
 } from '@nestjs/common'
+import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs'
 import { map } from 'rxjs/operators'
 import { Result } from '@common/utils/result';
+import { SKIP_RESPONSE_TRANSFORM } from '@common/decorators/skip-response-transform.decorator';
+
 @Injectable()
 export class ResponseInterceptor implements NestInterceptor {
-  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+  constructor(private readonly reflector: Reflector) {}
 
-    return (
-      next
-        .handle()
-        // 响应
-        .pipe(
-          map((data) => {
-            // 用自定义Result.success包装返回结果
-            return Result.success(data);
-          }),
-        )
+  intercept(context: ExecutionContext, next: CallHandler): Observable<any> {
+    const skipTransform = this.reflector.getAllAndOverride<boolean>(
+      SKIP_RESPONSE_TRANSFORM,
+      [context.getHandler(), context.getClass()],
     );
+
+    if (skipTransform) {
+      return next.handle();
+    }
+
+    return next
+      .handle()
+      .pipe(
+        map((data) => {
+          return Result.success(data);
+        }),
+      );
   }
 }

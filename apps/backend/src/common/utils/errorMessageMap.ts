@@ -51,6 +51,10 @@ export const ErrorMessageMap: Record<ErrorCode, string> = {
   [ErrorCode.VECTOR_FILE_IMG_EMPTY]: '图片内容为空，无法向量化',
   [ErrorCode.VECTOR_INDEX_FAILED]: '向量索引构建失败',
   [ErrorCode.VECTOR_SEARCH_FAILED]: '向量检索失败',
+  [ErrorCode.SPARSE_RETRIEVAL_FAILED]: '关键词检索失败',
+  [ErrorCode.FUSION_FAILED]: '检索结果融合失败',
+  [ErrorCode.RERANK_FAILED]: '检索结果精排失败',
+  [ErrorCode.CITATION_BUILD_FAILED]: '引用构建失败',
 
   [ErrorCode.EMAIL_CODE_PROCESS_FAILED]: '验证码处理失败',
   [ErrorCode.EMAIL_SEND_FAILED]: '验证码邮件发送失败',

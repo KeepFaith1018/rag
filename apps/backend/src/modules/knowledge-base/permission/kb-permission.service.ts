@@ -84,6 +84,25 @@ export class KbPermissionService {
   }
 
   /**
+   * 批量鉴权：对一组知识库逐一校验指定动作权限，任一失败即抛出异常。
+   * 返回每个知识库的权限上下文数组，供后续检索链路复用。
+   */
+  async authorizeMany(
+    userId: number,
+    kbIds: string[],
+    action: KbPermissionAction,
+  ): Promise<KbPermissionContext[]> {
+    const contexts: KbPermissionContext[] = [];
+
+    for (const kbId of kbIds) {
+      const ctx = await this.authorize(userId, kbId, action);
+      contexts.push(ctx);
+    }
+
+    return contexts;
+  }
+
+  /**
    * 将路由参数中的知识库 ID 转为 bigint。
    */
   parseKnowledgeBaseId(kbId: string) {
