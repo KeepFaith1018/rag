@@ -95,11 +95,8 @@ export class ChatStreamService {
         modelName,
       });
 
-    // 收集 agent 状态事件（在 orchestrator 运行期间逐步发出）
-    const statusEvents: Array<{ phase: string; detail?: string }> = [];
-
-    // 执行 Agentic RAG 工作流
-    const runResult = await this.orchestrator.run(
+    // 执行流式 Agentic RAG 工作流，直接返回 AI SDK data stream
+    return this.orchestrator.streamRun(
       {
         sessionId: dto.sessionId,
         userId,
@@ -110,46 +107,28 @@ export class ChatStreamService {
         resolvedKbIds,
         originalQuery: dto.message,
       },
-      (phase, detail) => {
-        statusEvents.push({ phase, detail });
+      {
+        onFinish: async (result) => {
+          // 持久化引用
+          if (result.citations.length > 0) {
+            await this.citationService.createCitations({
+              messageId: assistantMessage.id,
+              hits: result.citations as any,
+            });
+          }
+          // 持久化回答
+          await this.chatMessageService.finalizeAssistantMessage(
+            assistantMessage.id,
+            { content: result.content, finishReason: 'stop' },
+          );
+        },
+        onError: async () => {
+          await this.chatMessageService.markAssistantMessageAborted(
+            assistantMessage.id,
+          );
+        },
       },
     );
-
-    // 持久化引用
-    if (runResult.citations.length > 0) {
-      await this.citationService.createCitations({
-        messageId: assistantMessage.id,
-        hits: runResult.citations,
-      });
-    }
-
-    // 将最终答案转为 AI SDK data stream
-    const finalAnswer = runResult.finalAnswer;
-
-    async function* generateChunks(): AsyncIterable<AIMessageChunk> {
-      // 先发出 agent 状态事件（可通过自定义 data parts 发出）
-      // 再发出最终答案
-      yield new AIMessageChunk({ content: finalAnswer });
-    }
-
-    return toUIMessageStream(generateChunks(), {
-      onFinish: async () => {
-        await this.chatMessageService.finalizeAssistantMessage(
-          assistantMessage.id,
-          { content: finalAnswer, finishReason: 'stop' },
-        );
-      },
-      onError: async () => {
-        await this.chatMessageService.markAssistantMessageAborted(
-          assistantMessage.id,
-        );
-      },
-      onAbort: async () => {
-        await this.chatMessageService.markAssistantMessageAborted(
-          assistantMessage.id,
-        );
-      },
-    });
   }
 
   /**

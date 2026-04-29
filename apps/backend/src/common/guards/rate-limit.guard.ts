@@ -5,7 +5,8 @@ import {
   HttpException,
   HttpStatus,
 } from '@nestjs/common';
-
+import { Request } from 'express';
+import { JwtUser } from '@app/modules/auth/interface/jwtUser';
 /**
  * 简单内存限流实现。
  *
@@ -24,7 +25,7 @@ export class RateLimitGuard implements CanActivate {
   }
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<Request & { user?: JwtUser }>();
     const userId = request.user?.sub;
 
     if (!userId) {
@@ -73,7 +74,7 @@ export class StreamRateLimitGuard implements CanActivate {
   private readonly requests = new Map<string, number[]>();
 
   canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<Request & { user?: JwtUser }>();
     const userId = request.user?.sub;
 
     if (!userId) {

@@ -2,6 +2,7 @@ import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { EmbeddingService } from './embedding.service';
 import { ChatModelService } from './chat-model.service';
+import { AiController } from './ai.controller';
 
 /**
  * AI 基础能力模块。
@@ -11,6 +12,7 @@ import { ChatModelService } from './chat-model.service';
  */
 @Module({
   imports: [ConfigModule],
+  controllers: [AiController],
   providers: [EmbeddingService, ChatModelService],
   exports: [EmbeddingService, ChatModelService],
 })

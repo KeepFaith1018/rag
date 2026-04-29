@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(node -e \"const e = require\\('entities'\\); console.log\\(Object.keys\\(e\\).slice\\(0, 20\\)\\)\")",
+      "Bash(node -e \"const p = JSON.parse\\(require\\('fs'\\).readFileSync\\('/dev/stdin', 'utf8'\\)\\); console.log\\(JSON.stringify\\({main: p.main, module: p.module, exports: p.exports, version: p.version}, null, 2\\)\\)\")",
+      "Bash(pnpm --filter backend exec nest build)",
+      "Bash(pnpm --filter backend exec tsc --noEmit)",
+      "WebFetch(domain:help.aliyun.com)"
+    ]
+  }
+}

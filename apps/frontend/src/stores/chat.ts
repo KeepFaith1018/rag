@@ -24,6 +24,7 @@ import type {
   AgentPhase,
   Citation,
   AgentWarningPart,
+  RetrievalProgressPart,
 } from '@/modules/chat/types/stream';
 
 export const useChatStore = defineStore('chat', () => {
@@ -75,6 +76,9 @@ export const useChatStore = defineStore('chat', () => {
   /** 警告信息 */
   const agentWarnings = ref<AgentWarningPart[]>([]);
 
+  /** 检索进度列表 */
+  const retrievalProgresses = ref<RetrievalProgressPart[]>([]);
+
   // ─── 计算属性 ─────────────────────────────────────────────
 
   const hasActiveSession = computed(() => currentSession.value !== null);
@@ -95,7 +99,15 @@ export const useChatStore = defineStore('chat', () => {
   async function loadSessions() {
     isLoadingSessions.value = true;
     try {
-      sessions.value = await listChatSessions();
+      const response = await listChatSessions();
+      // 后端返回 { list: [...], total }，直接数组也兼容
+      if (response && typeof response === 'object' && 'list' in response) {
+        sessions.value = (response as { list: ChatSessionSummary[] }).list;
+      } else if (Array.isArray(response)) {
+        sessions.value = response;
+      } else {
+        sessions.value = [];
+      }
     } finally {
       isLoadingSessions.value = false;
     }
@@ -183,15 +195,53 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   /**
-   * 更新助手消息状态。
+   * 更新助手消息 HTML 内容（流式渲染，追加模式）。
+   * @param messageId 消息 ID
+   * @param html 增量 HTML 片段
+   * @param mode 追加或替换
    */
-  function updateMessageStatus(
+  function updateAssistantMessageHtml(
+    messageId: number,
+    html: string,
+    mode: 'append' | 'replace' = 'append',
+  ) {
+    const msg = messages.value.find((m) => m.id === messageId);
+    if (msg) {
+      if (mode === 'append') {
+        msg.htmlContent = (msg.htmlContent || '') + html;
+      } else {
+        msg.htmlContent = html;
+      }
+      // content 保持同步用于纯文本场景
+      msg.content = msg.htmlContent;
+    }
+  }
+
+  /**
+   * 设置助手消息状态。
+   */
+  function setMessageStatus(
     messageId: number,
     status: ChatMessageItem['messageStatus'],
   ) {
     const msg = messages.value.find((m) => m.id === messageId);
     if (msg) {
       msg.messageStatus = status;
+    }
+  }
+
+  /**
+   * 添加检索进度。
+   */
+  function addRetrievalProgress(progress: RetrievalProgressPart) {
+    // 去重：如果已有同 kbId + channel 的记录则替换
+    const idx = retrievalProgresses.value.findIndex(
+      (p) => p.kbId === progress.kbId && p.channel === progress.channel,
+    );
+    if (idx >= 0) {
+      retrievalProgresses.value[idx] = progress;
+    } else {
+      retrievalProgresses.value.push(progress);
     }
   }
 
@@ -299,6 +349,7 @@ export const useChatStore = defineStore('chat', () => {
     agentPhaseDetail.value = '';
     citations.value = [];
     agentWarnings.value = [];
+    retrievalProgresses.value = [];
   }
 
   /**
@@ -338,6 +389,7 @@ export const useChatStore = defineStore('chat', () => {
     agentPhaseDetail,
     citations,
     agentWarnings,
+    retrievalProgresses,
     // 计算属性
     hasActiveSession,
     isRagMode,
@@ -353,7 +405,8 @@ export const useChatStore = defineStore('chat', () => {
     addUserMessage,
     addAssistantMessage,
     updateAssistantMessage,
-    updateMessageStatus,
+    updateAssistantMessageHtml,
+    setMessageStatus,
     // 模式切换
     setChatMode,
     setSelectedKbIds,
@@ -370,5 +423,6 @@ export const useChatStore = defineStore('chat', () => {
     resetAgentState,
     setSending,
     clearCurrentSession,
+    addRetrievalProgress,
   };
 });

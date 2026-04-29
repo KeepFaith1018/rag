@@ -22,7 +22,7 @@
 | 层级 | 技术选型 |
 |------|----------|
 | 后端框架 | NestJS + Prisma ORM |
-| LLM 编排 | LangChain + withStructuredOutput（Zod Schema）|
+| LLM 编排 | LangGraph StateGraph + LangChain withStructuredOutput（Zod Schema）|
 | 向量检索 | Qdrant（稠密向量）|
 | 稀疏检索 | MySQL FullText（首版轻量实现）|
 | 流式协议 | AI SDK data stream（`0:` 文本 / `8:` data event / `d:` done）|
@@ -67,9 +67,9 @@
 |--------|------|
 | 5 个 Zod Schema | Router、Rewrite、Decompose、FactCheck、CompletenessCheck |
 | 7 个 Prompt 模板 | Router/RelevanceCheck 低温度（0.1），Writer 中温度（0.5）|
-| MultiAgentOrchestratorService | 状态机编排 + 3 路回退（最多 2 次）|
+| MultiAgentOrchestratorService | **LangGraph StateGraph** 编排 + 3 路回退（最多 2 次）|
 | AgentTraceService | run/step/tool_call 三级记录 |
-| 2 个 Agent 工具 | SearchKnowledgeBaseTool、GetChunkDetailTool |
+| 2 个 LangChain Tools | `search_knowledge_base`、`get_chunk_detail`（使用 `tool()` 封装）|
 | ChatStreamService 集成 | RAG 模式委托给 Orchestrator |
 
 **涉及文件**：`src/modules/agent/`（全部）、`src/modules/chat/services/chat-stream.service.ts`（重写）
@@ -166,19 +166,33 @@ type AgentWarningPart    = { type: 'agent-warning', code, message }
 
 ## 6. 关键设计决策
 
-### 6.1 首版不用 LangGraph
+### 6.1 使用 LangGraph StateGraph
 
-采用 TypeScript 原生状态机实现节点编排，避免引入重量级依赖。后续若需 LangGraph 高级特性（checkpoint、streaming graph events），可在不改变节点方法的前提下迁移。
+采用 `@langchain/langgraph` 的 `StateGraph` + `Annotation.Root()` 定义状态机，`addNode()` / `addEdge()` / `addConditionalEdges()` 构建工作流。使用 `tool()` 从 `@langchain/core/tools` 封装知识库检索工具。条件边函数决定回退流程（`shouldRetryOrContinue`、`shouldReviseOrContinue`、`shouldSupplementOrFinalize`）。支持 `interrupt` 断点介入（后续扩展）。
 
-### 6.2 校验在生成之后
+### 6.2 自校正循环与终止条件
+
+状态机内有 3 条自校正循环，通过 `fallbackCount`（上限 2）统一约束终止：
+
+| 循环 | 条件边函数 | 回退目标 | 终止机制 |
+|------|-----------|---------|---------|
+| 相关性不足 | `shouldRetryOrContinue` | `rewrite` | `fallbackCount >= 2` 或 verdict 变为 `relevant`/`partial` |
+| 事实高风险 | `shouldReviseOrContinue` | `rewrite`（重新改写查询再生成）| `fallbackCount >= 2` 或 risk 降为 `medium`/`low` |
+| 完整性不足 | `shouldSupplementOrFinalize` | `supplement_prep` → `tools` → `draft` | `fallbackCount >= 2` 或 `pendingSupplement` 标记清除 |
+
+**关键修复**：
+- `rewriteQueryNode` 在返回时显式 `fallbackCount++`，确保循环计数正确
+- `supplement_prep` 设置 `pendingSupplement: true`，告知后续 `completeness_check` 是补充后的第二轮，此时清除 `needSupplement` 标记并退出循环
+
+### 6.3 校验在生成之后
 
 顺序为：Draft Answer → Fact Check → Completeness Check，而非生成前全量校验。这样可以用完整回答而非分片摘要做事实和完整性审核，校验质量更高。
 
-### 6.3 前端零 AI SDK 依赖
+### 6.4 前端零 AI SDK 依赖
 
 `@ai-sdk/vue` 的 Chat 类设计用于 OpenAI 兼容 API，与后端 `/api/chat/stream` 自定义请求格式不兼容。前端使用原生 `fetch` + `ReadableStream` 自己解析 AI SDK data stream，零额外依赖。
 
-### 6.4 权限边界清晰
+### 6.5 权限边界清晰
 
 - 用户只可选择有 `canAsk` 权限的知识库
 - 后端 `authorizeMany()` 批量鉴权

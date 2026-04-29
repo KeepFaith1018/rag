@@ -41,6 +41,7 @@ interface PrimaryNavItem {
   name: string;
   icon: string;
   path: string;
+  query?: Record<string, string>;
   children?: {
     name: string;
     path: string;

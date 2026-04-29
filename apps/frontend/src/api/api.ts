@@ -13,7 +13,7 @@ import {
   setAccessToken,
 } from "@/utils/token";
 
-const API_BASE_URL =
+export const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() ||
   "http://localhost:3000/api";
 
@@ -161,6 +161,39 @@ function buildRequestUrl(url: string, params?: ApiQueryParams) {
   return isAbsoluteUrl(rawUrl)
     ? parsedUrl.toString()
     : `${parsedUrl.pathname}${parsedUrl.search}`;
+}
+
+/**
+ * 流式请求（返回原始 Response 对象供调用方自行处理流式解析）。
+ * 复用统一鉴权与刷新逻辑，但不做响应体解析。
+ */
+export async function apiRequestStream(
+  options: Omit<ApiRequestOptions, "skipRefreshRetry">,
+): Promise<Response> {
+  const { url, params, skipAuth, _retry, body, ...rest } = options;
+  const requestBody = normalizeRequestBody(body);
+  const requestHeaders = createHeaders(options, requestBody);
+
+  const fetchResponse = await fetch(buildRequestUrl(url, params), {
+    ...rest,
+    body: requestBody,
+    headers: requestHeaders,
+  });
+
+  // 401 且未禁用刷新重试 → 刷新 token 后重试
+  if (
+    !skipAuth &&
+    !_retry &&
+    fetchResponse.status === 401
+  ) {
+    await ensureFreshAccessToken();
+    return apiRequestStream({
+      ...options,
+      _retry: true,
+    });
+  }
+
+  return fetchResponse;
 }
 
 /**

@@ -22,6 +22,8 @@ export interface ChatModelOptions {
   temperature?: number;
   maxTokens?: number;
   streaming?: boolean;
+  /** 请求超时（毫秒），默认 60 秒 */
+  timeout?: number;
 }
 
 /**
@@ -60,6 +62,7 @@ export class ChatModelService {
       temperature: options.temperature ?? 0.7,
       maxTokens: options.maxTokens,
       streaming: options.streaming ?? true,
+      timeout: options.timeout ?? 60000,
     });
   }
 

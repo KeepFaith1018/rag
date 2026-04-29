@@ -1,7 +1,7 @@
 /**
  * 聊天模块 API
  */
-import { apiRequest } from './api';
+import { apiRequest, apiRequestStream } from './api';
 import type {
   ChatSessionSummary,
   ChatMessageItem,
@@ -117,17 +117,12 @@ export async function listAvailableModels(): Promise<
  * 流式聊天请求（返回 ReadableStream）。
  * 该函数返回原始 fetch Response 对象，由 useAgentChat 负责解析。
  */
-export function fetchChatStream(
+export async function fetchChatStream(
   request: StreamChatRequest,
 ): Promise<Response> {
-  const token = localStorage.getItem('accessToken');
-
-  return fetch('/api/chat/stream', {
+  return apiRequestStream({
+    url: '/chat/stream',
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token ? { Authorization: `Bearer ${token}` } : {}),
-    },
-    body: JSON.stringify(request),
+    body: request,
   });
 }

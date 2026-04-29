@@ -228,6 +228,7 @@ export class DocumentProcessingService {
             title: document.title,
             charStart: chunk.char_start,
             charEnd: chunk.char_end,
+            content: chunk.content,
           },
         })),
       );

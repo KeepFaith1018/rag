@@ -11,7 +11,8 @@
       "Bash(pnpm --filter frontend add @ai-sdk/vue)",
       "Bash(pnpm --filter frontend vue-tsc --noEmit)",
       "Bash(pnpm --filter frontend remove @ai-sdk/vue)",
-      "Bash(pnpm --filter frontend build)"
+      "Bash(pnpm --filter frontend build)",
+      "Bash(pnpm --filter backend list --depth 0)"
     ]
   }
 }

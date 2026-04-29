@@ -37,6 +37,8 @@ export interface ChatMessageItem {
   modelName?: string;
   selectedKbIds?: string[];
   traceId?: string;
+  /** HTML 内容（流式渲染时累积） */
+  htmlContent?: string;
 }
 
 /** 消息状态 */

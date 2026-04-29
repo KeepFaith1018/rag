@@ -1,10 +1,16 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
+import { StateGraph, Annotation } from '@langchain/langgraph';
+import { tool } from '@langchain/core/tools';
+import { z } from 'zod';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { createUIMessageStream, type UIMessageChunk } from 'ai';
 import { ChatModelService } from '../../ai/chat-model.service';
+import { Logger } from 'winston';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { RetrievalService } from '../../retrieval/services/retrieval.service';
-import { CitationService } from '../../retrieval/services/citation.service';
 import { AgentTraceService } from './agent-trace.service';
-import type { AgentRunContext, AgentStepRecord } from './agent-trace.service';
+import type { AgentRunContext } from './agent-trace.service';
+import type { RerankedHit } from '../../retrieval/interfaces/reranked-hit.interface';
 import { RoutedQueryPlanSchema } from '../schemas/routed-query-plan.schema';
 import type { RoutedQueryPlan } from '../schemas/routed-query-plan.schema';
 import { RewriteOutputSchema } from '../schemas/rewritten-query.schema';
@@ -22,339 +28,272 @@ import { RELEVANCE_CHECK_SYSTEM_PROMPT } from '../prompts/relevance-check.prompt
 import { FACT_CHECK_SYSTEM_PROMPT } from '../prompts/fact-check.prompt';
 import { COMPLETENESS_CHECK_SYSTEM_PROMPT } from '../prompts/completeness-check.prompt';
 import { WRITER_SYSTEM_PROMPT } from '../prompts/writer.prompt';
-import type { RerankedHit } from '../../retrieval/interfaces/reranked-hit.interface';
-
-/** Agent 工作流状态 */
-export interface AgentGraphState {
-  sessionId: string;
-  userId: number;
-  originalQuery: string;
-  selectedKbIds: string[];
-  resolvedKbIds: string[];
-  routedPlan: RoutedQueryPlan | null;
-  rewrittenQueries: string[];
-  decomposedQuestions: DecomposeOutput | null;
-  rerankedHits: RerankedHit[];
-  draftAnswer: string;
-  factCheckResult: FactCheckResult | null;
-  completenessResult: CompletenessCheckResult | null;
-  fallbackCount: number;
-}
-
-/** 工作流阶段状态回调 */
-export interface AgentStatusCallback {
-  (phase: string, detail?: string): void;
-}
-
-/** 一次完整的 Agent Run 结果 */
-export interface AgentRunResult {
-  finalAnswer: string;
-  citations: RerankedHit[];
-  traceId: string;
-  totalDurationMs: number;
-  totalTokens: number;
-}
 
 /** 回退上限 */
 const MAX_FALLBACK = 2;
 
-@Injectable()
-export class MultiAgentOrchestratorService {
-  constructor(
-    private readonly chatModelService: ChatModelService,
-    private readonly retrievalService: RetrievalService,
-    private readonly citationService: CitationService,
-    private readonly agentTraceService: AgentTraceService,
-  ) {}
+/** ═══════════════════════════════════════════
+ * Agent State 定义
+ * ═══════════════════════════════════════════ */
 
-  /**
-   * 执行完整的 Agentic RAG 工作流。
-   *
-   * 流程：Route → Rewrite → Decompose(可选) → Retrieve → Rerank →
-   *       Relevance Check ⇄ Rewrite(回退) → Draft → Fact Check ⇄
-   *       Draft(修正) → Completeness Check ⇄ Retrieve(补充) → Finalize
-   */
-  async run(
-    runCtx: AgentRunContext,
-    onStatus?: AgentStatusCallback,
-  ): Promise<AgentRunResult> {
-    const startedAt = Date.now();
-    const runId = await this.agentTraceService.createRun(runCtx);
-    let totalTokens = 0;
+const AgentStateAnnotation = Annotation.Root({
+  sessionId: Annotation<string>(),
+  userId: Annotation<number>(),
+  originalQuery: Annotation<string>(),
+  selectedKbIds: Annotation<string[]>(),
+  resolvedKbIds: Annotation<string[]>(),
+  routedPlan: Annotation<RoutedQueryPlan | null>(),
+  rewrittenQueries: Annotation<string[]>(),
+  decomposedQuestions: Annotation<DecomposeOutput | null>(),
+  rerankedHits: Annotation<RerankedHit[]>(),
+  draftAnswer: Annotation<string>(),
+  factCheckResult: Annotation<FactCheckResult | null>(),
+  completenessResult: Annotation<CompletenessCheckResult | null>(),
+  fallbackCount: Annotation<number>(),
+  currentPhase: Annotation<string>(),
+  relevanceVerdict: Annotation<
+    'relevant' | 'partial' | 'not_relevant' | null
+  >(),
+  pendingSupplement: Annotation<boolean>(),
+  pendingRevise: Annotation<boolean>(),
+});
 
-    // 初始化状态
-    const state: AgentGraphState = {
-      sessionId: runCtx.sessionId,
-      userId: runCtx.userId,
-      originalQuery: runCtx.originalQuery,
-      selectedKbIds: runCtx.selectedKbIds,
-      resolvedKbIds: runCtx.resolvedKbIds,
-      routedPlan: null,
-      rewrittenQueries: [],
-      decomposedQuestions: null,
-      rerankedHits: [],
-      draftAnswer: '',
-      factCheckResult: null,
-      completenessResult: null,
-      fallbackCount: 0,
-    };
+type AgentState = typeof AgentStateAnnotation.State;
+type PartialAgentState = Partial<AgentState>;
 
-    // ─── 阶段 1: 规划 (Planning) ───
-    onStatus?.('planning', '分析问题意图');
+/** 工具节点输出类型 */
+interface ToolOutput {
+  hits: RerankedHit[];
+  hitCount: number;
+  denseCount: number;
+  sparseCount: number;
+  durationMs: number;
+}
 
-    // 1.1 路由
-    state.routedPlan = await this.routeQuery(state, runId);
-    totalTokens += 200; // 估算 token
+/** ═══════════════════════════════════════════
+ * Tools — 使用 @langchain/core/tools 封装
+ * ═══════════════════════════════════════════ */
 
-    // 非 RAG 意图直接进入生成
-    if (state.routedPlan.intent === 'greeting') {
-      state.draftAnswer =
-        '你好！我是 Linsor AI 智能助手，有什么可以帮助你的吗？';
-      onStatus?.('done', '完成');
-      await this.agentTraceService.completeRun(runId, {
-        totalTokens,
-        totalDurationMs: Date.now() - startedAt,
+/**
+ * 知识库检索工具
+ */
+const createSearchTool = (
+  retrievalService: RetrievalService,
+  traceService: AgentTraceService,
+  runId: string,
+) =>
+  tool(
+    async (input: {
+      queries: string[];
+      kbIds: string[];
+      questionType?: string;
+    }): Promise<ToolOutput> => {
+      const result = await retrievalService.retrieve({
+        queries: input.queries,
+        kbIds: input.kbIds,
+        questionType:
+          (input.questionType as
+            | 'fact_lookup'
+            | 'compare_analysis'
+            | 'research_or_open_world') || 'fact_lookup',
       });
+
+      await traceService.recordStep(runId, {
+        agentName: 'retriever',
+        stepType: 'hybrid_retrieve',
+        status: 'completed',
+        input: { queries: input.queries, kbIds: input.kbIds },
+        output: {
+          denseCount: result.denseHits.length,
+          sparseCount: result.sparseHits.length,
+          fusedCount: result.fusedHits.length,
+          rerankedCount: result.rerankedHits.length,
+        },
+        durationMs: result.totalDurationMs,
+      });
+
       return {
-        finalAnswer: state.draftAnswer,
-        citations: [],
-        traceId: runId,
-        totalDurationMs: Date.now() - startedAt,
-        totalTokens,
+        hits: result.rerankedHits,
+        hitCount: result.rerankedHits.length,
+        denseCount: result.denseHits.length,
+        sparseCount: result.sparseHits.length,
+        durationMs: result.totalDurationMs,
       };
-    }
+    },
+    {
+      name: 'search_knowledge_base',
+      description: '执行知识库混合检索（稠密向量+关键词），返回相关文档分块。',
+      schema: z.object({
+        queries: z.array(z.string()).describe('检索查询列表，支持多查询'),
+        kbIds: z.array(z.string()).describe('知识库 ID 列表'),
+        questionType: z
+          .enum(['fact_lookup', 'compare_analysis', 'research_or_open_world'])
+          .optional()
+          .describe('问题类型'),
+      }),
+    },
+  );
 
-    // 1.2 改写查询
-    onStatus?.('planning', '改写查询');
-    state.rewrittenQueries = await this.rewriteQuery(state, runId);
-    totalTokens += 200;
+/**
+ * 获取分块详情工具
+ */
+const _createGetChunkDetailTool = () =>
+  tool(
+    (input: { chunkId: string }) => {
+      return { chunkId: input.chunkId, content: '（需从存储获取）' };
+    },
+    {
+      name: 'get_chunk_detail',
+      description: '根据 chunkId 获取完整分块内容',
+      schema: z.object({ chunkId: z.string().describe('分块 ID') }),
+    },
+  );
 
-    // 1.3 拆解子问题（必要时）
-    if (state.routedPlan.needDecomposition) {
-      onStatus?.('planning', '拆解子问题');
-      state.decomposedQuestions = await this.decomposeQuestion(state, runId);
-      totalTokens += 300;
-    }
+/** ═══════════════════════════════════════════
+ * Node 函数
+ * ═══════════════════════════════════════════ */
 
-    // ─── 阶段 2: 检索 (Retrieving) ───
-    onStatus?.('retrieving', '执行混合检索');
+async function routeQueryNode(
+  state: AgentState,
+  chatModelService: ChatModelService,
+  runId: string,
+  traceService: AgentTraceService,
+): Promise<Partial<AgentState>> {
+  console.log('[Orchestrator] 🔀 路由分析中...');
+  const model = chatModelService.createModel({
+    model: 'qwen-turbo',
+    temperature: 0.2,
+    streaming: false,
+    timeout: 15000,
+  });
 
-    const retrieveQueries = this.buildRetrieveQueries(state);
-    const retrieveResult = await this.retrievalService.retrieve({
-      queries: retrieveQueries,
-      kbIds: state.resolvedKbIds,
-      questionType: state.routedPlan.questionType,
-    });
-    state.rerankedHits = retrieveResult.rerankedHits;
-    totalTokens += 100;
-
-    await this.recordAgentStep(runId, {
-      agentName: 'retriever',
-      stepType: 'hybrid_retrieve',
-      status: 'completed',
-      input: { queries: retrieveQueries, kbIds: state.resolvedKbIds },
-      output: {
-        denseCount: retrieveResult.denseHits.length,
-        sparseCount: retrieveResult.sparseHits.length,
-        fusedCount: retrieveResult.fusedHits.length,
-        rerankedCount: retrieveResult.rerankedHits.length,
-      },
-      durationMs: retrieveResult.totalDurationMs,
-    });
-
-    // ─── 阶段 3: 校验 (Verifying) ───
-    onStatus?.('verifying', '相关性校验');
-
-    // 3.1 相关性检查（含回退）
-    const relevanceResult = await this.checkRelevance(state, runId);
-    totalTokens += 200;
-
-    if (
-      relevanceResult === 'not_relevant' &&
-      state.fallbackCount < MAX_FALLBACK
-    ) {
-      state.fallbackCount++;
-      onStatus?.('planning', `相关性不足，重新改写查询 (第 ${state.fallbackCount} 次)`);
-
-      // 回退到 Rewrite
-      state.rewrittenQueries = await this.rewriteQuery(state, runId);
-
-      // 重新检索
-      onStatus?.('retrieving', '重新检索');
-      const retryResult = await this.retrievalService.retrieve({
-        queries: state.rewrittenQueries,
-        kbIds: state.resolvedKbIds,
-      });
-      state.rerankedHits = retryResult.rerankedHits;
-    }
-
-    // ─── 阶段 4: 生成 (Writing) ───
-    onStatus?.('writing', '生成回答草稿');
-
-    state.draftAnswer = await this.draftAnswer(state, runId);
-    totalTokens += 500 + state.draftAnswer.length / 4;
-
-    // ─── 阶段 5: 事实校验 ───
-    onStatus?.('verifying', '事实校验');
-    state.factCheckResult = await this.factCheck(state, runId);
-    totalTokens += 400;
-
-    // 高风险则修正
-    if (
-      state.factCheckResult.overallRisk === 'high' &&
-      state.fallbackCount < MAX_FALLBACK
-    ) {
-      state.fallbackCount++;
-      onStatus?.('writing', '修正事实错误');
-      state.draftAnswer = await this.draftAnswer(state, runId, true);
-      totalTokens += 500;
-    }
-
-    // ─── 阶段 6: 完整性校验 ───
-    onStatus?.('verifying', '完整性校验');
-    state.completenessResult = await this.checkCompleteness(state, runId);
-    totalTokens += 300;
-
-    // 不完整则尝试补充检索
-    if (
-      state.completenessResult.needSupplement &&
-      state.fallbackCount < MAX_FALLBACK
-    ) {
-      state.fallbackCount++;
-      const missingAspects = state.completenessResult.missingAspects
-        .filter((m) => m.retrievable)
-        .map((m) => m.aspect);
-
-      if (missingAspects.length > 0) {
-        onStatus?.('retrieving', '补充检索缺失维度');
-        const supplementResult = await this.retrievalService.retrieve({
-          queries: missingAspects,
-          kbIds: state.resolvedKbIds,
-        });
-
-        // 合并补充结果
-        const existing = new Set(state.rerankedHits.map((h) => h.chunkId));
-        for (const hit of supplementResult.rerankedHits) {
-          if (!existing.has(hit.chunkId)) {
-            state.rerankedHits.push(hit);
-            existing.add(hit.chunkId);
-          }
-        }
-        state.rerankedHits.sort((a, b) => b.rerankScore - a.rerankScore);
-
-        onStatus?.('writing', '补充回答');
-        state.draftAnswer = await this.draftAnswer(state, runId);
-        totalTokens += 500;
-      }
-    }
-
-    // ─── 完成 ───
-    onStatus?.('done', '完成');
-
-    const totalDurationMs = Date.now() - startedAt;
-    await this.agentTraceService.completeRun(runId, {
-      totalTokens: Math.round(totalTokens),
-      totalDurationMs,
-    });
-
-    return {
-      finalAnswer: state.draftAnswer,
-      citations: state.rerankedHits.slice(0, 5),
-      traceId: runId,
-      totalDurationMs,
-      totalTokens: Math.round(totalTokens),
-    };
-  }
-
-  // ═══════════════════════════════════════════════
-  //  节点方法
-  // ═══════════════════════════════════════════════
-
-  /**
-   * 路由节点：分析意图、是否需要拆解、是否需要联网搜索。
-   */
-  private async routeQuery(
-    state: AgentGraphState,
-    runId: string,
-  ): Promise<RoutedQueryPlan> {
-    const model = this.chatModelService.createModel({
-      temperature: 0.2,
-      streaming: false,
-    });
-    const structured = model.withStructuredOutput(RoutedQueryPlanSchema);
+  try {
+    const structured = model.withStructuredOutput(RoutedQueryPlanSchema, { method: 'jsonMode' });
 
     const result = await structured.invoke([
-      new SystemMessage(ROUTER_SYSTEM_PROMPT),
+      new SystemMessage(
+        `${ROUTER_SYSTEM_PROMPT}\n\n请以 JSON 格式回复，输出完整的结构化数据。`,
+      ),
       new HumanMessage(state.originalQuery),
     ]);
 
-    await this.recordAgentStep(runId, {
+    const plan = result as RoutedQueryPlan;
+    console.log(
+      `[Orchestrator] ✅ 路由完成 → 意图: ${plan.intent} | 需拆解: ${plan.needDecomposition} | 类型: ${plan.questionType}`,
+    );
+
+    await traceService.recordStep(runId, {
       agentName: 'router',
       stepType: 'route_query',
       status: 'completed',
       input: { query: state.originalQuery },
-      output: { plan: result as unknown as Record<string, unknown> },
+      output: {
+        intent: plan.intent,
+        needDecomposition: plan.needDecomposition,
+        questionType: plan.questionType,
+      },
     });
 
-    return result as RoutedQueryPlan;
+    return { routedPlan: plan, currentPhase: 'planning' };
+  } catch (error: any) {
+    console.error(
+      `[Orchestrator] ❌ 路由分析失败: ${error?.message || error}`,
+    );
+    throw error;
   }
+}
 
-  /**
-   * 改写节点：将原始查询改写为 1~3 条检索优化查询。
-   */
-  private async rewriteQuery(
-    state: AgentGraphState,
-    runId: string,
-  ): Promise<string[]> {
-    const model = this.chatModelService.createModel({
-      temperature: 0.3,
-      streaming: false,
-    });
-    const structured = model.withStructuredOutput(RewriteOutputSchema);
+async function rewriteQueryNode(
+  state: AgentState,
+  chatModelService: ChatModelService,
+  runId: string,
+  traceService: AgentTraceService,
+): Promise<Partial<AgentState>> {
+  const round = state.fallbackCount + 1;
+  console.log(`[Orchestrator] ✏️ 查询改写中... (第 ${round} 轮回退)`);
+  const model = chatModelService.createModel({
+    model: 'qwen-turbo',
+    temperature: 0.3,
+    streaming: false,
+    timeout: 15000,
+  });
+
+  try {
+    const structured = model.withStructuredOutput(RewriteOutputSchema, { method: 'jsonMode' });
 
     const result = await structured.invoke([
-      new SystemMessage(REWRITE_SYSTEM_PROMPT),
+      new SystemMessage(
+        `${REWRITE_SYSTEM_PROMPT}\n\n请以 JSON 格式回复，输出完整的结构化数据。`,
+      ),
       new HumanMessage(
-        `原始查询: ${state.originalQuery}\n意图类型: ${state.routedPlan?.questionType ?? 'fact_lookup'}\n当前是第 ${state.fallbackCount + 1} 轮检索`,
+        `原始查询: ${state.originalQuery}\n意图类型: ${state.routedPlan?.questionType ?? 'fact_lookup'}\n当前是第 ${round} 轮检索`,
       ),
     ]);
 
     const output = result as RewriteOutput;
+    const queries = output.queries.map((q) => q.rewritten);
+    console.log(
+      `[Orchestrator] ✅ 查询改写完成 → ${queries.length} 个改写查询: ${queries.join(' | ')}`,
+    );
 
-    await this.recordAgentStep(runId, {
+    await traceService.recordStep(runId, {
       agentName: 'rewriter',
       stepType: 'rewrite_query',
       status: 'completed',
       input: { originalQuery: state.originalQuery },
-      output: { queries: output.queries.map((q) => q.rewritten) },
+      output: { queries },
     });
 
-    return output.queries.map((q) => q.rewritten);
+    return {
+      rewrittenQueries: queries,
+      fallbackCount: state.fallbackCount + 1,
+      currentPhase: 'planning',
+    };
+  } catch (error: any) {
+    console.error(
+      `[Orchestrator] ❌ 查询改写失败: ${error?.message || error}`,
+    );
+    // 回退：直接使用原始查询，跳过改写
+    return {
+      rewrittenQueries: [state.originalQuery],
+      fallbackCount: state.fallbackCount + 1,
+      currentPhase: 'planning',
+    };
   }
+}
 
-  /**
-   * 拆解节点：将复杂问题拆解为多个子问题。
-   */
-  private async decomposeQuestion(
-    state: AgentGraphState,
-    runId: string,
-  ): Promise<DecomposeOutput> {
-    const model = this.chatModelService.createModel({
-      temperature: 0.3,
-      streaming: false,
-    });
-    const structured = model.withStructuredOutput(DecomposeOutputSchema);
+async function decomposeNode(
+  state: AgentState,
+  chatModelService: ChatModelService,
+  runId: string,
+  traceService: AgentTraceService,
+): Promise<Partial<AgentState>> {
+  console.log('[Orchestrator] 🔍 问题拆解中...');
+  const model = chatModelService.createModel({
+    model: 'qwen-turbo',
+    temperature: 0.3,
+    streaming: false,
+    timeout: 15000,
+  });
+
+  try {
+    const structured = model.withStructuredOutput(DecomposeOutputSchema, { method: 'jsonMode' });
 
     const result = await structured.invoke([
-      new SystemMessage(DECOMPOSE_SYSTEM_PROMPT),
+      new SystemMessage(
+        `${DECOMPOSE_SYSTEM_PROMPT}\n\n请以 JSON 格式回复，输出完整的结构化数据。`,
+      ),
       new HumanMessage(
         `原始问题: ${state.originalQuery}\n改写查询: ${state.rewrittenQueries.join('；')}`,
       ),
     ]);
 
     const output = result as DecomposeOutput;
+    console.log(
+      `[Orchestrator] ✅ 拆解完成 → ${output.questions.length} 个子问题 | 依赖: ${output.dependency}`,
+    );
 
-    await this.recordAgentStep(runId, {
+    await traceService.recordStep(runId, {
       agentName: 'decomposer',
       stepType: 'decompose_question',
       status: 'completed',
@@ -365,131 +304,51 @@ export class MultiAgentOrchestratorService {
       },
     });
 
-    return output;
+    return { decomposedQuestions: output, currentPhase: 'planning' };
+  } catch (error: any) {
+    console.error(
+      `[Orchestrator] ❌ 问题拆解失败: ${error?.message || error}`,
+    );
+    // 回退：跳过拆解，继续后续流程
+    return { currentPhase: 'planning' };
   }
+}
 
-  /**
-   * 相关性校验：判断检索结果是否与查询相关。
-   */
-  private async checkRelevance(
-    state: AgentGraphState,
-    runId: string,
-  ): Promise<'relevant' | 'partial' | 'not_relevant'> {
-    if (!state.rerankedHits.length) {
-      return 'not_relevant';
-    }
+async function factCheckNode(
+  state: AgentState,
+  chatModelService: ChatModelService,
+  runId: string,
+  traceService: AgentTraceService,
+): Promise<Partial<AgentState>> {
+  if (!state.draftAnswer) return { currentPhase: 'verifying' };
 
-    const model = this.chatModelService.createModel({
-      temperature: 0.1,
-      streaming: false,
-    });
+  console.log('[Orchestrator] 🔎 事实校验中...');
+  const model = chatModelService.createModel({
+    model: 'qwen-turbo',
+    temperature: 0.1,
+    streaming: false,
+    timeout: 15000,
+  });
 
-    const chunksSummary = state.rerankedHits
-      .slice(0, 5)
-      .map((h, i) => `[${i + 1}] ${h.content.slice(0, 300)}`)
-      .join('\n---\n');
-
-    const msg = await model.invoke([
-      new SystemMessage(RELEVANCE_CHECK_SYSTEM_PROMPT),
-      new HumanMessage(
-        `用户查询: ${state.originalQuery}\n\n检索到的分片内容:\n${chunksSummary}\n\n请判断这些内容的相关性。请用 JSON 格式回复：{"verdict":"relevant|partial|not_relevant","relevantCount":数字,"totalCount":数字,"reason":"简要理由","suggestion":"下一步建议"}`,
-      ),
-    ]);
-
-    const content =
-      typeof msg.content === 'string'
-        ? msg.content
-        : Array.isArray(msg.content)
-          ? msg.content.map((c) => (c as { text: string }).text ?? '').join('')
-          : '';
-
-    try {
-      const json = JSON.parse(
-        content.replace(/```json\s*/g, '').replace(/```\s*/g, ''),
-      );
-      const verdict = json.verdict as string;
-
-      await this.recordAgentStep(runId, {
-        agentName: 'verifier',
-        stepType: 'relevance_check',
-        status: 'completed',
-        input: { query: state.originalQuery, hitCount: state.rerankedHits.length },
-        output: json,
-      });
-
-      if (verdict === 'relevant' || verdict === 'partial' || verdict === 'not_relevant') {
-        return verdict;
-      }
-      return 'partial';
-    } catch {
-      return 'partial';
-    }
-  }
-
-  /**
-   * 生成节点：基于检索到的上下文生成回答。
-   */
-  private async draftAnswer(
-    state: AgentGraphState,
-    _runId: string,
-    isRevision = false,
-  ): Promise<string> {
-    const model = this.chatModelService.createModel({
-      temperature: 0.5,
-      streaming: false,
-    });
-
-    const context = this.buildContextText(state.rerankedHits);
-    let prompt = WRITER_SYSTEM_PROMPT.replace('{context}', context);
-
-    if (isRevision && state.factCheckResult) {
-      const issues = state.factCheckResult.items
-        .filter((i) => i.verdict !== 'supported')
-        .map((i) => `- "${i.statement}": ${i.verdict} (证据: ${i.evidence})`)
-        .join('\n');
-      prompt += `\n\n上一版回答存在以下事实问题，请修正：\n${issues}`;
-    }
-
-    const msg = await model.invoke([
-      new SystemMessage(prompt),
-      new HumanMessage(state.originalQuery),
-    ]);
-
-    return typeof msg.content === 'string'
-      ? msg.content
-      : Array.isArray(msg.content)
-        ? msg.content
-            .filter((c): c is { type: 'text'; text: string } => c.type === 'text')
-            .map((c) => c.text)
-            .join('')
-        : '';
-  }
-
-  /**
-   * 事实校验节点：逐条核验回答中的事实陈述。
-   */
-  private async factCheck(
-    state: AgentGraphState,
-    runId: string,
-  ): Promise<FactCheckResult> {
-    const model = this.chatModelService.createModel({
-      temperature: 0.1,
-      streaming: false,
-    });
-    const structured = model.withStructuredOutput(FactCheckResultSchema);
-
-    const context = this.buildContextText(state.rerankedHits);
+  try {
+    const structured = model.withStructuredOutput(FactCheckResultSchema, { method: 'jsonMode' });
+    const context = buildContextText(state.rerankedHits);
 
     const result = await structured.invoke([
-      new SystemMessage(FACT_CHECK_SYSTEM_PROMPT),
+      new SystemMessage(
+        `${FACT_CHECK_SYSTEM_PROMPT}\n\n请以 JSON 格式回复，输出完整的结构化数据。`,
+      ),
       new HumanMessage(
         `用户问题: ${state.originalQuery}\n\n回答内容:\n${state.draftAnswer}\n\n检索到的知识库内容:\n${context}`,
       ),
     ]);
 
     const output = result as FactCheckResult;
+    console.log(
+      `[Orchestrator] ✅ 事实校验完成 → ${output.items.length} 条声明 | 风险: ${output.overallRisk} | 需修正: ${output.needRevise}`,
+    );
 
-    await this.recordAgentStep(runId, {
+    await traceService.recordStep(runId, {
       agentName: 'verifier',
       stepType: 'fact_check',
       status: 'completed',
@@ -501,38 +360,67 @@ export class MultiAgentOrchestratorService {
       },
     });
 
-    return output;
+    return {
+      factCheckResult: output,
+      currentPhase: 'verifying',
+    };
+  } catch (error: any) {
+    console.error(
+      `[Orchestrator] ❌ 事实校验失败: ${error?.message || error}`,
+    );
+    // 回退：跳过事实校验，标记低风险继续
+    return { currentPhase: 'verifying' };
+  }
+}
+
+async function completenessCheckNode(
+  state: AgentState,
+  chatModelService: ChatModelService,
+  runId: string,
+  traceService: AgentTraceService,
+): Promise<Partial<AgentState>> {
+  if (!state.draftAnswer) return { currentPhase: 'verifying' };
+
+  // 如果是补充检索后的第一轮完整性校验，清除 needSupplement 标记并结束循环
+  if (state.pendingSupplement) {
+    console.log('[Orchestrator] 📋 补充检索后重新校验，跳过完整性检查直接结束');
+    return {
+      completenessResult: null,
+      pendingSupplement: false,
+      currentPhase: 'verifying',
+    };
   }
 
-  /**
-   * 完整性校验节点：检查回答是否完整覆盖所有分析维度。
-   */
-  private async checkCompleteness(
-    state: AgentGraphState,
-    runId: string,
-  ): Promise<CompletenessCheckResult> {
-    const model = this.chatModelService.createModel({
-      temperature: 0.1,
-      streaming: false,
-    });
-    const structured = model.withStructuredOutput(
-      CompletenessCheckResultSchema,
-    );
+  console.log('[Orchestrator] 📋 完整性校验中...');
+  const model = chatModelService.createModel({
+    model: 'qwen-turbo',
+    temperature: 0.1,
+    streaming: false,
+    timeout: 15000,
+  });
 
-    const subQuestions = state.decomposedQuestions?.questions
-      .map((q) => q.subQuestion)
-      .join('；') ?? '未拆解';
+  try {
+    const structured = model.withStructuredOutput(CompletenessCheckResultSchema, { method: 'jsonMode' });
+
+    const subQuestions =
+      state.decomposedQuestions?.questions.map((q) => q.subQuestion).join('；') ??
+      '未拆解';
 
     const result = await structured.invoke([
-      new SystemMessage(COMPLETENESS_CHECK_SYSTEM_PROMPT),
+      new SystemMessage(
+        `${COMPLETENESS_CHECK_SYSTEM_PROMPT}\n\n请以 JSON 格式回复，输出完整的结构化数据。`,
+      ),
       new HumanMessage(
         `原始问题: ${state.originalQuery}\n子问题: ${subQuestions}\n\n回答内容:\n${state.draftAnswer}`,
       ),
     ]);
 
     const output = result as CompletenessCheckResult;
+    console.log(
+      `[Orchestrator] ✅ 完整性校验完成 → 覆盖: ${output.overallCoverage} | 缺失: ${output.missingAspects.length} 项 | 需补充: ${output.needSupplement}`,
+    );
 
-    await this.recordAgentStep(runId, {
+    await traceService.recordStep(runId, {
       agentName: 'verifier',
       stepType: 'completeness_check',
       status: 'completed',
@@ -547,57 +435,444 @@ export class MultiAgentOrchestratorService {
       },
     });
 
-    return output;
+    return {
+      completenessResult: output,
+      pendingSupplement: false,
+      currentPhase: 'verifying',
+    };
+  } catch (error: any) {
+    console.error(
+      `[Orchestrator] ❌ 完整性校验失败: ${error?.message || error}`,
+    );
+    // 回退：跳过完整性校验
+    return {
+      pendingSupplement: false,
+      currentPhase: 'verifying',
+    };
+  }
+}
+
+async function relevanceCheckNode(
+  state: AgentState,
+  chatModelService: ChatModelService,
+  runId: string,
+  traceService: AgentTraceService,
+): Promise<Partial<AgentState>> {
+  console.log(
+    `[Orchestrator] 🎯 相关性检查中... (${state.rerankedHits.length} 条检索结果)`,
+  );
+  if (!state.rerankedHits.length) {
+    console.log('[Orchestrator] ⚠️ 无检索结果，直接标记为 not_relevant');
+    return {
+      relevanceVerdict: 'not_relevant' as const,
+      currentPhase: 'verifying',
+    };
   }
 
-  // ═══════════════════════════════════════════════
-  //  辅助方法
-  // ═══════════════════════════════════════════════
+  const model = chatModelService.createModel({
+    model: 'qwen-turbo',
+    temperature: 0.1,
+    streaming: false,
+    timeout: 20000,
+  });
 
-  /**
-   * 构建检索查询列表。
-   */
-  private buildRetrieveQueries(state: AgentGraphState): string[] {
-    const queries: string[] = [state.originalQuery];
+  try {
+    const chunksSummary = state.rerankedHits
+      .slice(0, 5)
+      .map((h, i) => `[${i + 1}] ${h.content.slice(0, 300)}`)
+      .join('\n');
 
-    if (state.rewrittenQueries.length > 0) {
-      queries.push(...state.rewrittenQueries);
-    }
+    const llmStart = Date.now();
+    const msg = await model.invoke([
+      new SystemMessage(RELEVANCE_CHECK_SYSTEM_PROMPT),
+      new HumanMessage(
+        `用户查询: ${state.originalQuery}\n\n检索到的分片内容:\n${chunksSummary}\n\n请用 JSON 格式回复：{"verdict":"relevant|partial|not_relevant","reason":"理由"}`,
+      ),
+    ]);
+    const llmDuration = Date.now() - llmStart;
 
-    if (state.decomposedQuestions) {
-      queries.push(
-        ...state.decomposedQuestions.questions.map((q) => q.subQuestion),
+    const content = extractContent(msg);
+
+    try {
+      const json = JSON.parse(
+        content.replace(/```json\s*/g, '').replace(/```\s*/g, ''),
       );
-    }
+      const verdict = json.verdict as 'relevant' | 'partial' | 'not_relevant';
+      console.log(
+        `[Orchestrator] ✅ 相关性检查完成 → ${verdict} (${llmDuration}ms)`,
+      );
 
-    return [...new Set(queries)].slice(0, 8);
+      await traceService.recordStep(runId, {
+        agentName: 'verifier',
+        stepType: 'relevance_check',
+        status: 'completed',
+        input: {
+          query: state.originalQuery,
+          hitCount: state.rerankedHits.length,
+        },
+        output: json,
+        durationMs: llmDuration,
+      });
+
+      return { relevanceVerdict: verdict, currentPhase: 'verifying' };
+    } catch {
+      console.log('[Orchestrator] ⚠️ 相关性解析失败，fallback 为 partial');
+      return { relevanceVerdict: 'partial' as const, currentPhase: 'verifying' };
+    }
+  } catch (error: any) {
+    console.error(
+      `[Orchestrator] ❌ 相关性检查失败: ${error?.message || error}`,
+    );
+    return { relevanceVerdict: 'partial' as const, currentPhase: 'verifying' };
   }
+}
+
+/** ═══════════════════════════════════════════
+ * 条件边函数 — 决定下一步流向
+ * ═══════════════════════════════════════════ */
+
+/**
+ * 路由后决定是否需要改写查询。
+ * 仅复杂查询（对比分析、研究）需要改写；简单事实查找和问候直接检索。
+ */
+function shouldRewrite(state: AgentState): 'rewrite' | 'skip_rewrite' {
+  const intent = state.routedPlan?.intent;
+  return (intent === 'fact_lookup' || intent === 'greeting' || !intent)
+    ? 'skip_rewrite'
+    : 'rewrite';
+}
+
+/**
+ * 生成回答后决定是否需要质量校验。
+ * 仅复杂查询需要事实校验+完整性校验；简单查询直接结束。
+ */
+function shouldVerify(state: AgentState): 'verify' | 'finalize' {
+  const intent = state.routedPlan?.intent;
+  return (intent === 'compare_analysis' || intent === 'research_or_open_world')
+    ? 'verify'
+    : 'finalize';
+}
+
+/**
+ * 路由后决定是否需要拆解
+ */
+function shouldDecompose(state: AgentState): 'decompose' | 'skip_decompose' {
+  return state.routedPlan?.needDecomposition ? 'decompose' : 'skip_decompose';
+}
+
+/**
+ * 检索后决定是否需要回退（相关性不足）
+ */
+function shouldRetryOrContinue(state: AgentState): 'rewrite' | 'continue' {
+  if (
+    state.relevanceVerdict === 'not_relevant' &&
+    state.fallbackCount < MAX_FALLBACK
+  ) {
+    return 'rewrite';
+  }
+  return 'continue';
+}
+
+/** ═══════════════════════════════════════════
+ * 辅助函数
+ * ═══════════════════════════════════════════ */
+
+function buildRetrieveQueries(state: AgentState): string[] {
+  const queries: string[] = [state.originalQuery];
+  if (state.rewrittenQueries.length > 0)
+    queries.push(...state.rewrittenQueries);
+  if (state.decomposedQuestions) {
+    queries.push(
+      ...state.decomposedQuestions.questions.map((q) => q.subQuestion),
+    );
+  }
+  return [...new Set(queries)].slice(0, 8);
+}
+
+function buildContextText(hits: RerankedHit[]): string {
+  if (!hits.length) return '（未检索到相关上下文）';
+  return hits
+    .map((hit, index) => {
+      const docTitle =
+        (hit.payload['title'] as string) || hit.title || `文档 ${hit.docId}`;
+      return `[来源 ${index + 1}] 文档: ${docTitle}\n${hit.content}`;
+    })
+    .join('\n\n---\n\n');
+}
+
+function extractContent(msg: any): string {
+  if (typeof msg.content === 'string') return msg.content;
+  if (Array.isArray(msg.content)) {
+    return msg.content
+      .filter(
+        (c: any): c is { type: 'text'; text: string } => c.type === 'text',
+      )
+      .map((c: any) => c.text)
+      .join('');
+  }
+  return '';
+}
+
+@Injectable()
+export class MultiAgentOrchestratorService {
+  @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger;
+
+  constructor(
+    private readonly chatModelService: ChatModelService,
+    private readonly retrievalService: RetrievalService,
+    private readonly agentTraceService: AgentTraceService,
+  ) {}
 
   /**
-   * 将精排结果拼接为 LLM 可消费的上下文字符串。
+   * 流式执行多智能体编排，实时推送各节点状态和最终回答 token 流。
+   *
+   * 与 run() 的区别：
+   * - 使用 AI SDK data stream 协议，逐 token 流式输出回答
+   * - 每个节点的执行状态通过 data 事件实时推送
+   * - 不依赖 LangGraph（手动编排节点调用）
    */
-  private buildContextText(hits: RerankedHit[]): string {
-    if (!hits.length) {
-      return '（未检索到相关上下文）';
-    }
+  streamRun(
+    runCtx: AgentRunContext,
+    callbacks?: {
+      onFinish?: (result: { content: string; citations: unknown[] }) => Promise<void>;
+      onError?: () => Promise<void>;
+    },
+  ): ReadableStream<UIMessageChunk> {
+    const { chatModelService, retrievalService, agentTraceService, logger } = this;
 
-    return hits
-      .map((hit, index) => {
-        const docTitle =
-          (hit.payload['title'] as string) || hit.title || `文档 ${hit.docId}`;
-        const scorePercent = Math.round(hit.rerankScore * 100);
-        return `[来源 ${index + 1}] 文档: ${docTitle} | 相关度: ${scorePercent}%\n${hit.content}`;
-      })
-      .join('\n\n---\n\n');
+    return createUIMessageStream({
+      execute: async ({ writer }) => {
+        const msgId = 'rag-msg-1';
+        const runId = await agentTraceService.createRun(runCtx);
+
+        const searchTool = createSearchTool(
+          retrievalService,
+          agentTraceService,
+          runId,
+        );
+
+        const emitStatus = (phase: string, detail: string) => {
+          writer.write({
+            type: 'data-agent-status',
+            data: { type: 'agent-status', phase, detail },
+          } as any);
+        };
+
+        const emitText = (text: string) => {
+          writer.write({ type: 'text-delta', id: msgId, delta: text });
+        };
+
+        try {
+          // ══════ 构建预生成图 ══════
+          // 处理 route → rewrite → decompose → retrieve → relevance → retry loop
+          const preGenGraph = new StateGraph(AgentStateAnnotation)
+            .addNode('route', (s) =>
+              routeQueryNode(s, chatModelService, runId, agentTraceService),
+            )
+            .addNode('rewrite', (s) =>
+              rewriteQueryNode(s, chatModelService, runId, agentTraceService),
+            )
+            .addNode('decompose', (s) =>
+              decomposeNode(s, chatModelService, runId, agentTraceService),
+            )
+            .addNode('retrieve_prep', () => ({ currentPhase: 'retrieving' }))
+            .addNode('tools', async (s) => {
+              const queries = buildRetrieveQueries(s);
+              const result = await searchTool.invoke({
+                queries,
+                kbIds: s.resolvedKbIds,
+                questionType: s.routedPlan?.questionType,
+              });
+              writer.write({
+                type: 'data-retrieval-progress',
+                data: {
+                  type: 'retrieval-progress',
+                  denseCount: result.denseCount,
+                  sparseCount: result.sparseCount,
+                  fusedCount: result.hitCount,
+                },
+              } as any);
+              return { rerankedHits: result.hits, currentPhase: 'retrieving' };
+            })
+            .addNode('relevance_check', (s) =>
+              relevanceCheckNode(s, chatModelService, runId, agentTraceService),
+            )
+            .addEdge('__start__', 'route')
+            .addConditionalEdges('route', shouldRewrite, {
+              rewrite: 'rewrite',
+              skip_rewrite: 'retrieve_prep',
+            })
+            .addConditionalEdges('rewrite', shouldDecompose, {
+              decompose: 'decompose',
+              skip_decompose: 'retrieve_prep',
+            })
+            .addEdge('decompose', 'retrieve_prep')
+            .addEdge('retrieve_prep', 'tools')
+            .addEdge('tools', 'relevance_check')
+            .addConditionalEdges('relevance_check', shouldRetryOrContinue, {
+              rewrite: 'rewrite',
+              continue: '__end__',
+            })
+            .compile();
+
+          const initialState: AgentState = {
+            sessionId: runCtx.sessionId,
+            userId: runCtx.userId,
+            originalQuery: runCtx.originalQuery,
+            selectedKbIds: runCtx.selectedKbIds,
+            resolvedKbIds: runCtx.resolvedKbIds,
+            routedPlan: null,
+            rewrittenQueries: [],
+            decomposedQuestions: null,
+            rerankedHits: [],
+            draftAnswer: '',
+            factCheckResult: null,
+            completenessResult: null,
+            fallbackCount: 0,
+            currentPhase: 'planning',
+            relevanceVerdict: null,
+            pendingSupplement: false,
+            pendingRevise: false,
+          };
+
+          // ══════ 执行预生成图，逐节点推送状态 ══════
+          emitStatus('planning', '开始分析...');
+          const graphStream = await preGenGraph.stream(initialState, {
+            streamMode: 'updates',
+          });
+
+          // eslint-disable-next-line prefer-const
+          let state = initialState;
+          for await (const chunk of graphStream) {
+            const [nodeName, nodeUpdate] = Object.entries(chunk)[0];
+            Object.assign(state, nodeUpdate);
+
+            // 每个节点完成后推送状态
+            const phase = getPhaseForNode(nodeName);
+            const detail = getDetailForNode(nodeName, state);
+            emitStatus(phase, detail);
+          }
+
+          // ══════ 流式生成回答 ══════
+          emitStatus('writing', '正在生成回答...');
+          const context = buildContextText(state.rerankedHits);
+          const draftPrompt = WRITER_SYSTEM_PROMPT.replace('{context}', context);
+          const draftModel = chatModelService.createModel({
+            temperature: 0.5,
+            streaming: true,
+          });
+
+          const lcStream = await draftModel.stream([
+            new SystemMessage(draftPrompt),
+            new HumanMessage(state.originalQuery),
+          ]);
+
+          let fullAnswer = '';
+          for await (const chunk of lcStream) {
+            const text = extractContent(chunk);
+            if (text) {
+              fullAnswer += text;
+              emitText(text);
+            }
+          }
+          state.draftAnswer = fullAnswer;
+          emitStatus('writing', `回答生成完成 → ${fullAnswer.length} 字`);
+
+          // ══════ 质量校验（复杂查询） ══════
+          const shouldSkipVerify =
+            state.rerankedHits.length === 0 ||
+            state.relevanceVerdict === 'not_relevant';
+
+          if (shouldVerify(state) === 'verify' && !shouldSkipVerify) {
+            emitStatus('verifying', '正在并行校验事实准确性和完整性...');
+            const [factResult, completenessResult] = await Promise.all([
+              factCheckNode(state, chatModelService, runId, agentTraceService),
+              completenessCheckNode(state, chatModelService, runId, agentTraceService),
+            ]);
+            Object.assign(state, factResult, completenessResult);
+
+            const factRisk = state.factCheckResult?.overallRisk ?? 'failed';
+            const coverage =
+              state.completenessResult?.overallCoverage ?? 'failed';
+            emitStatus(
+              'verifying',
+              `校验完成 → 事实风险: ${factRisk} | 完整性: ${coverage}`,
+            );
+          } else if (shouldSkipVerify) {
+            emitStatus(
+              'verifying',
+              `检索${state.rerankedHits.length === 0 ? '无结果' : '不相关'}，跳过质量校验`,
+            );
+          }
+
+          // ══════ 引用 + 结束 ══════
+          const citations = state.rerankedHits.slice(0, 5);
+          if (citations.length > 0) {
+            writer.write({
+              type: 'data-citation-snapshot',
+              data: {
+                type: 'citation-snapshot',
+                citations: citations.map((c) => ({
+                  chunkId: c.chunkId,
+                  docId: c.docId,
+                  content: c.content.slice(0, 200),
+                  title: c.title,
+                })),
+              },
+            } as any);
+          }
+
+          emitStatus('done', '完成');
+
+          if (callbacks?.onFinish) {
+            await callbacks.onFinish({
+              content: state.draftAnswer,
+              citations: citations,
+            });
+          }
+
+          writer.write({ type: 'finish', finishReason: 'stop' });
+        } catch (error: any) {
+          logger.error(
+            `[Orchestrator] 流式编排失败: ${error?.message || error}`,
+          );
+          if (callbacks?.onError) {
+            await callbacks.onError();
+          }
+          writer.write({ type: 'error', errorText: error?.message || '未知错误' });
+          writer.write({ type: 'finish', finishReason: 'error' });
+        }
+      },
+    });
   }
+}
 
-  /**
-   * 记录 Agent Step 轨迹。
-   */
-  private async recordAgentStep(
-    runId: string,
-    step: AgentStepRecord,
-  ): Promise<void> {
-    await this.agentTraceService.recordStep(runId, step);
+/** 节点名 → 阶段映射，供前端状态展示 */
+function getPhaseForNode(nodeName: string): string {
+  const map: Record<string, string> = {
+    route: 'planning',
+    rewrite: 'planning',
+    decompose: 'planning',
+    retrieve_prep: 'retrieving',
+    tools: 'retrieving',
+    relevance_check: 'verifying',
+  };
+  return map[nodeName] ?? 'planning';
+}
+
+function getDetailForNode(nodeName: string, state: AgentState): string {
+  switch (nodeName) {
+    case 'route':
+      return `意图: ${state.routedPlan?.intent ?? 'unknown'} | 需拆解: ${state.routedPlan?.needDecomposition ?? false}`;
+    case 'rewrite':
+      return `改写完成 → ${state.rewrittenQueries.length} 条查询`;
+    case 'decompose':
+      return `拆解完成 → ${state.decomposedQuestions?.questions.length ?? 0} 个子问题`;
+    case 'tools':
+      return `检索完成 → ${state.rerankedHits.length} 条结果`;
+    case 'relevance_check':
+      return `相关性: ${state.relevanceVerdict ?? 'unknown'}`;
+    default:
+      return '';
   }
 }

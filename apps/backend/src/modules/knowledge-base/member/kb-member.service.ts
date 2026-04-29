@@ -410,6 +410,92 @@ export class KbMemberService {
   }
 
   /**
+   * 获取当前用户可用的知识库列表（用于 RAG 问答模式选择）。
+   * 返回用户拥有 canAsk 权限的知识库：owner / manager / collaborator / member / publicVisitor。
+   */
+  async listMyKbMemberships(userId: number) {
+    try {
+      const currentUserId = BigInt(userId);
+
+      // 查询用户作为 owner 的知识库
+      const ownedKbs = await this.prisma.b_knowledge_bases.findMany({
+        where: { owner_id: currentUserId },
+        select: { id: true, name: true },
+      });
+
+      // 查询用户作为 member 的知识库
+      const memberships = await this.prisma.b_kb_members.findMany({
+        where: { user_id: currentUserId },
+        include: {
+          b_knowledge_bases: {
+            select: { id: true, name: true, visibility: true, is_public: true },
+          },
+        },
+      });
+
+      // 查询公开的共享知识库（publicVisitor 视角）
+      const publicKbs = await this.prisma.b_knowledge_bases.findMany({
+        where: {
+          visibility: 'shared',
+          is_public: true,
+          status: 'normal',
+        },
+        select: { id: true, name: true },
+      });
+
+      const result: Array<{
+        kbId: string;
+        kbName: string;
+        permission: 'owner' | 'manager' | 'collaborator' | 'member' | 'publicVisitor';
+      }> = [];
+
+      // 添加 owner 角色
+      for (const kb of ownedKbs) {
+        result.push({
+          kbId: kb.id.toString(),
+          kbName: kb.name,
+          permission: 'owner',
+        });
+      }
+
+      // 添加 member 角色
+      for (const m of memberships) {
+        const kb = m.b_knowledge_bases;
+        if (kb.visibility === 'shared') {
+          const role = this.kbPermissionService.normalizeMemberRole(m.role);
+          result.push({
+            kbId: kb.id.toString(),
+            kbName: kb.name,
+            permission: role,
+          });
+        }
+      }
+
+      // 添加 publicVisitor 角色（公开共享库）
+      const ownedKbIds = new Set(result.map((r) => r.kbId));
+      for (const kb of publicKbs) {
+        if (!ownedKbIds.has(kb.id.toString())) {
+          result.push({
+            kbId: kb.id.toString(),
+            kbName: kb.name,
+            permission: 'publicVisitor',
+          });
+        }
+      }
+
+      return result;
+    } catch (error) {
+      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+        context: {
+          module: 'KbMemberService',
+          action: 'listMyKbMemberships',
+          userId,
+        },
+      });
+    }
+  }
+
+  /**
    * 移除共享知识库成员，仅 owner / manager 可操作，且禁止移除 owner。
    */
   async removeMember(userId: number, kbId: string, memberUserId: string) {
