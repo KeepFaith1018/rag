@@ -10,30 +10,30 @@ docker compose up -d
 
 # 根目录
 pnpm install                                  # 安装所有依赖
-pnpm dev:backend                              # 启动后端 (开发)
-pnpm dev:frontend                             # 启动前端 (开发)
+pnpm dev:server                              # 启动后端 (开发)
+pnpm dev:web                                 # 启动前端 (开发)
 pnpm build                                    # 构建所有子包
 
-# 后端 (apps/backend)
-pnpm --filter backend start:dev               # NestJS 开发模式
-pnpm --filter backend build                   # 编译
-pnpm --filter backend test                    # 运行所有单元测试
-pnpm --filter backend test -- -t "name"       # 运行单个测试
-pnpm --filter backend test:e2e                # E2E 测试
-pnpm --filter backend lint                    # ESLint
-pnpm --filter backend prisma generate         # 生成 Prisma Client
-pnpm --filter backend prisma migrate dev      # 执行迁移
-pnpm --filter backend debug:bailian-embedding # 百炼 Embedding 冒烟测试
+# 后端 (apps/server)
+pnpm --filter server start:dev               # NestJS 开发模式
+pnpm --filter server build                   # 编译
+pnpm --filter server test                    # 运行所有单元测试
+pnpm --filter server test -- -t "name"       # 运行单个测试
+pnpm --filter server test:e2e                # E2E 测试
+pnpm --filter server lint                    # ESLint
+pnpm --filter server prisma generate         # 生成 Prisma Client
+pnpm --filter server prisma migrate dev      # 执行迁移
+pnpm --filter server debug:bailian-embedding # 百炼 Embedding 冒烟测试
 
-# 前端 (apps/frontend)
-pnpm --filter frontend dev                    # Vite 开发服务器
-pnpm --filter frontend build                  # 类型检查 + 构建
-pnpm --filter frontend preview                # 预览生产构建
+# 前端 (apps/web)
+pnpm --filter web dev                    # Vite 开发服务器
+pnpm --filter web build                  # 类型检查 + 构建
+pnpm --filter web preview                # 预览生产构建
 ```
 
 ## 架构概览
 
-**Linsor AI (灵索智能)** — 基于 RAG 的多知识库智能问答系统。pnpm monorepo，`apps/backend` (NestJS) + `apps/frontend` (Vue 3)。
+**Linsor AI (灵索智能)** — 基于 RAG 的多知识库智能问答系统。pnpm monorepo，`apps/server` (NestJS) + `apps/web` (Vue 3)。
 
 ### 后端分层
 
@@ -64,7 +64,7 @@ common/
 
 - 全局前缀 `/api`，CORS 允许所有来源
 - 统一响应体: `{ success: boolean, code: number, message: string, data?: T }` (`Result<T>`)
-- 业务异常统一抛出 `BusinessException(ErrorCode, message?)`，ErrorCode 枚举在 [errorCodeMap.ts](apps/backend/src/common/utils/errorCodeMap.ts)
+- 业务异常统一抛出 `BusinessException(ErrorCode, message?)`，ErrorCode 枚举在 [errorCodeMap.ts](apps/server/src/common/utils/errorCodeMap.ts)
 - 入参校验失败统一转为 `ErrorCode.PARAM_ERROR` (40000)
 - 分片上传走 multipart，其余 JSON
 
@@ -97,7 +97,7 @@ src/
 ```
 
 - 样式: Tailwind CSS v4 + "Kinetic Blueprint" 设计规范 (CSS 变量驱动的明暗双色主题)
-- 请求层核心文件: [api.ts](apps/frontend/src/api/api.ts) — `apiRequest<T>` 自动处理 token 注入、401 刷新排队、二进制下载 (`apiRequestBlob`)
+- 请求层核心文件: [api.ts](apps/web/src/api/api.ts) — `apiRequest<T>` 自动处理 token 注入、401 刷新排队、二进制下载 (`apiRequestBlob`)
 
 ### 数据库
 

@@ -1,5 +1,5 @@
 ---
-paths: ["apps/backend/**/*"]
+paths: ["apps/server/**/*"]
 ---
 
 # Linsor AI 后端专项开发规则

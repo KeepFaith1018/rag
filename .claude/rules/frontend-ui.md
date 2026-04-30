@@ -1,5 +1,5 @@
 ---
-paths: ["apps/frontend/src/views/**/*", "apps/frontend/src/components/**/*"]
+paths: ["apps/web/src/views/**/*", "apps/web/src/components/**/*"]
 ---
 # UI 开发规范
 1. 检查是否引用了 `src/api/api.ts`。

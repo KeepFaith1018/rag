@@ -226,10 +226,10 @@ export class QdrantService {
         const payload = (r.payload ?? {});
         return {
           pointId: String(r.id),
-          kbId: String(payload['kbId'] ?? ''),
-          docId: String(payload['docId'] ?? ''),
-          chunkId: String(payload['chunkId'] ?? ''),
-          content: String(payload['content'] ?? ''),
+          kbId: String((payload['kbId'] as string) ?? ''),
+          docId: String((payload['docId'] as string) ?? ''),
+          chunkId: String((payload['chunkId'] as string) ?? ''),
+          content: String((payload['content'] as string) ?? ''),
           score: r.score,
           payload,
         };

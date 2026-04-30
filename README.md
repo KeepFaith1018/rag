@@ -24,7 +24,7 @@ Linsor AI (灵索智能) 是一个专注于极致用户体验与高效信息检�
 
 - **包管理器**: pnpm (Workspaces)
 
-### 前端 (`apps/frontend`)
+### 前端 (`apps/web`)
 
 - **核心框架**: Vue 3 (Composition API) + Vite
 - **开发语言**: TypeScript
@@ -32,7 +32,7 @@ Linsor AI (灵索智能) 是一个专注于极致用户体验与高效信息检�
 - **样式引擎**: Tailwind CSS v4 (原生 CSS 变量驱动的动态主题系统)
 - **设计语言**: Kinetic Blueprint (高科技极简风，毛玻璃与弥散阴影)
 
-### 后端 (`apps/backend`)
+### 后端 (`apps/server`)
 
 - **核心框架**: NestJS
 - **开发语言**: TypeScript
@@ -54,26 +54,26 @@ Linsor AI (灵索智能) 是一个专注于极致用户体验与高效信息检�
 - [RAG 文档异步处理详细设计 (10-rag-document-processing-detailed-design-2026-04-25.md)](docs/10-rag-document-processing-detailed-design-2026-04-25.md): 模块拆分、状态机、任务模型和实施细节。
 - [前端设计规范 (DESIGN.md)](docs/ui/DESIGN.md): 核心 UI 设计理念 (The Kinetic Blueprint)。
 
-前端应用内的专题实现文档位于 `apps/frontend/docs/`：
+前端应用内的专题实现文档位于 `apps/web/docs/`：
 
-- [前端认证请求层设计 (auth-api-design.md)](apps/frontend/docs/auth-api-design.md): 基于 `fetch` 的双 token、自动刷新与请求排队设计。
-- [前端认证实现总结 (auth-implementation-summary-2026-04-22.md)](apps/frontend/docs/auth-implementation-summary-2026-04-22.md): 本次认证链路落地、验证结果与后续建议。
+- [前端认证请求层设计 (auth-api-design.md)](apps/web/docs/auth-api-design.md): 基于 `fetch` 的双 token、自动刷新与请求排队设计。
+- [前端认证实现总结 (auth-implementation-summary-2026-04-22.md)](apps/web/docs/auth-implementation-summary-2026-04-22.md): 本次认证链路落地、验证结果与后续建议。
 
-后端专题实现文档位于 `apps/backend/docs/`：
+后端专题实现文档位于 `apps/server/docs/`：
 
-- [异常治理与认证邮件联调总结 (exception-governance-and-auth-email-joint-debug-2026-04-24.md)](apps/backend/docs/exception-governance-and-auth-email-joint-debug-2026-04-24.md): 记录统一异常模型增强、全局异常日志收口、认证与邮件验证码联调中的问题定位与修复结果。
-- [知识库模块规划方案 (knowledge-base-module-planning-2026-04-24.md)](apps/backend/docs/knowledge-base-module-planning-2026-04-24.md): 记录知识库、成员、文档、RAG 基础设施的后端规划与分阶段落地建议。
-- [共享知识库角色权限设计 (knowledge-base-shared-role-permission-design-2026-04-24.md)](apps/backend/docs/knowledge-base-shared-role-permission-design-2026-04-24.md): 说明共享知识库角色模型、权限矩阵与成员体系边界。
-- [知识库模块实现记录 (knowledge-base-management-implementation-record-2026-04-24.md)](apps/backend/docs/knowledge-base-management-implementation-record-2026-04-24.md): 汇总当前已落地的知识库管理、成员邀请管理和 Guard 权限体系实现。
-- [文档上传实现记录 (document-upload-implementation-record-2026-04-24.md)](apps/backend/docs/document-upload-implementation-record-2026-04-24.md): 记录文档上传、存储与基础元数据链路实现。
-- [文档处理第一阶段记录 (document-processing-phase1-implementation-record-2026-04-25.md)](apps/backend/docs/document-processing-phase1-implementation-record-2026-04-25.md): 记录 Redis、BullMQ 与文档入队能力接入。
-- [文档处理第二阶段记录 (document-processing-phase2-implementation-record-2026-04-25.md)](apps/backend/docs/document-processing-phase2-implementation-record-2026-04-25.md): 记录 LangChain 解析、切块落库与 `queued -> chunking` 链路实现。
-- [文档处理第三阶段记录 (document-processing-phase3-implementation-record-2026-04-25.md)](apps/backend/docs/document-processing-phase3-implementation-record-2026-04-25.md): 记录百炼 Embedding、Qdrant 写入与 `embedding -> ready` 链路实现。
-- [文档处理第四阶段记录 (document-processing-phase4-implementation-record-2026-04-25.md)](apps/backend/docs/document-processing-phase4-implementation-record-2026-04-25.md): 记录任务表、超时扫描与治理能力落地。
-- [文档处理第五阶段记录 (document-processing-phase5-implementation-record-2026-04-25.md)](apps/backend/docs/document-processing-phase5-implementation-record-2026-04-25.md): 记录管理端任务查询接口与文档处理概览输出。
-- [百炼 Embedding 配置与联调记录 (bailian-embedding-config-and-debug-record-2026-04-25.md)](apps/backend/docs/bailian-embedding-config-and-debug-record-2026-04-25.md): 记录百炼文本向量模型配置、dry-run 与真实联调结果。
-- [文档分片方案升级说明 (document-chunking-strategy-upgrade-plan-2026-04-25.md)](apps/backend/docs/document-chunking-strategy-upgrade-plan-2026-04-25.md): 说明当前分片方案、问题与升级方向。
-- [文档分片方案升级实现记录 (document-chunking-strategy-implementation-record-2026-04-25.md)](apps/backend/docs/document-chunking-strategy-implementation-record-2026-04-25.md): 记录结构感知分片代码升级结果。
+- [异常治理与认证邮件联调总结 (exception-governance-and-auth-email-joint-debug-2026-04-24.md)](apps/server/docs/exception-governance-and-auth-email-joint-debug-2026-04-24.md): 记录统一异常模型增强、全局异常日志收口、认证与邮件验证码联调中的问题定位与修复结果。
+- [知识库模块规划方案 (knowledge-base-module-planning-2026-04-24.md)](apps/server/docs/knowledge-base-module-planning-2026-04-24.md): 记录知识库、成员、文档、RAG 基础设施的后端规划与分阶段落地建议。
+- [共享知识库角色权限设计 (knowledge-base-shared-role-permission-design-2026-04-24.md)](apps/server/docs/knowledge-base-shared-role-permission-design-2026-04-24.md): 说明共享知识库角色模型、权限矩阵与成员体系边界。
+- [知识库模块实现记录 (knowledge-base-management-implementation-record-2026-04-24.md)](apps/server/docs/knowledge-base-management-implementation-record-2026-04-24.md): 汇总当前已落地的知识库管理、成员邀请管理和 Guard 权限体系实现。
+- [文档上传实现记录 (document-upload-implementation-record-2026-04-24.md)](apps/server/docs/document-upload-implementation-record-2026-04-24.md): 记录文档上传、存储与基础元数据链路实现。
+- [文档处理第一阶段记录 (document-processing-phase1-implementation-record-2026-04-25.md)](apps/server/docs/document-processing-phase1-implementation-record-2026-04-25.md): 记录 Redis、BullMQ 与文档入队能力接入。
+- [文档处理第二阶段记录 (document-processing-phase2-implementation-record-2026-04-25.md)](apps/server/docs/document-processing-phase2-implementation-record-2026-04-25.md): 记录 LangChain 解析、切块落库与 `queued -> chunking` 链路实现。
+- [文档处理第三阶段记录 (document-processing-phase3-implementation-record-2026-04-25.md)](apps/server/docs/document-processing-phase3-implementation-record-2026-04-25.md): 记录百炼 Embedding、Qdrant 写入与 `embedding -> ready` 链路实现。
+- [文档处理第四阶段记录 (document-processing-phase4-implementation-record-2026-04-25.md)](apps/server/docs/document-processing-phase4-implementation-record-2026-04-25.md): 记录任务表、超时扫描与治理能力落地。
+- [文档处理第五阶段记录 (document-processing-phase5-implementation-record-2026-04-25.md)](apps/server/docs/document-processing-phase5-implementation-record-2026-04-25.md): 记录管理端任务查询接口与文档处理概览输出。
+- [百炼 Embedding 配置与联调记录 (bailian-embedding-config-and-debug-record-2026-04-25.md)](apps/server/docs/bailian-embedding-config-and-debug-record-2026-04-25.md): 记录百炼文本向量模型配置、dry-run 与真实联调结果。
+- [文档分片方案升级说明 (document-chunking-strategy-upgrade-plan-2026-04-25.md)](apps/server/docs/document-chunking-strategy-upgrade-plan-2026-04-25.md): 说明当前分片方案、问题与升级方向。
+- [文档分片方案升级实现记录 (document-chunking-strategy-implementation-record-2026-04-25.md)](apps/server/docs/document-chunking-strategy-implementation-record-2026-04-25.md): 记录结构感知分片代码升级结果。
 
 ## 🚀 快速开始
 
@@ -100,7 +100,7 @@ pnpm install
 ### 4. 数据库初始化
 
 ```bash
-cd apps/backend
+cd apps/server
 pnpm prisma generate
 pnpm prisma migrate dev
 ```
@@ -109,10 +109,10 @@ pnpm prisma migrate dev
 
 ```bash
 # 启动后端 (开发模式)
-pnpm --filter backend start:dev
+pnpm --filter server start:dev
 
 # 启动前端 (开发模式)
-pnpm --filter frontend dev
+pnpm --filter web dev
 ```
 
 ## 📝 更新日志 (Changelog)
@@ -156,8 +156,8 @@ pnpm --filter frontend dev
 ```text
 .
 ├── apps
-│   ├── backend     # NestJS 后端服务
-│   └── frontend    # Vue 3 前端应用
+│   ├── server     # NestJS 后端服务
+│   └── web        # Vue 3 前端应用
 ├── docs            # 架构与设计文档
 ├── packages        # 公共工具与类型库
 ├── docker-compose.yml # 基础设施编排

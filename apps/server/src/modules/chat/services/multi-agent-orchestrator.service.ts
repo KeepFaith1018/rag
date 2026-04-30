@@ -59,7 +59,6 @@ const AgentStateAnnotation = Annotation.Root({
 });
 
 type AgentState = typeof AgentStateAnnotation.State;
-type PartialAgentState = Partial<AgentState>;
 
 /** 工具节点输出类型 */
 interface ToolOutput {
@@ -135,8 +134,9 @@ const createSearchTool = (
   );
 
 /**
- * 获取分块详情工具
+ * 获取分块详情工具 (预留，暂未使用)
  */
+ 
 const _createGetChunkDetailTool = () =>
   tool(
     (input: { chunkId: string }) => {
@@ -615,7 +615,7 @@ function extractContent(msg: any): string {
 
 @Injectable()
 export class MultiAgentOrchestratorService {
-  @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger;
+  @Inject(WINSTON_MODULE_PROVIDER) private readonly logger!: Logger;
 
   constructor(
     private readonly chatModelService: ChatModelService,

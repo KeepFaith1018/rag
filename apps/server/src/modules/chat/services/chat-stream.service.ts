@@ -110,10 +110,10 @@ export class ChatStreamService {
       {
         onFinish: async (result) => {
           // 持久化引用
-          if (result.citations.length > 0) {
+          if (result.citations && result.citations.length > 0) {
             await this.citationService.createCitations({
               messageId: assistantMessage.id,
-              hits: result.citations as any,
+              hits: result.citations,
             });
           }
           // 持久化回答
