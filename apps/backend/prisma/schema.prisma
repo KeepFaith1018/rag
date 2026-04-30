@@ -100,6 +100,8 @@ model sys_admin_sessions {
 // 2. 大模型配置模块 (LLM Configs)
 // ==========================================================
 
+// 系统提供模型配置，有额度限制
+// 对话和向量化
 model sys_model_configs {
   id          BigInt   @id @default(autoincrement())
   provider    String   @db.VarChar(50)
@@ -113,7 +115,7 @@ model sys_model_configs {
   created_at  DateTime @default(now()) @db.DateTime(0)
   updated_at  DateTime @default(now()) @db.DateTime(0)
 }
-
+// 用户自定义模型，自接入私有模型
 model b_user_model_configs {
   id         BigInt   @id @default(autoincrement())
   user_id    BigInt

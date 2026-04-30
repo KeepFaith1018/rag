@@ -1,6 +1,6 @@
 import 'dotenv/config';
 import { ConfigService } from '@nestjs/config';
-import { EmbeddingService } from '../src/modules/ai/embedding.service';
+import { EmbeddingService } from '../src/modules/rag/embedding.service';
 
 /**
  * 本地百炼 Embedding 联调脚本。

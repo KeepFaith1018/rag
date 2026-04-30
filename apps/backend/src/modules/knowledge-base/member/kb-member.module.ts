@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { KbPermissionModule } from '../permission/kb-permission.module';
+import { ChatKbController } from './chat-kb.controller';
 import { KbMemberController } from './kb-member.controller';
 import { KbMemberService } from './kb-member.service';
 
@@ -8,7 +9,7 @@ import { KbMemberService } from './kb-member.service';
  */
 @Module({
   imports: [KbPermissionModule],
-  controllers: [KbMemberController],
+  controllers: [ChatKbController, KbMemberController],
   providers: [KbMemberService],
   exports: [KbMemberService],
 })

@@ -5,7 +5,26 @@
       "Bash(node -e \"const p = JSON.parse\\(require\\('fs'\\).readFileSync\\('/dev/stdin', 'utf8'\\)\\); console.log\\(JSON.stringify\\({main: p.main, module: p.module, exports: p.exports, version: p.version}, null, 2\\)\\)\")",
       "Bash(pnpm --filter backend exec nest build)",
       "Bash(pnpm --filter backend exec tsc --noEmit)",
-      "WebFetch(domain:help.aliyun.com)"
+      "WebFetch(domain:help.aliyun.com)",
+      "Bash(git ls-tree *)",
+      "Read(//d/Faith/Project/rag-knowledge-base/apps/backend/src/**)",
+      "Bash(cp -r agent/dto/* chat/dto/)",
+      "Bash(cp -r agent/prompts/* chat/prompts/)",
+      "Bash(cp -r agent/schemas/* chat/schemas/)",
+      "Bash(cp -r agent/services/* chat/services/)",
+      "Bash(cp -r agent/tools/* chat/tools/)",
+      "Bash(cp -r \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/agent/prompts/\"* \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/chat/prompts/\")",
+      "Bash(cp -r \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/agent/schemas/\"* \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/chat/schemas/\")",
+      "Bash(cp -r \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/agent/tools/\"* \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/chat/tools/\")",
+      "Bash(cp -r ai/* rag/)",
+      "Bash(cp -r retrieval/dto/* rag/retrieval-dto/)",
+      "Bash(cp -r retrieval/interfaces/* rag/retrieval-interfaces/)",
+      "Bash(cp -r retrieval/services/* rag/retrieval-services/)",
+      "Bash(cp -r \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/document-processing/processor/\"* \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/document/processor/\")",
+      "Bash(cp -r \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/document-processing/queue/\"* \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/document/queue/\")",
+      "Bash(cp -r \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/document-processing/constants/\"* \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/document/\")",
+      "Bash(cp -r \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/document-processing/interfaces/\"* \"d:/Faith/Project/rag-knowledge-base/apps/backend/src/modules/document/\")",
+      "Bash(pnpm --filter backend lint)"
     ]
   }
 }

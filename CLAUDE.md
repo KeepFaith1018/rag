@@ -41,18 +41,13 @@ pnpm --filter frontend preview                # 预览生产构建
 modules/           # 业务模块 (每个模块自含 controller/service/dto)
   auth/            # JWT 登录/注册/刷新/验证码
   user/            # 用户信息/密码管理
+  email/           # 邮件发送
   knowledge-base/  # 知识库 CRUD
     member/        #   成员管理 + 邀请码加入
     permission/    #   声明式权限 (@KbPermission + Guard)
-  document/        # 文档元数据 (列表/详情/下载/删除/重解析)
-  upload/          # 分片上传 (init → chunk → complete)
-  document-processing/  # 异步处理流水线 (BullMQ)
-    processor/     #   Worker 处理器
-    queue/         #   队列入队
-    services/      #   解析/分块/Embedding/状态机/任务治理
-  ai/              # Embedding 服务 (百炼/OpenAI 等)
-  rag/             # RAG 对话 (agent/services/dto 目前为空壳，在 feat/chat 分支建设中)
-  email/           # 邮件发送
+  chat/            # 对话模块 (会话/消息/流式/Agent 编排)
+  rag/             # RAG 核心 (Embedding/ChatModel/检索流水线)
+  document/        # 文档模块 (元数据/分片上传/处理流水线)
 common/
   prisma/          # PrismaService (全局 DB 连接)
   vector/          # QdrantService (向量存储)

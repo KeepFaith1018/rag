@@ -3,7 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { QdrantClient } from '@qdrant/js-client-rest';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
-import { DOCUMENT_VECTOR_INDEX_ERROR_CODE } from '../../modules/document-processing/constants/document-processing.constants';
+import { DOCUMENT_VECTOR_INDEX_ERROR_CODE } from '../../modules/document/document-processing.constants';
 import { QDRANT_DOCUMENT_COLLECTION_NAME } from './qdrant.constants';
 
 export interface QdrantChunkPoint {
@@ -223,7 +223,7 @@ export class QdrantService {
       );
 
       return results.map((r) => {
-        const payload = (r.payload ?? {}) as Record<string, unknown>;
+        const payload = (r.payload ?? {});
         return {
           pointId: String(r.id),
           kbId: String(payload['kbId'] ?? ''),

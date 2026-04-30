@@ -1,7 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
 import {
-  BusinessException,
   wrapBusinessException,
 } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';

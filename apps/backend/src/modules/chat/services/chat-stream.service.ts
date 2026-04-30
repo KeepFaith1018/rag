@@ -3,12 +3,12 @@ import { randomUUID } from 'crypto';
 import { HumanMessage, SystemMessage, AIMessageChunk, type BaseMessage } from '@langchain/core/messages';
 import { toUIMessageStream } from '@ai-sdk/langchain';
 import type { UIMessageChunk } from 'ai';
-import { ChatModelService } from '../../ai/chat-model.service';
+import { ChatModelService } from '../../rag/chat-model.service';
 import { ChatSessionService } from './chat-session.service';
 import { ChatMessageService } from './chat-message.service';
 import { KbPermissionService } from '../../knowledge-base/permission/kb-permission.service';
-import { CitationService } from '../../retrieval/services/citation.service';
-import { MultiAgentOrchestratorService } from '../../agent/services/multi-agent-orchestrator.service';
+import { CitationService } from '../../rag/retrieval-services/citation.service';
+import { MultiAgentOrchestratorService } from './multi-agent-orchestrator.service';
 import type { StreamChatDto } from '../dto/stream-chat.dto';
 
 /** 普通对话系统提示词 */

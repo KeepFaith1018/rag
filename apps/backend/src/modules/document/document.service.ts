@@ -20,13 +20,13 @@ import {
   resolveDocumentMimeType,
   SUPPORTED_DOCUMENT_EXTENSIONS,
 } from './document.constants';
-import { DocumentQueueService } from '../document-processing/queue/document-queue.service';
-import { DocumentProcessingStateService } from '../document-processing/services/document-processing-state.service';
-import { DocumentProcessingTaskService } from '../document-processing/services/document-processing-task.service';
+import { DocumentQueueService } from './queue/document-queue.service';
+import { DocumentProcessingStateService } from './services/document-processing-state.service';
+import { DocumentProcessingTaskService } from './services/document-processing-task.service';
 import {
   DOCUMENT_QUEUE_ENQUEUE_ERROR_CODE,
   DOCUMENT_PROCESSING_STAGE,
-} from '../document-processing/constants/document-processing.constants';
+} from './document-processing.constants';
 
 type DocumentWithUploader = Prisma.b_documentsGetPayload<{
   include: {

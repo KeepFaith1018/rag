@@ -13,11 +13,9 @@ import { AuthModule } from './modules/auth/auth.module';
 import { UserModule } from './modules/user/user.module';
 import { KnowledgeBaseModule } from './modules/knowledge-base/knowledge-base.module';
 import { DocumentModule } from './modules/document/document.module';
-import { UploadModule } from './modules/upload/upload.module';
-import { DocumentProcessingModule } from './modules/document-processing/document-processing.module';
 import { ChatModule } from './modules/chat/chat.module';
-import { RetrievalModule } from './modules/retrieval/retrieval.module';
-import { AgentModule } from './modules/agent/agent.module';
+import { RagModule } from './modules/rag/rag.module';
+import { EmailModule } from './modules/email/email.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { JwtModule } from '@nestjs/jwt';
@@ -49,13 +47,11 @@ import { JwtModule } from '@nestjs/jwt';
     WinstonModule.forRoot(winstonConfig),
     AuthModule,
     UserModule,
+    EmailModule,
     KnowledgeBaseModule,
-    DocumentProcessingModule,
     DocumentModule,
-    UploadModule,
     ChatModule,
-    RetrievalModule,
-    AgentModule,
+    RagModule,
   ],
   controllers: [AppController],
   providers: [
