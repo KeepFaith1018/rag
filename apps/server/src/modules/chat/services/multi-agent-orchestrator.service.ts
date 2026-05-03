@@ -3,7 +3,7 @@ import { StateGraph, Annotation } from '@langchain/langgraph';
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
-import { createUIMessageStream, type UIMessageChunk } from 'ai';
+import { createUIMessageStream } from 'ai';
 import { ChatModelService } from '../../rag/ai/chat-model.service';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -198,9 +198,9 @@ async function routeQueryNode(
     });
 
     return { routedPlan: plan, currentPhase: 'planning' };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(
-      `[Orchestrator] ❌ 路由分析失败: ${error?.message || error}`,
+      `[Orchestrator] ❌ 路由分析失败: ${error instanceof Error ? error.message : String(error)}`,
     );
     throw error;
   }
@@ -212,8 +212,15 @@ async function rewriteQueryNode(
   runId: string,
   traceService: AgentTraceService,
 ): Promise<Partial<AgentState>> {
+  // 区分是 verify 触发的重试还是相关性触发的回退
+  const isReviseRetry = state.pendingRevise === true;
   const round = state.fallbackCount + 1;
-  console.log(`[Orchestrator] ✏️ 查询改写中... (第 ${round} 轮回退)`);
+  console.log(
+    `[Orchestrator] ✏️ 查询改写中... ${
+      isReviseRetry ? '(verify 重试，不计入回退)' : `(第 ${round} 轮回退)`
+    }`,
+  );
+
   const model = chatModelService.createModel({
     model: 'qwen-turbo',
     temperature: 0.3,
@@ -249,17 +256,20 @@ async function rewriteQueryNode(
 
     return {
       rewrittenQueries: queries,
-      fallbackCount: state.fallbackCount + 1,
+      // verify 触发的重试不消耗回退次数
+      fallbackCount: isReviseRetry ? state.fallbackCount : state.fallbackCount + 1,
+      pendingRevise: false, // 清除标记
       currentPhase: 'planning',
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(
-      `[Orchestrator] ❌ 查询改写失败: ${error?.message || error}`,
+      `[Orchestrator] ❌ 查询改写失败: ${error instanceof Error ? error.message : String(error)}`,
     );
     // 回退：直接使用原始查询，跳过改写
     return {
       rewrittenQueries: [state.originalQuery],
-      fallbackCount: state.fallbackCount + 1,
+      fallbackCount: isReviseRetry ? state.fallbackCount : state.fallbackCount + 1,
+      pendingRevise: false,
       currentPhase: 'planning',
     };
   }
@@ -308,9 +318,9 @@ async function decomposeNode(
     });
 
     return { decomposedQuestions: output, currentPhase: 'planning' };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(
-      `[Orchestrator] ❌ 问题拆解失败: ${error?.message || error}`,
+      `[Orchestrator] ❌ 问题拆解失败: ${error instanceof Error ? error.message : String(error)}`,
     );
     // 回退：跳过拆解，继续后续流程
     return { currentPhase: 'planning' };
@@ -367,9 +377,9 @@ async function factCheckNode(
       factCheckResult: output,
       currentPhase: 'verifying',
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(
-      `[Orchestrator] ❌ 事实校验失败: ${error?.message || error}`,
+      `[Orchestrator] ❌ 事实校验失败: ${error instanceof Error ? error.message : String(error)}`,
     );
     // 回退：跳过事实校验，标记低风险继续
     return { currentPhase: 'verifying' };
@@ -443,9 +453,9 @@ async function completenessCheckNode(
       pendingSupplement: false,
       currentPhase: 'verifying',
     };
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(
-      `[Orchestrator] ❌ 完整性校验失败: ${error?.message || error}`,
+      `[Orchestrator] ❌ 完整性校验失败: ${error instanceof Error ? error.message : String(error)}`,
     );
     // 回退：跳过完整性校验
     return {
@@ -453,6 +463,33 @@ async function completenessCheckNode(
       currentPhase: 'verifying',
     };
   }
+}
+
+/**
+ * verify 节点：并行执行 fact_check 和 completeness_check
+ */
+async function verifyNode(
+  state: AgentState,
+  chatModelService: ChatModelService,
+  runId: string,
+  traceService: AgentTraceService,
+): Promise<Partial<AgentState>> {
+  if (!state.draftAnswer || !state.rerankedHits.length) {
+    return { currentPhase: 'verifying' };
+  }
+
+  console.log('[Orchestrator] 🔎 并行质量校验中...');
+
+  const [factResult, completenessResult] = await Promise.all([
+    factCheckNode(state, chatModelService, runId, traceService),
+    completenessCheckNode(state, chatModelService, runId, traceService),
+  ]);
+
+  return {
+    ...factResult,
+    ...completenessResult,
+    currentPhase: 'verifying',
+  };
 }
 
 async function relevanceCheckNode(
@@ -499,8 +536,8 @@ async function relevanceCheckNode(
     try {
       const json = JSON.parse(
         content.replace(/```json\s*/g, '').replace(/```\s*/g, ''),
-      );
-      const verdict = json.verdict as 'relevant' | 'partial' | 'not_relevant';
+      ) as { verdict?: string };
+      const verdict = (json.verdict ?? 'partial') as 'relevant' | 'partial' | 'not_relevant';
       console.log(
         `[Orchestrator] ✅ 相关性检查完成 → ${verdict} (${llmDuration}ms)`,
       );
@@ -513,7 +550,7 @@ async function relevanceCheckNode(
           query: state.originalQuery,
           hitCount: state.rerankedHits.length,
         },
-        output: json,
+        output: json as Record<string, unknown>,
         durationMs: llmDuration,
       });
 
@@ -522,9 +559,9 @@ async function relevanceCheckNode(
       console.log('[Orchestrator] ⚠️ 相关性解析失败，fallback 为 partial');
       return { relevanceVerdict: 'partial' as const, currentPhase: 'verifying' };
     }
-  } catch (error: any) {
+  } catch (error: unknown) {
     console.error(
-      `[Orchestrator] ❌ 相关性检查失败: ${error?.message || error}`,
+      `[Orchestrator] ❌ 相关性检查失败: ${error instanceof Error ? error.message : String(error)}`,
     );
     return { relevanceVerdict: 'partial' as const, currentPhase: 'verifying' };
   }
@@ -536,24 +573,12 @@ async function relevanceCheckNode(
 
 /**
  * 路由后决定是否需要改写查询。
- * 仅复杂查询（对比分析、研究）需要改写；简单事实查找和问候直接检索。
+ * 只有 greeting 完全跳过 planning；其余意图（fact_lookup/compare_analysis/research）
+ * 均进入 rewrite，由 shouldDecompose 判断是否拆解。
  */
 function shouldRewrite(state: AgentState): 'rewrite' | 'skip_rewrite' {
-  const intent = state.routedPlan?.intent;
-  return (intent === 'fact_lookup' || intent === 'greeting' || !intent)
-    ? 'skip_rewrite'
-    : 'rewrite';
-}
-
-/**
- * 生成回答后决定是否需要质量校验。
- * 仅复杂查询需要事实校验+完整性校验；简单查询直接结束。
- */
-function shouldVerify(state: AgentState): 'verify' | 'finalize' {
-  const intent = state.routedPlan?.intent;
-  return (intent === 'compare_analysis' || intent === 'research_or_open_world')
-    ? 'verify'
-    : 'finalize';
+  if (state.routedPlan?.intent === 'greeting') return 'skip_rewrite';
+  return 'rewrite';
 }
 
 /**
@@ -567,13 +592,45 @@ function shouldDecompose(state: AgentState): 'decompose' | 'skip_decompose' {
  * 检索后决定是否需要回退（相关性不足）
  */
 function shouldRetryOrContinue(state: AgentState): 'rewrite' | 'continue' {
-  if (
-    state.relevanceVerdict === 'not_relevant' &&
-    state.fallbackCount < MAX_FALLBACK
-  ) {
-    return 'rewrite';
+  // not_relevant：超过上限才结束
+  if (state.relevanceVerdict === 'not_relevant') {
+    return state.fallbackCount < MAX_FALLBACK ? 'rewrite' : 'continue';
   }
+  // partial：允许一次补充检索（由 pendingSupplement 防重复）
+  if (state.relevanceVerdict === 'partial') {
+    return !state.pendingSupplement && state.fallbackCount < MAX_FALLBACK
+      ? 'rewrite'
+      : 'continue';
+  }
+  // relevant：进入后续流程
   return 'continue';
+}
+
+/**
+ * relevance_check 之后，决定是进入 verify 还是直接结束
+ */
+function shouldProceedToVerify(state: AgentState): 'verify' | 'finalize' {
+  // 无检索结果或完全不相关 → 直接结束
+  if (!state.rerankedHits.length || state.relevanceVerdict === 'not_relevant') {
+    return 'finalize';
+  }
+  // 简单查询跳过 verify
+  const intent = state.routedPlan?.intent;
+  if (intent === 'fact_lookup' || intent === 'greeting') {
+    return 'finalize';
+  }
+  // 复杂查询 → verify
+  return 'verify';
+}
+
+/**
+ * verify 节点之后，决定是否需要基于验证结果回退到 rewrite
+ */
+function shouldRevise(state: AgentState): 'rewrite' | 'no_revisions' {
+  const needRevise = state.factCheckResult?.needRevise === true;
+  const needSupplement = state.completenessResult?.needSupplement === true;
+  if (needRevise || needSupplement) return 'rewrite';
+  return 'no_revisions';
 }
 
 /** ═══════════════════════════════════════════
@@ -603,15 +660,24 @@ function buildContextText(hits: RerankedHit[]): string {
     .join('\n\n---\n\n');
 }
 
-function extractContent(msg: any): string {
-  if (typeof msg.content === 'string') return msg.content;
-  if (Array.isArray(msg.content)) {
-    return msg.content
-      .filter(
-        (c: any): c is { type: 'text'; text: string } => c.type === 'text',
-      )
-      .map((c: any) => c.text)
-      .join('');
+function extractContent(msg: { content?: unknown }): string {
+  const content = msg.content;
+  if (typeof content === 'string') return content;
+  if (Array.isArray(content)) {
+    const textParts: string[] = [];
+    for (const c of content) {
+      if (
+        typeof c === 'object' &&
+        c !== null &&
+        'type' in c &&
+        (c as { type: unknown }).type === 'text' &&
+        'text' in c &&
+        typeof (c as { text: unknown }).text === 'string'
+      ) {
+        textParts.push((c as { text: string }).text);
+      }
+    }
+    return textParts.join('');
   }
   return '';
 }
@@ -640,7 +706,7 @@ export class MultiAgentOrchestratorService {
       onFinish?: (result: { content: string; citations: RerankedHit[] }) => Promise<void>;
       onError?: () => Promise<void>;
     },
-  ): ReadableStream<UIMessageChunk> {
+  ): ReadableStream<any> {
     const { chatModelService, retrievalService, agentTraceService, logger } = this;
 
     return createUIMessageStream({
@@ -700,6 +766,12 @@ export class MultiAgentOrchestratorService {
             .addNode('relevance_check', (s) =>
               relevanceCheckNode(s, chatModelService, runId, agentTraceService),
             )
+            .addNode('verify', (s) =>
+              verifyNode(s, chatModelService, runId, agentTraceService),
+            )
+            .addNode('finalize', () => ({ currentPhase: 'done' }))
+            // 虚拟路由节点：用于 shouldRetryOrContinue 的 continue 分支
+            .addNode('proceed_to_verify', () => ({ currentPhase: 'verifying' }))
             .addEdge('__start__', 'route')
             .addConditionalEdges('route', shouldRewrite, {
               rewrite: 'rewrite',
@@ -714,8 +786,17 @@ export class MultiAgentOrchestratorService {
             .addEdge('tools', 'relevance_check')
             .addConditionalEdges('relevance_check', shouldRetryOrContinue, {
               rewrite: 'rewrite',
-              continue: '__end__',
+              continue: 'proceed_to_verify',
             })
+            .addConditionalEdges('proceed_to_verify', shouldProceedToVerify, {
+              verify: 'verify',
+              finalize: 'finalize',
+            })
+            .addConditionalEdges('verify', shouldRevise, {
+              rewrite: 'rewrite',
+              no_revisions: 'finalize',
+            })
+            .addEdge('finalize', '__end__')
             .compile();
 
           const initialState: AgentState = {
@@ -782,11 +863,12 @@ export class MultiAgentOrchestratorService {
           emitStatus('writing', `回答生成完成 → ${fullAnswer.length} 字`);
 
           // ══════ 质量校验（复杂查询） ══════
+          // verify 已纳入状态图，此处执行并行校验并根据结果决定是否回退
           const shouldSkipVerify =
             state.rerankedHits.length === 0 ||
             state.relevanceVerdict === 'not_relevant';
 
-          if (shouldVerify(state) === 'verify' && !shouldSkipVerify) {
+          if (!shouldSkipVerify) {
             emitStatus('verifying', '正在并行校验事实准确性和完整性...');
             const [factResult, completenessResult] = await Promise.all([
               factCheckNode(state, chatModelService, runId, agentTraceService),
@@ -801,7 +883,12 @@ export class MultiAgentOrchestratorService {
               'verifying',
               `校验完成 → 事实风险: ${factRisk} | 完整性: ${coverage}`,
             );
-          } else if (shouldSkipVerify) {
+
+            // 如果需要修正，设置 pendingRevise 并记录状态
+            if (state.factCheckResult?.needRevise || state.completenessResult?.needSupplement) {
+              state.pendingRevise = true;
+            }
+          } else {
             emitStatus(
               'verifying',
               `检索${state.rerankedHits.length === 0 ? '无结果' : '不相关'}，跳过质量校验`,
@@ -835,14 +922,15 @@ export class MultiAgentOrchestratorService {
           }
 
           writer.write({ type: 'finish', finishReason: 'stop' });
-        } catch (error: any) {
+        } catch (error: unknown) {
+          const errorMessage = error instanceof Error ? error.message : String(error);
           logger.error(
-            `[Orchestrator] 流式编排失败: ${error?.message || error}`,
+            `[Orchestrator] 流式编排失败: ${errorMessage}`,
           );
           if (callbacks?.onError) {
             await callbacks.onError();
           }
-          writer.write({ type: 'error', errorText: error?.message || '未知错误' });
+          writer.write({ type: 'error', errorText: errorMessage || '未知错误' });
           writer.write({ type: 'finish', finishReason: 'error' });
         }
       },
@@ -859,6 +947,8 @@ function getPhaseForNode(nodeName: string): string {
     retrieve_prep: 'retrieving',
     tools: 'retrieving',
     relevance_check: 'verifying',
+    verify: 'verifying',
+    finalize: 'finalizing',
   };
   return map[nodeName] ?? 'planning';
 }
@@ -875,6 +965,12 @@ function getDetailForNode(nodeName: string, state: AgentState): string {
       return `检索完成 → ${state.rerankedHits.length} 条结果`;
     case 'relevance_check':
       return `相关性: ${state.relevanceVerdict ?? 'unknown'}`;
+    case 'verify':
+      const factRisk = state.factCheckResult?.overallRisk ?? 'unknown';
+      const coverage = state.completenessResult?.overallCoverage ?? 'unknown';
+      return `事实风险: ${factRisk} | 完整性: ${coverage}`;
+    case 'finalize':
+      return `最终化 → ${state.draftAnswer.length} 字`;
     default:
       return '';
   }

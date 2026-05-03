@@ -35,4 +35,14 @@ export const configValidationSchema = Joi.object({
   LLM_MODEL: Joi.string().optional(),
   OPENAI_API_KEY: Joi.string().optional(),
   OPENAI_BASE_URL: Joi.string().uri().optional(),
+
+  // Elasticsearch
+  ELASTICSEARCH_NODE: Joi.string().uri().optional(),
+  ELASTICSEARCH_INDEX: Joi.string().optional(),
+  ELASTICSEARCH_USERNAME: Joi.string().optional().allow(''),
+  ELASTICSEARCH_PASSWORD: Joi.string().optional().allow(''),
+
+  // Bailian Rerank Model
+  BAILIAN_RERANK_MODEL: Joi.string().optional(),
+  BAILIAN_RERANK_TOP_N: Joi.number().integer().positive().optional(),
 });

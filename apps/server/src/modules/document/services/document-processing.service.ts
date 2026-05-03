@@ -4,6 +4,7 @@ import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 import { FileStorageService } from '@common/storage/file-storage.service';
 import { QdrantService } from '@common/vector/qdrant.service';
+import { ElasticsearchService } from '@common/vector/elasticsearch.service';
 import { DocumentProcessingJobPayload } from '../document-processing-job.interface';
 import {
   DOCUMENT_CHUNK_ERROR_CODE,
@@ -35,6 +36,7 @@ export class DocumentProcessingService {
     private readonly documentChunkService: DocumentChunkService,
     private readonly embeddingService: EmbeddingService,
     private readonly qdrantService: QdrantService,
+    private readonly elasticsearchService: ElasticsearchService,
     private readonly documentProcessingStateService: DocumentProcessingStateService,
     private readonly documentProcessingTaskService: DocumentProcessingTaskService,
   ) {}
@@ -229,6 +231,24 @@ export class DocumentProcessingService {
             charStart: chunk.char_start,
             charEnd: chunk.char_end,
             content: chunk.content,
+          },
+        })),
+      );
+
+      // 同步写入 Elasticsearch
+      await this.elasticsearchService.ensureIndex();
+      await this.elasticsearchService.bulkIndexChunks(
+        chunks.map((chunk) => ({
+          chunkId: chunk.id.toString(),
+          docId: document.id.toString(),
+          kbId: document.kb_id.toString(),
+          content: chunk.content,
+          title: document.title,
+          metadata: {
+            processingVersion: payload.processingVersion,
+            pageNo: chunk.page_no,
+            charStart: chunk.char_start,
+            charEnd: chunk.char_end,
           },
         })),
       );

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { DenseRetrievalService } from './dense-retrieval.service';
-import { SparseRetrievalService } from './sparse-retrieval.service';
+import { ElasticsearchSparseRetrievalService } from './elasticsearch-sparse-retrieval.service';
 import { FusionService } from './fusion.service';
 import { RerankService } from './rerank.service';
 import type { DenseHit } from './interfaces/dense-hit.interface';
@@ -29,14 +29,14 @@ export interface RetrieveResult {
 /**
  * 检索流水线编排服务。
  *
- * 串联稠密检索 → 稀疏检索 → RRF 融合 → 精排过滤的完整链路，
+ * 串联稠密检索 → 稀疏检索（ES）→ RRF 融合 → 精排过滤的完整链路，
  * 对外暴露统一的 retrieve() 接口供 Agent/对话层使用。
  */
 @Injectable()
 export class RetrievalService {
   constructor(
     private readonly denseService: DenseRetrievalService,
-    private readonly sparseService: SparseRetrievalService,
+    private readonly sparseService: ElasticsearchSparseRetrievalService,
     private readonly fusionService: FusionService,
     private readonly rerankService: RerankService,
   ) {}
