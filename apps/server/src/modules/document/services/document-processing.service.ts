@@ -14,7 +14,7 @@ import {
   DOCUMENT_SOURCE_FILE_MISSING_ERROR_CODE,
   DOCUMENT_VECTOR_INDEX_ERROR_CODE,
 } from '../document-processing.constants';
-import { EmbeddingService } from '../../rag/embedding.service';
+import { EmbeddingService } from '../../rag/ai/embedding.service';
 import {
   buildDocumentChunkVectorId,
   DocumentChunkService,
