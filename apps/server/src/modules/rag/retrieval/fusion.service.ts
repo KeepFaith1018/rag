@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
-import type { DenseHit } from '../retrieval-interfaces/dense-hit.interface';
-import type { SparseHit } from '../retrieval-interfaces/sparse-hit.interface';
-import type { FusedHit } from '../retrieval-interfaces/fused-hit.interface';
+import type { DenseHit } from './interfaces/dense-hit.interface';
+import type { SparseHit } from './interfaces/sparse-hit.interface';
+import type { FusedHit } from './interfaces/fused-hit.interface';
 
 export interface FusionParams {
   denseHits: DenseHit[];

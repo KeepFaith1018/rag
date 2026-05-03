@@ -3,10 +3,10 @@ import { DenseRetrievalService } from './dense-retrieval.service';
 import { SparseRetrievalService } from './sparse-retrieval.service';
 import { FusionService } from './fusion.service';
 import { RerankService } from './rerank.service';
-import type { DenseHit } from '../retrieval-interfaces/dense-hit.interface';
-import type { SparseHit } from '../retrieval-interfaces/sparse-hit.interface';
-import type { FusedHit } from '../retrieval-interfaces/fused-hit.interface';
-import type { RerankedHit } from '../retrieval-interfaces/reranked-hit.interface';
+import type { DenseHit } from './interfaces/dense-hit.interface';
+import type { SparseHit } from './interfaces/sparse-hit.interface';
+import type { FusedHit } from './interfaces/fused-hit.interface';
+import type { RerankedHit } from './interfaces/reranked-hit.interface';
 
 export interface RetrieveParams {
   queries: string[];

@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { EmbeddingService } from '../embedding.service';
+import { EmbeddingService } from '../ai/embedding.service';
 import { QdrantService } from '@common/vector/qdrant.service';
-import type { DenseHit } from '../retrieval-interfaces/dense-hit.interface';
+import type { DenseHit } from './interfaces/dense-hit.interface';
 
 export interface DenseRetrieveParams {
   queries: string[];

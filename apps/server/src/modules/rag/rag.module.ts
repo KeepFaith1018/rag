@@ -1,16 +1,14 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { QdrantModule } from '@common/vector/qdrant.module';
-import { EmbeddingService } from './embedding.service';
-import { ChatModelService } from './chat-model.service';
-import { DenseRetrievalService } from './retrieval-services/dense-retrieval.service';
-import { SparseRetrievalService } from './retrieval-services/sparse-retrieval.service';
-import { FusionService } from './retrieval-services/fusion.service';
-import { RerankService } from './retrieval-services/rerank.service';
-import { RetrievalService } from './retrieval-services/retrieval.service';
-import { CitationService } from './retrieval-services/citation.service';
-import { RetrievalTraceService } from './retrieval-services/retrieval-trace.service';
-import { AiController } from './ai.controller';
+import { AiModule } from './ai/ai.module';
+import { DenseRetrievalService } from './retrieval/dense-retrieval.service';
+import { SparseRetrievalService } from './retrieval/sparse-retrieval.service';
+import { FusionService } from './retrieval/fusion.service';
+import { RerankService } from './retrieval/rerank.service';
+import { RetrievalService } from './retrieval/retrieval.service';
+import { CitationService } from './retrieval/citation.service';
+import { RetrievalTraceService } from './retrieval/retrieval-trace.service';
 
 /**
  * RAG 核心模块。
@@ -21,12 +19,9 @@ import { AiController } from './ai.controller';
  * - 引用构建与检索轨迹
  */
 @Module({
-  imports: [ConfigModule, QdrantModule],
-  controllers: [AiController],
+  imports: [ConfigModule, QdrantModule, AiModule],
+  controllers: [],
   providers: [
-    // AI 能力
-    EmbeddingService,
-    ChatModelService,
     // 检索服务
     DenseRetrievalService,
     SparseRetrievalService,
@@ -37,8 +32,7 @@ import { AiController } from './ai.controller';
     RetrievalTraceService,
   ],
   exports: [
-    EmbeddingService,
-    ChatModelService,
+    AiModule,
     RetrievalService,
     CitationService,
     RetrievalTraceService,

@@ -6,7 +6,7 @@ import { ErrorCode } from '@common/utils/errorCodeMap';
 import {
   DOCUMENT_EMBEDDING_CONFIG_ERROR_CODE,
   DOCUMENT_EMBEDDING_ERROR_CODE,
-} from '../document/document-processing.constants';
+} from '../../document/document-processing.constants';
 
 interface EmbeddingRuntimeConfig {
   apiKey: string;

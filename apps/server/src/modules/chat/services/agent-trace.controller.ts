@@ -2,7 +2,7 @@ import { Controller, Get, Param, Query, UseGuards } from '@nestjs/common';
 import { Auth } from '@common/decorators/auth.decorator';
 import { AuthGuard } from '@common/guards/auth.guard';
 import { CurrentUser } from '@common/decorators/currentUser.decorator';
-import { AgentTraceService } from './services/agent-trace.service';
+import { AgentTraceService } from './agent-trace.service';
 
 /**
  * Agent 轨迹查询接口控制器。

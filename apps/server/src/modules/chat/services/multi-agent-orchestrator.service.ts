@@ -4,13 +4,16 @@ import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
 import { HumanMessage, SystemMessage } from '@langchain/core/messages';
 import { createUIMessageStream, type UIMessageChunk } from 'ai';
-import { ChatModelService } from '../../rag/chat-model.service';
+import { ChatModelService } from '../../rag/ai/chat-model.service';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { RetrievalService } from '../../rag/retrieval-services/retrieval.service';
+import { RetrievalService } from '../../rag/retrieval/retrieval.service';
 import { AgentTraceService } from './agent-trace.service';
 import type { AgentRunContext } from './agent-trace.service';
-import type { RerankedHit } from '../../rag/retrieval-interfaces/reranked-hit.interface';
+
+
+
+import type { RerankedHit } from '../../rag/retrieval/interfaces/reranked-hit.interface';
 import { RoutedQueryPlanSchema } from '../schemas/routed-query-plan.schema';
 import type { RoutedQueryPlan } from '../schemas/routed-query-plan.schema';
 import { RewriteOutputSchema } from '../schemas/rewritten-query.schema';
@@ -634,7 +637,7 @@ export class MultiAgentOrchestratorService {
   streamRun(
     runCtx: AgentRunContext,
     callbacks?: {
-      onFinish?: (result: { content: string; citations: unknown[] }) => Promise<void>;
+      onFinish?: (result: { content: string; citations: RerankedHit[] }) => Promise<void>;
       onError?: () => Promise<void>;
     },
   ): ReadableStream<UIMessageChunk> {

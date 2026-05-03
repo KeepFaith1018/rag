@@ -3,6 +3,6 @@
   "*.vue": ["pnpm exec eslint --fix"],
   "*.tsx": ["pnpm exec eslint --fix", "pnpm exec tsc --noEmit"],
   "*.js": ["pnpm exec eslint --fix"],
-  "*.json": ["pnpm exec prettier --write"],
-  "*.md": ["pnpm exec prettier --write"]
+  "*.json": [],
+  "*.md": []
 }

@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
-import type { SparseHit } from '../retrieval-interfaces/sparse-hit.interface';
+import type { SparseHit } from './interfaces/sparse-hit.interface';
 
 export interface SparseRetrieveParams {
   queries: string[];

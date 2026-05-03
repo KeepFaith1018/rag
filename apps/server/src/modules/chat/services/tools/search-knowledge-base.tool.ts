@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
-import { RetrievalService } from '../../rag/retrieval-services/retrieval.service';
-import type { RerankedHit } from '../../rag/retrieval-interfaces/reranked-hit.interface';
+import { RetrievalService } from '../../../rag/retrieval/retrieval.service';
+import type { RerankedHit } from '../../../rag/retrieval/interfaces/reranked-hit.interface';
 
 export interface SearchKnowledgeBaseParams {
   queries: string[];

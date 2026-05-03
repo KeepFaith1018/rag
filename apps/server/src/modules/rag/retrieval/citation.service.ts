@@ -5,7 +5,7 @@ import {
   wrapBusinessException,
 } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
-import type { RerankedHit } from '../retrieval-interfaces/reranked-hit.interface';
+import type { RerankedHit } from './interfaces/reranked-hit.interface';
 
 export interface CreateCitationsParams {
   messageId: bigint;

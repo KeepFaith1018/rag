@@ -2,14 +2,14 @@ import { Module } from '@nestjs/common';
 import { RagModule } from '../rag/rag.module';
 import { KnowledgeBaseModule } from '../knowledge-base/knowledge-base.module';
 import { ChatController } from './chat.controller';
-import { AgentTraceController } from './agent-trace.controller';
+import { AgentTraceController } from './services/agent-trace.controller';
 import { ChatSessionService } from './services/chat-session.service';
 import { ChatMessageService } from './services/chat-message.service';
 import { ChatStreamService } from './services/chat-stream.service';
 import { AgentTraceService } from './services/agent-trace.service';
 import { MultiAgentOrchestratorService } from './services/multi-agent-orchestrator.service';
-import { SearchKnowledgeBaseTool } from './tools/search-knowledge-base.tool';
-import { GetChunkDetailTool } from './tools/get-chunk-detail.tool';
+import { SearchKnowledgeBaseTool } from './services/tools/search-knowledge-base.tool';
+import { GetChunkDetailTool } from './services/tools/get-chunk-detail.tool';
 
 /**
  * 对话模块。

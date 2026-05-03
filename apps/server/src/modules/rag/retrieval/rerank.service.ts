@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
-import type { FusedHit } from '../retrieval-interfaces/fused-hit.interface';
-import type { RerankedHit } from '../retrieval-interfaces/reranked-hit.interface';
+import type { FusedHit } from './interfaces/fused-hit.interface';
+import type { RerankedHit } from './interfaces/reranked-hit.interface';
 
 export interface RerankParams {
   candidates: FusedHit[];
