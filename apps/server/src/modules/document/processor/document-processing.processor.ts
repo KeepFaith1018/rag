@@ -34,7 +34,8 @@ export class DocumentProcessingProcessor
     );
   }
 
-  async onModuleInit() {
+  onModuleInit() {
+    const concurrency = this.configService.get<number>('DOCUMENT_WORKER_CONCURRENCY') ?? 1;
     this.worker = new Worker<DocumentProcessingJobPayload>(
       DOCUMENT_PROCESSING_QUEUE_NAME,
       async (job) => {
@@ -46,7 +47,7 @@ export class DocumentProcessingProcessor
       },
       {
         connection: buildDocumentProcessingRedisConnection(this.configService),
-        concurrency: 1,
+        concurrency,
       },
     );
   }

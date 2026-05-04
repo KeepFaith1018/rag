@@ -1,8 +1,8 @@
 {
-  "*.ts": ["pnpm exec eslint --fix", "pnpm exec tsc --noEmit"],
-  "*.vue": ["pnpm exec eslint --fix"],
-  "*.tsx": ["pnpm exec eslint --fix", "pnpm exec tsc --noEmit"],
-  "*.js": ["pnpm exec eslint --fix"],
+  "*.ts": [
+    "pnpm exec eslint --fix --config apps/server/eslint.config.mjs"
+  ],
+  "*.vue": ["pnpm exec eslint --fix --config apps/server/eslint.config.mjs"],
   "*.json": [],
   "*.md": []
 }

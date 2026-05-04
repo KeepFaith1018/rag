@@ -29,7 +29,8 @@
       "Bash(pnpm install *)",
       "Bash(pnpm --filter web exec vue-tsc --noEmit)",
       "Bash(pnpm exec *)",
-      "Bash(chmod +x \"d:/Faith/Project/rag-knowledge-base/.husky/pre-commit\" \"d:/Faith/Project/rag-knowledge-base/.husky/commit-msg\")"
+      "Bash(chmod +x \"d:/Faith/Project/rag-knowledge-base/.husky/pre-commit\" \"d:/Faith/Project/rag-knowledge-base/.husky/commit-msg\")",
+      "Bash(pnpm --filter server build)"
     ],
     "additionalDirectories": [
       "d:\\Faith\\Project\\rag-knowledge-base\\apps\\server",

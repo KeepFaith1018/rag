@@ -66,6 +66,12 @@ export const DOCUMENT_EMBEDDING_CONFIG_ERROR_CODE =
 export const DOCUMENT_VECTOR_INDEX_ERROR_CODE = 'DOCUMENT_VECTOR_INDEX_FAILED';
 
 /**
+ * Elasticsearch 写入失败时记录的内部错误码。
+ */
+export const DOCUMENT_ELASTICSEARCH_INDEX_ERROR_CODE =
+  'DOCUMENT_ES_INDEX_FAILED';
+
+/**
  * 文档处理任务记录状态。
  */
 export const DOCUMENT_PROCESSING_TASK_STATUS = {

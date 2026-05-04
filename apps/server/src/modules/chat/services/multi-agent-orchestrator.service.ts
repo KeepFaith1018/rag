@@ -965,10 +965,13 @@ function getDetailForNode(nodeName: string, state: AgentState): string {
       return `检索完成 → ${state.rerankedHits.length} 条结果`;
     case 'relevance_check':
       return `相关性: ${state.relevanceVerdict ?? 'unknown'}`;
-    case 'verify':
+    case 'verify': {
       const factRisk = state.factCheckResult?.overallRisk ?? 'unknown';
-      const coverage = state.completenessResult?.overallCoverage ?? 'unknown';
+      const coverage = typeof state.completenessResult?.overallCoverage === 'number'
+        ? `${(state.completenessResult.overallCoverage * 100).toFixed(0)}%`
+        : 'unknown';
       return `事实风险: ${factRisk} | 完整性: ${coverage}`;
+    }
     case 'finalize':
       return `最终化 → ${state.draftAnswer.length} 字`;
     default:

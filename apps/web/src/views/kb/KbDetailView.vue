@@ -610,7 +610,13 @@ function triggerDocumentDownload(blob: Blob, fileName: string) {
 
 watch(
   () => kbId.value,
-  () => {
+  (newId, oldId) => {
+    if (oldId) {
+      documentView.disconnectDocumentStream();
+    }
+    if (newId) {
+      documentView.connectDocumentStream(newId);
+    }
     void loadPage();
   },
   { immediate: true },

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma } from '@prisma-client';
 import { createHash } from 'crypto';
 import { readFile } from 'fs/promises';
@@ -16,6 +17,12 @@ import {
   SUPPORTED_DOCUMENT_EXTENSIONS,
 } from '../document.constants';
 import { KbPermissionService } from '../../knowledge-base/permission/kb-permission.service';
+import { DocumentQueueService } from '../queue/document-queue.service';
+import { DocumentProcessingStateService } from '../services/document-processing-state.service';
+import {
+  DOCUMENT_QUEUE_ENQUEUE_ERROR_CODE,
+  DOCUMENT_PROCESSING_STAGE,
+} from '../document-processing.constants';
 import { CompleteUploadDto } from './dto/complete-upload.dto';
 import { InitUploadDto } from './dto/init-upload.dto';
 import { UploadChunkDto } from './dto/upload-chunk.dto';
@@ -53,6 +60,9 @@ export class UploadService {
     private readonly prisma: PrismaService,
     private readonly kbPermissionService: KbPermissionService,
     private readonly fileStorageService: FileStorageService,
+    private readonly documentQueueService: DocumentQueueService,
+    private readonly documentProcessingStateService: DocumentProcessingStateService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -343,6 +353,7 @@ export class UploadService {
           documentId: session.document_id.toString(),
           status: 'uploaded',
           isInstantUploaded: false,
+          processingEnqueued: false,
         };
       }
 
@@ -406,12 +417,45 @@ export class UploadService {
 
       await this.fileStorageService.deleteDirectory(session.temp_dir);
 
+      // 入队处理管线
+      let processingEnqueued = false;
+      try {
+        await this.documentQueueService.enqueueDocumentProcessing({
+          documentId: document.id.toString(),
+          kbId,
+          processingVersion: document.processing_version,
+          triggerType: 'upload',
+          requestedBy: userId.toString(),
+          requestedAt: new Date().toISOString(),
+        });
+        await this.documentProcessingStateService.markQueued(
+          document.id,
+          document.processing_version,
+        );
+        this.eventEmitter.emit('document.state.changed', {
+          kbId,
+          documentId: document.id.toString(),
+          status: DOCUMENT_PROCESSING_STAGE.QUEUED,
+          currentStage: DOCUMENT_PROCESSING_STAGE.QUEUED,
+          processingVersion: document.processing_version,
+        });
+        processingEnqueued = true;
+      } catch {
+        await this.documentProcessingStateService.markQueueEnqueueFailed(
+          document.id,
+          document.processing_version,
+          DOCUMENT_QUEUE_ENQUEUE_ERROR_CODE,
+          '文档处理任务入队失败，请稍后手动触发重解析',
+        );
+      }
+
       return {
         kbId,
         uploadId,
         documentId: document.id.toString(),
         status: document.status,
         isInstantUploaded: false,
+        processingEnqueued,
       };
     } catch (error) {
       throw wrapBusinessException(error, ErrorCode.FILE_UPLOAD_FAILED, {

@@ -151,7 +151,7 @@ export class EmbeddingService {
         this.configService.get<string>('BAILIAN_BASE_URL') ||
         'https://dashscope.aliyuncs.com/compatible-mode/v1',
       dimensions: this.getNumberConfig('BAILIAN_EMBEDDING_DIMENSIONS'),
-      batchSize: this.getNumberConfig('BAILIAN_EMBED_BATCH_SIZE') ?? 10,
+      batchSize: this.getNumberConfig('BAILIAN_EMBED_BATCH_SIZE') ?? 50,
       retryCount: this.getNumberConfig('BAILIAN_EMBED_RETRY_COUNT') ?? 3,
       requestIntervalMs:
         this.getNumberConfig('BAILIAN_EMBED_REQUEST_INTERVAL_MS') ?? 1000,

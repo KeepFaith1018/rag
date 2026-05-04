@@ -1,7 +1,8 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Client } from '@elastic/elasticsearch';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 
@@ -53,7 +54,9 @@ export class ElasticsearchService {
     this.client = new Client({
       node,
       auth: username && password ? { username, password } : undefined,
-    });
+      sniffOnStart: false,
+      sniffOnConnectionFault: false,
+    } as any);
 
     this.indexName =
       this.configService.get<string>('ELASTICSEARCH_INDEX') ||
@@ -106,7 +109,7 @@ export class ElasticsearchService {
         },
       });
 
-      this.logger.log(`[Elasticsearch] 索引 ${this.indexName} 创建成功`);
+      this.logger.info(`[Elasticsearch] 索引 ${this.indexName} 创建成功`);
     }
   }
 
@@ -151,7 +154,7 @@ export class ElasticsearchService {
 
     const indexed = chunks.length - failed;
 
-    this.logger.log(
+    this.logger.info(
       `[Elasticsearch] bulk index 完成: 成功 ${indexed}, 失败 ${failed}`,
     );
 
@@ -204,7 +207,7 @@ export class ElasticsearchService {
         docId: String(source['docId']),
         kbId: String(source['kbId']),
         content: String(source['content']),
-        title: source['title'] ? String(source['title']) : undefined,
+        title: typeof source['title'] === 'string' ? source['title'] : undefined,
         score: hit._score ?? 0,
       });
     }
@@ -216,6 +219,9 @@ export class ElasticsearchService {
    * 删除知识库关联的所有文档
    */
   async deleteByKbId(kbId: string): Promise<void> {
+    const exists = await this.client.indices.exists({ index: this.indexName });
+    if (!exists) return;
+
     await this.client.deleteByQuery({
       index: this.indexName,
       query: {
@@ -223,7 +229,34 @@ export class ElasticsearchService {
       },
     });
 
-    this.logger.log(`[Elasticsearch] 已删除 kbId=${kbId} 的所有文档`);
+    this.logger.info(`[Elasticsearch] 已删除 kbId=${kbId} 的所有文档`);
+  }
+
+  /**
+   * 删除指定文档版本的索引文档（用于 reparse 时清理旧版本 ES 数据）。
+   */
+  async deleteByDocumentVersion(
+    docId: string,
+    processingVersion: number,
+  ): Promise<void> {
+    const exists = await this.client.indices.exists({ index: this.indexName });
+    if (!exists) return;
+
+    await this.client.deleteByQuery({
+      index: this.indexName,
+      query: {
+        bool: {
+          must: [
+            { term: { docId } },
+            { term: { 'metadata.processingVersion': processingVersion } },
+          ],
+        },
+      },
+    });
+
+    this.logger.info(
+      `[Elasticsearch] 已删除 docId=${docId} v${processingVersion} 的文档`,
+    );
   }
 
   /**

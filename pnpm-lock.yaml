@@ -14,12 +14,18 @@ importers:
       '@commitlint/config-conventional':
         specifier: ^20.5.3
         version: 20.5.3
+      eslint:
+        specifier: ^9.39.2
+        version: 9.39.2(jiti@2.6.1)
       husky:
         specifier: ^9.1.7
         version: 9.1.7
       lint-staged:
         specifier: ^16.4.0
         version: 16.4.0
+      typescript:
+        specifier: ^6.0.3
+        version: 6.0.3
 
   apps/server:
     dependencies:
@@ -27,14 +33,14 @@ importers:
         specifier: ^2.0.174
         version: 2.0.174(@langchain/core@1.1.41(@opentelemetry/api@1.9.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@langchain/langgraph@1.2.9(@langchain/core@1.1.41(@opentelemetry/api@1.9.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(react-dom@19.2.3(react@19.2.3))(react@19.2.3)(vue@3.5.32(typescript@5.9.3))(zod-to-json-schema@3.25.2(zod@4.3.6))(zod@4.3.6))(zod@4.3.6)
       '@elastic/elasticsearch':
-        specifier: ^9.3.4
-        version: 9.3.4
+        specifier: 8.17.0
+        version: 8.17.0
       '@langchain/classic':
         specifier: ^1.0.31
         version: 1.0.31(@langchain/core@1.1.41(@opentelemetry/api@1.9.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@opentelemetry/api@1.9.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
       '@langchain/community':
         specifier: ^1.1.27
-        version: 1.1.27(@browserbasehq/sdk@2.10.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.59.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(zod@4.3.6))(@elastic/elasticsearch@9.3.4)(@ibm-cloud/watsonx-ai@1.7.11(typescript@5.9.3))(@langchain/core@1.1.41(@opentelemetry/api@1.9.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@opentelemetry/api@1.9.0)(@qdrant/js-client-rest@1.16.2(typescript@5.9.3))(ibm-cloud-sdk-core@5.4.12)(ignore@7.0.5)(ioredis@5.10.1)(jsonwebtoken@9.0.3)(mammoth@1.12.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(pdf-parse@2.4.5)(playwright@1.59.1)(ws@8.20.0)
+        version: 1.1.27(@browserbasehq/sdk@2.10.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.59.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(zod@4.3.6))(@elastic/elasticsearch@8.17.0)(@ibm-cloud/watsonx-ai@1.7.11(typescript@5.9.3))(@langchain/core@1.1.41(@opentelemetry/api@1.9.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@opentelemetry/api@1.9.0)(@qdrant/js-client-rest@1.16.2(typescript@5.9.3))(ibm-cloud-sdk-core@5.4.12)(ignore@7.0.5)(ioredis@5.10.1)(jsonwebtoken@9.0.3)(mammoth@1.12.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(pdf-parse@2.4.5)(playwright@1.59.1)(ws@8.20.0)
       '@langchain/core':
         specifier: ^1.1.41
         version: 1.1.41(@opentelemetry/api@1.9.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0)
@@ -56,6 +62,9 @@ importers:
       '@nestjs/core':
         specifier: ^11.0.1
         version: 11.1.12(@nestjs/common@11.1.12(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/event-emitter':
+        specifier: ^3.1.0
+        version: 3.1.0(@nestjs/common@11.1.12(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.12)
       '@nestjs/jwt':
         specifier: ^11.0.2
         version: 11.0.2(@nestjs/common@11.1.12(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))
@@ -620,13 +629,13 @@ packages:
   '@dabh/diagnostics@2.0.8':
     resolution: {integrity: sha512-R4MSXTVnuMzGD7bzHdW2ZhhdPC/igELENcq5IjEverBvq5hn1SXCWcsi6eSsdWP0/Ur+SItRRjAktmdoX/8R/Q==}
 
-  '@elastic/elasticsearch@9.3.4':
-    resolution: {integrity: sha512-Mp14fPEYx+WTfZdcvAaZ9WkLYGHQCbwMx6EP5VCucYdhv4cn/g2sbnMT5HzK+gX3XEpBnnkEK/+WysCKzxuo3A==}
+  '@elastic/elasticsearch@8.17.0':
+    resolution: {integrity: sha512-FZ+gQUrPsMpQ2RRIXwTmCoUeFCEausMhp4eQOyxT9j1cwGXHJrhelR6jffM1SC95kQUkB7+TcTq7oQ+bG2BQ9g==}
     engines: {node: '>=18'}
 
-  '@elastic/transport@9.3.5':
-    resolution: {integrity: sha512-hIMJbt1guqr3/N2zCN45k9hw9o78qcdsO0xietLe+Bfa+JL0YafHTgkWkM1oT3Ht5sGMJaDcJZiYomSMU6CtTA==}
-    engines: {node: '>=20'}
+  '@elastic/transport@8.10.1':
+    resolution: {integrity: sha512-xo2lPBAJEt81fQRAKa9T/gUq1SPGBHpSnVUXhoSpL996fPZRAfQwFA4BZtEUQL1p8Dezodd3ZN8Wwno+mYyKuw==}
+    engines: {node: '>=18'}
 
   '@electric-sql/pglite-socket@0.0.6':
     resolution: {integrity: sha512-6RjmgzphIHIBA4NrMGJsjNWK4pu+bCWJlEWlwcxFTVY3WT86dFpKwbZaGWZV6C5Rd7sCk1Z0CI76QEfukLAUXw==}
@@ -1784,6 +1793,12 @@ packages:
       '@nestjs/websockets':
         optional: true
 
+  '@nestjs/event-emitter@3.1.0':
+    resolution: {integrity: sha512-DOY/4XBGyIjYyOJKkO6jl1kzFE0ZfX0wV+M2HR5NWymPT9Z0zdCEcZGxTXXkoMRwPtglnvCGJALSjOpXPIcM3g==}
+    peerDependencies:
+      '@nestjs/common': ^10.0.0 || ^11.0.0
+      '@nestjs/core': ^10.0.0 || ^11.0.0
+
   '@nestjs/jwt@11.0.2':
     resolution: {integrity: sha512-rK8aE/3/Ma45gAWfCksAXUNbOoSOUudU0Kn3rT39htPF7wsYXtKfjALKeKKJbFrIWbLjsbqfXX5bIJNvgBugGA==}
     peerDependencies:
@@ -2339,6 +2354,9 @@ packages:
   '@types/node@18.19.130':
     resolution: {integrity: sha512-GRaXQx6jGfL8sKfaIDD6OupbIHBr9jv7Jnaml9tB7l4v068PAOXqfcujMMo5PhbIs6ggR1XODELqahT2R8v0fg==}
 
+  '@types/node@20.19.39':
+    resolution: {integrity: sha512-orrrD74MBUyK8jOAD/r0+lfa1I2MO6I+vAkmAWzMYbCcgrN4lCrmK52gRFQq/JRxfYPfonkr4b0jcY7Olqdqbw==}
+
   '@types/node@22.19.7':
     resolution: {integrity: sha512-MciR4AKGHWl7xwxkBa6xUGxQJ4VBOmPTF7sL+iGzuahOFaO0jHCsuEfS80pan1ef4gWId1oWOweIhrDEYLuaOw==}
 
@@ -2806,8 +2824,8 @@ packages:
     resolution: {integrity: sha512-KMReFUr0B4t+D+OBkjR3KYqvocp2XaSzO55UcB6mgQMd3KbcE+mWTyvVV7D/zsdEbNnV6acZUutkiHQXvTr1Rw==}
     engines: {node: '>= 8'}
 
-  apache-arrow@21.1.0:
-    resolution: {integrity: sha512-kQrYLxhC+NTVVZ4CCzGF6L/uPVOzJmD1T3XgbiUnP7oTeVFOFgEUu6IKNwCDkpFoBVqDKQivlX4RUFqqnWFlEA==}
+  apache-arrow@18.1.0:
+    resolution: {integrity: sha512-v/ShMp57iBnBp4lDgV8Jx3d3Q5/Hac25FWmQ98eMahUiHPXcvwIMKJD0hBIgclm/FCG+LwPkAKtkRO1O/W0YGg==}
     hasBin: true
 
   append-field@1.0.0:
@@ -2821,6 +2839,10 @@ packages:
 
   argparse@2.0.1:
     resolution: {integrity: sha512-8+9WqebbFzpX9OR+Wa6O29asIogeRMzcGtAINdpMHHyAg10f05aSFVBbcEqGf/PXw1EjAZ+q2/bEBg3DvurK3Q==}
+
+  array-back@3.1.0:
+    resolution: {integrity: sha512-TkuxA4UCOvxuDK6NZYXCalszEzj+TLszyASooky+i742l9TqsOdYCMJJupxRic61hwquNtppB3hgcuq9SVSH1Q==}
+    engines: {node: '>=6'}
 
   array-back@6.2.3:
     resolution: {integrity: sha512-SGDvmg6QTYiTxCBkYVmThcoa67uLl35pyzRHdpCGBOcqFy6BtwnphoFPk7LhJshD+Yk1Kt35WGWeZPTgwR4Fhw==}
@@ -3107,14 +3129,9 @@ packages:
     resolution: {integrity: sha512-FQN4MRfuJeHf7cBbBMJFXhKSDq+2kAArBlmRBvcvFE5BB1HZKXtSFASDhdlz9zOYwxh8lDdnvmMOe/+5cdoEdg==}
     engines: {node: '>= 0.8'}
 
-  command-line-args@6.0.2:
-    resolution: {integrity: sha512-AIjYVxrV9X752LmPDLbVYv8aMCuHPSLZJXEo2qo/xJfv+NYhaZ4sMSF01rM+gHPaMgvPM0l5D/F+Qx+i2WfSmQ==}
-    engines: {node: '>=12.20'}
-    peerDependencies:
-      '@75lb/nature': latest
-    peerDependenciesMeta:
-      '@75lb/nature':
-        optional: true
+  command-line-args@5.2.1:
+    resolution: {integrity: sha512-H4UfQhZyakIjC74I9d34fGYDwk3XpSr17QhEd0Q3I9Xq1CETHo4Hcuo87WyWHpAF1aSLjLRf5lD9ZGX2qStUvg==}
+    engines: {node: '>=4.0.0'}
 
   command-line-usage@7.0.4:
     resolution: {integrity: sha512-85UdvzTNx/+s5CkSgBm/0hzP80RFHAa7PsfeADE5ezZF3uHz3/Tqj9gIKGT9PTtpycc3Ua64T0oVulGfKxzfqg==}
@@ -3529,6 +3546,9 @@ packages:
     resolution: {integrity: sha512-i/2XbnSz/uxRCU6+NdVJgKWDTM427+MqYbkQzD321DuCQJUqOuJKIA0IM2+W2xtYHdKOmZ4dR6fExsd4SXL+WQ==}
     engines: {node: '>=6'}
 
+  eventemitter2@6.4.9:
+    resolution: {integrity: sha512-JEPTiaOt9f04oa6NOkc4aH+nVp5I3wEjpHbIPqfgCdD5v5bUzy7xQqwcVO2aDQgOWhI28da57HksMrzK9HlRxg==}
+
   eventemitter3@4.0.7:
     resolution: {integrity: sha512-8guHBZCwKnFhYdHr2ysuRWErTwhoN2X8XELRlrRwpmfeY2jjuUN4taQMsULKUVo1K4DvZl+0pgfyoysHxvmvEw==}
 
@@ -3625,14 +3645,9 @@ packages:
     resolution: {integrity: sha512-S8KoZgRZN+a5rNwqTxlZZePjT/4cnm0ROV70LedRHZ0p8u9fRID0hJUZQpkKLzro8LfmC8sx23bY6tVNxv8pQA==}
     engines: {node: '>= 18.0.0'}
 
-  find-replace@5.0.2:
-    resolution: {integrity: sha512-Y45BAiE3mz2QsrN2fb5QEtO4qb44NcS7en/0y9PEVsg351HsLeVclP8QPMH79Le9sH3rs5RSwJu99W0WPZO43Q==}
-    engines: {node: '>=14'}
-    peerDependencies:
-      '@75lb/nature': latest
-    peerDependenciesMeta:
-      '@75lb/nature':
-        optional: true
+  find-replace@3.0.0:
+    resolution: {integrity: sha512-6Tb2myMioCAgv5kfvP5/PkZZ/ntTpVK39fHY7WkWBgvbeE+VHd/tZuZ4mrC+bxh4cfOZeYKVPaJIZtZXV7GNCQ==}
+    engines: {node: '>=4.0.0'}
 
   find-up@4.1.0:
     resolution: {integrity: sha512-PpOwAdQ/YlXQ2vj8a3h8IipDuYRi3wceVQQGYWxNINccq40Anw7BlsEXCMbt1Zt+OLA6Fq9suIpIWD0OsnISlw==}
@@ -3650,8 +3665,8 @@ packages:
     resolution: {integrity: sha512-b6suED+5/3rTpUBdG1gupIl8MPFCAMA0QXwmljLhvCUKcUvdE4gWky9zpuGCcXHOsz4J9wPGNWq6OKpmIzz3hQ==}
     hasBin: true
 
-  flatbuffers@25.9.23:
-    resolution: {integrity: sha512-MI1qs7Lo4Syw0EOzUl0xjs2lsoeqFku44KpngfIduHBYvzm8h2+7K8YMQh1JtVVVrUvhLpNwqVi4DERegUJhPQ==}
+  flatbuffers@24.12.23:
+    resolution: {integrity: sha512-dLVCAISd5mhls514keQzmEG6QHmUUsNuWsb4tFafIUwvvgDjXhtfAYSKOzt5SWOy+qByV5pbsDZ+Vb7HUOBEdA==}
 
   flatted@3.3.3:
     resolution: {integrity: sha512-GX+ysw4PBCz0PzosHDepZGANEuFCMLrnRTiEy9McGjmkCQYwRq4A/X786G/fjM/+OjsWSU1ZrY5qyARZmO/uwg==}
@@ -5151,8 +5166,8 @@ packages:
     resolution: {integrity: sha512-eflK8wEtyOE6+hsaRVPxvUKYCpRgzLqDTb8krvAsRIwOGlHoSgYLgBXoubGgLd2fT41/OUYdb48v4k4WWHQurA==}
     engines: {node: '>= 10.13.0'}
 
-  secure-json-parse@4.1.0:
-    resolution: {integrity: sha512-l4KnYfEyqYJxDwlNVyRfO2E4NTHfMKAWdUuA8J0yve2Dz/E/PdBepY03RvyJpssIpRFwJoCD55wA+mEDs6ByWA==}
+  secure-json-parse@3.0.2:
+    resolution: {integrity: sha512-H6nS2o8bWfpFEV6U38sOSjS7bTbdgbCGU9wEM6W14P5H0QOsz94KCusifV44GpHDTu2nqZbuDNhTzu+mjDSw1w==}
 
   semver@6.3.1:
     resolution: {integrity: sha512-BR7VvDCVHO+q2xBEWskxS6DJE1qRnb7DxzUrogb71CWoSficBxYsiAGd+Kl0mmq/MprG9yArRkyrQxTO6XjMzA==}
@@ -5544,6 +5559,10 @@ packages:
     engines: {node: '>=14.17'}
     hasBin: true
 
+  typical@4.0.0:
+    resolution: {integrity: sha512-VAH4IvQ7BDFYglMd7BPRDfLgxZZX4O4TFcRDA6EN5X7erNJJq+McIEp8np9aVtxrCJ6qx4GTYVfOWNjcqwZgRw==}
+    engines: {node: '>=8'}
+
   typical@7.3.0:
     resolution: {integrity: sha512-ya4mg/30vm+DOWfBg4YK3j2WD6TWtRkCbasOJr40CseYENzCUby/7rIvXA99JGsQHeNxLbnXdyLLxKSv3tauFw==}
     engines: {node: '>=12.17'}
@@ -5576,10 +5595,6 @@ packages:
   undici@6.23.0:
     resolution: {integrity: sha512-VfQPToRA5FZs/qJxLIinmU59u0r7LXqoJkCzinq3ckNJp3vKEh7jTWN589YQ5+aoAC/TGRLyJLCPKcLQbM8r9g==}
     engines: {node: '>=18.17'}
-
-  undici@7.25.0:
-    resolution: {integrity: sha512-xXnp4kTyor2Zq+J1FfPI6Eq3ew5h6Vl0F/8d9XU5zZQf1tX9s2Su1/3PiMmUANFULpmksxkClamIZcaUqryHsQ==}
-    engines: {node: '>=20.18.1'}
 
   universalify@0.2.0:
     resolution: {integrity: sha512-CJ1QgKmNg3CwvAv/kOFmtnEN05f0D/cn9QntgNOQlQF9dgvVTHj3t+8JPdjqawCHk7V/KA+fbUqzZ9XWhcqPUg==}
@@ -6332,25 +6347,24 @@ snapshots:
       enabled: 2.0.0
       kuler: 2.0.0
 
-  '@elastic/elasticsearch@9.3.4':
+  '@elastic/elasticsearch@8.17.0':
     dependencies:
-      '@elastic/transport': 9.3.5
-      apache-arrow: 21.1.0
+      '@elastic/transport': 8.10.1
+      apache-arrow: 18.1.0
       tslib: 2.8.1
     transitivePeerDependencies:
-      - '@75lb/nature'
       - supports-color
 
-  '@elastic/transport@9.3.5':
+  '@elastic/transport@8.10.1':
     dependencies:
       '@opentelemetry/api': 1.9.0
       '@opentelemetry/core': 2.7.1(@opentelemetry/api@1.9.0)
       debug: 4.4.3
       hpagent: 1.2.0
       ms: 2.1.3
-      secure-json-parse: 4.1.0
+      secure-json-parse: 3.0.2
       tslib: 2.8.1
-      undici: 7.25.0
+      undici: 6.23.0
     transitivePeerDependencies:
       - supports-color
 
@@ -6969,7 +6983,7 @@ snapshots:
       - openai
       - ws
 
-  '@langchain/community@1.1.27(@browserbasehq/sdk@2.10.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.59.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(zod@4.3.6))(@elastic/elasticsearch@9.3.4)(@ibm-cloud/watsonx-ai@1.7.11(typescript@5.9.3))(@langchain/core@1.1.41(@opentelemetry/api@1.9.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@opentelemetry/api@1.9.0)(@qdrant/js-client-rest@1.16.2(typescript@5.9.3))(ibm-cloud-sdk-core@5.4.12)(ignore@7.0.5)(ioredis@5.10.1)(jsonwebtoken@9.0.3)(mammoth@1.12.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(pdf-parse@2.4.5)(playwright@1.59.1)(ws@8.20.0)':
+  '@langchain/community@1.1.27(@browserbasehq/sdk@2.10.0)(@browserbasehq/stagehand@1.14.0(@playwright/test@1.59.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(zod@4.3.6))(@elastic/elasticsearch@8.17.0)(@ibm-cloud/watsonx-ai@1.7.11(typescript@5.9.3))(@langchain/core@1.1.41(@opentelemetry/api@1.9.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(ws@8.20.0))(@opentelemetry/api@1.9.0)(@qdrant/js-client-rest@1.16.2(typescript@5.9.3))(ibm-cloud-sdk-core@5.4.12)(ignore@7.0.5)(ioredis@5.10.1)(jsonwebtoken@9.0.3)(mammoth@1.12.0)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(pdf-parse@2.4.5)(playwright@1.59.1)(ws@8.20.0)':
     dependencies:
       '@browserbasehq/stagehand': 1.14.0(@playwright/test@1.59.1)(deepmerge@4.3.1)(dotenv@16.6.1)(openai@6.34.0(ws@8.20.0)(zod@4.3.6))(zod@4.3.6)
       '@ibm-cloud/watsonx-ai': 1.7.11(typescript@5.9.3)
@@ -6987,7 +7001,7 @@ snapshots:
       zod: 4.3.6
     optionalDependencies:
       '@browserbasehq/sdk': 2.10.0
-      '@elastic/elasticsearch': 9.3.4
+      '@elastic/elasticsearch': 8.17.0
       '@qdrant/js-client-rest': 1.16.2(typescript@5.9.3)
       ignore: 7.0.5
       ioredis: 5.10.1
@@ -7222,6 +7236,12 @@ snapshots:
       uid: 2.0.2
     optionalDependencies:
       '@nestjs/platform-express': 11.1.12(@nestjs/common@11.1.12(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.12)
+
+  '@nestjs/event-emitter@3.1.0(@nestjs/common@11.1.12(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/core@11.1.12)':
+    dependencies:
+      '@nestjs/common': 11.1.12(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      '@nestjs/core': 11.1.12(@nestjs/common@11.1.12(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))(@nestjs/platform-express@11.1.12)(reflect-metadata@0.2.2)(rxjs@7.8.2)
+      eventemitter2: 6.4.9
 
   '@nestjs/jwt@11.0.2(@nestjs/common@11.1.12(class-transformer@0.5.1)(class-validator@0.14.3)(reflect-metadata@0.2.2)(rxjs@7.8.2))':
     dependencies:
@@ -7735,6 +7755,10 @@ snapshots:
   '@types/node@18.19.130':
     dependencies:
       undici-types: 5.26.5
+
+  '@types/node@20.19.39':
+    dependencies:
+      undici-types: 6.21.0
 
   '@types/node@22.19.7':
     dependencies:
@@ -8256,19 +8280,17 @@ snapshots:
       normalize-path: 3.0.0
       picomatch: 2.3.1
 
-  apache-arrow@21.1.0:
+  apache-arrow@18.1.0:
     dependencies:
       '@swc/helpers': 0.5.21
       '@types/command-line-args': 5.2.3
       '@types/command-line-usage': 5.0.4
-      '@types/node': 24.12.2
-      command-line-args: 6.0.2
+      '@types/node': 20.19.39
+      command-line-args: 5.2.1
       command-line-usage: 7.0.4
-      flatbuffers: 25.9.23
+      flatbuffers: 24.12.23
       json-bignum: 0.0.3
       tslib: 2.8.1
-    transitivePeerDependencies:
-      - '@75lb/nature'
 
   append-field@1.0.0: {}
 
@@ -8279,6 +8301,8 @@ snapshots:
       sprintf-js: 1.0.3
 
   argparse@2.0.1: {}
+
+  array-back@3.1.0: {}
 
   array-back@6.2.3: {}
 
@@ -8602,12 +8626,12 @@ snapshots:
     dependencies:
       delayed-stream: 1.0.0
 
-  command-line-args@6.0.2:
+  command-line-args@5.2.1:
     dependencies:
-      array-back: 6.2.3
-      find-replace: 5.0.2
+      array-back: 3.1.0
+      find-replace: 3.0.0
       lodash.camelcase: 4.3.0
-      typical: 7.3.0
+      typical: 4.0.0
 
   command-line-usage@7.0.4:
     dependencies:
@@ -8993,6 +9017,8 @@ snapshots:
 
   event-target-shim@5.0.1: {}
 
+  eventemitter2@6.4.9: {}
+
   eventemitter3@4.0.7: {}
 
   eventemitter3@5.0.4: {}
@@ -9128,7 +9154,9 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  find-replace@5.0.2: {}
+  find-replace@3.0.0:
+    dependencies:
+      array-back: 3.1.0
 
   find-up@4.1.0:
     dependencies:
@@ -9147,7 +9175,7 @@ snapshots:
 
   flat@5.0.2: {}
 
-  flatbuffers@25.9.23: {}
+  flatbuffers@24.12.23: {}
 
   flatted@3.3.3: {}
 
@@ -10821,7 +10849,7 @@ snapshots:
       ajv-formats: 2.1.1(ajv@8.17.1)
       ajv-keywords: 5.1.0(ajv@8.17.1)
 
-  secure-json-parse@4.1.0: {}
+  secure-json-parse@3.0.2: {}
 
   semver@6.3.1: {}
 
@@ -11230,6 +11258,8 @@ snapshots:
 
   typescript@6.0.3: {}
 
+  typical@4.0.0: {}
+
   typical@7.3.0: {}
 
   uglify-js@3.19.3:
@@ -11251,8 +11281,6 @@ snapshots:
   undici-types@7.16.0: {}
 
   undici@6.23.0: {}
-
-  undici@7.25.0: {}
 
   universalify@0.2.0: {}
 

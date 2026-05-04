@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { EventEmitter2 } from '@nestjs/event-emitter';
 import { Prisma, b_document_processing_tasks } from '@prisma-client';
 import { createHash } from 'crypto';
 import { extname } from 'path';
@@ -10,6 +11,7 @@ import { PrismaService } from '@common/prisma/prisma.service';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 import { FileStorageService } from '@common/storage/file-storage.service';
 import { QdrantService } from '@common/vector/qdrant.service';
+import { ElasticsearchService } from '@common/vector/elasticsearch.service';
 import { ListDocumentsDto } from './dto/list-documents.dto';
 import { ListDocumentProcessingTasksDto } from './dto/list-document-processing-tasks.dto';
 import { UploadDocumentDto } from './dto/upload-document.dto';
@@ -65,9 +67,11 @@ export class DocumentService {
     private readonly kbPermissionService: KbPermissionService,
     private readonly fileStorageService: FileStorageService,
     private readonly qdrantService: QdrantService,
+    private readonly elasticsearchService: ElasticsearchService,
     private readonly documentQueueService: DocumentQueueService,
     private readonly documentProcessingStateService: DocumentProcessingStateService,
     private readonly documentProcessingTaskService: DocumentProcessingTaskService,
+    private readonly eventEmitter: EventEmitter2,
   ) {}
 
   /**
@@ -148,6 +152,13 @@ export class DocumentService {
           document.id,
           document.processing_version,
         );
+        this.eventEmitter.emit('document.state.changed', {
+          kbId,
+          documentId: document.id.toString(),
+          status: DOCUMENT_PROCESSING_STAGE.QUEUED,
+          currentStage: DOCUMENT_PROCESSING_STAGE.QUEUED,
+          processingVersion: document.processing_version,
+        });
       } catch (error) {
         await this.rollbackUploadedDocument(document.id, document.file_path);
         throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
@@ -447,6 +458,10 @@ export class DocumentService {
         document.id.toString(),
         document.processing_version,
       );
+      await this.elasticsearchService.deleteByDocumentVersion(
+        document.id.toString(),
+        document.processing_version,
+      );
       const nextProcessingVersion = document.processing_version + 1;
 
       await this.prisma.$transaction([
@@ -475,6 +490,13 @@ export class DocumentService {
           document.id,
           nextProcessingVersion,
         );
+        this.eventEmitter.emit('document.state.changed', {
+          kbId,
+          documentId: document.id.toString(),
+          status: DOCUMENT_PROCESSING_STAGE.QUEUED,
+          currentStage: DOCUMENT_PROCESSING_STAGE.QUEUED,
+          processingVersion: nextProcessingVersion,
+        });
       } catch (error) {
         await this.documentProcessingStateService.markQueueEnqueueFailed(
           document.id,

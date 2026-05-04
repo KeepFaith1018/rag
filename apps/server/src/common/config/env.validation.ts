@@ -23,7 +23,7 @@ export const configValidationSchema = Joi.object({
   BAILIAN_TEXT_EMBEDDING_MODEL: Joi.string().optional(),
   BAILIAN_VISION_EMBEDDING_MODEL: Joi.string().optional(),
   BAILIAN_EMBEDDING_DIMENSIONS: Joi.number().integer().positive().optional(),
-  BAILIAN_EMBED_BATCH_SIZE: Joi.number().integer().min(1).max(10).optional(),
+  BAILIAN_EMBED_BATCH_SIZE: Joi.number().integer().min(1).max(100).optional(),
   BAILIAN_EMBED_RETRY_COUNT: Joi.number().integer().min(0).max(10).optional(),
   BAILIAN_EMBED_REQUEST_INTERVAL_MS: Joi.number().integer().min(0).optional(),
   DOCUMENT_PROCESSING_TIMEOUT_MS: Joi.number().integer().positive().optional(),
@@ -31,6 +31,7 @@ export const configValidationSchema = Joi.object({
     .integer()
     .positive()
     .optional(),
+  DOCUMENT_WORKER_CONCURRENCY: Joi.number().integer().min(1).max(10).optional(),
 
   LLM_MODEL: Joi.string().optional(),
   OPENAI_API_KEY: Joi.string().optional(),

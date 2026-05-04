@@ -15,6 +15,8 @@ import { DocumentProcessingService } from './services/document-processing.servic
 import { DocumentProcessingStateService } from './services/document-processing-state.service';
 import { DocumentProcessingTaskService } from './services/document-processing-task.service';
 import { DocumentProcessingMonitorService } from './services/document-processing-monitor.service';
+import { DocumentSseService } from './services/document-sse.service';
+import { DocumentSseController } from './document-sse.controller';
 
 /**
  * 文档管理模块。
@@ -34,6 +36,7 @@ import { DocumentProcessingMonitorService } from './services/document-processing
   controllers: [
     DocumentController,
     UploadController,
+    DocumentSseController,
   ],
   providers: [
     DocumentService,
@@ -46,6 +49,7 @@ import { DocumentProcessingMonitorService } from './services/document-processing
     DocumentProcessingStateService,
     DocumentProcessingTaskService,
     DocumentProcessingMonitorService,
+    DocumentSseService,
   ],
   exports: [
     DocumentService,

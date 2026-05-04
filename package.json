@@ -24,7 +24,9 @@
   "devDependencies": {
     "@commitlint/cli": "^20.5.3",
     "@commitlint/config-conventional": "^20.5.3",
+    "eslint": "^9.39.2",
     "husky": "^9.1.7",
-    "lint-staged": "^16.4.0"
+    "lint-staged": "^16.4.0",
+    "typescript": "^6.0.3"
   }
 }

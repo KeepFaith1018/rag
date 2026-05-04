@@ -22,7 +22,7 @@
   },
   "dependencies": {
     "@ai-sdk/langchain": "^2.0.174",
-    "@elastic/elasticsearch": "^9.3.4",
+    "@elastic/elasticsearch": "8.17.0",
     "@langchain/classic": "^1.0.31",
     "@langchain/community": "^1.1.27",
     "@langchain/core": "^1.1.41",
@@ -32,6 +32,7 @@
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.0.1",
+    "@nestjs/event-emitter": "^3.1.0",
     "@nestjs/jwt": "^11.0.2",
     "@nestjs/mapped-types": "^2.1.1",
     "@nestjs/platform-express": "^11.0.1",

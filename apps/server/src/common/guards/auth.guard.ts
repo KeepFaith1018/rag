@@ -33,14 +33,22 @@ export class AuthGuard implements CanActivate {
     }
 
     const authHeader = request.headers['authorization'];
-    if (!authHeader) {
+    // EventSource API 不支持自定义请求头，通过查询参数降级
+    const queryToken =
+      typeof request.query?.token === 'string'
+        ? request.query.token
+        : undefined;
+
+    const bearerToken = authHeader
+      ? authHeader.replace('Bearer ', '')
+      : queryToken;
+
+    if (!bearerToken) {
       throw new BusinessException(ErrorCode.UNAUTHORIZED);
     }
 
-    const token = authHeader.replace('Bearer ', '');
-
     try {
-      const user = this.jwtService.verify<JwtUser>(token);
+      const user = this.jwtService.verify<JwtUser>(bearerToken);
       request.user = user;
       return true;
     } catch {
