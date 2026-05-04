@@ -55,7 +55,7 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
     onComplete,
     onError,
     highlight = true,
-    flushThreshold = 200,
+    flushThreshold = 80,  // 从 200 改为 80，更快 flush 单行内容
   } = options;
 
   /** 内部状态 */
@@ -75,7 +75,7 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
   function parseMarkdown(text: string): string {
     try {
       // 使用 marked.parse 返回字符串
-      const html = marked.parse(text, { async: false }) as string;
+      const html = marked.parse(text, { async: false });
       return html;
     } catch (err) {
       onError?.(err instanceof Error ? err : new Error(String(err)));
@@ -184,10 +184,12 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
       return;
     }
 
-    // 常规 flush：遇到空行或 buffer 过大
+    // 常规 flush：遇到空行、buffer 过大或单行标题
     const shouldFlush = force
       || (buffer.length > flushThreshold && lastFlushLen < buffer.length)
-      || /\n\n/.test(buffer);
+      || /\n\n/.test(buffer)
+      // 新增：检测单行完整标题并立即 flush
+      || /^#{1,6}\s.+$/m.test(buffer);
 
     if (!shouldFlush) return;
 
@@ -227,6 +229,14 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
     }
 
     state.buffer += delta;
+
+    // 检测单行完整标题并立即 flush
+    const lastLine = state.buffer.split('\n').pop() || '';
+    if (/^#{1,6}\s/.test(lastLine) && lastLine.length > 2) {
+      tryFlush(true);
+      return;
+    }
+
     tryFlush();
   }
 

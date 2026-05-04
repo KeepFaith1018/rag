@@ -1,11 +1,18 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import ChatModeToggle from './ChatModeToggle.vue';
-import ChatKbSelector from './ChatKbSelector.vue';
-import ChatModelSelector from './ChatModelSelector.vue';
+
+const props = withDefaults(
+  defineProps<{
+    isStreaming?: boolean;
+  }>(),
+  {
+    isStreaming: false,
+  },
+);
 
 const emit = defineEmits<{
   send: [message: string];
+  cancel: [];
 }>();
 
 const inputText = ref('');
@@ -29,25 +36,21 @@ function handleKeydown(e: KeyboardEvent) {
     handleSend();
   }
 }
+
+/**
+ * 取消请求
+ */
+function handleCancel() {
+  emit('cancel');
+}
 </script>
 
 <template>
-  <footer
-    class="absolute bottom-0 w-full p-6 bg-gradient-to-t from-surface via-surface to-transparent pt-12 z-10 pointer-events-none"
-  >
-    <div class="max-w-4xl mx-auto relative group pointer-events-auto space-y-3">
-      <!-- 模式切换 + 模型选择 -->
-      <div class="flex items-center justify-between">
-        <ChatModeToggle />
-        <ChatModelSelector />
-      </div>
-
-      <!-- 知识库选择器（RAG 模式下显示） -->
-      <ChatKbSelector />
-
+  <footer class="w-full p-6 pt-4">
+    <div class="max-w-4xl mx-auto relative group space-y-3">
       <!-- Glassmorphism 输入框 -->
       <div
-        class="bg-surface-container-low/60 backdrop-blur-2xl rounded-2xl border border-outline-variant/10 p-2 shadow-2xl transition-all focus-within:ring-1 focus-within:ring-primary/40 focus-within:bg-surface-container-high/80"
+        class="bg-surface-container-low/60 backdrop-blur-2xl rounded-2xl border border-outline-variant/10 p-2 shadow-2xl transition-all focus-within:bg-surface-container-high/80"
       >
         <div class="flex items-end gap-2 px-3 py-2">
           <button
@@ -58,7 +61,7 @@ function handleKeydown(e: KeyboardEvent) {
 
           <textarea
             v-model="inputText"
-            class="flex-1 bg-transparent border-none focus:ring-0 text-on-surface placeholder:text-outline/50 resize-none py-2 text-sm max-h-48"
+            class="flex-1 bg-transparent focus:outline-none text-on-surface placeholder:text-outline/50 resize-none py-2 text-sm max-h-48"
             placeholder="向 灵索智能 发送消息..."
             rows="1"
             @keydown="handleKeydown"
@@ -66,11 +69,21 @@ function handleKeydown(e: KeyboardEvent) {
 
           <div class="flex items-center gap-2 mb-1">
             <button
-              class="p-2 text-outline hover:text-primary transition-colors focus:outline-none"
+              v-if="isStreaming"
+              class="bg-error-container hover:bg-error/20 text-on-error-container p-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center focus:outline-none"
+              @click="handleCancel"
             >
-              <span class="material-symbols-outlined">mic</span>
+              <span class="material-symbols-outlined text-[20px]">close</span>
             </button>
+            <template v-else>
+              <button
+                class="p-2 text-outline hover:text-primary transition-colors focus:outline-none"
+              >
+                <span class="material-symbols-outlined">mic</span>
+              </button>
+            </template>
             <button
+              v-if="!isStreaming"
               class="bg-primary-container hover:bg-primary text-on-primary-container p-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center focus:outline-none"
               @click="handleSend"
             >

@@ -1,6 +1,7 @@
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue';
+import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue';
 import MessageBubble from './MessageBubble.vue';
+import AIAgentMessage from './AIAgentMessage.vue';
 import type { ChatMessageItem } from '@/modules/chat/types/chat';
 
 const props = defineProps<{
@@ -10,6 +11,7 @@ const props = defineProps<{
 
 /** 自动滚动到底部 */
 const containerRef = ref<HTMLElement | null>(null);
+let observer: MutationObserver | null = null;
 
 function scrollToBottom() {
   nextTick(() => {
@@ -18,6 +20,30 @@ function scrollToBottom() {
     }
   });
 }
+
+/** 使用 MutationObserver 监听 DOM 变化实现流式滚动 */
+function setupObserver() {
+  if (!containerRef.value) return;
+
+  observer = new MutationObserver(() => {
+    scrollToBottom();
+  });
+
+  observer.observe(containerRef.value, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+  });
+}
+
+onMounted(() => {
+  setupObserver();
+  scrollToBottom();
+});
+
+onUnmounted(() => {
+  observer?.disconnect();
+});
 
 /** 监听消息变化，自动滚动 */
 watch(
@@ -31,39 +57,33 @@ watch(
     if (working) scrollToBottom();
   },
 );
-
-// 格式化时间
-function formatTime(isoString: string): string {
-  try {
-    const date = new Date(isoString);
-    return date.toLocaleTimeString('zh-CN', {
-      hour: '2-digit',
-      minute: '2-digit',
-    });
-  } catch {
-    return '';
-  }
-}
 </script>
 
 <template>
   <section
     ref="containerRef"
-    class="message-stream px-6 py-8 space-y-12 max-w-5xl mx-auto w-full pb-32"
+    class="message-stream px-6 py-8 space-y-12 max-w-5xl mx-auto w-full"
   >
     <template v-if="messages.length > 0">
-      <MessageBubble
+      <template
         v-for="msg in messages"
         :key="msg.id"
-        :message="{
-          id: msg.id,
-          role: msg.role,
-          name: msg.name,
-          time: formatTime(msg.createdAt),
-          tag: msg.role === 'ai' && msg.chatMode === 'rag' ? 'RAG' : undefined,
-          content: msg.htmlContent || msg.content,
-        }"
-      />
+      >
+        <MessageBubble
+          v-if="msg.role === 'user'"
+          :message="{
+            id: msg.id,
+            role: msg.role,
+            name: msg.name,
+            time: new Date(msg.createdAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
+            content: msg.content,
+          }"
+        />
+        <AIAgentMessage
+          v-else
+          :message="msg"
+        />
+      </template>
     </template>
 
     <!-- 空状态 -->
@@ -79,44 +99,26 @@ function formatTime(isoString: string): string {
         <p class="text-sm text-outline mt-1">发送消息开启智能问答体验</p>
       </div>
     </div>
-
-    <!-- Agent 状态指示器 -->
-    <div v-if="isAgentWorking && messages.length > 0" class="flex gap-6 items-center py-4">
-      <div class="w-10 flex justify-center">
-        <div class="w-2 h-2 bg-primary rounded-full ai-thinking-glow"></div>
-      </div>
-      <div class="flex flex-col">
-        <span class="text-xs font-label uppercase tracking-widest text-primary font-semibold">
-          AI 正在思考...
-        </span>
-        <div
-          class="mt-2 w-48 h-[2px] bg-surface-container-high rounded-full overflow-hidden relative"
-        >
-          <div
-            class="absolute h-full bg-primary-container w-1/3 animate-[shimmer_2s_infinite_linear]"
-          ></div>
-        </div>
-      </div>
-    </div>
   </section>
 </template>
 
 <style scoped>
 .message-stream {
   overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--color-surface-container-high) transparent;
 }
 .message-stream::-webkit-scrollbar {
-  width: 4px;
+  width: 6px;
 }
 .message-stream::-webkit-scrollbar-track {
   background: transparent;
 }
 .message-stream::-webkit-scrollbar-thumb {
-  background: #2a2a2c;
+  background: var(--color-surface-container-high) !important;
   border-radius: 10px;
 }
-@keyframes shimmer {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(300%); }
+.message-stream::-webkit-scrollbar-thumb:hover {
+  background: var(--color-primary) !important;
 }
 </style>

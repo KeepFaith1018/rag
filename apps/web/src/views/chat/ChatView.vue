@@ -6,12 +6,13 @@ import ChatInputArea from '@/components/chat/ChatInputArea.vue';
 import ChatAgentTimeline from '@/components/chat/ChatAgentTimeline.vue';
 import ChatCitationPanel from '@/components/chat/ChatCitationPanel.vue';
 import ChatStatusBanner from '@/components/chat/ChatStatusBanner.vue';
+import ChatSettingsBar from '@/components/chat/ChatSettingsBar.vue';
 import { useChatStore } from '@/stores/chat';
 import { useAgentChat } from '@/modules/chat/composables/useAgentChat';
 import { listAvailableKbs, listAvailableModels } from '@/api/chat';
 
 const chatStore = useChatStore();
-const { sendMessage, isStreaming } = useAgentChat();
+const { sendMessage, abort, isStreaming } = useAgentChat();
 
 // 是否显示 Agent 时间线
 const showAgentTimeline = computed(
@@ -56,6 +57,11 @@ async function handleSendMessage(message: string) {
   if (!message.trim() || chatStore.isSending) return;
   await sendMessage(message);
 }
+
+// 处理取消请求
+function handleCancel() {
+  abort();
+}
 </script>
 
 <template>
@@ -68,12 +74,17 @@ async function handleSendMessage(message: string) {
     <!-- 警告横幅 -->
     <ChatStatusBanner v-if="chatStore.hasWarnings" />
 
+    <!-- 设置条：模式/知识库/模型选择 -->
+    <div class="px-6 py-3 border-b border-outline-variant/10">
+      <ChatSettingsBar />
+    </div>
+
     <!-- Agent 时间线 -->
     <ChatAgentTimeline v-if="showAgentTimeline" />
 
     <!-- 主内容区 -->
-    <div class="flex-1 overflow-hidden flex">
-      <!-- 消息流 -->
+    <div class="flex-1 overflow-hidden flex flex-col">
+      <!-- 消息流区域：占据剩余空间，可滚动 -->
       <div class="flex-1 overflow-y-auto">
         <ChatStream :messages="chatStore.messages" :is-agent-working="isStreaming" />
       </div>
@@ -82,7 +93,13 @@ async function handleSendMessage(message: string) {
       <ChatCitationPanel v-if="showCitationPanel" />
     </div>
 
-    <!-- 输入区 -->
-    <ChatInputArea @send="handleSendMessage" />
+    <!-- 输入区：固定高度，不遮挡消息 -->
+    <div class="flex-shrink-0 px-6 py-4">
+      <ChatInputArea
+        :is-streaming="isStreaming"
+        @send="handleSendMessage"
+        @cancel="handleCancel"
+      />
+    </div>
   </div>
 </template>
