@@ -17,7 +17,8 @@ import type {
   UpdateKnowledgeBasePayload,
 } from "@/types/knowledge-base";
 import { useAuthStore } from "@/stores/auth";
-import { getAccessToken } from "@/utils/token";
+import { getAccessToken, setAccessToken } from "@/utils/token";
+import { isTokenExpiredOrSoon } from "@/utils/jwt";
 
 interface SseMessagePayload {
   type: string;
@@ -172,35 +173,129 @@ export function useKnowledgeBaseDetail() {
   // SSE 连接管理
   let sseConnection: EventSource | null = null;
   let sseKbId: string | null = null;
+  // SSE 重连次数上限（防止无限重试）
+  const MAX_SSE_RECONNECT = 2;
+  let sseReconnectCount = 0;
+  // 最后收到消息的时间（用于心跳检测）
+  let lastMessageAt = 0;
+  // 心跳超时阈值（毫秒），收到 ping 超此时间未更新则降级轮询
+  const HEARTBEAT_TIMEOUT_MS = 45_000;
+
+  // 轮询相关状态
+  let pollingInterval: ReturnType<typeof setInterval> | null = null;
+  const POLLING_INTERVAL_MS = 10_000;
 
   /**
-   * 连接 SSE 以接收实时文档状态变更。
+   * 刷新 accessToken 并返回新 token。
    */
-  function connectDocumentStream(kbId: string) {
+  async function refreshAccessToken(): Promise<string | null> {
+    const refreshToken =
+      typeof window !== "undefined"
+        ? localStorage.getItem("rag_kb_refresh_token") ||
+          sessionStorage.getItem("rag_kb_refresh_token") ||
+          ""
+        : "";
+
+    if (!refreshToken) {
+      return null;
+    }
+
+    try {
+      const baseUrl =
+        (import.meta.env.VITE_API_BASE_URL as string) || "http://localhost:3000";
+      const url = `${baseUrl}/auth/refresh`;
+
+      const response = await fetch(url, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ refreshToken }),
+      });
+
+      const result = (await response.json()) as { success?: boolean; data?: { accessToken?: string } };
+
+      if (response.ok && result?.success && result.data?.accessToken) {
+        const newToken = result.data.accessToken;
+        setAccessToken(newToken);
+        return newToken;
+      }
+    } catch {
+      // 网络错误
+    }
+    return null;
+  }
+
+  /**
+   * 启动轮询降级：定期拉取文档列表并更新状态。
+   */
+  function startPolling(kbId: string) {
+    stopPolling();
+    pollingInterval = setInterval(async () => {
+      try {
+        const result = await listKnowledgeBaseDocuments(kbId, {
+          page: 1,
+          pageSize: documentPagination.pageSize,
+        });
+        documents.value = result.list;
+      } catch {
+        // 轮询期间静默失败，不影响用户体验
+      }
+    }, POLLING_INTERVAL_MS);
+  }
+
+  /**
+   * 停止轮询降级。
+   */
+  function stopPolling() {
+    if (pollingInterval !== null) {
+      clearInterval(pollingInterval);
+      pollingInterval = null;
+    }
+  }
+
+  /**
+   * 建立 SSE 连接，附带 token 预检 + 401 降级刷新 + 轮询兜底。
+   */
+  async function connectDocumentStream(kbId: string) {
     if (sseConnection && sseKbId === kbId) {
       return;
     }
 
     disconnectDocumentStream();
+    stopPolling();
 
     const authStore = useAuthStore();
     if (!authStore.isAuthenticated) {
       return;
     }
 
-    const token = getAccessToken();
+    let token = getAccessToken();
     if (!token) {
       return;
     }
 
+    // 预检：token 即将过期则先刷新
+    if (isTokenExpiredOrSoon(token, 120)) {
+      const refreshed = await refreshAccessToken();
+      if (!refreshed) {
+        // 刷新失败，降级轮询
+        startPolling(kbId);
+        return;
+      }
+      token = refreshed;
+    }
+
     const baseUrl: string =
       (import.meta.env.VITE_API_BASE_URL as string) || "http://localhost:3000";
-    const url = `${baseUrl}/api/knowledge-bases/${kbId}/documents/stream?token=${encodeURIComponent(token)}`;
+    const url = `${baseUrl}/knowledge-bases/${kbId}/documents-stream?token=${encodeURIComponent(token)}`;
 
     sseConnection = new EventSource(url);
     sseKbId = kbId;
+    sseReconnectCount = 0;
 
     sseConnection.onmessage = (event) => {
+      lastMessageAt = Date.now();
       try {
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const raw: Record<string, unknown> = JSON.parse(event.data as string);
@@ -218,7 +313,7 @@ export function useKnowledgeBaseDetail() {
               ? raw.processingVersion
               : undefined,
         };
-        if (payload.type === "connected") {
+        if (payload.type === "connected" || payload.type === "ping") {
           return;
         }
         if (
@@ -239,16 +334,36 @@ export function useKnowledgeBaseDetail() {
       }
     };
 
-    sseConnection.onerror = () => {
+    sseConnection.onerror = async () => {
       if (sseConnection?.readyState === EventSource.CLOSED) {
         sseConnection = null;
         sseKbId = null;
+
+        // 心跳超时：超过 HEARTBEAT_TIMEOUT_MS 未收到任何消息，降级轮询
+        if (lastMessageAt > 0 && Date.now() - lastMessageAt > HEARTBEAT_TIMEOUT_MS) {
+          startPolling(kbId);
+          return;
+        }
+        if (sseReconnectCount < MAX_SSE_RECONNECT) {
+          sseReconnectCount++;
+          const newToken = await refreshAccessToken();
+          if (newToken) {
+            // 重新发起 SSE 连接
+            const retryUrl = `${baseUrl}/knowledge-bases/${kbId}/documents-stream?token=${encodeURIComponent(newToken)}`;
+            sseConnection = new EventSource(retryUrl);
+            sseKbId = kbId;
+            return;
+          }
+        }
+
+        // 重连失败，降级为轮询
+        startPolling(kbId);
       }
     };
   }
 
   /**
-   * 断开 SSE 连接。
+   * 断开 SSE 连接并停止轮询。
    */
   function disconnectDocumentStream() {
     if (sseConnection) {
@@ -256,6 +371,7 @@ export function useKnowledgeBaseDetail() {
       sseConnection = null;
       sseKbId = null;
     }
+    stopPolling();
   }
 
   /**

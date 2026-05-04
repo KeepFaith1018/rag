@@ -16,6 +16,9 @@ interface DocumentStateChangedPayload {
 @Injectable()
 export class DocumentSseService implements OnModuleDestroy {
   private readonly streams = new Map<string, Set<Subject<MessageEvent>>>();
+  private readonly pingIntervals = new Map<Subject<MessageEvent>, ReturnType<typeof setInterval>>();
+
+  private static readonly PING_INTERVAL_MS = 30_000;
 
   /**
    * 为指定知识库创建 SSE 可观察流。
@@ -24,6 +27,14 @@ export class DocumentSseService implements OnModuleDestroy {
     const subject = new Subject<MessageEvent>();
     const kbStreams = this.getOrCreateKbStreams(kbId);
     kbStreams.add(subject);
+
+    // 心跳保活，防止代理 / 负载均衡超时断开
+    const pingInterval = setInterval(() => {
+      if (!subject.closed) {
+        subject.next({ data: JSON.stringify({ type: 'ping' }) } as MessageEvent);
+      }
+    }, DocumentSseService.PING_INTERVAL_MS);
+    this.pingIntervals.set(subject, pingInterval);
 
     subject.next({
       data: JSON.stringify({ type: 'connected', kbId }),
@@ -68,6 +79,12 @@ export class DocumentSseService implements OnModuleDestroy {
    * 当客户端断开连接时清理 Subject。
    */
   private unsubscribe(kbId: string, subject: Subject<MessageEvent>) {
+    const pingInterval = this.pingIntervals.get(subject);
+    if (pingInterval !== undefined) {
+      clearInterval(pingInterval);
+      this.pingIntervals.delete(subject);
+    }
+
     const kbStreams = this.streams.get(kbId);
     if (!kbStreams) {
       return;
@@ -88,6 +105,10 @@ export class DocumentSseService implements OnModuleDestroy {
       }
     }
     this.streams.clear();
+    for (const interval of this.pingIntervals.values()) {
+      clearInterval(interval);
+    }
+    this.pingIntervals.clear();
   }
 
   private getOrCreateKbStreams(kbId: string) {

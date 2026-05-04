@@ -18,11 +18,9 @@ import { DocumentSseService } from './services/document-sse.service';
 export class DocumentSseController {
   constructor(private readonly documentSseService: DocumentSseService) {}
 
-  @Sse('knowledge-bases/:kbId/documents/stream')
+  @Sse('knowledge-bases/:kbId/documents-stream')
   @KbPermission({ action: 'read' })
-  streamDocuments(
-    @Param('kbId') kbId: string,
-  ): Observable<MessageEvent> {
+  streamDocuments(@Param('kbId') kbId: string): Observable<MessageEvent> {
     return this.documentSseService.subscribe(kbId);
   }
 }

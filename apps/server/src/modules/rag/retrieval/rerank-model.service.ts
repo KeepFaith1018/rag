@@ -33,16 +33,13 @@ export class RerankModelService {
     private readonly configService: ConfigService,
     @Inject(WINSTON_MODULE_PROVIDER) logger: Logger,
   ) {
-    this.apiKey =
-      this.configService.get<string>('BAILIAN_API_KEY') || '';
+    this.apiKey = this.configService.get<string>('BAILIAN_API_KEY') || '';
     this.model =
-      this.configService.get<string>('BAILIAN_RERANK_MODEL') ||
-      'qwen3-rerank';
+      this.configService.get<string>('BAILIAN_RERANK_MODEL') || 'qwen3-rerank';
     this.baseUrl =
       this.configService.get<string>('BAILIAN_BASE_URL') ||
       'https://dashscope.aliyuncs.com/compatible-mode/v1';
-    this.topN =
-      this.configService.get<number>('BAILIAN_RERANK_TOP_N') || 10;
+    this.topN = this.configService.get<number>('BAILIAN_RERANK_TOP_N') || 10;
     this.logger = logger;
   }
 
