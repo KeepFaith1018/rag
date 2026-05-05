@@ -11,11 +11,10 @@ import { ref, shallowRef } from 'vue';
 import { fetchChatStream } from '@/api/chat';
 import type { StreamChatRequest } from '@/modules/chat/types/chat';
 import type {
-  AgentStatusPart,
+  AgentPhase,
   RetrievalProgressPart,
   CitationSnapshotPart,
   AgentWarningPart,
-  CustomPart,
 } from '@/modules/chat/types/stream';
 import { useStreamingMarkdown } from './useStreamingMarkdown';
 import { useChatStore } from '@/stores/chat';
@@ -43,33 +42,31 @@ export function useAgentChat(options?: UseAgentChatOptions) {
   const chatStore = useChatStore();
 
   /**
-   * 解析 AI SDK data stream 协议的行
-   * 协议格式：
-   * - `0:` 文本块 {"delta": "..."}
-   * - `8:` 自定义 data event JSON
-   * - `d:` 流结束 {"reason": "stop"}
-   */
-  function parseStreamLine(line: string): { type: string; value: string } | null {
-    if (!line || line.length < 2) return null;
-    const type = line[0];
-    const value = line.slice(1);
-    return { type, value };
+ * 解析 SSE data 行
+ * SSE 格式: data: {"type": "...", ...}\n\n
+ * @returns 解析后的对象，包含 type 和 data 字段
+ */
+function parseSSEData(line: string): { type: string; data: Record<string, unknown> } | null {
+  // SSE 行的格式: "data: {...}" 或 "data: [DONE]"
+  if (!line.startsWith('data: ')) {
+    return null;
   }
 
-  /**
-   * 解析自定义 data part JSON
-   */
-  function parseCustomPart(jsonStr: string): CustomPart | null {
-    try {
-      const part = JSON.parse(jsonStr);
-      if (part && typeof part === 'object' && 'type' in part) {
-        return part as CustomPart;
-      }
-      return null;
-    } catch {
-      return null;
-    }
+  const json = line.slice(6); // 去掉 "data: " 前缀
+
+  // SSE 结束标记
+  if (json === '[DONE]') {
+    return { type: '[DONE]', data: {} };
   }
+
+  try {
+    const obj = JSON.parse(json) as Record<string, unknown>;
+    const type = typeof obj.type === 'string' ? obj.type : '';
+    return { type, data: obj };
+  } catch {
+    return null;
+  }
+}
 
   /**
    * 发送消息并处理流式响应
@@ -185,57 +182,60 @@ export function useAgentChat(options?: UseAgentChatOptions) {
           const trimmed = line.trim();
           if (!trimmed) continue;
 
-          const parsed = parseStreamLine(trimmed);
+          const parsed = parseSSEData(trimmed);
           if (!parsed) continue;
 
-          const { type, value: rawValue } = parsed;
+          const { type, data } = parsed;
 
-          if (type === '0') {
-            // 文本增量
-            try {
-              const data = JSON.parse(rawValue);
-              if (data.delta) {
-                pushDelta(data.delta);
-              }
-            } catch {
-              // ignore parse error
+          if (type === 'text-delta') {
+            // 文本增量: {"type": "text-delta", "id": "...", "delta": "..."}
+            const delta = data.delta;
+            if (typeof delta === 'string') {
+              pushDelta(delta);
             }
-          } else if (type === '8') {
-            // 自定义 data event
-            const part = parseCustomPart(rawValue);
-            if (!part) continue;
+          } else if (type === 'finish') {
+            // 流结束: {"type": "finish", "finishReason": "stop"}
+            flush();
+          } else if (type.startsWith('data-')) {
+            // 自定义 data 事件: {"type": "data-xxx", "data": {...}}
+            const innerData = data.data as Record<string, unknown>;
+            if (!innerData || typeof innerData !== 'object') continue;
 
-            switch (part.type) {
+            const innerType = typeof innerData.type === 'string' ? innerData.type : '';
+
+            switch (innerType) {
               case 'agent-status': {
-                const status = part as AgentStatusPart;
-                chatStore.setAgentPhase(status.phase, status.label, status.detail);
+                const phase = innerData.phase as AgentPhase | undefined;
+                const label = innerData.label as string | undefined;
+                const detail = innerData.detail as string | undefined;
+                if (phase) {
+                  chatStore.setAgentPhase(phase, label || '', detail || '');
+                }
                 break;
               }
               case 'retrieval-progress': {
-                const progress = part as RetrievalProgressPart;
+                // 后端发送: { denseCount, sparseCount, fusedCount } 在 data 里
+                const progress: RetrievalProgressPart = {
+                  type: 'retrieval-progress',
+                  denseCount: data.denseCount as number | undefined,
+                  sparseCount: data.sparseCount as number | undefined,
+                  fusedCount: data.fusedCount as number | undefined,
+                };
                 chatStore.addRetrievalProgress(progress);
                 break;
               }
               case 'citation-snapshot': {
-                const citations = part as CitationSnapshotPart;
-                chatStore.setCitations(citations.citations);
+                const citations = data as unknown as CitationSnapshotPart;
+                if (Array.isArray(citations.citations)) {
+                  chatStore.setCitations(citations.citations);
+                }
                 break;
               }
               case 'agent-warning': {
-                const warning = part as AgentWarningPart;
+                const warning = data as unknown as AgentWarningPart;
                 chatStore.addWarning(warning);
                 break;
               }
-            }
-          } else if (type === 'd') {
-            // 流结束
-            try {
-              const data = JSON.parse(rawValue);
-              if (data.reason === 'stop' || data.reason === 'complete') {
-                // 正常结束
-              }
-            } catch {
-              // ignore
             }
           }
         }
@@ -243,15 +243,11 @@ export function useAgentChat(options?: UseAgentChatOptions) {
 
       // 处理剩余 buffer
       if (buffer.trim()) {
-        const parsed = parseStreamLine(buffer.trim());
-        if (parsed && parsed.type === '0') {
-          try {
-            const data = JSON.parse(parsed.value);
-            if (data.delta) {
-              pushDelta(data.delta);
-            }
-          } catch {
-            // ignore
+        const parsed = parseSSEData(buffer.trim());
+        if (parsed && parsed.type === 'text-delta') {
+          const delta = parsed.data.delta;
+          if (typeof delta === 'string') {
+            pushDelta(delta);
           }
         }
       }
@@ -284,6 +280,12 @@ export function useAgentChat(options?: UseAgentChatOptions) {
   function abort(): void {
     if (abortController.value) {
       abortController.value.abort();
+      // 添加取消提示
+      chatStore.addWarning({
+        type: 'agent-warning',
+        code: 'USER_CANCELLED',
+        message: '用户取消了请求',
+      });
     }
   }
 

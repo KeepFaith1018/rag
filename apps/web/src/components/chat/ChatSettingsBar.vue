@@ -54,7 +54,7 @@ const compactStatus = computed(() => {
         <!-- 模型指示 -->
         <div class="flex items-center gap-2">
           <span class="material-symbols-outlined text-[14px] text-outline">psychology</span>
-          <span class="text-outline">{{ chatStore.currentModelConfig?.modelName || '默认模型' }}</span>
+          <span class="text-outline">{{ chatStore.selectedModel?.modelName || '默认模型' }}</span>
         </div>
       </div>
 

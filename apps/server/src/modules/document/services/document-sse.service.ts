@@ -23,6 +23,7 @@ export class DocumentSseService implements OnModuleDestroy {
   /**
    * 为指定知识库创建 SSE 可观察流。
    */
+  
   subscribe(kbId: string): Observable<MessageEvent> {
     const subject = new Subject<MessageEvent>();
     const kbStreams = this.getOrCreateKbStreams(kbId);

@@ -335,29 +335,38 @@ export function useKnowledgeBaseDetail() {
     };
 
     sseConnection.onerror = async () => {
+      // readyState 为 CLOSED 时说明连接已真正结束
       if (sseConnection?.readyState === EventSource.CLOSED) {
+        // 保存当前 kbId，因为下面会置 null
+        const currentKbId = sseKbId;
+        const currentBaseUrl = baseUrl;
+
+        // 彻底清理旧连接，防止重复请求
+        sseConnection.close();
         sseConnection = null;
         sseKbId = null;
 
         // 心跳超时：超过 HEARTBEAT_TIMEOUT_MS 未收到任何消息，降级轮询
         if (lastMessageAt > 0 && Date.now() - lastMessageAt > HEARTBEAT_TIMEOUT_MS) {
-          startPolling(kbId);
+          if (currentKbId) startPolling(currentKbId);
           return;
         }
+
+        // 重连次数上限（最多 2 次）
         if (sseReconnectCount < MAX_SSE_RECONNECT) {
           sseReconnectCount++;
           const newToken = await refreshAccessToken();
-          if (newToken) {
-            // 重新发起 SSE 连接
-            const retryUrl = `${baseUrl}/knowledge-bases/${kbId}/documents-stream?token=${encodeURIComponent(newToken)}`;
+          if (newToken && currentKbId) {
+            const retryUrl = `${currentBaseUrl}/knowledge-bases/${currentKbId}/documents-stream?token=${encodeURIComponent(newToken)}`;
+            // 创建新连接前已关闭旧连接，不会重复请求
             sseConnection = new EventSource(retryUrl);
-            sseKbId = kbId;
+            sseKbId = currentKbId;
             return;
           }
         }
 
         // 重连失败，降级为轮询
-        startPolling(kbId);
+        if (currentKbId) startPolling(currentKbId);
       }
     };
   }

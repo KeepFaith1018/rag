@@ -1,138 +1,126 @@
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, watch, nextTick } from 'vue'
 
 const props = withDefaults(
   defineProps<{
-    isStreaming?: boolean;
+    isStreaming?: boolean
   }>(),
   {
     isStreaming: false,
   },
-);
+)
 
 const emit = defineEmits<{
-  send: [message: string];
-  cancel: [];
-}>();
+  send: [message: string]
+  cancel: []
+}>()
 
-const inputText = ref('');
+const inputText = ref('')
+const textareaRef = ref<HTMLTextAreaElement | null>(null)
 
-/**
- * 发送消息
- */
-function handleSend() {
-  const message = inputText.value.trim();
-  if (!message) return;
-  emit('send', message);
-  inputText.value = '';
+const LINE_HEIGHT = 24 // 每行高度约 24px
+const MAX_LINES = 8
+const MAX_HEIGHT = LINE_HEIGHT * MAX_LINES
+
+/** 自适应高度 */
+function autoResize() {
+  nextTick(() => {
+    if (!textareaRef.value) return
+    textareaRef.value.style.height = 'auto'
+    const scrollHeight = textareaRef.value.scrollHeight
+    textareaRef.value.style.height = Math.min(scrollHeight, MAX_HEIGHT) + 'px'
+    textareaRef.value.style.overflowY = scrollHeight > MAX_HEIGHT ? 'auto' : 'hidden'
+  })
 }
 
-/**
- * 处理回车键发送
- */
+watch(inputText, autoResize)
+
+/** 发送消息 */
+function handleSend() {
+  const message = inputText.value.trim()
+  if (!message) return
+  emit('send', message)
+  inputText.value = ''
+  nextTick(() => {
+    if (textareaRef.value) {
+      textareaRef.value.style.height = 'auto'
+      textareaRef.value.style.overflowY = 'hidden'
+    }
+  })
+}
+
+/** 处理键盘事件 */
 function handleKeydown(e: KeyboardEvent) {
+  if (e.key === 'Enter' && e.ctrlKey) {
+    // Ctrl + Enter：换行
+    e.preventDefault()
+    const textarea = textareaRef.value
+    if (!textarea) return
+    const start = textarea.selectionStart
+    const end = textarea.selectionEnd
+    inputText.value = inputText.value.substring(0, start) + '\n' + inputText.value.substring(end)
+    nextTick(() => {
+      textarea.selectionStart = textarea.selectionEnd = start + 1
+    })
+    return
+  }
   if (e.key === 'Enter' && !e.shiftKey) {
-    e.preventDefault();
-    handleSend();
+    // Enter（无 Ctrl）：发送
+    e.preventDefault()
+    handleSend()
   }
 }
 
-/**
- * 取消请求
- */
+/** 取消请求 */
 function handleCancel() {
-  emit('cancel');
+  emit('cancel')
 }
 </script>
 
 <template>
-  <footer class="w-full p-6 pt-4">
-    <div class="max-w-4xl mx-auto relative group space-y-3">
-      <!-- Glassmorphism 输入框 -->
-      <div
-        class="bg-surface-container-low/60 backdrop-blur-2xl rounded-2xl border border-outline-variant/10 p-2 shadow-2xl transition-all focus-within:bg-surface-container-high/80"
-      >
-        <div class="flex items-end gap-2 px-3 py-2">
+  <!-- 统一容器：上下结构 -->
+  <div class="w-full bg-surface-container-low/80 backdrop-blur-xl rounded-2xl border border-outline-variant/10 shadow-2xl">
+    <!-- 上部：输入区 -->
+    <div class="px-3 pt-3 pb-2">
+      <textarea
+        ref="textareaRef"
+        v-model="inputText"
+        class="w-full bg-transparent focus:outline-none text-on-surface placeholder:text-outline/50 resize-none text-sm leading-6"
+        placeholder="向 灵索智能 发送消息..."
+        :style="{ height: 'auto', overflowY: 'hidden' }"
+        @keydown="handleKeydown"
+      />
+    </div>
+
+    <!-- 下部：功能区，左右布局 -->
+    <div class="flex items-center justify-between px-3 pb-3">
+      <!-- 左侧：附件 -->
+      <button class="p-2 text-outline hover:text-primary transition-colors focus:outline-none">
+        <span class="material-symbols-outlined text-xl">attach_file</span>
+      </button>
+
+      <!-- 右侧：语音 + 发送 -->
+      <div class="flex items-center gap-1">
+        <template v-if="isStreaming">
           <button
-            class="p-2 text-outline hover:text-primary transition-colors focus:outline-none"
+            class="bg-error-container hover:bg-error/20 text-on-error-container p-2 rounded-xl transition-all shadow-lg active:scale-95 focus:outline-none"
+            @click="handleCancel"
           >
-            <span class="material-symbols-outlined">attach_file</span>
+            <span class="material-symbols-outlined text-xl">close</span>
           </button>
-
-          <textarea
-            v-model="inputText"
-            class="flex-1 bg-transparent focus:outline-none text-on-surface placeholder:text-outline/50 resize-none py-2 text-sm max-h-48"
-            placeholder="向 灵索智能 发送消息..."
-            rows="1"
-            @keydown="handleKeydown"
-          ></textarea>
-
-          <div class="flex items-center gap-2 mb-1">
-            <button
-              v-if="isStreaming"
-              class="bg-error-container hover:bg-error/20 text-on-error-container p-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center focus:outline-none"
-              @click="handleCancel"
-            >
-              <span class="material-symbols-outlined text-[20px]">close</span>
-            </button>
-            <template v-else>
-              <button
-                class="p-2 text-outline hover:text-primary transition-colors focus:outline-none"
-              >
-                <span class="material-symbols-outlined">mic</span>
-              </button>
-            </template>
-            <button
-              v-if="!isStreaming"
-              class="bg-primary-container hover:bg-primary text-on-primary-container p-2.5 rounded-xl transition-all shadow-lg active:scale-95 flex items-center justify-center focus:outline-none"
-              @click="handleSend"
-            >
-              <span class="material-symbols-outlined text-[20px]">arrow_upward</span>
-            </button>
-          </div>
-        </div>
-
-        <!-- Metadata Row -->
-        <div
-          class="flex items-center justify-between px-4 py-2 border-t border-outline-variant/5"
-        >
-          <div class="flex items-center gap-4">
-            <button
-              class="flex items-center gap-1.5 text-[10px] font-label text-outline hover:text-on-surface transition-colors uppercase tracking-widest focus:outline-none"
-            >
-              <span class="material-symbols-outlined text-[14px]">tune</span>
-              模型设置
-            </button>
-            <button
-              class="flex items-center gap-1.5 text-[10px] font-label text-outline hover:text-on-surface transition-colors uppercase tracking-widest focus:outline-none"
-            >
-              <span class="material-symbols-outlined text-[14px]">visibility</span>
-              联网搜索
-            </button>
-          </div>
-          <span
-            class="text-[10px] text-outline/40 font-label tracking-tighter italic"
+        </template>
+        <template v-else>
+          <button class="p-2 text-outline hover:text-primary transition-colors focus:outline-none">
+            <span class="material-symbols-outlined text-xl">mic</span>
+          </button>
+          <button
+            class="bg-primary-container hover:bg-primary text-on-primary-container p-2 rounded-xl transition-all shadow-lg active:scale-95 focus:outline-none"
+            @click="handleSend"
           >
-            <!-- 由 ChatModelSelector 显示模型名称 -->
-          </span>
-        </div>
-      </div>
-
-      <!-- Floating Action Suggestion -->
-      <div
-        class="absolute -top-10 left-4 flex gap-2 opacity-0 group-focus-within:opacity-100 transition-opacity"
-      >
-        <button
-          class="px-3 py-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/10 rounded-full text-[10px] font-label text-outline hover:text-primary transition-colors focus:outline-none"
-        >
-          总结分析
-        </button>
-        <button
-          class="px-3 py-1 bg-surface-container-high/80 backdrop-blur-md border border-outline-variant/10 rounded-full text-[10px] font-label text-outline hover:text-primary transition-colors focus:outline-none"
-        >
-          导出 PDF
-        </button>
+            <span class="material-symbols-outlined text-xl">arrow_upward</span>
+          </button>
+        </template>
       </div>
     </div>
-  </footer>
+  </div>
 </template>

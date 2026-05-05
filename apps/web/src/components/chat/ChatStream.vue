@@ -1,12 +1,16 @@
 <script setup lang="ts">
 import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue';
-import MessageBubble from './MessageBubble.vue';
-import AIAgentMessage from './AIAgentMessage.vue';
+import UserMessageItem from './UserMessageItem.vue';
+import AIMessageItem from './AIMessageItem.vue';
 import type { ChatMessageItem } from '@/modules/chat/types/chat';
 
 const props = defineProps<{
   messages: ChatMessageItem[];
   isAgentWorking: boolean;
+}>();
+
+const emit = defineEmits<{
+  retry: [messageId: number]
 }>();
 
 /** 自动滚动到底部 */
@@ -57,31 +61,30 @@ watch(
     if (working) scrollToBottom();
   },
 );
+
+function handleRetry(messageId: number) {
+  emit('retry', messageId);
+}
 </script>
 
 <template>
   <section
     ref="containerRef"
-    class="message-stream px-6 py-8 space-y-12 max-w-5xl mx-auto w-full"
+    class="message-stream px-6 py-4 space-y-6 w-full"
   >
     <template v-if="messages.length > 0">
       <template
         v-for="msg in messages"
         :key="msg.id"
       >
-        <MessageBubble
+        <UserMessageItem
           v-if="msg.role === 'user'"
-          :message="{
-            id: msg.id,
-            role: msg.role,
-            name: msg.name,
-            time: new Date(msg.createdAt).toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' }),
-            content: msg.content,
-          }"
+          :message="msg"
         />
-        <AIAgentMessage
+        <AIMessageItem
           v-else
           :message="msg"
+          @retry="handleRetry(msg.id)"
         />
       </template>
     </template>

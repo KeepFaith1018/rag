@@ -6,6 +6,7 @@ import BaseInput from "@/components/ui/BaseInput.vue";
 import KbCard from "@/components/kb/KbCard.vue";
 import { useKnowledgeBaseList } from "@/composables/useKnowledgeBaseList";
 import { useMessage } from "@/composables/useMessage";
+import { useGlobalConfirmDialog } from "@/composables/useGlobalConfirmDialog";
 import { ApiError } from "@/types/api";
 import type {
   CreateKnowledgeBasePayload,
@@ -17,6 +18,7 @@ import type {
 } from "@/types/knowledge-base";
 
 const message = useMessage();
+const { confirm } = useGlobalConfirmDialog();
 const route = useRoute();
 const kbList = useKnowledgeBaseList();
 const searchKeyword = ref("");
@@ -208,9 +210,13 @@ async function submitManageForm() {
  * 删除知识库。
  */
 async function handleDelete(kb: KnowledgeBaseListItem) {
-  const confirmed = window.confirm(
-    `确认删除知识库“${kb.name}”吗？该操作不可撤销。`,
-  );
+  const confirmed = await confirm({
+    title: '删除知识库',
+    message: `确认删除知识库”${kb.name}”吗？该操作不可撤销。`,
+    confirmText: '删除',
+    cancelText: '取消',
+    danger: true,
+  });
   if (!confirmed) {
     return;
   }

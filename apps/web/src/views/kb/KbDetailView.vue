@@ -6,6 +6,7 @@ import BaseInput from "@/components/ui/BaseInput.vue";
 import { useKnowledgeBaseDetail } from "@/composables/useKnowledgeBaseDetail";
 import { useKbMembers } from "@/composables/useKbMembers";
 import { useMessage } from "@/composables/useMessage";
+import { useGlobalConfirmDialog } from "@/composables/useGlobalConfirmDialog";
 import { useChunkUpload } from "@/modules/document-upload/composables/useChunkUpload";
 import { ApiError } from "@/types/api";
 import type {
@@ -20,6 +21,7 @@ import type {
 const router = useRouter();
 const route = useRoute();
 const message = useMessage();
+const { confirm } = useGlobalConfirmDialog();
 const fileInputRef = ref<HTMLInputElement | null>(null);
 const activeTab = ref<"documents" | "members" | "settings">("documents");
 const documentKeyword = ref("");
@@ -318,9 +320,13 @@ async function removeKnowledgeBase() {
     return;
   }
 
-  const confirmed = window.confirm(
-    `确认删除知识库“${kb.value.name}”吗？该操作不可撤销。`,
-  );
+  const confirmed = await confirm({
+    title: '删除知识库',
+    message: `确认删除知识库”${kb.value.name}”吗？该操作不可撤销。`,
+    confirmText: '删除',
+    cancelText: '取消',
+    danger: true,
+  });
   if (!confirmed) {
     return;
   }
@@ -342,7 +348,13 @@ async function removeDocument(document: KnowledgeBaseDocumentItem) {
     return;
   }
 
-  const confirmed = window.confirm(`确认删除文档“${document.title}”吗？`);
+  const confirmed = await confirm({
+    title: '删除文档',
+    message: `确认删除文档”${document.title}”吗？`,
+    confirmText: '删除',
+    cancelText: '取消',
+    danger: true,
+  });
   if (!confirmed) {
     return;
   }
@@ -452,7 +464,13 @@ async function removeMember(member: KnowledgeBaseMemberItem) {
     return;
   }
 
-  const confirmed = window.confirm(`确认移除成员“${member.fullName}”吗？`);
+  const confirmed = await confirm({
+    title: '移除成员',
+    message: `确认移除成员”${member.fullName}”吗？`,
+    confirmText: '移除',
+    cancelText: '取消',
+    danger: true,
+  });
   if (!confirmed) {
     return;
   }

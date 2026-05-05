@@ -1,11 +1,11 @@
 <script setup lang="ts">
 import { onMounted, computed } from 'vue';
-import TopNavBar from '@/components/layout/TopNavBar.vue';
+import ChatStatusBanner from '@/components/chat/ChatStatusBanner.vue';
+import ChatTopNavBar from '@/components/layout/ChatTopNavBar.vue';
 import ChatStream from '@/components/chat/ChatStream.vue';
 import ChatInputArea from '@/components/chat/ChatInputArea.vue';
 import ChatAgentTimeline from '@/components/chat/ChatAgentTimeline.vue';
 import ChatCitationPanel from '@/components/chat/ChatCitationPanel.vue';
-import ChatStatusBanner from '@/components/chat/ChatStatusBanner.vue';
 import ChatSettingsBar from '@/components/chat/ChatSettingsBar.vue';
 import { useChatStore } from '@/stores/chat';
 import { useAgentChat } from '@/modules/chat/composables/useAgentChat';
@@ -55,6 +55,7 @@ onMounted(async () => {
 // 处理发送消息
 async function handleSendMessage(message: string) {
   if (!message.trim() || chatStore.isSending) return;
+  chatStore.setLastUserMessage(message);
   await sendMessage(message);
 }
 
@@ -62,14 +63,23 @@ async function handleSendMessage(message: string) {
 function handleCancel() {
   abort();
 }
+
+// 处理重试
+async function handleRetry(messageId: number) {
+  const lastMsg = chatStore.lastUserMessage;
+  if (!lastMsg) return;
+  // 找到当前 AI 消息的索引，删除它及之后的所有消息
+  const msgIndex = chatStore.messages.findIndex((m) => m.id === messageId);
+  if (msgIndex !== -1) {
+    chatStore.messages.splice(msgIndex);
+  }
+  await sendMessage(lastMsg);
+}
 </script>
 
 <template>
   <div class="flex flex-col h-full w-full relative">
-    <TopNavBar
-      title="AI 对话舱"
-      :subtitle="chatStore.currentSession?.title || '新建会话'"
-    />
+    <ChatTopNavBar />
 
     <!-- 警告横幅 -->
     <ChatStatusBanner v-if="chatStore.hasWarnings" />
@@ -83,23 +93,23 @@ function handleCancel() {
     <ChatAgentTimeline v-if="showAgentTimeline" />
 
     <!-- 主内容区 -->
-    <div class="flex-1 overflow-hidden flex flex-col">
-      <!-- 消息流区域：占据剩余空间，可滚动 -->
-      <div class="flex-1 overflow-y-auto">
-        <ChatStream :messages="chatStore.messages" :is-agent-working="isStreaming" />
+    <div class="flex-1 overflow-hidden flex flex-col relative">
+      <!-- 消息流区域：占满上方空间，底部留出输入框空间 -->
+      <div class="flex-1 overflow-y-auto pb-36">
+        <ChatStream :messages="chatStore.messages" :is-agent-working="isStreaming" @retry="handleRetry" />
       </div>
 
       <!-- 引用面板 -->
       <ChatCitationPanel v-if="showCitationPanel" />
-    </div>
 
-    <!-- 输入区：固定高度，不遮挡消息 -->
-    <div class="flex-shrink-0 px-6 py-4">
-      <ChatInputArea
-        :is-streaming="isStreaming"
-        @send="handleSendMessage"
-        @cancel="handleCancel"
-      />
+      <!-- 浮动输入框，绝对定位在底部 -->
+      <div class="absolute bottom-0 left-0 right-0 px-6 py-4">
+        <ChatInputArea
+          :is-streaming="isStreaming"
+          @send="handleSendMessage"
+          @cancel="handleCancel"
+        />
+      </div>
     </div>
   </div>
 </template>

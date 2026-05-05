@@ -79,6 +79,9 @@ export const useChatStore = defineStore('chat', () => {
   /** 检索进度列表 */
   const retrievalProgresses = ref<RetrievalProgressPart[]>([]);
 
+  /** 最后一条用户消息内容（用于重试） */
+  const lastUserMessage = ref('');
+
   // ─── 计算属性 ─────────────────────────────────────────────
 
   const hasActiveSession = computed(() => currentSession.value !== null);
@@ -232,11 +235,12 @@ export const useChatStore = defineStore('chat', () => {
 
   /**
    * 添加检索进度。
+   * 后端发送的检索进度去重：只保留最新的
    */
   function addRetrievalProgress(progress: RetrievalProgressPart) {
-    // 去重：如果已有同 kbId + channel 的记录则替换
+    // 后端发送的检索进度没有 kbId/channel，使用索引去重
     const idx = retrievalProgresses.value.findIndex(
-      (p) => p.kbId === progress.kbId && p.channel === progress.channel,
+      (p) => p.type === 'retrieval-progress' && p.denseCount === progress.denseCount && p.sparseCount === progress.sparseCount,
     );
     if (idx >= 0) {
       retrievalProgresses.value[idx] = progress;
@@ -359,6 +363,13 @@ export const useChatStore = defineStore('chat', () => {
     isSending.value = sending;
   }
 
+  /**
+   * 设置最后一条用户消息（用于重试）。
+   */
+  function setLastUserMessage(msg: string) {
+    lastUserMessage.value = msg;
+  }
+
   // ─── 清空 ────────────────────────────────────────────────
 
   /**
@@ -390,6 +401,7 @@ export const useChatStore = defineStore('chat', () => {
     citations,
     agentWarnings,
     retrievalProgresses,
+    lastUserMessage,
     // 计算属性
     hasActiveSession,
     isRagMode,
@@ -422,6 +434,7 @@ export const useChatStore = defineStore('chat', () => {
     clearWarnings,
     resetAgentState,
     setSending,
+    setLastUserMessage,
     clearCurrentSession,
     addRetrievalProgress,
   };

@@ -37,7 +37,10 @@ coverage/
 
 # NestJS
 .nest/
-apps/backend/storage/
+apps/server/storage/
+
+# Playwright MCP
+.playwright-mcp/
 
 # Editor / OS
 .DS_Store

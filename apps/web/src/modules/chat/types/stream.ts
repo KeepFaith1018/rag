@@ -22,14 +22,19 @@ export interface AgentStatusPart {
   detail?: string;
 }
 
-/** 检索进度事件 */
+/** 检索进度事件
+ * 后端发送: { type: 'retrieval-progress', denseCount, sparseCount, fusedCount }
+ */
 export interface RetrievalProgressPart {
   type: 'retrieval-progress';
-  kbId: string;
-  kbName: string;
-  query: string;
-  hitCount: number;
-  channel: 'dense' | 'sparse' | 'hybrid';
+  kbId?: string;
+  kbName?: string;
+  query?: string;
+  hitCount?: number;
+  channel?: 'dense' | 'sparse' | 'hybrid';
+  denseCount?: number;
+  sparseCount?: number;
+  fusedCount?: number;
 }
 
 /** 引用快照事件 */
@@ -52,7 +57,7 @@ export interface Citation {
 /** Agent 警告事件 */
 export interface AgentWarningPart {
   type: 'agent-warning';
-  code: 'LOW_CONFIDENCE' | 'PARTIAL_ANSWER' | 'WEB_SEARCH_CANDIDATE' | 'INSUFFICIENT_CONTEXT';
+  code: 'LOW_CONFIDENCE' | 'PARTIAL_ANSWER' | 'WEB_SEARCH_CANDIDATE' | 'INSUFFICIENT_CONTEXT' | 'USER_CANCELLED';
   message: string;
 }
 
@@ -114,9 +119,9 @@ export function parseStreamLine(line: string): {
  */
 export function parseCustomPart(jsonStr: string): CustomPart | null {
   try {
-    const part = JSON.parse(jsonStr);
+    const part = JSON.parse(jsonStr) as Record<string, unknown>;
     if (part && typeof part === 'object' && 'type' in part) {
-      return part as CustomPart;
+      return part as unknown as CustomPart;
     }
     return null;
   } catch {

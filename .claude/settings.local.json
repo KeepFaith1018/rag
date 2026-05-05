@@ -14,7 +14,19 @@
       "Bash(pnpm --filter frontend build)",
       "Bash(pnpm --filter backend list --depth 0)",
       "mcp__plugin_context7_context7__resolve-library-id",
-      "mcp__plugin_context7_context7__query-docs"
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "mcp__ide__getDiagnostics",
+      "Bash(node -e \"const n = require\\('@nestjs/common'\\); console.log\\('Sse' in n ? 'Sse found' : 'Sse not found'\\)\")",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_console_messages",
+      "mcp__plugin_playwright_playwright__browser_close",
+      "Bash(git commit *)",
+      "Bash(pnpm --filter web build)",
+      "Bash(pnpm --filter web dev)",
+      "Bash(curl -s http://localhost:5173)",
+      "mcp__plugin_playwright_playwright__browser_snapshot"
     ]
   },
   "enabledPlugins": {}
