@@ -66,4 +66,12 @@ export const ErrorCodeHttpStatusMap: Record<ErrorCode, HttpStatus> = {
   [ErrorCode.AUTH_USER_EXISTS]: HttpStatus.BAD_REQUEST,
   [ErrorCode.AUTH_USER_NOT_FOUND]: HttpStatus.NOT_FOUND,
   [ErrorCode.AUTH_INVALID_REFRESH_TOKEN]: HttpStatus.UNAUTHORIZED,
+
+  // 管理员
+  [ErrorCode.ADMIN_INVALID_CREDENTIALS]: HttpStatus.UNAUTHORIZED,
+  [ErrorCode.ADMIN_NOT_FOUND]: HttpStatus.NOT_FOUND,
+  [ErrorCode.ADMIN_USERNAME_EXISTS]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.ADMIN_FORBIDDEN]: HttpStatus.FORBIDDEN,
+  [ErrorCode.ADMIN_CANNOT_DELETE_SELF]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.ADMIN_CANNOT_DISABLE_SELF]: HttpStatus.BAD_REQUEST,
 }

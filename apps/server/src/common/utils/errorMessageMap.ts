@@ -67,4 +67,12 @@ export const ErrorMessageMap: Record<ErrorCode, string> = {
   [ErrorCode.AUTH_USER_EXISTS]: '用户已存在',
   [ErrorCode.AUTH_USER_NOT_FOUND]: '用户不存在',
   [ErrorCode.AUTH_INVALID_REFRESH_TOKEN]: '刷新令牌无效',
+
+  // 管理员
+  [ErrorCode.ADMIN_INVALID_CREDENTIALS]: '管理员账号或密码错误',
+  [ErrorCode.ADMIN_NOT_FOUND]: '管理员不存在',
+  [ErrorCode.ADMIN_USERNAME_EXISTS]: '用户名已存在',
+  [ErrorCode.ADMIN_FORBIDDEN]: '权限不足，无法访问该功能',
+  [ErrorCode.ADMIN_CANNOT_DELETE_SELF]: '不能删除自己的账号',
+  [ErrorCode.ADMIN_CANNOT_DISABLE_SELF]: '不能禁用自己的账号',
 }

@@ -1,7 +1,9 @@
 {
-  "*.ts": [
+  "apps/server/**/*.ts": [
     "pnpm exec eslint --fix --config apps/server/eslint.config.mjs"
   ],
+  "apps/admin/**/*.ts": [],
+  "apps/admin/**/*.vue": [],
   "*.vue": ["pnpm exec eslint --fix --config apps/server/eslint.config.mjs"],
   "*.json": [],
   "*.md": []

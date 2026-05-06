@@ -8,6 +8,7 @@
     "install:all": "pnpm install",
     "dev:server": "pnpm --filter server run start:dev",
     "dev:web": "pnpm --filter web run dev",
+    "dev:admin": "pnpm --filter admin run dev",
     "build": "pnpm -r run build",
     "build:server": "pnpm --filter server run build",
     "build:web": "pnpm --filter web run build",

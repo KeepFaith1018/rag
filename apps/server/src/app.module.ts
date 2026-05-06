@@ -17,6 +17,7 @@ import { DocumentModule } from './modules/document/document.module';
 import { ChatModule } from './modules/chat/chat.module';
 import { RagModule } from './modules/rag/rag.module';
 import { EmailModule } from './modules/email/email.module';
+import { AdminModule } from './modules/admin/admin.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { JwtModule } from '@nestjs/jwt';
@@ -58,6 +59,7 @@ import { JwtModule } from '@nestjs/jwt';
     DocumentModule,
     ChatModule,
     RagModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [
