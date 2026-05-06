@@ -514,6 +514,8 @@ model sys_dict_type {
   name       String   @db.VarChar(100)
   remark     String?  @db.VarChar(255)
   created_at DateTime @default(now()) @db.DateTime(0)
+
+  items      sys_dict_item[]
 }
 
 model sys_dict_item {
@@ -527,4 +529,6 @@ model sys_dict_item {
 
   @@unique([type_code, value], map: "uk_type_value")
   @@index([type_code], map: "idx_type_code")
+
+  type      sys_dict_type? @relation(fields: [type_code], references: [code], map: "fk_dict_type")
 }

@@ -64,6 +64,36 @@ const router = createRouter({
           component: () => import("@/views/admin/[id]/edit.vue"),
           meta: { requiresSuperAdmin: true },
         },
+        {
+          path: "public-kb",
+          name: "public-kb",
+          component: () => import("@/views/public-kb/index.vue"),
+        },
+        {
+          path: "public-kb/:id",
+          name: "public-kb-detail",
+          component: () => import("@/views/public-kb/[id].vue"),
+        },
+        {
+          path: "audit-log",
+          name: "audit-log",
+          component: () => import("@/views/audit-log/index.vue"),
+        },
+        {
+          path: "dict",
+          name: "dict",
+          component: () => import("@/views/dict/index.vue"),
+        },
+        {
+          path: "dict/create",
+          name: "dict-create",
+          component: () => import("@/views/dict/create.vue"),
+        },
+        {
+          path: "dict/:code",
+          name: "dict-detail",
+          component: () => import("@/views/dict/[code].vue"),
+        },
       ],
     },
   ],

@@ -14,6 +14,9 @@ const menuItems = computed(() => {
     { name: "数据概览", path: "/dashboard", icon: "dashboard" },
     { name: "模型配置", path: "/model-config", icon: "settings" },
     { name: "用户管理", path: "/user", icon: "people" },
+    { name: "公开知识库", path: "/public-kb", icon: "cloud" },
+    { name: "审计日志", path: "/audit-log", icon: "history" },
+    { name: "系统字典", path: "/dict", icon: "book" },
   ];
   if (isSuperAdmin.value) {
     items.push({ name: "管理员管理", path: "/admin", icon: "admin_panel_settings" });
