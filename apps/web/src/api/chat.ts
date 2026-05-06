@@ -128,10 +128,12 @@ export async function listAvailableModels(): Promise<
  */
 export async function fetchChatStream(
   request: StreamChatRequest,
+  signal?: AbortSignal,
 ): Promise<Response> {
   return apiRequestStream({
     url: '/chat/stream',
     method: 'POST',
     body: request,
+    signal,
   });
 }

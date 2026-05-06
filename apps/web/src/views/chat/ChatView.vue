@@ -62,14 +62,22 @@ function handleCancel() {
 
 // 处理重试
 async function handleRetry(messageId: string | number) {
-  const lastMsg = chatStore.lastUserMessage;
-  if (!lastMsg) return;
-  // 找到当前 AI 消息的索引，删除它及之后的所有消息
   const msgIndex = chatStore.messages.findIndex((m) => m.id === messageId);
-  if (msgIndex !== -1) {
-    chatStore.messages.splice(msgIndex);
+  if (msgIndex === -1) return;
+
+  // 从失败消息往前找最近一条用户消息
+  let lastUserMsg = '';
+  for (let i = msgIndex - 1; i >= 0; i--) {
+    if (chatStore.messages[i].role === 'user') {
+      lastUserMsg = chatStore.messages[i].content;
+      break;
+    }
   }
-  await sendMessage(lastMsg);
+  if (!lastUserMsg) return;
+
+  // 删除失败消息及之后的所有消息
+  chatStore.messages.splice(msgIndex);
+  await sendMessage(lastUserMsg);
 }
 </script>
 

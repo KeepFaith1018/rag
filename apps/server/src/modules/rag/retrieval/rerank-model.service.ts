@@ -37,8 +37,7 @@ export class RerankModelService {
     this.model =
       this.configService.get<string>('BAILIAN_RERANK_MODEL') || 'qwen3-rerank';
     this.baseUrl =
-      this.configService.get<string>('BAILIAN_BASE_URL') ||
-      'https://dashscope.aliyuncs.com/compatible-mode/v1';
+      'https://dashscope.aliyuncs.com/compatible-api/v1';
     this.topN = this.configService.get<number>('BAILIAN_RERANK_TOP_N') || 10;
     this.logger = logger;
   }
@@ -74,7 +73,7 @@ export class RerankModelService {
     documents: string[],
     topN: number,
   ): Promise<BailianRerankResponse> {
-    const url = `${this.baseUrl}/rerank`;
+    const url = `${this.baseUrl}/reranks`;
 
     const response = await fetch(url, {
       method: 'POST',

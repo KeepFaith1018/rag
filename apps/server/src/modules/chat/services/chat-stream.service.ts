@@ -1,14 +1,13 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
 import { HumanMessage, SystemMessage, AIMessageChunk, type BaseMessage } from '@langchain/core/messages';
-import { toUIMessageStream } from '@ai-sdk/langchain';
-import type { UIMessageChunk } from 'ai';
 import { ChatModelService } from '../../rag/ai/chat-model.service';
 import { ChatSessionService } from './chat-session.service';
 import { ChatMessageService } from './chat-message.service';
 import { KbPermissionService } from '../../knowledge-base/permission/kb-permission.service';
 import { CitationService } from '../../rag/retrieval/citation.service';
 import { MultiAgentOrchestratorService } from './multi-agent-orchestrator.service';
+import { SseWriter } from '../types/agui-events';
 import type { StreamChatDto } from '../dto/stream-chat.dto';
 
 /** 普通对话系统提示词 */
@@ -18,6 +17,17 @@ const SYSTEM_PROMPT = `你是 Linsor AI（灵索智能）的智能助手，基�
 - 回答应准确、完整，基于上下文给出有用信息
 - 若问题涉及特定知识库内容但当前未检索到上下文，如实告知用户
 - 使用中文回答`;
+
+function extractChunkText(chunk: AIMessageChunk): string {
+  if (typeof chunk.content === 'string') return chunk.content;
+  if (Array.isArray(chunk.content)) {
+    return chunk.content
+      .filter((c): c is { type: 'text'; text: string } => c.type === 'text')
+      .map((c) => c.text)
+      .join('');
+  }
+  return '';
+}
 
 @Injectable()
 export class ChatStreamService {
@@ -31,44 +41,42 @@ export class ChatStreamService {
   ) {}
 
   /**
-   * 处理流式对话请求。
+   * 处理流式对话请求，通过 SseWriter 推送 AG-UI 事件。
    *
    * 普通对话模式：系统提示 + 用户消息 → LLM 流式输出。
    * RAG 模式：权限校验 → MultiAgentOrchestrator 执行完整 Agentic RAG
-   *   工作流（Route → Rewrite → Decompose → Retrieve → Relevance →
-   *   Draft → Fact Check → Completeness Check → Finalize），
-   *   最终结果通过 AI SDK data stream 格式返回。
+   *   工作流（Route → Rewrite → Retrieve → Writer），
+   *   中间步骤和工具调用通过 AG-UI 事件实时推送。
    */
   async streamChat(
     userId: number,
     dto: StreamChatDto,
-  ): Promise<ReadableStream<UIMessageChunk>> {
-    // 1. 校验会话归属
+    writer: SseWriter,
+    signal?: AbortSignal,
+  ): Promise<void> {
     await this.chatSessionService.assertSessionOwnership(userId, dto.sessionId);
 
     const modelName = this.chatModelService.getDefaultModelName();
     const traceId = randomUUID();
 
-    // ── RAG 模式：多 Agent 工作流 ──
     if (dto.chatMode === 'rag' && dto.selectedKbIds?.length) {
-      return this.streamRagMode(userId, dto, modelName, traceId);
+      return this.streamRagMode(userId, dto, modelName, traceId, writer, signal);
     }
 
-    // ── 普通对话模式 ──
-    return this.streamChatMode(userId, dto, modelName, traceId);
+    return this.streamChatMode(userId, dto, modelName, traceId, writer);
   }
 
   /**
-   * RAG 模式流式处理：
-   * 权限校验 → Agent 工作流 → 流式返回最终答案。
+   * RAG 模式：权限校验 → Agent 工作流 → AG-UI 事件流推送。
    */
   private async streamRagMode(
     userId: number,
     dto: StreamChatDto,
     modelName: string,
     traceId: string,
-  ): Promise<ReadableStream<UIMessageChunk>> {
-    // 批量鉴权
+    writer: SseWriter,
+    signal?: AbortSignal,
+  ): Promise<void> {
     const permContexts = await this.kbPermissionService.authorizeMany(
       userId,
       dto.selectedKbIds!,
@@ -76,7 +84,6 @@ export class ChatStreamService {
     );
     const resolvedKbIds = permContexts.map((c) => c.kbId);
 
-    // 持久化用户消息
     const userMsg = await this.chatMessageService.createUserMessage({
       sessionId: dto.sessionId,
       content: dto.message,
@@ -86,7 +93,6 @@ export class ChatStreamService {
       modelName,
     });
 
-    // 创建助手占位消息
     const assistantMessage =
       await this.chatMessageService.createAssistantPlaceholder({
         sessionId: dto.sessionId,
@@ -95,8 +101,7 @@ export class ChatStreamService {
         modelName,
       });
 
-    // 执行流式 Agentic RAG 工作流，直接返回 AI SDK data stream
-    return this.orchestrator.streamRun(
+    await this.orchestrator.streamRun(
       {
         sessionId: dto.sessionId,
         userId,
@@ -107,22 +112,21 @@ export class ChatStreamService {
         resolvedKbIds,
         originalQuery: dto.message,
       },
+      writer,
       {
         enableWebSearch: dto.enableWebSearch ?? false,
+        signal,
         onFinish: async (result) => {
-          // 持久化引用
           if (result.citations && result.citations.length > 0) {
             await this.citationService.createCitations({
               messageId: assistantMessage.id,
               hits: result.citations,
             });
           }
-          // 持久化回答
           await this.chatMessageService.finalizeAssistantMessage(
             assistantMessage.id,
             { content: result.content, finishReason: 'stop' },
           );
-          // 自动总结标题
           await this.chatSessionService.summarizeTitleIfNeeded(
             dto.sessionId,
             dto.message,
@@ -139,20 +143,20 @@ export class ChatStreamService {
   }
 
   /**
-   * 普通对话模式流式处理。
+   * 普通对话模式：LLM 流式输出，封装为 AG-UI 文本事件。
    */
   private async streamChatMode(
     _userId: number,
     dto: StreamChatDto,
     modelName: string,
     traceId: string,
-  ): Promise<ReadableStream<UIMessageChunk>> {
+    writer: SseWriter,
+  ): Promise<void> {
     const model = this.chatModelService.createModel({
       temperature: 0.7,
       streaming: true,
     });
 
-    // 持久化用户消息
     await this.chatMessageService.createUserMessage({
       sessionId: dto.sessionId,
       content: dto.message,
@@ -160,7 +164,6 @@ export class ChatStreamService {
       modelName,
     });
 
-    // 创建助手占位
     const assistantMessage =
       await this.chatMessageService.createAssistantPlaceholder({
         sessionId: dto.sessionId,
@@ -169,58 +172,50 @@ export class ChatStreamService {
         modelName,
       });
 
-    // 构建消息
     const messages: BaseMessage[] = [
       new SystemMessage(SYSTEM_PROMPT),
       new HumanMessage(dto.message),
     ];
 
-    // LLM 流式输出
-    const lcStream = await model.stream(messages);
+    writer.write({ type: 'RUN_STARTED', runId: traceId, timestamp: Date.now() });
+    const msgId = `msg_${Date.now()}`;
+    writer.write({ type: 'TEXT_MESSAGE_START', messageId: msgId });
 
+    const lcStream = await model.stream(messages);
     let fullContent = '';
 
-    async function* accumulateStream(
-      source: AsyncIterable<AIMessageChunk>,
-    ): AsyncIterable<AIMessageChunk> {
-      for await (const chunk of source) {
-        const text =
-          typeof chunk.content === 'string'
-            ? chunk.content
-            : Array.isArray(chunk.content)
-              ? chunk.content
-                  .filter((c): c is { type: 'text'; text: string } => c.type === 'text')
-                  .map((c) => c.text)
-                  .join('')
-              : '';
-        fullContent += text;
-        yield chunk;
+    try {
+      for await (const chunk of lcStream) {
+        const text = extractChunkText(chunk);
+        if (text) {
+          fullContent += text;
+          writer.write({ type: 'TEXT_MESSAGE_CONTENT', messageId: msgId, delta: text });
+        }
       }
-    }
 
-    return toUIMessageStream(accumulateStream(lcStream), {
-      onFinish: async () => {
-        await this.chatMessageService.finalizeAssistantMessage(
-          assistantMessage.id,
-          { content: fullContent, finishReason: 'stop' },
-        );
-        // 自动总结标题
-        await this.chatSessionService.summarizeTitleIfNeeded(
-          dto.sessionId,
-          dto.message,
-          fullContent,
-        );
-      },
-      onError: async () => {
-        await this.chatMessageService.markAssistantMessageAborted(
-          assistantMessage.id,
-        );
-      },
-      onAbort: async () => {
-        await this.chatMessageService.markAssistantMessageAborted(
-          assistantMessage.id,
-        );
-      },
-    });
+      writer.write({ type: 'TEXT_MESSAGE_END', messageId: msgId });
+      writer.write({ type: 'RUN_FINISHED', runId: traceId });
+
+      await this.chatMessageService.finalizeAssistantMessage(
+        assistantMessage.id,
+        { content: fullContent, finishReason: 'stop' },
+      );
+      await this.chatSessionService.summarizeTitleIfNeeded(
+        dto.sessionId,
+        dto.message,
+        fullContent,
+      );
+    } catch (error) {
+      writer.write({
+        type: 'RUN_ERROR',
+        runId: traceId,
+        error: error instanceof Error ? error.message : String(error),
+      });
+      await this.chatMessageService.markAssistantMessageAborted(
+        assistantMessage.id,
+      );
+    } finally {
+      writer.end();
+    }
   }
 }

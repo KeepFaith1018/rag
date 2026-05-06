@@ -128,8 +128,7 @@ export class EmbeddingService {
       modelType === 'vision'
         ? this.configService.get<string>('BAILIAN_VISION_EMBEDDING_MODEL') ||
           this.configService.get<string>('BAILIAN_EMBEDDING_MODEL')
-        : this.configService.get<string>('BAILIAN_TEXT_EMBEDDING_MODEL') ||
-          this.configService.get<string>('BAILIAN_EMBEDDING_MODEL');
+        : this.configService.get<string>('BAILIAN_EMBEDDING_MODEL');
     if (!apiKey || !model) {
       throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
         message: '百炼 Embedding 配置缺失，请补充标准环境变量后再执行向量化',
@@ -138,7 +137,7 @@ export class EmbeddingService {
           requiredEnv:
             modelType === 'vision'
               ? ['BAILIAN_API_KEY', 'BAILIAN_VISION_EMBEDDING_MODEL']
-              : ['BAILIAN_API_KEY', 'BAILIAN_TEXT_EMBEDDING_MODEL'],
+              : ['BAILIAN_API_KEY', 'BAILIAN_EMBEDDING_MODEL'],
         },
       });
     }
@@ -149,7 +148,7 @@ export class EmbeddingService {
       modelType,
       baseUrl:
         this.configService.get<string>('BAILIAN_BASE_URL') ||
-        'https://dashscope.aliyuncs.com/compatible-mode/v1',
+        'https://dashscope.aliyuncs.com/compatible-api/v1',
       dimensions: this.getNumberConfig('BAILIAN_EMBEDDING_DIMENSIONS'),
       batchSize: this.getNumberConfig('BAILIAN_EMBED_BATCH_SIZE') ?? 50,
       retryCount: this.getNumberConfig('BAILIAN_EMBED_RETRY_COUNT') ?? 3,

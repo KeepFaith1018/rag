@@ -1,11 +1,135 @@
 /**
- * 流式事件协议类型定义
+ * AG-UI 协议事件类型定义
  *
- * 遵循 AI SDK UI Message Stream 协议 + 自定义 data parts。
- * @see https://sdk.vercel.ai/docs/reference/ai-sdk-ui/stream-protocol
+ * 前后端使用统一的 AG-UI 事件语义进行 SSE 通信。
+ * @see https://docs.ag-ui.com/sdk/js/core/events
  */
 
-/** Agent 工作流阶段 */
+/** Step 名称 */
+export type StepName = 'route' | 'decompose' | 'rewrite' | 'audit' | 'writer';
+
+/** Tool 名称 */
+export type ToolCallName = 'search_knowledge_base' | 'web_search';
+
+// ── 运行生命周期 ──
+
+export interface RunStartedEvent {
+  type: 'RUN_STARTED';
+  runId: string;
+  timestamp?: number;
+}
+
+export interface RunFinishedEvent {
+  type: 'RUN_FINISHED';
+  runId: string;
+  timestamp?: number;
+}
+
+export interface RunErrorEvent {
+  type: 'RUN_ERROR';
+  runId: string;
+  error: string;
+}
+
+// ── 步骤生命周期 ──
+
+export interface StepStartedEvent {
+  type: 'STEP_STARTED';
+  stepName: StepName;
+  timestamp?: number;
+}
+
+export interface StepFinishedEvent {
+  type: 'STEP_FINISHED';
+  stepName: StepName;
+  input?: Record<string, unknown>;
+  output?: Record<string, unknown>;
+  durationMs?: number;
+}
+
+// ── 工具调用 ──
+
+export interface ToolCallStartEvent {
+  type: 'TOOL_CALL_START';
+  toolCallId: string;
+  toolCallName: ToolCallName;
+  input?: Record<string, unknown>;
+}
+
+export interface ToolCallResultEvent {
+  type: 'TOOL_CALL_RESULT';
+  toolCallId: string;
+  toolCallName: ToolCallName;
+  output?: Record<string, unknown>;
+  durationMs?: number;
+}
+
+// ── 文本消息 ──
+
+export interface TextMessageStartEvent {
+  type: 'TEXT_MESSAGE_START';
+  messageId: string;
+}
+
+export interface TextMessageContentEvent {
+  type: 'TEXT_MESSAGE_CONTENT';
+  messageId: string;
+  delta: string;
+}
+
+export interface TextMessageEndEvent {
+  type: 'TEXT_MESSAGE_END';
+  messageId: string;
+}
+
+// ── 联合类型 ──
+
+export type AguiEvent =
+  | RunStartedEvent
+  | RunFinishedEvent
+  | RunErrorEvent
+  | StepStartedEvent
+  | StepFinishedEvent
+  | ToolCallStartEvent
+  | ToolCallResultEvent
+  | TextMessageStartEvent
+  | TextMessageContentEvent
+  | TextMessageEndEvent;
+
+/** 聚合到消息上的步骤记录（STEP_FINISHED 的快照） */
+export interface AguiStepRecord {
+  stepName: StepName;
+  status: 'running' | 'completed' | 'failed';
+  input?: Record<string, unknown>;
+  output?: Record<string, unknown>;
+  durationMs?: number;
+  /** 时序编号，用于合并步骤+工具为统一时间线 */
+  order?: number;
+}
+
+/** 聚合到消息上的工具调用记录（TOOL_CALL_START → RESULT 的完整快照） */
+export interface AguiToolCallRecord {
+  toolCallId: string;
+  toolCallName: ToolCallName;
+  input?: Record<string, unknown>;
+  output?: Record<string, unknown>;
+  durationMs?: number;
+  status: 'running' | 'completed';
+  /** 时序编号，用于合并步骤+工具为统一时间线 */
+  order?: number;
+}
+
+/** 统一时间线条目（步骤或工具调用） */
+export interface TimelineEntry {
+  kind: 'step' | 'tool';
+  step?: AguiStepRecord;
+  tool?: AguiToolCallRecord;
+  order: number;
+}
+
+// ── 向后兼容类型 ──
+
+/** Agent 工作流阶段（兼容旧组件） */
 export type AgentPhase =
   | 'planning'
   | 'retrieving'
@@ -14,36 +138,7 @@ export type AgentPhase =
   | 'writing'
   | 'done';
 
-/** Agent 状态事件 */
-export interface AgentStatusPart {
-  type: 'agent-status';
-  phase: AgentPhase;
-  label: string;
-  detail?: string;
-}
-
-/** 检索进度事件
- * 后端发送: { type: 'retrieval-progress', denseCount, sparseCount, fusedCount }
- */
-export interface RetrievalProgressPart {
-  type: 'retrieval-progress';
-  kbId?: string;
-  kbName?: string;
-  query?: string;
-  hitCount?: number;
-  channel?: 'dense' | 'sparse' | 'hybrid';
-  denseCount?: number;
-  sparseCount?: number;
-  fusedCount?: number;
-}
-
-/** 引用快照事件 */
-export interface CitationSnapshotPart {
-  type: 'citation-snapshot';
-  citations: Citation[];
-}
-
-/** 引用项 */
+/** 引用项（兼容旧组件） */
 export interface Citation {
   citationId: string;
   kbId: string;
@@ -54,99 +149,22 @@ export interface Citation {
   quote: string;
 }
 
-/** Agent 警告事件 */
+/** Agent 警告（兼容旧组件） */
 export interface AgentWarningPart {
   type: 'agent-warning';
   code: 'LOW_CONFIDENCE' | 'PARTIAL_ANSWER' | 'WEB_SEARCH_CANDIDATE' | 'INSUFFICIENT_CONTEXT' | 'USER_CANCELLED';
   message: string;
 }
 
-/** 节点执行记录 */
-export interface AgentStepPart {
-  type: 'agent-step';
-  stepType: string;
-  agentName: string;
-  status: 'started' | 'completed' | 'failed';
-  input?: Record<string, unknown>;
-  output?: Record<string, unknown>;
-  durationMs?: number;
-}
-
-/** 工具调用记录 */
-export interface ToolCallPart {
-  type: 'tool-call';
-  toolName: string;
-  input: Record<string, unknown>;
-  output?: Record<string, unknown>;
-  durationMs?: number;
-}
-
-/** 自定义 data part 联合类型 */
-export type CustomPart =
-  | AgentStatusPart
-  | RetrievalProgressPart
-  | CitationSnapshotPart
-  | AgentWarningPart
-  | AgentStepPart
-  | ToolCallPart;
-
-/** 流式消息块（AI SDK 格式） */
-export interface UIMessageChunk {
-  type: 'message';
-  messageId: string;
-  delta: string;
-  role?: 'user' | 'assistant';
-}
-
-/** 解析后的流式事件 */
-export interface StreamEvent {
-  text?: string;
-  agentStatus?: AgentStatusPart;
-  retrievalProgress?: RetrievalProgressPart;
-  citationSnapshot?: CitationSnapshotPart;
-  agentWarning?: AgentWarningPart;
-  finish?: {
-    reason: string;
-    usage?: {
-      promptTokens: number;
-      completionTokens: number;
-    };
-  };
-  error?: string;
-}
-
-/**
- * 解析 AI SDK data stream 格式的行。
- * 协议格式：
- * - `0:` 文本块
- * - `2:` tool call
- * - `8:` data event (自定义 part)
- * - `a:` additions
- * - `d:` done
- */
-export function parseStreamLine(line: string): {
-  type: string;
-  value: string;
-} | null {
-  if (!line || line.length < 2) return null;
-
-  const type = line[0];
-  const value = line.slice(1);
-
-  return { type, value };
-}
-
-/**
- * 解析自定义 data part JSON。
- */
-export function parseCustomPart(jsonStr: string): CustomPart | null {
-  try {
-    const part = JSON.parse(jsonStr) as Record<string, unknown>;
-    if (part && typeof part === 'object' && 'type' in part) {
-      return part as unknown as CustomPart;
-    }
-    return null;
-  } catch {
-    return null;
-  }
+/** 检索进度（兼容旧组件） */
+export interface RetrievalProgressPart {
+  type: 'retrieval-progress';
+  kbId?: string;
+  kbName?: string;
+  query?: string;
+  hitCount?: number;
+  channel?: 'dense' | 'sparse' | 'hybrid';
+  denseCount?: number;
+  sparseCount?: number;
+  fusedCount?: number;
 }

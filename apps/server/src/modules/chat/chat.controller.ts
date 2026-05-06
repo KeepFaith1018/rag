@@ -11,7 +11,6 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
-import { pipeUIMessageStreamToResponse } from 'ai';
 import { AuthGuard } from '@common/guards/auth.guard';
 import { Auth } from '@common/decorators/auth.decorator';
 import { CurrentUser } from '@common/decorators/currentUser.decorator';
@@ -20,6 +19,7 @@ import { StreamRateLimitGuard } from '@common/guards/rate-limit.guard';
 import { ChatSessionService } from './services/chat-session.service';
 import { ChatMessageService } from './services/chat-message.service';
 import { ChatStreamService } from './services/chat-stream.service';
+import { SseWriter } from './types/agui-events';
 import { CreateChatSessionDto } from './dto/create-chat-session.dto';
 import { ListChatSessionsDto } from './dto/list-chat-sessions.dto';
 import { StreamChatDto } from './dto/stream-chat.dto';
@@ -112,9 +112,8 @@ export class ChatController {
   /**
    * 流式对话（SSE）
    *
-   * 使用 @ai-sdk/langchain + AI SDK data stream 协议，
-   * 由 pipeUIMessageStreamToResponse 自动处理响应头、
-   * 流式内容编码与连接关闭。
+   * 使用 AG-UI 协议通过原生 SSE 推送事件。
+   * 事件序列: RUN_STARTED → STEP/TEXT/TOOL 事件 → RUN_FINISHED
    */
   @Post('stream')
   @UseGuards(AuthGuard, StreamRateLimitGuard)
@@ -125,10 +124,30 @@ export class ChatController {
     @Body() dto: StreamChatDto,
     @Res({ passthrough: false }) res: Response,
   ): Promise<void> {
-    const stream = await this.chatStreamService.streamChat(
-      Number(userId),
-      dto,
-    );
-    pipeUIMessageStreamToResponse({ response: res, stream });
+    res.setHeader('Content-Type', 'text/event-stream');
+    res.setHeader('Cache-Control', 'no-cache');
+    res.setHeader('Connection', 'keep-alive');
+    res.setHeader('X-Accel-Buffering', 'no');
+    res.flushHeaders();
+
+    // 客户端断开连接时取消服务端处理
+    const abortController = new AbortController();
+    res.on('close', () => {
+      if (!res.writableEnded) {
+        abortController.abort();
+      }
+    });
+
+    const writer = new SseWriter(res);
+    void this.chatStreamService
+      .streamChat(Number(userId), dto, writer, abortController.signal)
+      .catch((err) => {
+        writer.write({
+          type: 'RUN_ERROR',
+          runId: 'unknown',
+          error: err instanceof Error ? err.message : String(err),
+        });
+        writer.end();
+      });
   }
 }

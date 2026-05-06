@@ -29,8 +29,26 @@
       "mcp__plugin_playwright_playwright__browser_snapshot",
       "Bash(pnpm run *)",
       "Bash(pnpm build *)",
-      "Bash(npx tsc *)"
+      "Bash(npx tsc *)",
+      "WebFetch(domain:deepwiki.com)",
+      "WebFetch(domain:sdk.vercel.ai)",
+      "WebFetch(domain:docs.ag-ui.com)",
+      "Bash(pnpm --filter server remove ai @ai-sdk/langchain)",
+      "Bash(docker compose *)",
+      "Bash(timeout 15 pnpm --filter server start:dev)",
+      "Bash(pnpm --filter server test)"
     ]
   },
-  "enabledPlugins": {}
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "sourcegraph@claude-plugins-official": false
+  }
 }

@@ -104,3 +104,26 @@ src/
 - MySQL 8.0 存储元数据，Prisma ORM，表名前缀: `b_` (业务表), `sys_` (系统表)
 - Qdrant 存储文档分块向量
 - Redis 用于 BullMQ 队列 + 会话缓存
+
+### 流式通信协议 (AG-UI)
+
+对话流式端点 `POST /api/chat/stream` 使用 **AG-UI (Agent-User Interaction Protocol)** 标准事件格式，原生 SSE 推送。
+
+事件类型定义在 [agui-events.ts](apps/server/src/modules/chat/types/agui-events.ts)（后端）和 [stream.ts](apps/web/src/modules/chat/types/stream.ts)（前端）。
+
+核心事件序列（RAG 模式）：
+```
+RUN_STARTED
+  STEP_STARTED("route")   → STEP_FINISHED (intent, questionType)
+  STEP_STARTED("rewrite") → STEP_FINISHED (queries)
+  TOOL_CALL_START("search_knowledge_base") → TOOL_CALL_RESULT (hitCount, durationMs)
+  TOOL_CALL_START("web_search")            → TOOL_CALL_RESULT (条件)
+  STEP_STARTED("writer")  → TEXT_MESSAGE_START → TEXT_MESSAGE_CONTENT × N → TEXT_MESSAGE_END
+  STEP_FINISHED("writer")
+RUN_FINISHED
+```
+
+- 非流式节点 (route, rewrite, tools) 发 `STEP_STARTED` → 等待完成 → `STEP_FINISHED`（带结果）
+- 流式节点 (writer) 发 `TEXT_MESSAGE_CONTENT` 逐 token 推送，前端通过 [useStreamingMarkdown](apps/web/src/modules/chat/composables/useStreamingMarkdown.ts) 累积渲染
+- Agent 步骤面板在 [AIMessageItem.vue](apps/web/src/components/chat/AIMessageItem.vue) 中渲染
+

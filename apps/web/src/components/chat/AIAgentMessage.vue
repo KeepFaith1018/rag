@@ -24,10 +24,10 @@ const isStreaming = computed(() => props.message.messageStatus === 'streaming');
 const isRagMode = computed(() => props.message.chatMode === 'rag');
 
 /** Agent 步骤列表 */
-const agentSteps = computed(() => chatStore.agentSteps);
+const agentSteps = computed(() => chatStore.aguiSteps);
 
 /** 工具调用列表 */
-const toolCalls = computed(() => chatStore.toolCalls);
+const toolCalls = computed(() => chatStore.aguiToolCalls);
 
 /** 是否展开 Agent 详情（默认展开） */
 const isExpanded = ref(true);
@@ -47,13 +47,9 @@ const phaseConfig: Record<string, { label: string; icon: string; color: string }
 
 /** 节点类型到中文的映射 */
 const stepTypeLabels: Record<string, string> = {
-  route_query: '路由分析',
-  rewrite_query: '查询改写',
-  decompose_question: '问题拆解',
-  hybrid_retrieve: '混合检索',
-  relevance_check: '相关性检查',
-  fact_check: '事实校验',
-  completeness_check: '完整性检查',
+  route: '路由分析',
+  rewrite: '查询改写',
+  writer: '生成回答',
 };
 
 /** 获取步骤的中文标签 */
@@ -214,7 +210,7 @@ function formatOutput(output: Record<string, unknown> | undefined): string {
             >
               <span class="material-symbols-outlined text-sm text-blue-400 mt-0.5">build</span>
               <div class="flex-1">
-                <div class="text-xs font-medium text-on-surface">{{ tool.toolName }}</div>
+                <div class="text-xs font-medium text-on-surface">{{ tool.toolCallName }}</div>
                 <div
                   v-if="tool.input?.queries"
                   class="text-[10px] text-outline mt-0.5"
@@ -256,7 +252,7 @@ function formatOutput(output: Record<string, unknown> | undefined): string {
                 </span>
                 <div class="flex-1">
                   <div class="text-xs font-medium text-on-surface">
-                    {{ getStepLabel(step.stepType) || step.stepType }}
+                    {{ getStepLabel(step.stepName) || step.stepName }}
                   </div>
                   <div
                     v-if="step.output"

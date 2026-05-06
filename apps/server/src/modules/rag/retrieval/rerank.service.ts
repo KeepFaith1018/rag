@@ -1,6 +1,4 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
-import { BusinessException } from '@common/exception/businessException';
-import { ErrorCode } from '@common/utils/errorCodeMap';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { RerankModelService } from './rerank-model.service';
 import type { FusedHit } from './interfaces/fused-hit.interface';
@@ -8,8 +6,8 @@ import type { RerankedHit } from './interfaces/reranked-hit.interface';
 
 export interface RerankParams {
   candidates: FusedHit[];
-  originalQuery: string;
-  rewrittenQuery?: string;
+  /** 全部检索查询（原始 + 改写 + 拆解），非事实类用多查询评分取 max */
+  queries: string[];
   questionType?: 'fact_lookup' | 'compare_analysis' | 'research_or_open_world';
   topN?: number;
 }
@@ -44,23 +42,20 @@ export class RerankService {
    *
    * 优先使用 qwen3-rerank 模型获取语义相关性分数，
    * 失败时回退到轻量级文本重叠计分。
+   *
+   * 非事实类（对比/研究）使用多查询评分取 max，
+   * 避免单主题块被原始对比查询误杀。
    */
   async rerank(params: RerankParams): Promise<RerankedHit[]> {
-    const { candidates, originalQuery, topN = 10 } = params;
+    const { candidates, queries, questionType = 'fact_lookup', topN = 10 } = params;
 
     if (!candidates.length) {
       return [];
     }
 
     try {
-      // 优先使用 rerank 模型
-      const { scores } = await this.rerankModelService.rerank({
-        query: originalQuery,
-        documents: candidates.map((c) => c.content),
-        topN,
-      });
+      const scores = await this.multiQueryRerank(candidates, queries, topN, questionType);
 
-      // 将 rerank 分数与 RRF 分数融合
       const maxFusionScore = candidates[0]?.fusionScore ?? 1;
       const results = candidates
         .map((c, i) => ({
@@ -74,24 +69,67 @@ export class RerankService {
         .sort((a, b) => b.rerankScore - a.rerankScore)
         .slice(0, topN);
 
-      return this.buildRerankedHits(results);
+      return this.buildRerankedHits(results, questionType);
     } catch (error) {
-      // 回退到轻量级过滤
       this.logger.warn(
         `[RerankService] qwen3-rerank 调用失败，回退到轻量级过滤: ${
           error instanceof Error ? error.message : String(error)
         }`,
       );
-      return this.lightweightRerank(candidates, originalQuery, topN);
+      return this.lightweightRerank(candidates, queries, questionType, topN);
     }
   }
 
   /**
-   * 轻量级文本重叠计分（回退方案）
+   * 多查询 Rerank 评分。
+   *
+   * fact_lookup：仅用第一条查询评分（单查询）。
+   * compare_analysis / research_or_open_world：用全部查询分别评分，取最大值，
+   *   确保单主题块能从对应的子查询中获得高分。
+   */
+  private async multiQueryRerank(
+    candidates: FusedHit[],
+    queries: string[],
+    topN: number,
+    questionType: string,
+  ): Promise<number[]> {
+    if (questionType === 'fact_lookup') {
+      const mainQuery = queries[0] ?? '';
+      const { scores } = await this.rerankModelService.rerank({
+        query: mainQuery,
+        documents: candidates.map((c) => c.content),
+        topN,
+      });
+      return scores;
+    }
+
+    // 多查询：每个候选取所有查询中的最高分
+    const allScores: number[][] = await Promise.all(
+      queries.map(async (q) => {
+        const { scores } = await this.rerankModelService.rerank({
+          query: q,
+          documents: candidates.map((c) => c.content),
+          topN,
+        });
+        return scores;
+      }),
+    );
+
+    return candidates.map((_, i) =>
+      Math.max(...allScores.map((scores) => scores[i] ?? 0)),
+    );
+  }
+
+  /**
+   * 轻量级文本重叠计分（回退方案）。
+   *
+   * fact_lookup：单查询计分。
+   * 非事实类：多查询分别计分取 max。
    */
   private lightweightRerank(
     candidates: FusedHit[],
-    originalQuery: string,
+    queries: string[],
+    questionType: string,
     topN: number,
   ): RerankedHit[] {
     const maxScore = candidates[0]?.fusionScore ?? 1;
@@ -103,16 +141,23 @@ export class RerankService {
           : c.fusionScore,
     }));
 
-    const queryTokens = this.tokenize(originalQuery.toLowerCase());
     const scored = normalized.map((c) => {
-      const contentLower = c.content.toLowerCase();
-      const overlapCount = queryTokens.filter(
-        (t) => t.length > 1 && contentLower.includes(t),
-      ).length;
-      const overlapRatio =
-        queryTokens.length > 0 ? overlapCount / queryTokens.length : 0;
+      let bestOverlapRatio = 0;
+      for (const q of queries) {
+        const queryTokens = this.tokenize(q.toLowerCase());
+        if (!queryTokens.length) continue;
+        const contentLower = c.content.toLowerCase();
+        const overlapCount = queryTokens.filter(
+          (t) => t.length > 1 && contentLower.includes(t),
+        ).length;
+        const ratio = overlapCount / queryTokens.length;
+        if (ratio > bestOverlapRatio) bestOverlapRatio = ratio;
+        // fact_lookup 只用第一条查询
+        if (questionType === 'fact_lookup' && q === queries[0]) break;
+      }
+
       const rerankScore =
-        Math.round((c.fusionScore * 0.7 + overlapRatio * 0.3) * 1000) / 1000;
+        Math.round((c.fusionScore * 0.7 + bestOverlapRatio * 0.3) * 1000) / 1000;
 
       return {
         chunkId: c.chunkId,
@@ -143,16 +188,26 @@ export class RerankService {
   }
 
   /**
-   * 构建 RerankedHit 列表
+   * 构建 RerankedHit 列表，附带标题加权。
+   *
+   * 对标题含步骤类关键词（教程/指南/配置/搭建）的块轻微加权，
+   * 提升操作步骤类查询的检索质量。
    */
   private buildRerankedHits(
     results: Array<{ hit: FusedHit; rerankScore: number; fusionScore: number }>,
+    _questionType: string = 'fact_lookup',
   ): RerankedHit[] {
+    const PROCEDURAL_KEYWORDS = /教程|指南|配置|搭建|入门|实战|步骤|安装/;
+
     const scored = results.map((r) => {
-      const primary = r.rerankScore >= this.PRIMARY_THRESHOLD;
+      const title = (r.hit.title ?? (r.hit.payload?.['title'] as string) ?? '');
+      const titleBonus = PROCEDURAL_KEYWORDS.test(title) ? 1.1 : 1.0;
+      const adjustedScore = Math.min(r.rerankScore * titleBonus, 1.0);
+
+      const primary = adjustedScore >= this.PRIMARY_THRESHOLD;
       const secondary =
-        r.rerankScore >= this.DISCARD_THRESHOLD &&
-        r.rerankScore < this.PRIMARY_THRESHOLD;
+        adjustedScore >= this.DISCARD_THRESHOLD &&
+        adjustedScore < this.PRIMARY_THRESHOLD;
 
       return {
         chunkId: r.hit.chunkId,
@@ -161,24 +216,18 @@ export class RerankService {
         content: r.hit.content,
         title: r.hit.title,
         fusionScore: r.fusionScore,
-        rerankScore: r.rerankScore,
+        rerankScore: Math.round(adjustedScore * 1000) / 1000,
         payload: r.hit.payload,
         isPrimary: primary,
         isSecondary: secondary,
       } as RerankedHit & { isPrimary?: boolean; isSecondary?: boolean };
     });
 
-    // 过滤分级
-    const primary = scored.filter((h) => h.isPrimary);
-    const secondary = scored
-      .filter((h) => h.isSecondary)
-      .slice(0, this.MAX_SECONDARY);
-
     const filtered = scored
       .filter((h) => h.isPrimary || h.isSecondary)
       .sort((a, b) => b.rerankScore - a.rerankScore);
 
-    return filtered.map(({ isPrimary, isSecondary, ...hit }) => hit);
+    return filtered.map(({ isPrimary: _isPrimary, isSecondary: _isSecondary, ...hit }) => hit);
   }
 
   /**
@@ -186,7 +235,7 @@ export class RerankService {
    */
   private tokenize(text: string): string[] {
     return text
-      .split(/[\s,，。！？、；：""''（）\(\)\[\]【】{}<>\/\\|@#$%^&*+=~`]+/)
+      .split(/[\s,，。！？、；：""''（）()［］【】{}<>\/\\|@#$%^&*+=~`]+/)
       .filter((t) => t.length > 1);
   }
 }

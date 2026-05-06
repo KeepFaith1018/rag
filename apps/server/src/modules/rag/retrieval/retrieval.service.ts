@@ -48,12 +48,18 @@ export class RetrievalService {
     const {
       queries,
       kbIds,
-      denseTopK = 20,
-      sparseTopK = 20,
-      fusionTopK = 50,
-      scoreThreshold = 0.3,
+      denseTopK: rawDenseTopK,
+      sparseTopK: rawSparseTopK,
+      fusionTopK: rawFusionTopK,
+      scoreThreshold: rawScoreThreshold,
       questionType = 'fact_lookup',
     } = params;
+
+    // 按问题类型动态调整检索参数：对比/研究类降低过滤门槛、扩大候选池
+    const denseTopK = rawDenseTopK ?? (questionType === 'fact_lookup' ? 20 : 30);
+    const sparseTopK = rawSparseTopK ?? (questionType === 'fact_lookup' ? 20 : 30);
+    const fusionTopK = rawFusionTopK ?? (questionType === 'fact_lookup' ? 50 : 80);
+    const scoreThreshold = rawScoreThreshold ?? (questionType === 'fact_lookup' ? 0.3 : 0.15);
 
     const startedAt = Date.now();
 
@@ -79,11 +85,10 @@ export class RetrievalService {
       topK: fusionTopK,
     });
 
-    // 4. Rerank 精排
+    // 4. Rerank 精排 — 传入全部查询，非事实类用多查询评分取 max
     const rerankedHits = await this.rerankService.rerank({
       candidates: fusedHits,
-      originalQuery: queries[0] ?? '',
-      rewrittenQuery: queries.length > 1 ? queries[1] : undefined,
+      queries,
       questionType,
     });
 

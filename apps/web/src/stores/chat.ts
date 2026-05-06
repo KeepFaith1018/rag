@@ -25,8 +25,8 @@ import type {
   Citation,
   AgentWarningPart,
   RetrievalProgressPart,
-  AgentStepPart,
-  ToolCallPart,
+  AguiStepRecord,
+  AguiToolCallRecord,
 } from '@/modules/chat/types/stream';
 
 export const useChatStore = defineStore('chat', () => {
@@ -87,11 +87,17 @@ export const useChatStore = defineStore('chat', () => {
   /** 检索进度列表 */
   const retrievalProgresses = ref<RetrievalProgressPart[]>([]);
 
-  /** Agent 执行步骤记录 */
-  const agentSteps = ref<AgentStepPart[]>([]);
+  /** 当前 run ID */
+  const currentRunId = ref<string | null>(null);
 
-  /** 工具调用记录 */
-  const toolCalls = ref<ToolCallPart[]>([]);
+  /** AG-UI 步骤记录 */
+  const aguiSteps = ref<AguiStepRecord[]>([]);
+
+  /** AG-UI 工具调用记录 */
+  const aguiToolCalls = ref<AguiToolCallRecord[]>([]);
+
+  /** 时间线时序计数器，确保步骤和工具按到达顺序排列 */
+  let timelineOrder = 0;
 
   /** 最后一条用户消息内容（用于重试） */
   const lastUserMessage = ref('');
@@ -362,7 +368,6 @@ export const useChatStore = defineStore('chat', () => {
 
   /**
    * 添加检索进度。
-   * 后端发送的检索进度去重：只保留最新的
    */
   function addRetrievalProgress(progress: RetrievalProgressPart) {
     const idx = retrievalProgresses.value.findIndex(
@@ -376,17 +381,66 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   /**
-   * 添加 Agent 执行步骤。
+   * 设置 run 开始。
    */
-  function addAgentStep(step: AgentStepPart) {
-    agentSteps.value.push(step);
+  function setRunStarted(runId: string) {
+    currentRunId.value = runId;
   }
 
   /**
-   * 添加工具调用记录。
+   * 设置 run 完成。
    */
-  function addToolCall(toolCall: ToolCallPart) {
-    toolCalls.value.push(toolCall);
+  function setRunFinished() {
+    agentPhase.value = 'done';
+  }
+
+  /**
+   * 插入或更新 AG-UI 步骤记录。
+   * STEP_STARTED 创建 running 状态，STEP_FINISHED 更新为 completed。
+   */
+  function upsertStep(step: AguiStepRecord) {
+    const existing = aguiSteps.value.find((s) => s.stepName === step.stepName);
+    if (existing) {
+      Object.assign(existing, step);
+    } else {
+      aguiSteps.value.push({ ...step, order: ++timelineOrder });
+    }
+    // 同步更新旧 agentPhase 以兼容 ChatAgentTimeline
+    const phaseMap: Record<string, AgentPhase> = {
+      route: 'planning',
+      rewrite: 'planning',
+      audit: 'verifying',
+      writer: 'writing',
+    };
+    const phase = phaseMap[step.stepName] ?? null;
+    if (phase && step.status === 'running') {
+      setAgentPhase(phase, stepLabel(step.stepName), '');
+    }
+    if (step.status === 'completed' && step.output) {
+      agentPhaseDetail.value = stepOutputSummary(step.stepName, step.output);
+    }
+  }
+
+  /**
+   * 插入或更新 AG-UI 工具调用记录。
+   * TOOL_CALL_START 创建 running 状态，TOOL_CALL_RESULT 更新为 completed。
+   */
+  function upsertToolCall(tc: AguiToolCallRecord) {
+    const existing = aguiToolCalls.value.find((t) => t.toolCallId === tc.toolCallId);
+    if (existing) {
+      Object.assign(existing, tc);
+    } else {
+      aguiToolCalls.value.push({ ...tc, order: ++timelineOrder });
+    }
+    // 同步检索进度用于状态展示
+    if (tc.toolCallName === 'search_knowledge_base' && tc.output) {
+      addRetrievalProgress({
+        type: 'retrieval-progress',
+        denseCount: tc.output.denseCount as number | undefined,
+        sparseCount: tc.output.sparseCount as number | undefined,
+        fusedCount: tc.output.hitCount as number | undefined,
+      });
+    }
   }
 
   // ─── 模式切换 ─────────────────────────────────────────────
@@ -495,6 +549,38 @@ export const useChatStore = defineStore('chat', () => {
     agentWarnings.value = [];
   }
 
+  /** 步骤名中文映射 */
+  function stepLabel(stepName: string): string {
+    const map: Record<string, string> = {
+      route: '路由分析',
+      rewrite: '查询改写',
+      audit: '检索审计',
+      writer: '生成回答',
+    };
+    return map[stepName] ?? stepName;
+  }
+
+  /** 步骤输出摘要 */
+  function stepOutputSummary(
+    stepName: string,
+    output: Record<string, unknown>,
+  ): string {
+    if (stepName === 'route') {
+      return `意图: ${output.intent as string ?? 'unknown'}`;
+    }
+    if (stepName === 'rewrite') {
+      const queries = output.queries as string[] | undefined;
+      return `改写完成 → ${queries?.length ?? 0} 条查询`;
+    }
+    if (stepName === 'audit') {
+      return `评估: ${output.verdict as string ?? 'unknown'}`;
+    }
+    if (stepName === 'writer') {
+      return `回答生成完成 → ${Number(output.answerLength ?? 0)} 字`;
+    }
+    return '';
+  }
+
   /**
    * 重置 Agent 状态。
    */
@@ -505,8 +591,10 @@ export const useChatStore = defineStore('chat', () => {
     citations.value = [];
     agentWarnings.value = [];
     retrievalProgresses.value = [];
-    agentSteps.value = [];
-    toolCalls.value = [];
+    aguiSteps.value = [];
+    aguiToolCalls.value = [];
+    timelineOrder = 0;
+    currentRunId.value = null;
   }
 
   /**
@@ -554,8 +642,13 @@ export const useChatStore = defineStore('chat', () => {
     citations,
     agentWarnings,
     retrievalProgresses,
-    agentSteps,
-    toolCalls,
+    aguiSteps,
+    aguiToolCalls,
+    currentRunId,
+    setRunStarted,
+    setRunFinished,
+    upsertStep,
+    upsertToolCall,
     lastUserMessage,
     // 计算属性
     hasActiveSession,
@@ -595,8 +688,6 @@ export const useChatStore = defineStore('chat', () => {
     setLastUserMessage,
     clearCurrentSession,
     addRetrievalProgress,
-    addAgentStep,
-    addToolCall,
     enableWebSearch,
     toggleWebSearch,
     setWebSearch,

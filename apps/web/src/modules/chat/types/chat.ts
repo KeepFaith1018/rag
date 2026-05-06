@@ -2,6 +2,8 @@
  * 聊天消息类型定义
  */
 
+import type { AguiStepRecord, AguiToolCallRecord } from './stream';
+
 /** 消息角色 */
 export type MessageRole = 'ai' | 'user' | 'assistant';
 
@@ -39,6 +41,10 @@ export interface ChatMessageItem {
   traceId?: string;
   /** HTML 内容（流式渲染时累积） */
   htmlContent?: string;
+  /** AG-UI 步骤记录（流式完成时从 store 快照到消息） */
+  aguiSteps?: AguiStepRecord[];
+  /** AG-UI 工具调用记录 */
+  aguiToolCalls?: AguiToolCallRecord[];
 }
 
 /** 消息状态 */
