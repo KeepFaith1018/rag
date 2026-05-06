@@ -1,5 +1,6 @@
 <script setup lang="ts">
 import { ref, watch, nextTick } from 'vue'
+import { useChatStore } from '@/stores/chat'
 
 const props = withDefaults(
   defineProps<{
@@ -14,6 +15,8 @@ const emit = defineEmits<{
   send: [message: string]
   cancel: []
 }>()
+
+const chatStore = useChatStore()
 
 const inputText = ref('')
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
@@ -94,10 +97,27 @@ function handleCancel() {
 
     <!-- 下部：功能区，左右布局 -->
     <div class="flex items-center justify-between px-3 pb-3">
-      <!-- 左侧：附件 -->
-      <button class="p-2 text-outline hover:text-primary transition-colors focus:outline-none">
-        <span class="material-symbols-outlined text-xl">attach_file</span>
-      </button>
+      <!-- 左侧：联网搜索 + 附件 -->
+      <div class="flex items-center gap-1">
+        <button
+          :class="[
+            'flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-all focus:outline-none',
+            chatStore.enableWebSearch
+              ? 'bg-primary/10 text-primary border border-primary/30'
+              : 'text-outline hover:text-on-surface border border-transparent hover:bg-surface-container-high'
+          ]"
+          title="联网搜索"
+          @click="chatStore.toggleWebSearch()"
+        >
+          <span class="material-symbols-outlined text-base">
+            {{ chatStore.enableWebSearch ? 'language' : 'language' }}
+          </span>
+          <span>联网</span>
+        </button>
+        <button class="p-2 text-outline hover:text-primary transition-colors focus:outline-none">
+          <span class="material-symbols-outlined text-xl">attach_file</span>
+        </button>
+      </div>
 
       <!-- 右侧：语音 + 发送 -->
       <div class="flex items-center gap-1">

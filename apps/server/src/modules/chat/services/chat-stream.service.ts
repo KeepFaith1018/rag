@@ -108,6 +108,7 @@ export class ChatStreamService {
         originalQuery: dto.message,
       },
       {
+        enableWebSearch: dto.enableWebSearch ?? false,
         onFinish: async (result) => {
           // 持久化引用
           if (result.citations && result.citations.length > 0) {
@@ -120,6 +121,12 @@ export class ChatStreamService {
           await this.chatMessageService.finalizeAssistantMessage(
             assistantMessage.id,
             { content: result.content, finishReason: 'stop' },
+          );
+          // 自动总结标题
+          await this.chatSessionService.summarizeTitleIfNeeded(
+            dto.sessionId,
+            dto.message,
+            result.content,
           );
         },
         onError: async () => {
@@ -196,6 +203,12 @@ export class ChatStreamService {
         await this.chatMessageService.finalizeAssistantMessage(
           assistantMessage.id,
           { content: fullContent, finishReason: 'stop' },
+        );
+        // 自动总结标题
+        await this.chatSessionService.summarizeTitleIfNeeded(
+          dto.sessionId,
+          dto.message,
+          fullContent,
         );
       },
       onError: async () => {

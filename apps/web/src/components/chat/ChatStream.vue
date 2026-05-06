@@ -10,7 +10,7 @@ const props = defineProps<{
 }>();
 
 const emit = defineEmits<{
-  retry: [messageId: number]
+  retry: [messageId: string | number]
 }>();
 
 /** 自动滚动到底部 */
@@ -62,7 +62,7 @@ watch(
   },
 );
 
-function handleRetry(messageId: number) {
+function handleRetry(messageId: string | number) {
   emit('retry', messageId);
 }
 </script>

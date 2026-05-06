@@ -26,7 +26,10 @@
       "Bash(pnpm --filter web build)",
       "Bash(pnpm --filter web dev)",
       "Bash(curl -s http://localhost:5173)",
-      "mcp__plugin_playwright_playwright__browser_snapshot"
+      "mcp__plugin_playwright_playwright__browser_snapshot",
+      "Bash(pnpm run *)",
+      "Bash(pnpm build *)",
+      "Bash(npx tsc *)"
     ]
   },
   "enabledPlugins": {}

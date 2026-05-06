@@ -50,12 +50,6 @@ interface PrimaryNavItem {
   }[];
 }
 
-interface RecentSessionItem {
-  name: string;
-  time: string;
-  path: string;
-}
-
 const primaryNavItems: PrimaryNavItem[] = [
   {
     name: "知识库",
@@ -79,11 +73,6 @@ const primaryNavItems: PrimaryNavItem[] = [
   },
   { name: "知识库广场", icon: "public", path: "/public-kb" },
   { name: "聊天历史", icon: "history", path: "/chat" },
-];
-
-const recentSessions: RecentSessionItem[] = [
-  { name: "神经优化策略", time: "今天", path: "/chat/1" },
-  { name: "第四季度技术路线图", time: "昨天", path: "/chat/2" },
 ];
 
 const displayName = computed(() => authStore.user?.username || "未登录用户");
@@ -248,31 +237,6 @@ async function handleLogout() {
             </RouterLink>
           </div>
         </template>
-      </nav>
-
-      <nav class="mt-10">
-        <p
-          class="text-[10px] font-bold uppercase tracking-widest text-outline-variant mb-3 px-4"
-        >
-          最近会话
-        </p>
-
-        <div class="px-4 space-y-3 opacity-80">
-          <RouterLink
-            v-for="item in recentSessions"
-            :key="item.name"
-            :to="item.path"
-            class="flex flex-col border-l-2 border-outline-variant/30 pl-4 py-1 hover:border-primary/50 transition-colors group cursor-pointer"
-          >
-            <span class="text-[10px] text-outline uppercase tracking-wider">{{
-              item.time
-            }}</span>
-            <span
-              class="text-xs text-on-surface-variant truncate group-hover:text-on-surface transition-colors"
-              >{{ item.name }}</span
-            >
-          </RouterLink>
-        </div>
       </nav>
     </div>
 

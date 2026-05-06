@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { QdrantModule } from '@common/vector/qdrant.module';
 import { ElasticsearchModule } from '@common/vector/elasticsearch.module';
 import { AiModule } from './ai/ai.module';
+import { WebSearchModule } from './web-search/web-search.module';
 import { DenseRetrievalService } from './retrieval/dense-retrieval.service';
 import { ElasticsearchSparseRetrievalService } from './retrieval/elasticsearch-sparse-retrieval.service';
 import { FusionService } from './retrieval/fusion.service';
@@ -21,7 +22,7 @@ import { RetrievalTraceService } from './retrieval/retrieval-trace.service';
  * - 引用构建与检索轨迹
  */
 @Module({
-  imports: [ConfigModule, QdrantModule, ElasticsearchModule, AiModule],
+  imports: [ConfigModule, QdrantModule, ElasticsearchModule, AiModule, WebSearchModule],
   controllers: [],
   providers: [
     // 检索服务
@@ -39,6 +40,7 @@ import { RetrievalTraceService } from './retrieval/retrieval-trace.service';
     RetrievalService,
     CitationService,
     RetrievalTraceService,
+    WebSearchModule,
   ],
 })
 export class RagModule {}

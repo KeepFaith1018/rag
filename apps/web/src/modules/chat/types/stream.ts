@@ -61,12 +61,34 @@ export interface AgentWarningPart {
   message: string;
 }
 
+/** 节点执行记录 */
+export interface AgentStepPart {
+  type: 'agent-step';
+  stepType: string;
+  agentName: string;
+  status: 'started' | 'completed' | 'failed';
+  input?: Record<string, unknown>;
+  output?: Record<string, unknown>;
+  durationMs?: number;
+}
+
+/** 工具调用记录 */
+export interface ToolCallPart {
+  type: 'tool-call';
+  toolName: string;
+  input: Record<string, unknown>;
+  output?: Record<string, unknown>;
+  durationMs?: number;
+}
+
 /** 自定义 data part 联合类型 */
 export type CustomPart =
   | AgentStatusPart
   | RetrievalProgressPart
   | CitationSnapshotPart
-  | AgentWarningPart;
+  | AgentWarningPart
+  | AgentStepPart
+  | ToolCallPart;
 
 /** 流式消息块（AI SDK 格式） */
 export interface UIMessageChunk {

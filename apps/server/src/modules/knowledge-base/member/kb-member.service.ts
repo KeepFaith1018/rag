@@ -420,7 +420,7 @@ export class KbMemberService {
       // 查询用户作为 owner 的知识库
       const ownedKbs = await this.prisma.b_knowledge_bases.findMany({
         where: { owner_id: currentUserId },
-        select: { id: true, name: true },
+        select: { id: true, name: true, visibility: true, is_public: true },
       });
 
       // 查询用户作为 member 的知识库
@@ -440,13 +440,15 @@ export class KbMemberService {
           is_public: true,
           status: 'normal',
         },
-        select: { id: true, name: true },
+        select: { id: true, name: true, visibility: true, is_public: true },
       });
 
       const result: Array<{
         kbId: string;
         kbName: string;
         permission: 'owner' | 'manager' | 'collaborator' | 'member' | 'publicVisitor';
+        visibility: 'private' | 'shared';
+        isPublic: boolean;
       }> = [];
 
       // 添加 owner 角色
@@ -455,6 +457,8 @@ export class KbMemberService {
           kbId: kb.id.toString(),
           kbName: kb.name,
           permission: 'owner',
+          visibility: kb.visibility as 'private' | 'shared',
+          isPublic: kb.is_public,
         });
       }
 
@@ -467,6 +471,8 @@ export class KbMemberService {
             kbId: kb.id.toString(),
             kbName: kb.name,
             permission: role,
+            visibility: kb.visibility as 'private' | 'shared',
+            isPublic: kb.is_public,
           });
         }
       }
@@ -479,6 +485,8 @@ export class KbMemberService {
             kbId: kb.id.toString(),
             kbName: kb.name,
             permission: 'publicVisitor',
+            visibility: kb.visibility as 'private' | 'shared',
+            isPublic: kb.is_public,
           });
         }
       }

@@ -46,4 +46,7 @@ export const configValidationSchema = Joi.object({
   // Bailian Rerank Model
   BAILIAN_RERANK_MODEL: Joi.string().optional(),
   BAILIAN_RERANK_TOP_N: Joi.number().integer().positive().optional(),
+
+  // Tavily Web Search
+  TAVILY_API_KEY: Joi.string().optional(),
 });

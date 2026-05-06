@@ -25,6 +25,8 @@ import type {
   Citation,
   AgentWarningPart,
   RetrievalProgressPart,
+  AgentStepPart,
+  ToolCallPart,
 } from '@/modules/chat/types/stream';
 
 export const useChatStore = defineStore('chat', () => {
@@ -43,6 +45,12 @@ export const useChatStore = defineStore('chat', () => {
   const isLoadingSessions = ref(false);
   const isLoadingMessages = ref(false);
   const isSending = ref(false);
+
+  /** 分页状态 */
+  const sessionsPage = ref(1);
+  const sessionsPageSize = ref(20);
+  const sessionsTotal = ref(0);
+  const hasMoreSessions = computed(() => sessions.value.length < sessionsTotal.value);
 
   /** 当前输入模式 */
   const chatMode = ref<ChatMode>('chat');
@@ -79,8 +87,17 @@ export const useChatStore = defineStore('chat', () => {
   /** 检索进度列表 */
   const retrievalProgresses = ref<RetrievalProgressPart[]>([]);
 
+  /** Agent 执行步骤记录 */
+  const agentSteps = ref<AgentStepPart[]>([]);
+
+  /** 工具调用记录 */
+  const toolCalls = ref<ToolCallPart[]>([]);
+
   /** 最后一条用户消息内容（用于重试） */
   const lastUserMessage = ref('');
+
+  /** 本次提问是否开启联网搜索 */
+  const enableWebSearch = ref(false);
 
   // ─── 计算属性 ─────────────────────────────────────────────
 
@@ -94,22 +111,131 @@ export const useChatStore = defineStore('chat', () => {
 
   const hasWarnings = computed(() => agentWarnings.value.length > 0);
 
+  /**
+   * 知识库级联选项（用于级联选择器）
+   * 按 私人 / 共享(我创建+我加入) / 公开 组织
+   */
+  const kbCascaderOptions = computed(() => {
+    const privateKbs = availableKbs.value.filter(
+      (kb) => kb.visibility === 'private',
+    );
+    const sharedOwned = availableKbs.value.filter(
+      (kb) => kb.visibility === 'shared' && kb.permission === 'owner',
+    );
+    const sharedJoined = availableKbs.value.filter(
+      (kb) =>
+        kb.visibility === 'shared' &&
+        kb.permission !== 'owner' &&
+        kb.permission !== 'publicVisitor',
+    );
+    const publicKbs = availableKbs.value.filter(
+      (kb) => kb.permission === 'publicVisitor',
+    );
+
+    const groups = [];
+
+    if (privateKbs.length > 0) {
+      groups.push({
+        label: '私人',
+        value: 'private',
+        children: privateKbs.map((kb) => ({
+          label: kb.kbName,
+          value: kb.kbId,
+          permission: kb.permission,
+        })),
+      });
+    }
+
+    if (sharedOwned.length > 0 || sharedJoined.length > 0) {
+      const sharedChildren = [];
+      if (sharedOwned.length > 0) {
+        sharedChildren.push({
+          label: '我创建',
+          value: 'shared-owned',
+          children: sharedOwned.map((kb) => ({
+            label: kb.kbName,
+            value: kb.kbId,
+            permission: kb.permission,
+          })),
+        });
+      }
+      if (sharedJoined.length > 0) {
+        sharedChildren.push({
+          label: '我加入',
+          value: 'shared-joined',
+          children: sharedJoined.map((kb) => ({
+            label: kb.kbName,
+            value: kb.kbId,
+            permission: kb.permission,
+          })),
+        });
+      }
+      groups.push({
+        label: '共享',
+        value: 'shared',
+        children: sharedChildren,
+      });
+    }
+
+    if (publicKbs.length > 0) {
+      groups.push({
+        label: '公开',
+        value: 'public',
+        disabled: true,
+        children: publicKbs.map((kb) => ({
+          label: kb.kbName,
+          value: kb.kbId,
+          permission: kb.permission,
+        })),
+      });
+    }
+
+    return groups;
+  });
+
   // ─── 会话操作 ─────────────────────────────────────────────
 
   /**
-   * 加载会话列表。
+   * 加载会话列表（首页）。
+   * 调用此方法会重置会话列表。
    */
   async function loadSessions() {
     isLoadingSessions.value = true;
+    sessionsPage.value = 1;
+    sessions.value = [];
     try {
-      const response = await listChatSessions();
-      // 后端返回 { list: [...], total }，直接数组也兼容
-      if (response && typeof response === 'object' && 'list' in response) {
-        sessions.value = (response as { list: ChatSessionSummary[] }).list;
-      } else if (Array.isArray(response)) {
-        sessions.value = response;
+      const response = await listChatSessions({
+        page: sessionsPage.value,
+        pageSize: sessionsPageSize.value,
+      });
+      if ('list' in response) {
+        sessions.value = response.list;
+        sessionsTotal.value = response.total;
       } else {
         sessions.value = [];
+        sessionsTotal.value = 0;
+      }
+    } finally {
+      isLoadingSessions.value = false;
+    }
+  }
+
+  /**
+   * 加载更多会话（下一页）。
+   * 用于无限滚动场景。
+   */
+  async function loadMoreSessions() {
+    if (isLoadingSessions.value || !hasMoreSessions.value) return;
+    isLoadingSessions.value = true;
+    try {
+      sessionsPage.value += 1;
+      const response = await listChatSessions({
+        page: sessionsPage.value,
+        pageSize: sessionsPageSize.value,
+      });
+      if ('list' in response) {
+        sessions.value.push(...response.list);
+        sessionsTotal.value = response.total;
       }
     } finally {
       isLoadingSessions.value = false;
@@ -134,7 +260,8 @@ export const useChatStore = defineStore('chat', () => {
     isLoadingMessages.value = true;
     try {
       currentSession.value = await getChatSession(sessionId);
-      messages.value = await listChatMessages(sessionId);
+      const response = await listChatMessages(sessionId);
+      messages.value = 'list' in response ? response.list : response;
       // 恢复上一轮的模式和知识库选择
       if (currentSession.value.lastChatMode) {
         chatMode.value = currentSession.value.lastChatMode;
@@ -238,7 +365,6 @@ export const useChatStore = defineStore('chat', () => {
    * 后端发送的检索进度去重：只保留最新的
    */
   function addRetrievalProgress(progress: RetrievalProgressPart) {
-    // 后端发送的检索进度没有 kbId/channel，使用索引去重
     const idx = retrievalProgresses.value.findIndex(
       (p) => p.type === 'retrieval-progress' && p.denseCount === progress.denseCount && p.sparseCount === progress.sparseCount,
     );
@@ -247,6 +373,20 @@ export const useChatStore = defineStore('chat', () => {
     } else {
       retrievalProgresses.value.push(progress);
     }
+  }
+
+  /**
+   * 添加 Agent 执行步骤。
+   */
+  function addAgentStep(step: AgentStepPart) {
+    agentSteps.value.push(step);
+  }
+
+  /**
+   * 添加工具调用记录。
+   */
+  function addToolCall(toolCall: ToolCallPart) {
+    toolCalls.value.push(toolCall);
   }
 
   // ─── 模式切换 ─────────────────────────────────────────────
@@ -278,6 +418,17 @@ export const useChatStore = defineStore('chat', () => {
     } else {
       selectedKbIds.value.splice(index, 1);
     }
+  }
+
+  /**
+   * 切换联网搜索开关。
+   */
+  function toggleWebSearch() {
+    enableWebSearch.value = !enableWebSearch.value;
+  }
+
+  function setWebSearch(enabled: boolean) {
+    enableWebSearch.value = enabled;
   }
 
   // ─── 模型选择 ─────────────────────────────────────────────
@@ -354,6 +505,8 @@ export const useChatStore = defineStore('chat', () => {
     citations.value = [];
     agentWarnings.value = [];
     retrievalProgresses.value = [];
+    agentSteps.value = [];
+    toolCalls.value = [];
   }
 
   /**
@@ -401,6 +554,8 @@ export const useChatStore = defineStore('chat', () => {
     citations,
     agentWarnings,
     retrievalProgresses,
+    agentSteps,
+    toolCalls,
     lastUserMessage,
     // 计算属性
     hasActiveSession,
@@ -408,8 +563,11 @@ export const useChatStore = defineStore('chat', () => {
     selectedKbCount,
     hasCitations,
     hasWarnings,
+    hasMoreSessions,
+    kbCascaderOptions,
     // 会话操作
     loadSessions,
+    loadMoreSessions,
     createSession,
     selectSession,
     renameSession,
@@ -437,5 +595,10 @@ export const useChatStore = defineStore('chat', () => {
     setLastUserMessage,
     clearCurrentSession,
     addRetrievalProgress,
+    addAgentStep,
+    addToolCall,
+    enableWebSearch,
+    toggleWebSearch,
+    setWebSearch,
   };
 });

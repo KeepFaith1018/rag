@@ -15,6 +15,8 @@ import type {
   RetrievalProgressPart,
   CitationSnapshotPart,
   AgentWarningPart,
+  AgentStepPart,
+  ToolCallPart,
 } from '@/modules/chat/types/stream';
 import { useStreamingMarkdown } from './useStreamingMarkdown';
 import { useChatStore } from '@/stores/chat';
@@ -95,6 +97,7 @@ function parseSSEData(line: string): { type: string; data: Record<string, unknow
       modelConfigId: chatStore.selectedModel?.configId,
       selectedKbIds: chatStore.chatMode === 'rag' ? chatStore.selectedKbIds : undefined,
       agentMode: 'multi-agent',
+      enableWebSearch: chatStore.enableWebSearch,
     };
 
     // 乐观地添加用户消息
@@ -234,6 +237,16 @@ function parseSSEData(line: string): { type: string; data: Record<string, unknow
               case 'agent-warning': {
                 const warning = data as unknown as AgentWarningPart;
                 chatStore.addWarning(warning);
+                break;
+              }
+              case 'agent-step': {
+                const step = data as unknown as AgentStepPart;
+                chatStore.addAgentStep(step);
+                break;
+              }
+              case 'tool-call': {
+                const toolCall = data as unknown as ToolCallPart;
+                chatStore.addToolCall(toolCall);
                 break;
               }
             }

@@ -3,6 +3,7 @@ import {
   Get,
   Post,
   Patch,
+  Delete,
   Body,
   Param,
   Query,
@@ -75,6 +76,17 @@ export class ChatController {
     @Body() dto: RenameChatSessionDto,
   ) {
     return this.chatSessionService.rename(Number(userId), sessionId, dto);
+  }
+
+  /** 删除会话 */
+  @Delete('sessions/:sessionId')
+  @UseGuards(AuthGuard)
+  @Auth()
+  async deleteSession(
+    @CurrentUser('sub') userId: string,
+    @Param('sessionId') sessionId: string,
+  ) {
+    await this.chatSessionService.remove(Number(userId), sessionId);
   }
 
   /** 查询会话消息列表 */

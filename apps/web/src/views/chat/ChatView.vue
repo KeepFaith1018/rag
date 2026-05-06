@@ -4,7 +4,6 @@ import ChatStatusBanner from '@/components/chat/ChatStatusBanner.vue';
 import ChatTopNavBar from '@/components/layout/ChatTopNavBar.vue';
 import ChatStream from '@/components/chat/ChatStream.vue';
 import ChatInputArea from '@/components/chat/ChatInputArea.vue';
-import ChatAgentTimeline from '@/components/chat/ChatAgentTimeline.vue';
 import ChatCitationPanel from '@/components/chat/ChatCitationPanel.vue';
 import ChatSettingsBar from '@/components/chat/ChatSettingsBar.vue';
 import { useChatStore } from '@/stores/chat';
@@ -13,11 +12,6 @@ import { listAvailableKbs, listAvailableModels } from '@/api/chat';
 
 const chatStore = useChatStore();
 const { sendMessage, abort, isStreaming } = useAgentChat();
-
-// 是否显示 Agent 时间线
-const showAgentTimeline = computed(
-  () => chatStore.agentPhase !== null && chatStore.agentPhase !== 'done',
-);
 
 // 是否显示引用面板
 const showCitationPanel = computed(() => chatStore.hasCitations);
@@ -32,6 +26,8 @@ onMounted(async () => {
         kbId: kb.kbId,
         kbName: kb.kbName,
         permission: kb.permission as 'owner' | 'manager' | 'collaborator' | 'member' | 'publicVisitor',
+        visibility: kb.visibility,
+        isPublic: kb.isPublic,
       })),
     );
   } catch (e) {
@@ -65,7 +61,7 @@ function handleCancel() {
 }
 
 // 处理重试
-async function handleRetry(messageId: number) {
+async function handleRetry(messageId: string | number) {
   const lastMsg = chatStore.lastUserMessage;
   if (!lastMsg) return;
   // 找到当前 AI 消息的索引，删除它及之后的所有消息
@@ -88,9 +84,6 @@ async function handleRetry(messageId: number) {
     <div class="px-6 py-3 border-b border-outline-variant/10">
       <ChatSettingsBar />
     </div>
-
-    <!-- Agent 时间线 -->
-    <ChatAgentTimeline v-if="showAgentTimeline" />
 
     <!-- 主内容区 -->
     <div class="flex-1 overflow-hidden flex flex-col relative">

@@ -3,7 +3,7 @@
  */
 
 /** 消息角色 */
-export type MessageRole = 'ai' | 'user';
+export type MessageRole = 'ai' | 'user' | 'assistant';
 
 /** 聊天模式 */
 export type ChatMode = 'chat' | 'rag';
@@ -25,7 +25,7 @@ export interface ChatSessionSummary {
 
 /** 消息项 */
 export interface ChatMessageItem {
-  id: number;
+  id: string | number;
   role: MessageRole;
   name: string;
   content: string;
@@ -63,6 +63,7 @@ export interface StreamChatRequest {
   modelConfigId?: string;
   selectedKbIds?: string[];
   agentMode?: 'multi-agent';
+  enableWebSearch?: boolean;
   metadata?: Record<string, unknown>;
 }
 
@@ -71,6 +72,8 @@ export interface KbOption {
   kbId: string;
   kbName: string;
   permission: 'owner' | 'manager' | 'collaborator' | 'member' | 'publicVisitor';
+  visibility?: 'private' | 'shared';
+  isPublic?: boolean;
 }
 
 /** 模型配置选项 */

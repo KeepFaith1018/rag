@@ -23,11 +23,18 @@ export async function createChatSession(
 }
 
 /**
- * 获取会话列表
+ * 获取会话列表（分页）
  */
-export async function listChatSessions(): Promise<ChatSessionSummary[]> {
+export async function listChatSessions(params?: {
+  page?: number;
+  pageSize?: number;
+}): Promise<{ list: ChatSessionSummary[]; total: number }> {
+  const query = new URLSearchParams();
+  if (params?.page) query.set('page', String(params.page));
+  if (params?.pageSize) query.set('pageSize', String(params.pageSize));
+  const qs = query.toString();
   return apiRequest({
-    url: '/chat/sessions',
+    url: `/chat/sessions${qs ? `?${qs}` : ''}`,
     method: 'GET',
   });
 }
@@ -49,7 +56,7 @@ export async function getChatSession(
  */
 export async function listChatMessages(
   sessionId: string,
-): Promise<ChatMessageItem[]> {
+): Promise<{ list: ChatMessageItem[]; total: number }> {
   return apiRequest({
     url: `/chat/sessions/${sessionId}/messages`,
     method: 'GET',
@@ -88,6 +95,8 @@ export async function listAvailableKbs(): Promise<
     kbId: string;
     kbName: string;
     permission: string;
+    visibility?: 'private' | 'shared';
+    isPublic?: boolean;
   }>
 > {
   return apiRequest({

@@ -176,6 +176,64 @@ export class ChatSessionService {
     }
   }
 
+  /**
+   * 删除会话。
+   */
+  async remove(userId: number, sessionId: string): Promise<void> {
+    const session = await this.prisma.b_chat_sessions.findUnique({
+      where: { id: sessionId },
+    });
+
+    if (!session) {
+      throw new BusinessException(ErrorCode.CONVERSATION_NOT_FOUND);
+    }
+
+    if (session.user_id !== BigInt(userId)) {
+      throw new BusinessException(ErrorCode.CONVERSATION_UNAUTHORIZED);
+    }
+
+    await this.prisma.b_chat_sessions.delete({
+      where: { id: sessionId },
+    });
+  }
+
+  /**
+   * 自动总结会话标题。
+   * 如果会话标题为默认标题，则根据首条用户消息生成总结。
+   */
+  async summarizeTitleIfNeeded(
+    sessionId: string,
+    firstUserMessage: string,
+    assistantAnswer: string,
+  ): Promise<void> {
+    try {
+      const session = await this.prisma.b_chat_sessions.findUnique({
+        where: { id: sessionId },
+      });
+
+      if (!session || session.title !== '新会话') {
+        return;
+      }
+
+      // 生成总结性标题（取用户消息的前 30 个字符 + 省略号）
+      const title =
+        firstUserMessage.length > 30
+          ? firstUserMessage.substring(0, 30) + '...'
+          : firstUserMessage;
+
+      await this.prisma.b_chat_sessions.update({
+        where: { id: sessionId },
+        data: {
+          title,
+          summary_text: assistantAnswer.substring(0, 200),
+        },
+      });
+    } catch (error) {
+      // 标题总结失败不影响主流程，仅记录日志
+      console.error('[ChatSessionService] summarizeTitleIfNeeded failed:', error);
+    }
+  }
+
   private toSummary(session: {
     id: string;
     title: string;
