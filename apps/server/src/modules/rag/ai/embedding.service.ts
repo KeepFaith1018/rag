@@ -77,7 +77,7 @@ export class EmbeddingService {
     if (uncachedTexts.length > 0) {
       // E4: Token-count-based 动态批次 — 按 token 累积分组，最大化每批吞吐
       const MAX_TOKENS_PER_BATCH = 7500; // 百炼 text-embedding-v4 安全上限 ~8100
-      const batches: { indices: number[]; texts: string[] }[] = [];
+      const batches: { indices: number[]; texts: string[]; tokenCount: number }[] = [];
       let currentIndices: number[] = [];
       let currentTexts: string[] = [];
       let currentTokens = 0;
@@ -86,12 +86,12 @@ export class EmbeddingService {
         const tokens = this.tokenService.tokenCount(uncachedTexts[i]);
         // 单条超限：独立成批，让 API 自行处理
         if (tokens > MAX_TOKENS_PER_BATCH && currentTexts.length === 0) {
-          batches.push({ indices: [uncachedIndices[i]], texts: [uncachedTexts[i]] });
+          batches.push({ indices: [uncachedIndices[i]], texts: [uncachedTexts[i]], tokenCount: tokens });
           continue;
         }
         // token 累积超限：关闭当前批次，开启新批次
         if (currentTokens + tokens > MAX_TOKENS_PER_BATCH && currentTexts.length > 0) {
-          batches.push({ indices: currentIndices, texts: currentTexts });
+          batches.push({ indices: currentIndices, texts: currentTexts, tokenCount: currentTokens });
           currentIndices = [];
           currentTexts = [];
           currentTokens = 0;
@@ -101,7 +101,7 @@ export class EmbeddingService {
         currentTokens += tokens;
       }
       if (currentTexts.length > 0) {
-        batches.push({ indices: currentIndices, texts: currentTexts });
+        batches.push({ indices: currentIndices, texts: currentTexts, tokenCount: currentTokens });
       }
 
       for (let b = 0; b < batches.length; b++) {
@@ -116,7 +116,7 @@ export class EmbeddingService {
           this.cacheService.set(`embed:${hash}`, JSON.stringify(result.vectors[j]))
             .catch(() => { /* 缓存写入失败不影响主流程 */ });
         }
-        totalTokens += result.promptTokens;
+        totalTokens += batch.tokenCount;
 
         if (b < batches.length - 1) {
           await this.sleep(config.requestIntervalMs);

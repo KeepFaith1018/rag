@@ -41,7 +41,7 @@ export class DenseRetrievalService {
     const resultGroups = await Promise.all(
       vectors.map((vector) =>
         this.qdrantService.searchChunkVectors({
-          vector,
+          vector: vector!, // embedDocuments 保证所有 entries 均已填充
           kbIds,
           topK,
           scoreThreshold,

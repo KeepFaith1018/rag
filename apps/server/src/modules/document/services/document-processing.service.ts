@@ -268,7 +268,7 @@ export class DocumentProcessingService {
                 chunk.chunk_index,
                 payload.processingVersion,
               ),
-            vector: embeddingResult.vectors[index],
+            vector: embeddingResult.vectors[index]!, // 已在上游校验长度一致
             payload: {
               kbId: document.kb_id.toString(),
               docId: document.id.toString(),
