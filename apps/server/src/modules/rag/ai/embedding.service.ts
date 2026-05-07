@@ -3,6 +3,7 @@ import { ConfigService } from '@nestjs/config';
 import { OpenAIEmbeddings } from '@langchain/openai';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
+import { TokenService } from '@common/utils/token.service';
 import {
   DOCUMENT_EMBEDDING_CONFIG_ERROR_CODE,
   DOCUMENT_EMBEDDING_ERROR_CODE,
@@ -24,7 +25,10 @@ interface EmbeddingRuntimeConfig {
  */
 @Injectable()
 export class EmbeddingService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly tokenService: TokenService,
+  ) {}
 
   /**
    * 批量获取文本向量，内部自动做分批、限频与重试。
@@ -263,20 +267,10 @@ export class EmbeddingService {
   }
 
   /**
-   * 轻量估算当前批次的 token 数量，用于治理字段与调试输出。
+   * 基于 tiktoken 计算当前批次的真实 token 数量。
    */
   private estimateBatchTokenCount(texts: string[]) {
-    return texts.reduce(
-      (total, item) => total + this.estimateTokenCount(item),
-      0,
-    );
-  }
-
-  /**
-   * 当前阶段尚未直接接入 provider token usage，先用轻量估算值兜底。
-   */
-  private estimateTokenCount(content: string) {
-    return Math.max(1, Math.ceil(content.length / 4));
+    return this.tokenService.batchTokenCount(texts);
   }
 
   /**

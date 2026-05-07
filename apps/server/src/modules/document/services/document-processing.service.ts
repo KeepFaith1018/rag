@@ -183,9 +183,12 @@ export class DocumentProcessingService {
         return;
       }
 
-      const chunks = await this.documentChunkService.getChunksByDocument(
+      const allChunks = await this.documentChunkService.getChunksByDocument(
         document.id,
       );
+      // 仅 Level 3（子 chunk）参与 embedding
+      const embedChunks = allChunks.filter((c) => c.chunk_level === 3);
+
       await this.documentProcessingStateService.markEmbedding(
         document.id,
         payload.processingVersion,
@@ -207,7 +210,7 @@ export class DocumentProcessingService {
       });
 
       const embeddingResult = await this.embeddingService.embedDocuments(
-        chunks.map((chunk) => chunk.content),
+        embedChunks.map((chunk) => chunk.content),
       );
       await this.documentProcessingTaskService.touchStageTask({
         documentId: document.id,
@@ -216,12 +219,12 @@ export class DocumentProcessingService {
         attempt,
       });
 
-      if (embeddingResult.vectors.length !== chunks.length) {
+      if (embeddingResult.vectors.length !== embedChunks.length) {
         throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
           message: 'Embedding 返回向量数量与文档分片数量不一致',
           context: {
             internalErrorCode: DOCUMENT_EMBEDDING_ERROR_CODE,
-            expectedSize: chunks.length,
+            expectedSize: embedChunks.length,
             actualSize: embeddingResult.vectors.length,
           },
         });
@@ -238,7 +241,9 @@ export class DocumentProcessingService {
 
       try {
         await this.qdrantService.upsertChunkVectors(
-          chunks.map((chunk, index) => ({
+          embedChunks.map((chunk, index) => {
+            const meta = (chunk.metadata_json ?? {}) as Record<string, unknown>;
+            return {
             id:
               chunk.vector_id ||
               buildDocumentChunkVectorId(
@@ -259,8 +264,17 @@ export class DocumentProcessingService {
               charStart: chunk.char_start,
               charEnd: chunk.char_end,
               content: chunk.content,
+              // 三层粒度层级引用
+              rootChunkId: chunk.root_chunk_id?.toString(),
+              parentChunkId: chunk.parent_chunk_id?.toString(),
+              chunkLevel: chunk.chunk_level,
+              // O7: 检索侧元数据 — 用于 fusion/rerank 加权
+              sectionLevel: meta['sectionLevel'] ?? null,
+              chunkStrategy: meta['chunkStrategy'] ?? null,
+              titlePath: meta['titlePath'] ?? [],
+              blockType: meta['blockType'] ?? null,
             },
-          })),
+          };}),
         );
       } catch (error) {
         throw new BusinessException(ErrorCode.VECTOR_INDEX_FAILED, {
@@ -270,11 +284,13 @@ export class DocumentProcessingService {
         });
       }
 
-      // 同步写入 Elasticsearch
+      // 同步写入 Elasticsearch（仅 Level 3）
       await this.elasticsearchService.ensureIndex();
       try {
         await this.elasticsearchService.bulkIndexChunks(
-          chunks.map((chunk) => ({
+          embedChunks.map((chunk) => {
+            const meta = (chunk.metadata_json ?? {}) as Record<string, unknown>;
+            return {
             chunkId: chunk.id.toString(),
             docId: document.id.toString(),
             kbId: document.kb_id.toString(),
@@ -285,8 +301,16 @@ export class DocumentProcessingService {
               pageNo: chunk.page_no,
               charStart: chunk.char_start,
               charEnd: chunk.char_end,
+              rootChunkId: chunk.root_chunk_id?.toString(),
+              parentChunkId: chunk.parent_chunk_id?.toString(),
+              chunkLevel: chunk.chunk_level,
+              // O7: 检索加权元数据
+              sectionLevel: meta['sectionLevel'] ?? null,
+              chunkStrategy: meta['chunkStrategy'] ?? null,
+              titlePath: meta['titlePath'] ?? [],
+              blockType: meta['blockType'] ?? null,
             },
-          })),
+          };}),
         );
       } catch (error) {
         throw new BusinessException(ErrorCode.VECTOR_INDEX_FAILED, {

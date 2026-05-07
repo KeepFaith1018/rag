@@ -98,11 +98,70 @@ export const DOCUMENT_PROCESSING_TIMEOUT_MS = 30 * 60 * 1000;
 export const DOCUMENT_PROCESSING_TIMEOUT_SCAN_INTERVAL_MS = 60 * 1000;
 
 /**
- * 默认分片目标大小，按近似 token 长度控制。
+ * 默认分片目标大小，基于 tiktoken cl100k_base 真实 token 计数控制。
  */
 export const DOCUMENT_CHUNK_SIZE = 700;
 
 /**
- * 默认分片重叠大小，按近似 token 长度控制。
+ * 默认分片重叠大小，基于 tiktoken cl100k_base 真实 token 计数控制。
  */
 export const DOCUMENT_CHUNK_OVERLAP = 100;
+
+/**
+ * 三层粒度切块大小常量。
+ * 比例: Level1(根) : Level2(父) : Level3(子) ≈ 2x : 1x : 0.5x
+ */
+export const ROOT_CHUNK_SIZE = 1200;
+export const PARENT_CHUNK_SIZE = 600;
+export const CHILD_CHUNK_SIZE = 300;
+
+/** 三层粒度 chunk 重叠 token 数 */
+export const HIERARCHICAL_CHUNK_OVERLAP = 60;
+
+/** 代码块/表格块作为原子单元保留的最大 token 数（百炼 text-embedding-v4 上限 8192，安全值 ~8000） */
+export const MAX_ATOMIC_BLOCK_TOKENS = 8000;
+
+// ── O6: 文档类型自适应 Chunk Profile ──
+
+export interface ChunkProfile {
+  name: string;
+  rootSize: number;
+  parentSize: number;
+  childSize: number;
+}
+
+export const CHUNK_PROFILES: Record<string, ChunkProfile> = {
+  'default': {
+    name: 'default',
+    rootSize: ROOT_CHUNK_SIZE,
+    parentSize: PARENT_CHUNK_SIZE,
+    childSize: CHILD_CHUNK_SIZE,
+  },
+  'code-heavy': {
+    name: 'code-heavy',
+    rootSize: 1800,
+    parentSize: 900,
+    childSize: 500,
+  },
+  verbose: {
+    name: 'verbose',
+    rootSize: 1400,
+    parentSize: 700,
+    childSize: 350,
+  },
+  compact: {
+    name: 'compact',
+    rootSize: 900,
+    parentSize: 450,
+    childSize: 250,
+  },
+};
+
+/** 代码块比例触发 code-heavy profile 的阈值 */
+export const CODE_HEAVY_RATIO_THRESHOLD = 0.3;
+
+/** 表格比例触发 verbose profile 的阈值 */
+export const TABLE_HEAVY_RATIO_THRESHOLD = 0.2;
+
+/** 平均 section 内容长度低于此值（字符数）触发 compact profile */
+export const COMPACT_CONTENT_LENGTH_THRESHOLD = 500;

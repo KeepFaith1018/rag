@@ -88,6 +88,11 @@ export class FusionService {
           fusionScore += 1 / (k + (sparseRank));
         }
 
+        // O7: 基于 chunk 元数据的质量加权
+        fusionScore *= this.computeQualityMultiplier(
+          payloadMap.get(chunkId),
+        );
+
         const denseHit = denseHits.find((h) => h.chunkId === chunkId);
         const sparseHit = sparseHits.find((h) => h.chunkId === chunkId);
 
@@ -124,6 +129,39 @@ export class FusionService {
         },
       });
     }
+  }
+
+  /**
+   * O7: 基于 chunk 元数据计算融合质量乘数。
+   *
+   * - structured-token-aware 策略 → 1.05（结构切分质量更高）
+   * - code/table 原子块 → 1.03（完整语义单元）
+   * - sectionLevel >= 3 深层内容 → 1.02（更具体的说明）
+   *
+   * 组合最高约 ×1.10，避免过度漂移。
+   */
+  private computeQualityMultiplier(
+    payload: Record<string, unknown> | undefined,
+  ): number {
+    if (!payload) return 1.0;
+
+    let multiplier = 1.0;
+    const chunkStrategy = payload['chunkStrategy'] as string | undefined;
+    if (chunkStrategy === 'structured-token-aware') {
+      multiplier *= 1.05;
+    }
+
+    const blockType = payload['blockType'] as string | undefined;
+    if (blockType === 'code' || blockType === 'table') {
+      multiplier *= 1.03;
+    }
+
+    const sectionLevel = payload['sectionLevel'] as number | undefined;
+    if (sectionLevel !== null && sectionLevel !== undefined && sectionLevel >= 3) {
+      multiplier *= 1.02;
+    }
+
+    return Math.round(multiplier * 1000) / 1000;
   }
 
   /**

@@ -1,4 +1,5 @@
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '@common/prisma/prisma.service';
 import { DenseRetrievalService } from './dense-retrieval.service';
 import { ElasticsearchSparseRetrievalService } from './elasticsearch-sparse-retrieval.service';
 import { FusionService } from './fusion.service';
@@ -39,6 +40,7 @@ export class RetrievalService {
     private readonly sparseService: ElasticsearchSparseRetrievalService,
     private readonly fusionService: FusionService,
     private readonly rerankService: RerankService,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
@@ -92,14 +94,55 @@ export class RetrievalService {
       questionType,
     });
 
+    // 5. 三层粒度展开 — 将 Level 3 子 chunk 替换为 Level 1 根 chunk 完整上下文
+    const expandedHits = await this.expandToRootChunks(rerankedHits);
+
     const totalDurationMs = Date.now() - startedAt;
 
     return {
       denseHits,
       sparseHits,
       fusedHits,
-      rerankedHits,
+      rerankedHits: expandedHits,
       totalDurationMs,
     };
+  }
+
+  /**
+   * 将精排后的 Level 3 child chunk 展开为 Level 1 root chunk 的完整内容。
+   *
+   * 通过 payload 中的 rootChunkId 一步定位到 Level 1 根 chunk，
+   * 用其完整 content（~1200 tokens）替换 child 的短 content（~300 tokens），
+   * 实现 Small-to-Big 检索策略。
+   *
+   * 存量数据无 rootChunkId 时，原样返回不展开。
+   */
+  private async expandToRootChunks(
+    hits: RerankedHit[],
+  ): Promise<RerankedHit[]> {
+    const rootIds = [
+      ...new Set(
+        hits
+          .map((h) => h.payload?.['rootChunkId'] as string | undefined)
+          .filter(Boolean),
+      ),
+    ];
+    if (rootIds.length === 0) return hits;
+
+    const rootChunks = await this.prisma.b_document_chunks.findMany({
+      where: { id: { in: rootIds.map((id) => BigInt(id!)) }, chunk_level: 1 },
+      select: { id: true, content: true },
+    });
+    const contentMap = new Map(
+      rootChunks.map((c) => [c.id.toString(), c.content]),
+    );
+
+    return hits.map((hit) => {
+      const rootId = hit.payload?.['rootChunkId'] as string | undefined;
+      if (rootId && contentMap.has(rootId)) {
+        return { ...hit, content: contentMap.get(rootId)! };
+      }
+      return hit;
+    });
   }
 }

@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { TokenService } from '@common/utils/token.service';
 import { EmbeddingService } from './embedding.service';
 import { ChatModelService } from './chat-model.service';
 import { AiController } from './ai.controller';
@@ -13,7 +14,7 @@ import { AiController } from './ai.controller';
 @Module({
   imports: [ConfigModule],
   controllers: [AiController],
-  providers: [EmbeddingService, ChatModelService],
+  providers: [EmbeddingService, ChatModelService, TokenService],
   exports: [EmbeddingService, ChatModelService],
 })
 export class AiModule {}

@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { FileStorageModule } from '@common/storage/file-storage.module';
 import { QdrantModule } from '@common/vector/qdrant.module';
+import { TokenService } from '@common/utils/token.service';
 import { RagModule } from '../rag/rag.module';
 import { KbPermissionModule } from '../knowledge-base/permission/kb-permission.module';
 import { DocumentController } from './document.controller';
@@ -50,6 +51,7 @@ import { DocumentSseController } from './document-sse.controller';
     DocumentProcessingTaskService,
     DocumentProcessingMonitorService,
     DocumentSseService,
+    TokenService,
   ],
   exports: [
     DocumentService,

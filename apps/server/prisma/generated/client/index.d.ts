@@ -735,7 +735,7 @@ export namespace Prisma {
   ? False
   : T extends Uint8Array
   ? False
-  : T extends bigint
+  : T extends BigInt
   ? False
   : T extends object
   ? True
@@ -3155,10 +3155,12 @@ export namespace Prisma {
 
   export type B_document_chunksCountOutputType = {
     message_citations: number
+    child_chunks: number
   }
 
   export type B_document_chunksCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     message_citations?: boolean | B_document_chunksCountOutputTypeCountMessage_citationsArgs
+    child_chunks?: boolean | B_document_chunksCountOutputTypeCountChild_chunksArgs
   }
 
   // Custom InputTypes
@@ -3177,6 +3179,13 @@ export namespace Prisma {
    */
   export type B_document_chunksCountOutputTypeCountMessage_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_chat_message_citationsWhereInput
+  }
+
+  /**
+   * B_document_chunksCountOutputType without action
+   */
+  export type B_document_chunksCountOutputTypeCountChild_chunksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_document_chunksWhereInput
   }
 
 
@@ -3928,20 +3937,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -5160,20 +5169,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -6190,20 +6199,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -7149,20 +7158,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -8149,20 +8158,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -9164,20 +9173,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -10137,20 +10146,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -11164,20 +11173,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -12207,20 +12216,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -13307,20 +13316,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -14346,20 +14355,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -15541,20 +15550,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -16829,20 +16838,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -17902,20 +17911,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -18315,6 +18324,9 @@ export namespace Prisma {
     page_no: number | null
     char_start: number | null
     char_end: number | null
+    parent_chunk_id: number | null
+    root_chunk_id: number | null
+    chunk_level: number | null
   }
 
   export type B_document_chunksSumAggregateOutputType = {
@@ -18325,6 +18337,9 @@ export namespace Prisma {
     page_no: number | null
     char_start: number | null
     char_end: number | null
+    parent_chunk_id: bigint | null
+    root_chunk_id: bigint | null
+    chunk_level: number | null
   }
 
   export type B_document_chunksMinAggregateOutputType = {
@@ -18337,6 +18352,10 @@ export namespace Prisma {
     char_start: number | null
     char_end: number | null
     vector_id: string | null
+    parent_chunk_id: bigint | null
+    root_chunk_id: bigint | null
+    chunk_level: number | null
+    is_root: boolean | null
     embedding_status: string | null
     created_at: Date | null
   }
@@ -18351,6 +18370,10 @@ export namespace Prisma {
     char_start: number | null
     char_end: number | null
     vector_id: string | null
+    parent_chunk_id: bigint | null
+    root_chunk_id: bigint | null
+    chunk_level: number | null
+    is_root: boolean | null
     embedding_status: string | null
     created_at: Date | null
   }
@@ -18366,6 +18389,10 @@ export namespace Prisma {
     char_end: number
     vector_id: number
     metadata_json: number
+    parent_chunk_id: number
+    root_chunk_id: number
+    chunk_level: number
+    is_root: number
     embedding_status: number
     created_at: number
     _all: number
@@ -18380,6 +18407,9 @@ export namespace Prisma {
     page_no?: true
     char_start?: true
     char_end?: true
+    parent_chunk_id?: true
+    root_chunk_id?: true
+    chunk_level?: true
   }
 
   export type B_document_chunksSumAggregateInputType = {
@@ -18390,6 +18420,9 @@ export namespace Prisma {
     page_no?: true
     char_start?: true
     char_end?: true
+    parent_chunk_id?: true
+    root_chunk_id?: true
+    chunk_level?: true
   }
 
   export type B_document_chunksMinAggregateInputType = {
@@ -18402,6 +18435,10 @@ export namespace Prisma {
     char_start?: true
     char_end?: true
     vector_id?: true
+    parent_chunk_id?: true
+    root_chunk_id?: true
+    chunk_level?: true
+    is_root?: true
     embedding_status?: true
     created_at?: true
   }
@@ -18416,6 +18453,10 @@ export namespace Prisma {
     char_start?: true
     char_end?: true
     vector_id?: true
+    parent_chunk_id?: true
+    root_chunk_id?: true
+    chunk_level?: true
+    is_root?: true
     embedding_status?: true
     created_at?: true
   }
@@ -18431,6 +18472,10 @@ export namespace Prisma {
     char_end?: true
     vector_id?: true
     metadata_json?: true
+    parent_chunk_id?: true
+    root_chunk_id?: true
+    chunk_level?: true
+    is_root?: true
     embedding_status?: true
     created_at?: true
     _all?: true
@@ -18533,6 +18578,10 @@ export namespace Prisma {
     char_end: number | null
     vector_id: string | null
     metadata_json: JsonValue | null
+    parent_chunk_id: bigint | null
+    root_chunk_id: bigint | null
+    chunk_level: number
+    is_root: boolean
     embedding_status: string
     created_at: Date
     _count: B_document_chunksCountAggregateOutputType | null
@@ -18567,10 +18616,16 @@ export namespace Prisma {
     char_end?: boolean
     vector_id?: boolean
     metadata_json?: boolean
+    parent_chunk_id?: boolean
+    root_chunk_id?: boolean
+    chunk_level?: boolean
+    is_root?: boolean
     embedding_status?: boolean
     created_at?: boolean
     message_citations?: boolean | b_document_chunks$message_citationsArgs<ExtArgs>
     b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
+    child_chunks?: boolean | b_document_chunks$child_chunksArgs<ExtArgs>
+    parent?: boolean | b_document_chunks$parentArgs<ExtArgs>
     _count?: boolean | B_document_chunksCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_document_chunks"]>
 
@@ -18587,14 +18642,20 @@ export namespace Prisma {
     char_end?: boolean
     vector_id?: boolean
     metadata_json?: boolean
+    parent_chunk_id?: boolean
+    root_chunk_id?: boolean
+    chunk_level?: boolean
+    is_root?: boolean
     embedding_status?: boolean
     created_at?: boolean
   }
 
-  export type b_document_chunksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doc_id" | "chunk_index" | "content" | "token_count" | "page_no" | "char_start" | "char_end" | "vector_id" | "metadata_json" | "embedding_status" | "created_at", ExtArgs["result"]["b_document_chunks"]>
+  export type b_document_chunksOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "doc_id" | "chunk_index" | "content" | "token_count" | "page_no" | "char_start" | "char_end" | "vector_id" | "metadata_json" | "parent_chunk_id" | "root_chunk_id" | "chunk_level" | "is_root" | "embedding_status" | "created_at", ExtArgs["result"]["b_document_chunks"]>
   export type b_document_chunksInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     message_citations?: boolean | b_document_chunks$message_citationsArgs<ExtArgs>
     b_documents?: boolean | b_documentsDefaultArgs<ExtArgs>
+    child_chunks?: boolean | b_document_chunks$child_chunksArgs<ExtArgs>
+    parent?: boolean | b_document_chunks$parentArgs<ExtArgs>
     _count?: boolean | B_document_chunksCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -18603,6 +18664,8 @@ export namespace Prisma {
     objects: {
       message_citations: Prisma.$b_chat_message_citationsPayload<ExtArgs>[]
       b_documents: Prisma.$b_documentsPayload<ExtArgs>
+      child_chunks: Prisma.$b_document_chunksPayload<ExtArgs>[]
+      parent: Prisma.$b_document_chunksPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
@@ -18615,6 +18678,10 @@ export namespace Prisma {
       char_end: number | null
       vector_id: string | null
       metadata_json: Prisma.JsonValue | null
+      parent_chunk_id: bigint | null
+      root_chunk_id: bigint | null
+      chunk_level: number
+      is_root: boolean
       embedding_status: string
       created_at: Date
     }, ExtArgs["result"]["b_document_chunks"]>
@@ -18959,26 +19026,28 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     message_citations<T extends b_document_chunks$message_citationsArgs<ExtArgs> = {}>(args?: Subset<T, b_document_chunks$message_citationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_chat_message_citationsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     b_documents<T extends b_documentsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_documentsDefaultArgs<ExtArgs>>): Prisma__b_documentsClient<$Result.GetResult<Prisma.$b_documentsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    child_chunks<T extends b_document_chunks$child_chunksArgs<ExtArgs> = {}>(args?: Subset<T, b_document_chunks$child_chunksArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_chunksPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    parent<T extends b_document_chunks$parentArgs<ExtArgs> = {}>(args?: Subset<T, b_document_chunks$parentArgs<ExtArgs>>): Prisma__b_document_chunksClient<$Result.GetResult<Prisma.$b_document_chunksPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -18998,6 +19067,10 @@ export namespace Prisma {
     readonly char_end: FieldRef<"b_document_chunks", 'Int'>
     readonly vector_id: FieldRef<"b_document_chunks", 'String'>
     readonly metadata_json: FieldRef<"b_document_chunks", 'Json'>
+    readonly parent_chunk_id: FieldRef<"b_document_chunks", 'BigInt'>
+    readonly root_chunk_id: FieldRef<"b_document_chunks", 'BigInt'>
+    readonly chunk_level: FieldRef<"b_document_chunks", 'Int'>
+    readonly is_root: FieldRef<"b_document_chunks", 'Boolean'>
     readonly embedding_status: FieldRef<"b_document_chunks", 'String'>
     readonly created_at: FieldRef<"b_document_chunks", 'DateTime'>
   }
@@ -19364,6 +19437,49 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: B_chat_message_citationsScalarFieldEnum | B_chat_message_citationsScalarFieldEnum[]
+  }
+
+  /**
+   * b_document_chunks.child_chunks
+   */
+  export type b_document_chunks$child_chunksArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunks
+     */
+    select?: b_document_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunks
+     */
+    omit?: b_document_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_chunksInclude<ExtArgs> | null
+    where?: b_document_chunksWhereInput
+    orderBy?: b_document_chunksOrderByWithRelationInput | b_document_chunksOrderByWithRelationInput[]
+    cursor?: b_document_chunksWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_document_chunksScalarFieldEnum | B_document_chunksScalarFieldEnum[]
+  }
+
+  /**
+   * b_document_chunks.parent
+   */
+  export type b_document_chunks$parentArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_document_chunks
+     */
+    select?: b_document_chunksSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_document_chunks
+     */
+    omit?: b_document_chunksOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_document_chunksInclude<ExtArgs> | null
+    where?: b_document_chunksWhereInput
   }
 
   /**
@@ -19990,20 +20106,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -21032,20 +21148,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -22065,20 +22181,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -23221,20 +23337,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -24299,20 +24415,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -25370,20 +25486,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -26382,20 +26498,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -27330,20 +27446,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -28316,20 +28432,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -29327,20 +29443,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
   }
 
 
@@ -29991,6 +30107,10 @@ export namespace Prisma {
     char_end: 'char_end',
     vector_id: 'vector_id',
     metadata_json: 'metadata_json',
+    parent_chunk_id: 'parent_chunk_id',
+    root_chunk_id: 'root_chunk_id',
+    chunk_level: 'chunk_level',
+    is_root: 'is_root',
     embedding_status: 'embedding_status',
     created_at: 'created_at'
   };
@@ -31782,10 +31902,16 @@ export namespace Prisma {
     char_end?: IntNullableFilter<"b_document_chunks"> | number | null
     vector_id?: StringNullableFilter<"b_document_chunks"> | string | null
     metadata_json?: JsonNullableFilter<"b_document_chunks">
+    parent_chunk_id?: BigIntNullableFilter<"b_document_chunks"> | bigint | number | null
+    root_chunk_id?: BigIntNullableFilter<"b_document_chunks"> | bigint | number | null
+    chunk_level?: IntFilter<"b_document_chunks"> | number
+    is_root?: BoolFilter<"b_document_chunks"> | boolean
     embedding_status?: StringFilter<"b_document_chunks"> | string
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
     message_citations?: B_chat_message_citationsListRelationFilter
     b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
+    child_chunks?: B_document_chunksListRelationFilter
+    parent?: XOR<B_document_chunksNullableScalarRelationFilter, b_document_chunksWhereInput> | null
   }
 
   export type b_document_chunksOrderByWithRelationInput = {
@@ -31799,10 +31925,16 @@ export namespace Prisma {
     char_end?: SortOrderInput | SortOrder
     vector_id?: SortOrderInput | SortOrder
     metadata_json?: SortOrderInput | SortOrder
+    parent_chunk_id?: SortOrderInput | SortOrder
+    root_chunk_id?: SortOrderInput | SortOrder
+    chunk_level?: SortOrder
+    is_root?: SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
     message_citations?: b_chat_message_citationsOrderByRelationAggregateInput
     b_documents?: b_documentsOrderByWithRelationInput
+    child_chunks?: b_document_chunksOrderByRelationAggregateInput
+    parent?: b_document_chunksOrderByWithRelationInput
     _relevance?: b_document_chunksOrderByRelevanceInput
   }
 
@@ -31820,10 +31952,16 @@ export namespace Prisma {
     char_end?: IntNullableFilter<"b_document_chunks"> | number | null
     vector_id?: StringNullableFilter<"b_document_chunks"> | string | null
     metadata_json?: JsonNullableFilter<"b_document_chunks">
+    parent_chunk_id?: BigIntNullableFilter<"b_document_chunks"> | bigint | number | null
+    root_chunk_id?: BigIntNullableFilter<"b_document_chunks"> | bigint | number | null
+    chunk_level?: IntFilter<"b_document_chunks"> | number
+    is_root?: BoolFilter<"b_document_chunks"> | boolean
     embedding_status?: StringFilter<"b_document_chunks"> | string
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
     message_citations?: B_chat_message_citationsListRelationFilter
     b_documents?: XOR<B_documentsScalarRelationFilter, b_documentsWhereInput>
+    child_chunks?: B_document_chunksListRelationFilter
+    parent?: XOR<B_document_chunksNullableScalarRelationFilter, b_document_chunksWhereInput> | null
   }, "id">
 
   export type b_document_chunksOrderByWithAggregationInput = {
@@ -31837,6 +31975,10 @@ export namespace Prisma {
     char_end?: SortOrderInput | SortOrder
     vector_id?: SortOrderInput | SortOrder
     metadata_json?: SortOrderInput | SortOrder
+    parent_chunk_id?: SortOrderInput | SortOrder
+    root_chunk_id?: SortOrderInput | SortOrder
+    chunk_level?: SortOrder
+    is_root?: SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
     _count?: b_document_chunksCountOrderByAggregateInput
@@ -31860,6 +32002,10 @@ export namespace Prisma {
     char_end?: IntNullableWithAggregatesFilter<"b_document_chunks"> | number | null
     vector_id?: StringNullableWithAggregatesFilter<"b_document_chunks"> | string | null
     metadata_json?: JsonNullableWithAggregatesFilter<"b_document_chunks">
+    parent_chunk_id?: BigIntNullableWithAggregatesFilter<"b_document_chunks"> | bigint | number | null
+    root_chunk_id?: BigIntNullableWithAggregatesFilter<"b_document_chunks"> | bigint | number | null
+    chunk_level?: IntWithAggregatesFilter<"b_document_chunks"> | number
+    is_root?: BoolWithAggregatesFilter<"b_document_chunks"> | boolean
     embedding_status?: StringWithAggregatesFilter<"b_document_chunks"> | string
     created_at?: DateTimeWithAggregatesFilter<"b_document_chunks"> | Date | string
   }
@@ -34133,10 +34279,15 @@ export namespace Prisma {
     char_end?: number | null
     vector_id?: string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
     embedding_status?: string
     created_at?: Date | string
     message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_document_chunksInput
     b_documents: b_documentsCreateNestedOneWithoutDocument_chunksInput
+    child_chunks?: b_document_chunksCreateNestedManyWithoutParentInput
+    parent?: b_document_chunksCreateNestedOneWithoutChild_chunksInput
   }
 
   export type b_document_chunksUncheckedCreateInput = {
@@ -34150,9 +34301,14 @@ export namespace Prisma {
     char_end?: number | null
     vector_id?: string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: bigint | number | null
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
     embedding_status?: string
     created_at?: Date | string
     message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_document_chunksInput
+    child_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type b_document_chunksUpdateInput = {
@@ -34165,10 +34321,15 @@ export namespace Prisma {
     char_end?: NullableIntFieldUpdateOperationsInput | number | null
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     message_citations?: b_chat_message_citationsUpdateManyWithoutB_document_chunksNestedInput
     b_documents?: b_documentsUpdateOneRequiredWithoutDocument_chunksNestedInput
+    child_chunks?: b_document_chunksUpdateManyWithoutParentNestedInput
+    parent?: b_document_chunksUpdateOneWithoutChild_chunksNestedInput
   }
 
   export type b_document_chunksUncheckedUpdateInput = {
@@ -34182,9 +34343,14 @@ export namespace Prisma {
     char_end?: NullableIntFieldUpdateOperationsInput | number | null
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksNestedInput
+    child_chunks?: b_document_chunksUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type b_document_chunksCreateManyInput = {
@@ -34198,6 +34364,10 @@ export namespace Prisma {
     char_end?: number | null
     vector_id?: string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: bigint | number | null
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
     embedding_status?: string
     created_at?: Date | string
   }
@@ -34212,6 +34382,9 @@ export namespace Prisma {
     char_end?: NullableIntFieldUpdateOperationsInput | number | null
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -34227,6 +34400,10 @@ export namespace Prisma {
     char_end?: NullableIntFieldUpdateOperationsInput | number | null
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -36500,6 +36677,11 @@ export namespace Prisma {
     isNot?: b_documentsWhereInput
   }
 
+  export type B_document_chunksNullableScalarRelationFilter = {
+    is?: b_document_chunksWhereInput | null
+    isNot?: b_document_chunksWhereInput | null
+  }
+
   export type b_document_chunksOrderByRelevanceInput = {
     fields: b_document_chunksOrderByRelevanceFieldEnum | b_document_chunksOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -36517,6 +36699,10 @@ export namespace Prisma {
     char_end?: SortOrder
     vector_id?: SortOrder
     metadata_json?: SortOrder
+    parent_chunk_id?: SortOrder
+    root_chunk_id?: SortOrder
+    chunk_level?: SortOrder
+    is_root?: SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
   }
@@ -36529,6 +36715,9 @@ export namespace Prisma {
     page_no?: SortOrder
     char_start?: SortOrder
     char_end?: SortOrder
+    parent_chunk_id?: SortOrder
+    root_chunk_id?: SortOrder
+    chunk_level?: SortOrder
   }
 
   export type b_document_chunksMaxOrderByAggregateInput = {
@@ -36541,6 +36730,10 @@ export namespace Prisma {
     char_start?: SortOrder
     char_end?: SortOrder
     vector_id?: SortOrder
+    parent_chunk_id?: SortOrder
+    root_chunk_id?: SortOrder
+    chunk_level?: SortOrder
+    is_root?: SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
   }
@@ -36555,6 +36748,10 @@ export namespace Prisma {
     char_start?: SortOrder
     char_end?: SortOrder
     vector_id?: SortOrder
+    parent_chunk_id?: SortOrder
+    root_chunk_id?: SortOrder
+    chunk_level?: SortOrder
+    is_root?: SortOrder
     embedding_status?: SortOrder
     created_at?: SortOrder
   }
@@ -36567,6 +36764,9 @@ export namespace Prisma {
     page_no?: SortOrder
     char_start?: SortOrder
     char_end?: SortOrder
+    parent_chunk_id?: SortOrder
+    root_chunk_id?: SortOrder
+    chunk_level?: SortOrder
   }
 
   export type b_document_chunk_search_indexOrderByRelevanceInput = {
@@ -38420,11 +38620,31 @@ export namespace Prisma {
     connect?: b_documentsWhereUniqueInput
   }
 
+  export type b_document_chunksCreateNestedManyWithoutParentInput = {
+    create?: XOR<b_document_chunksCreateWithoutParentInput, b_document_chunksUncheckedCreateWithoutParentInput> | b_document_chunksCreateWithoutParentInput[] | b_document_chunksUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: b_document_chunksCreateOrConnectWithoutParentInput | b_document_chunksCreateOrConnectWithoutParentInput[]
+    createMany?: b_document_chunksCreateManyParentInputEnvelope
+    connect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+  }
+
+  export type b_document_chunksCreateNestedOneWithoutChild_chunksInput = {
+    create?: XOR<b_document_chunksCreateWithoutChild_chunksInput, b_document_chunksUncheckedCreateWithoutChild_chunksInput>
+    connectOrCreate?: b_document_chunksCreateOrConnectWithoutChild_chunksInput
+    connect?: b_document_chunksWhereUniqueInput
+  }
+
   export type b_chat_message_citationsUncheckedCreateNestedManyWithoutB_document_chunksInput = {
     create?: XOR<b_chat_message_citationsCreateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput> | b_chat_message_citationsCreateWithoutB_document_chunksInput[] | b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput[]
     connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput | b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput[]
     createMany?: b_chat_message_citationsCreateManyB_document_chunksInputEnvelope
     connect?: b_chat_message_citationsWhereUniqueInput | b_chat_message_citationsWhereUniqueInput[]
+  }
+
+  export type b_document_chunksUncheckedCreateNestedManyWithoutParentInput = {
+    create?: XOR<b_document_chunksCreateWithoutParentInput, b_document_chunksUncheckedCreateWithoutParentInput> | b_document_chunksCreateWithoutParentInput[] | b_document_chunksUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: b_document_chunksCreateOrConnectWithoutParentInput | b_document_chunksCreateOrConnectWithoutParentInput[]
+    createMany?: b_document_chunksCreateManyParentInputEnvelope
+    connect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
   }
 
   export type b_chat_message_citationsUpdateManyWithoutB_document_chunksNestedInput = {
@@ -38449,6 +38669,30 @@ export namespace Prisma {
     update?: XOR<XOR<b_documentsUpdateToOneWithWhereWithoutDocument_chunksInput, b_documentsUpdateWithoutDocument_chunksInput>, b_documentsUncheckedUpdateWithoutDocument_chunksInput>
   }
 
+  export type b_document_chunksUpdateManyWithoutParentNestedInput = {
+    create?: XOR<b_document_chunksCreateWithoutParentInput, b_document_chunksUncheckedCreateWithoutParentInput> | b_document_chunksCreateWithoutParentInput[] | b_document_chunksUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: b_document_chunksCreateOrConnectWithoutParentInput | b_document_chunksCreateOrConnectWithoutParentInput[]
+    upsert?: b_document_chunksUpsertWithWhereUniqueWithoutParentInput | b_document_chunksUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: b_document_chunksCreateManyParentInputEnvelope
+    set?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+    disconnect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+    delete?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+    connect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+    update?: b_document_chunksUpdateWithWhereUniqueWithoutParentInput | b_document_chunksUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: b_document_chunksUpdateManyWithWhereWithoutParentInput | b_document_chunksUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: b_document_chunksScalarWhereInput | b_document_chunksScalarWhereInput[]
+  }
+
+  export type b_document_chunksUpdateOneWithoutChild_chunksNestedInput = {
+    create?: XOR<b_document_chunksCreateWithoutChild_chunksInput, b_document_chunksUncheckedCreateWithoutChild_chunksInput>
+    connectOrCreate?: b_document_chunksCreateOrConnectWithoutChild_chunksInput
+    upsert?: b_document_chunksUpsertWithoutChild_chunksInput
+    disconnect?: b_document_chunksWhereInput | boolean
+    delete?: b_document_chunksWhereInput | boolean
+    connect?: b_document_chunksWhereUniqueInput
+    update?: XOR<XOR<b_document_chunksUpdateToOneWithWhereWithoutChild_chunksInput, b_document_chunksUpdateWithoutChild_chunksInput>, b_document_chunksUncheckedUpdateWithoutChild_chunksInput>
+  }
+
   export type b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksNestedInput = {
     create?: XOR<b_chat_message_citationsCreateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput> | b_chat_message_citationsCreateWithoutB_document_chunksInput[] | b_chat_message_citationsUncheckedCreateWithoutB_document_chunksInput[]
     connectOrCreate?: b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput | b_chat_message_citationsCreateOrConnectWithoutB_document_chunksInput[]
@@ -38461,6 +38705,20 @@ export namespace Prisma {
     update?: b_chat_message_citationsUpdateWithWhereUniqueWithoutB_document_chunksInput | b_chat_message_citationsUpdateWithWhereUniqueWithoutB_document_chunksInput[]
     updateMany?: b_chat_message_citationsUpdateManyWithWhereWithoutB_document_chunksInput | b_chat_message_citationsUpdateManyWithWhereWithoutB_document_chunksInput[]
     deleteMany?: b_chat_message_citationsScalarWhereInput | b_chat_message_citationsScalarWhereInput[]
+  }
+
+  export type b_document_chunksUncheckedUpdateManyWithoutParentNestedInput = {
+    create?: XOR<b_document_chunksCreateWithoutParentInput, b_document_chunksUncheckedCreateWithoutParentInput> | b_document_chunksCreateWithoutParentInput[] | b_document_chunksUncheckedCreateWithoutParentInput[]
+    connectOrCreate?: b_document_chunksCreateOrConnectWithoutParentInput | b_document_chunksCreateOrConnectWithoutParentInput[]
+    upsert?: b_document_chunksUpsertWithWhereUniqueWithoutParentInput | b_document_chunksUpsertWithWhereUniqueWithoutParentInput[]
+    createMany?: b_document_chunksCreateManyParentInputEnvelope
+    set?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+    disconnect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+    delete?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+    connect?: b_document_chunksWhereUniqueInput | b_document_chunksWhereUniqueInput[]
+    update?: b_document_chunksUpdateWithWhereUniqueWithoutParentInput | b_document_chunksUpdateWithWhereUniqueWithoutParentInput[]
+    updateMany?: b_document_chunksUpdateManyWithWhereWithoutParentInput | b_document_chunksUpdateManyWithWhereWithoutParentInput[]
+    deleteMany?: b_document_chunksScalarWhereInput | b_document_chunksScalarWhereInput[]
   }
 
   export type b_documentsCreateNestedOneWithoutProcessing_tasksInput = {
@@ -41081,9 +41339,14 @@ export namespace Prisma {
     char_end?: number | null
     vector_id?: string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
     embedding_status?: string
     created_at?: Date | string
     message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_document_chunksInput
+    child_chunks?: b_document_chunksCreateNestedManyWithoutParentInput
+    parent?: b_document_chunksCreateNestedOneWithoutChild_chunksInput
   }
 
   export type b_document_chunksUncheckedCreateWithoutB_documentsInput = {
@@ -41096,9 +41359,14 @@ export namespace Prisma {
     char_end?: number | null
     vector_id?: string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: bigint | number | null
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
     embedding_status?: string
     created_at?: Date | string
     message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_document_chunksInput
+    child_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type b_document_chunksCreateOrConnectWithoutB_documentsInput = {
@@ -41357,6 +41625,10 @@ export namespace Prisma {
     char_end?: IntNullableFilter<"b_document_chunks"> | number | null
     vector_id?: StringNullableFilter<"b_document_chunks"> | string | null
     metadata_json?: JsonNullableFilter<"b_document_chunks">
+    parent_chunk_id?: BigIntNullableFilter<"b_document_chunks"> | bigint | number | null
+    root_chunk_id?: BigIntNullableFilter<"b_document_chunks"> | bigint | number | null
+    chunk_level?: IntFilter<"b_document_chunks"> | number
+    is_root?: BoolFilter<"b_document_chunks"> | boolean
     embedding_status?: StringFilter<"b_document_chunks"> | string
     created_at?: DateTimeFilter<"b_document_chunks"> | Date | string
   }
@@ -42104,6 +42376,101 @@ export namespace Prisma {
     create: XOR<b_documentsCreateWithoutDocument_chunksInput, b_documentsUncheckedCreateWithoutDocument_chunksInput>
   }
 
+  export type b_document_chunksCreateWithoutParentInput = {
+    id?: bigint | number
+    chunk_index: number
+    content: string
+    token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
+    embedding_status?: string
+    created_at?: Date | string
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_document_chunksInput
+    b_documents: b_documentsCreateNestedOneWithoutDocument_chunksInput
+    child_chunks?: b_document_chunksCreateNestedManyWithoutParentInput
+  }
+
+  export type b_document_chunksUncheckedCreateWithoutParentInput = {
+    id?: bigint | number
+    doc_id: bigint | number
+    chunk_index: number
+    content: string
+    token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
+    embedding_status?: string
+    created_at?: Date | string
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_document_chunksInput
+    child_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutParentInput
+  }
+
+  export type b_document_chunksCreateOrConnectWithoutParentInput = {
+    where: b_document_chunksWhereUniqueInput
+    create: XOR<b_document_chunksCreateWithoutParentInput, b_document_chunksUncheckedCreateWithoutParentInput>
+  }
+
+  export type b_document_chunksCreateManyParentInputEnvelope = {
+    data: b_document_chunksCreateManyParentInput | b_document_chunksCreateManyParentInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type b_document_chunksCreateWithoutChild_chunksInput = {
+    id?: bigint | number
+    chunk_index: number
+    content: string
+    token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
+    embedding_status?: string
+    created_at?: Date | string
+    message_citations?: b_chat_message_citationsCreateNestedManyWithoutB_document_chunksInput
+    b_documents: b_documentsCreateNestedOneWithoutDocument_chunksInput
+    parent?: b_document_chunksCreateNestedOneWithoutChild_chunksInput
+  }
+
+  export type b_document_chunksUncheckedCreateWithoutChild_chunksInput = {
+    id?: bigint | number
+    doc_id: bigint | number
+    chunk_index: number
+    content: string
+    token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: bigint | number | null
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
+    embedding_status?: string
+    created_at?: Date | string
+    message_citations?: b_chat_message_citationsUncheckedCreateNestedManyWithoutB_document_chunksInput
+  }
+
+  export type b_document_chunksCreateOrConnectWithoutChild_chunksInput = {
+    where: b_document_chunksWhereUniqueInput
+    create: XOR<b_document_chunksCreateWithoutChild_chunksInput, b_document_chunksUncheckedCreateWithoutChild_chunksInput>
+  }
+
   export type b_chat_message_citationsUpsertWithWhereUniqueWithoutB_document_chunksInput = {
     where: b_chat_message_citationsWhereUniqueInput
     update: XOR<b_chat_message_citationsUpdateWithoutB_document_chunksInput, b_chat_message_citationsUncheckedUpdateWithoutB_document_chunksInput>
@@ -42187,6 +42554,73 @@ export namespace Prisma {
     processing_tasks?: b_document_processing_tasksUncheckedUpdateManyWithoutB_documentsNestedInput
     upload_sessions?: b_upload_sessionsUncheckedUpdateManyWithoutB_documentsNestedInput
     message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_documentsNestedInput
+  }
+
+  export type b_document_chunksUpsertWithWhereUniqueWithoutParentInput = {
+    where: b_document_chunksWhereUniqueInput
+    update: XOR<b_document_chunksUpdateWithoutParentInput, b_document_chunksUncheckedUpdateWithoutParentInput>
+    create: XOR<b_document_chunksCreateWithoutParentInput, b_document_chunksUncheckedCreateWithoutParentInput>
+  }
+
+  export type b_document_chunksUpdateWithWhereUniqueWithoutParentInput = {
+    where: b_document_chunksWhereUniqueInput
+    data: XOR<b_document_chunksUpdateWithoutParentInput, b_document_chunksUncheckedUpdateWithoutParentInput>
+  }
+
+  export type b_document_chunksUpdateManyWithWhereWithoutParentInput = {
+    where: b_document_chunksScalarWhereInput
+    data: XOR<b_document_chunksUpdateManyMutationInput, b_document_chunksUncheckedUpdateManyWithoutParentInput>
+  }
+
+  export type b_document_chunksUpsertWithoutChild_chunksInput = {
+    update: XOR<b_document_chunksUpdateWithoutChild_chunksInput, b_document_chunksUncheckedUpdateWithoutChild_chunksInput>
+    create: XOR<b_document_chunksCreateWithoutChild_chunksInput, b_document_chunksUncheckedCreateWithoutChild_chunksInput>
+    where?: b_document_chunksWhereInput
+  }
+
+  export type b_document_chunksUpdateToOneWithWhereWithoutChild_chunksInput = {
+    where?: b_document_chunksWhereInput
+    data: XOR<b_document_chunksUpdateWithoutChild_chunksInput, b_document_chunksUncheckedUpdateWithoutChild_chunksInput>
+  }
+
+  export type b_document_chunksUpdateWithoutChild_chunksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
+    embedding_status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_document_chunksNestedInput
+    b_documents?: b_documentsUpdateOneRequiredWithoutDocument_chunksNestedInput
+    parent?: b_document_chunksUpdateOneWithoutChild_chunksNestedInput
+  }
+
+  export type b_document_chunksUncheckedUpdateWithoutChild_chunksInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
+    embedding_status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksNestedInput
   }
 
   export type b_documentsCreateWithoutProcessing_tasksInput = {
@@ -42858,9 +43292,14 @@ export namespace Prisma {
     char_end?: number | null
     vector_id?: string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
     embedding_status?: string
     created_at?: Date | string
     b_documents: b_documentsCreateNestedOneWithoutDocument_chunksInput
+    child_chunks?: b_document_chunksCreateNestedManyWithoutParentInput
+    parent?: b_document_chunksCreateNestedOneWithoutChild_chunksInput
   }
 
   export type b_document_chunksUncheckedCreateWithoutMessage_citationsInput = {
@@ -42874,8 +43313,13 @@ export namespace Prisma {
     char_end?: number | null
     vector_id?: string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: bigint | number | null
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
     embedding_status?: string
     created_at?: Date | string
+    child_chunks?: b_document_chunksUncheckedCreateNestedManyWithoutParentInput
   }
 
   export type b_document_chunksCreateOrConnectWithoutMessage_citationsInput = {
@@ -43075,9 +43519,14 @@ export namespace Prisma {
     char_end?: NullableIntFieldUpdateOperationsInput | number | null
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     b_documents?: b_documentsUpdateOneRequiredWithoutDocument_chunksNestedInput
+    child_chunks?: b_document_chunksUpdateManyWithoutParentNestedInput
+    parent?: b_document_chunksUpdateOneWithoutChild_chunksNestedInput
   }
 
   export type b_document_chunksUncheckedUpdateWithoutMessage_citationsInput = {
@@ -43091,8 +43540,13 @@ export namespace Prisma {
     char_end?: NullableIntFieldUpdateOperationsInput | number | null
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    child_chunks?: b_document_chunksUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type b_chat_sessionsCreateWithoutAgent_runsInput = {
@@ -44420,6 +44874,10 @@ export namespace Prisma {
     char_end?: number | null
     vector_id?: string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: bigint | number | null
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
     embedding_status?: string
     created_at?: Date | string
   }
@@ -44484,9 +44942,14 @@ export namespace Prisma {
     char_end?: NullableIntFieldUpdateOperationsInput | number | null
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     message_citations?: b_chat_message_citationsUpdateManyWithoutB_document_chunksNestedInput
+    child_chunks?: b_document_chunksUpdateManyWithoutParentNestedInput
+    parent?: b_document_chunksUpdateOneWithoutChild_chunksNestedInput
   }
 
   export type b_document_chunksUncheckedUpdateWithoutB_documentsInput = {
@@ -44499,9 +44962,14 @@ export namespace Prisma {
     char_end?: NullableIntFieldUpdateOperationsInput | number | null
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksNestedInput
+    child_chunks?: b_document_chunksUncheckedUpdateManyWithoutParentNestedInput
   }
 
   export type b_document_chunksUncheckedUpdateManyWithoutB_documentsInput = {
@@ -44514,6 +44982,10 @@ export namespace Prisma {
     char_end?: NullableIntFieldUpdateOperationsInput | number | null
     vector_id?: NullableStringFieldUpdateOperationsInput | string | null
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    parent_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
     embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
@@ -44725,6 +45197,24 @@ export namespace Prisma {
     created_at?: Date | string
   }
 
+  export type b_document_chunksCreateManyParentInput = {
+    id?: bigint | number
+    doc_id: bigint | number
+    chunk_index: number
+    content: string
+    token_count?: number | null
+    page_no?: number | null
+    char_start?: number | null
+    char_end?: number | null
+    vector_id?: string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: bigint | number | null
+    chunk_level?: number
+    is_root?: boolean
+    embedding_status?: string
+    created_at?: Date | string
+  }
+
   export type b_chat_message_citationsUpdateWithoutB_document_chunksInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
     score?: NullableFloatFieldUpdateOperationsInput | number | null
@@ -44755,6 +45245,64 @@ export namespace Prisma {
     score?: NullableFloatFieldUpdateOperationsInput | number | null
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_document_chunksUpdateWithoutParentInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
+    embedding_status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUpdateManyWithoutB_document_chunksNestedInput
+    b_documents?: b_documentsUpdateOneRequiredWithoutDocument_chunksNestedInput
+    child_chunks?: b_document_chunksUpdateManyWithoutParentNestedInput
+  }
+
+  export type b_document_chunksUncheckedUpdateWithoutParentInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
+    embedding_status?: StringFieldUpdateOperationsInput | string
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    message_citations?: b_chat_message_citationsUncheckedUpdateManyWithoutB_document_chunksNestedInput
+    child_chunks?: b_document_chunksUncheckedUpdateManyWithoutParentNestedInput
+  }
+
+  export type b_document_chunksUncheckedUpdateManyWithoutParentInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    chunk_index?: IntFieldUpdateOperationsInput | number
+    content?: StringFieldUpdateOperationsInput | string
+    token_count?: NullableIntFieldUpdateOperationsInput | number | null
+    page_no?: NullableIntFieldUpdateOperationsInput | number | null
+    char_start?: NullableIntFieldUpdateOperationsInput | number | null
+    char_end?: NullableIntFieldUpdateOperationsInput | number | null
+    vector_id?: NullableStringFieldUpdateOperationsInput | string | null
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    root_chunk_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    chunk_level?: IntFieldUpdateOperationsInput | number
+    is_root?: BoolFieldUpdateOperationsInput | boolean
+    embedding_status?: StringFieldUpdateOperationsInput | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

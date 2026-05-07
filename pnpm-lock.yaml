@@ -183,6 +183,9 @@ importers:
       rxjs:
         specifier: ^7.8.1
         version: 7.8.2
+      tiktoken:
+        specifier: ^1.0.22
+        version: 1.0.22
       winston:
         specifier: ^3.19.0
         version: 3.19.0
@@ -5598,6 +5601,9 @@ packages:
 
   text-hex@1.0.0:
     resolution: {integrity: sha512-uuVGNWzgJ4yhRaNSiubPY7OjISw4sw4E5Uv0wbjp+OzcbmVU/rsT8ujgcXJhn9ypzsgr5vlzpPqP+MBBKcGvbg==}
+
+  tiktoken@1.0.22:
+    resolution: {integrity: sha512-PKvy1rVF1RibfF3JlXBSP0Jrcw2uq3yXdgcEXtKTYn3QJ/cBRBHDnrJ5jHky+MENZ6DIPwNUGWpkVx+7joCpNA==}
 
   tinyexec@1.0.2:
     resolution: {integrity: sha512-W/KYk+NFhkmsYpuHq5JykngiOCnxeVL8v8dFnqxSD8qEEdRfXk1SDM6JzNqcERbcGYj9tMrDQBYV9cjgnunFIg==}
@@ -11477,6 +11483,8 @@ snapshots:
       minimatch: 3.1.2
 
   text-hex@1.0.0: {}
+
+  tiktoken@1.0.22: {}
 
   tinyexec@1.0.2: {}
 

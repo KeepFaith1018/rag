@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import { ConfigService } from '@nestjs/config';
+import { TokenService } from '../src/common/utils/token.service';
 import { EmbeddingService } from '../src/modules/rag/ai/embedding.service';
 
 /**
@@ -7,7 +8,8 @@ import { EmbeddingService } from '../src/modules/rag/ai/embedding.service';
  */
 async function main() {
   const configService = new ConfigService(process.env);
-  const embeddingService = new EmbeddingService(configService);
+  const tokenService = new TokenService();
+  const embeddingService = new EmbeddingService(configService, tokenService);
   const debugSummary = embeddingService.getDebugSummary();
   const apiKey = process.env.BAILIAN_API_KEY || '';
   const dryRun =

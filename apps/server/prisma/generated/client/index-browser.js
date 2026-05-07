@@ -318,6 +318,10 @@ exports.Prisma.B_document_chunksScalarFieldEnum = {
   char_end: 'char_end',
   vector_id: 'vector_id',
   metadata_json: 'metadata_json',
+  parent_chunk_id: 'parent_chunk_id',
+  root_chunk_id: 'root_chunk_id',
+  chunk_level: 'chunk_level',
+  is_root: 'is_root',
   embedding_status: 'embedding_status',
   created_at: 'created_at'
 };

@@ -115,6 +115,7 @@ model sys_model_configs {
   created_at  DateTime @default(now()) @db.DateTime(0)
   updated_at  DateTime @default(now()) @db.DateTime(0)
 }
+
 // 用户自定义模型，自接入私有模型
 model b_user_model_configs {
   id         BigInt   @id @default(autoincrement())
@@ -321,10 +322,10 @@ model b_document_chunks {
   metadata_json Json?
 
   // 三层粒度层级字段
-  parent_chunk_id BigInt?                                            // 指向父 chunk（Level3→Level2, Level2→Level1）
-  root_chunk_id   BigInt?                                            // 始终指向 Level 1 根 chunk
-  chunk_level     Int     @default(3)                                // 1=根 2=父 3=子
-  is_root         Boolean @default(false)                            // 是否为 Level 1 根 chunk
+  parent_chunk_id BigInt? // 指向父 chunk（Level3→Level2, Level2→Level1）
+  root_chunk_id   BigInt? // 始终指向 Level 1 根 chunk
+  chunk_level     Int     @default(3) // 1=根 2=父 3=子
+  is_root         Boolean @default(false) // 是否为 Level 1 根 chunk
 
   embedding_status String   @default("pending") @db.VarChar(20)
   created_at       DateTime @default(now()) @db.DateTime(0)
@@ -527,7 +528,7 @@ model sys_dict_type {
   remark     String?  @db.VarChar(255)
   created_at DateTime @default(now()) @db.DateTime(0)
 
-  items      sys_dict_item[]
+  items sys_dict_item[]
 }
 
 model sys_dict_item {
@@ -539,8 +540,8 @@ model sys_dict_item {
   status     Boolean  @default(true)
   created_at DateTime @default(now()) @db.DateTime(0)
 
+  type sys_dict_type? @relation(fields: [type_code], references: [code], map: "fk_dict_type")
+
   @@unique([type_code, value], map: "uk_type_value")
   @@index([type_code], map: "idx_type_code")
-
-  type      sys_dict_type? @relation(fields: [type_code], references: [code], map: "fk_dict_type")
 }

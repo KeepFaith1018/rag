@@ -3,9 +3,14 @@ import { Injectable } from '@nestjs/common';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Prisma } from '@prisma-client';
 import { PrismaService } from '@common/prisma/prisma.service';
+import { TokenService } from '@common/utils/token.service';
 import {
-  DOCUMENT_CHUNK_OVERLAP,
-  DOCUMENT_CHUNK_SIZE,
+  HIERARCHICAL_CHUNK_OVERLAP,
+  CHUNK_PROFILES,
+  ChunkProfile,
+  CODE_HEAVY_RATIO_THRESHOLD,
+  TABLE_HEAVY_RATIO_THRESHOLD,
+  COMPACT_CONTENT_LENGTH_THRESHOLD,
 } from '../document-processing.constants';
 import { ParsedDocument } from '../parsed-document.interface';
 import { ParsedSection } from '../parsed-section.interface';
@@ -19,11 +24,19 @@ export interface CreatedChunkResult {
 type StructuredChunkDraft = {
   content: string;
   pageNo: number | null;
-  charStart: number;
-  charEnd: number;
+  charStart?: number;
+  charEnd?: number;
   titlePath: string[];
   sectionLevel: number | null;
   chunkStrategy: 'structured-token-aware' | 'plainText-recursive';
+  blockType?: string;
+  chunkProfile?: string;
+};
+
+type HierarchicalChunkDraft = StructuredChunkDraft & {
+  chunkIndex: number;
+  chunkLevel: number;
+  isRoot?: boolean;
 };
 
 type ChunkSourceDocument = {
@@ -62,70 +75,214 @@ export function buildDocumentChunkVectorId(
  */
 @Injectable()
 export class DocumentChunkService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly tokenService: TokenService,
+  ) {}
 
   /**
-   * 对指定文档执行结构感知切块，并写入 b_document_chunks。
+   * 对指定文档执行三层粒度切块（根 → 父 → 子），写入 b_document_chunks。
+   *
+   * 仅 Level 3（子 chunk）参与后续 embedding，Level 1/2 仅存储于 DB 作为上下文载体。
    */
   async createChunks(
     document: ChunkSourceDocument,
     parsed: ParsedDocument,
     version: number,
   ): Promise<CreatedChunkResult> {
+    // 1. 清空旧数据
     await this.prisma.b_document_chunks.deleteMany({
-      where: {
-        doc_id: document.id,
-      },
+      where: { doc_id: document.id },
     });
 
-    const chunkDrafts = await this.createStructuredChunks(parsed);
-    if (chunkDrafts.length === 0) {
-      return {
-        chunkIds: [],
-        totalChunks: 0,
-        totalTokens: 0,
-      };
+    // 2. 获取可用的 section 列表，无结构时用全文作为单一 section
+    const sections = this.resolveSections(parsed);
+    if (sections.length === 0) {
+      return { chunkIds: [], totalChunks: 0, totalTokens: 0 };
     }
 
-    const rows: Prisma.b_document_chunksCreateManyInput[] = [];
-    let totalTokens = 0;
-    chunkDrafts.forEach((chunk, index) => {
-      const tokenCount = this.estimateTokenCount(chunk.content);
-      const vectorId = buildDocumentChunkVectorId(document.id, index, version);
+    // 3. 根据文档内容特征选择自适应 chunk profile
+    const profile = this.selectChunkProfile(sections);
 
-      rows.push({
-        doc_id: document.id,
-        chunk_index: index,
-        content: chunk.content,
-        token_count: tokenCount,
-        page_no: chunk.pageNo,
-        char_start: chunk.charStart,
-        char_end: chunk.charEnd,
-        vector_id: vectorId,
-        metadata_json: this.buildChunkMetadata(document, version, chunk),
-        embedding_status: 'pending',
+    // 4. 三层切块：逐 section → Level 1 → Level 2 → Level 3
+    const allLevel1Rows: Prisma.b_document_chunksCreateManyInput[] = [];
+    const allLevel2Rows: Prisma.b_document_chunksCreateManyInput[] = [];
+    const allLevel3Rows: Prisma.b_document_chunksCreateManyInput[] = [];
+
+    let globalIndex = 0;
+    let totalTokens = 0;
+
+    for (const section of sections) {
+      // O8: 代码块/表格块作为原子单元，不拆分，保持完整性
+      const isAtomic =
+        section.type === 'code' || section.type === 'table';
+      const level1Texts = isAtomic
+        ? [section.content]
+        : await this.splitText(section.content, profile.rootSize);
+
+      for (const l1Text of level1Texts) {
+        const l1Index = globalIndex++;
+        const l1Row = this.buildChunkRow(document, version, {
+          content: l1Text,
+          chunkIndex: l1Index,
+          chunkLevel: 1,
+          isRoot: true,
+          pageNo: section.pageNo,
+          titlePath: section.titlePath,
+          sectionLevel: section.level ?? null,
+          chunkStrategy: 'structured-token-aware',
+          chunkProfile: profile.name,
+        });
+        allLevel1Rows.push(l1Row);
+
+        // Level 2: 对每个 Level 1 做二级切分（原子块跳过拆分）
+        const level2Texts = isAtomic
+          ? [l1Text]
+          : await this.splitText(l1Text, profile.parentSize);
+
+        for (const l2Text of level2Texts) {
+          const l2Index = globalIndex++;
+          const l2Row = this.buildChunkRow(document, version, {
+            content: l2Text,
+            chunkIndex: l2Index,
+            chunkLevel: 2,
+            isRoot: false,
+            // parent/root 引用在写入 Level 1 后回填
+            pageNo: section.pageNo,
+            titlePath: section.titlePath,
+            sectionLevel: section.level ?? null,
+            chunkStrategy: 'structured-token-aware',
+            chunkProfile: profile.name,
+          });
+          allLevel2Rows.push(l2Row);
+
+          // Level 3: 对每个 Level 2 做三级切分（原子块跳过拆分）
+          const level3Texts = isAtomic
+            ? [l2Text]
+            : await this.splitText(l2Text, profile.childSize);
+          for (const l3Text of level3Texts) {
+            const l3Index = globalIndex++;
+            const chunkDraft: HierarchicalChunkDraft = {
+              content: l3Text,
+              chunkIndex: l3Index,
+              chunkLevel: 3,
+              pageNo: section.pageNo,
+              charStart: section.charStart + section.content.indexOf(l3Text),
+              charEnd:
+                section.charStart +
+                section.content.indexOf(l3Text) +
+                l3Text.length,
+              titlePath: section.titlePath,
+              sectionLevel: section.level ?? null,
+              chunkStrategy: 'structured-token-aware',
+              blockType: section.type,
+              chunkProfile: profile.name,
+            };
+            const contextualizedContent =
+              this.buildContextualizedContent(chunkDraft);
+            const tokenCount = this.tokenCount(contextualizedContent);
+            const vectorId = buildDocumentChunkVectorId(
+              document.id,
+              l3Index,
+              version,
+            );
+
+            allLevel3Rows.push({
+              doc_id: document.id,
+              chunk_index: l3Index,
+              content: contextualizedContent,
+              token_count: tokenCount,
+              page_no: section.pageNo,
+              char_start: chunkDraft.charStart,
+              char_end: chunkDraft.charEnd,
+              vector_id: vectorId,
+              metadata_json: this.buildChunkMetadata(
+                document,
+                version,
+                chunkDraft,
+              ),
+              embedding_status: 'pending',
+              chunk_level: 3,
+              is_root: false,
+            });
+
+            totalTokens += tokenCount;
+          }
+        }
+      }
+    }
+
+    if (allLevel3Rows.length === 0) {
+      return { chunkIds: [], totalChunks: 0, totalTokens: 0 };
+    }
+
+    // 4. 按层级顺序入库（Level 1 → Level 2 → Level 3），通过 $transaction 保证写入完整性
+    await this.prisma.$transaction(async (tx) => {
+      // Level 1
+      await tx.b_document_chunks.createMany({ data: allLevel1Rows });
+      const createdL1 = await tx.b_document_chunks.findMany({
+        where: { doc_id: document.id, chunk_level: 1 },
+        orderBy: { chunk_index: 'asc' },
       });
 
-      totalTokens += tokenCount;
-    });
+      // 回填 Level 2 的 parent/root 引用
+      const l1ByIdx = new Map(createdL1.map((r) => [r.chunk_index, r.id]));
+      for (const row of allLevel2Rows) {
+        // Level 2 的 parent 是包含它的 Level 1
+        // 找到 chunk_index 小于当前 L2 且最大的 L1
+        let l1Idx = -1;
+        for (const idx of l1ByIdx.keys()) {
+          if (idx < row.chunk_index && idx > l1Idx) l1Idx = idx;
+        }
+        const parentId = l1Idx >= 0 ? l1ByIdx.get(l1Idx) : null;
+        row.parent_chunk_id = parentId;
+        row.root_chunk_id = parentId;
+      }
+      await tx.b_document_chunks.createMany({ data: allLevel2Rows });
+      const createdL2 = await tx.b_document_chunks.findMany({
+        where: { doc_id: document.id, chunk_level: 2 },
+        orderBy: { chunk_index: 'asc' },
+      });
 
-    await this.prisma.b_document_chunks.createMany({
-      data: rows,
+      // 回填 Level 3 的 parent/root 引用
+      const l2ByIdx = new Map(createdL2.map((r) => [r.chunk_index, r.id]));
+      for (const row of allLevel3Rows) {
+        let l2Idx = -1;
+        for (const idx of l2ByIdx.keys()) {
+          if (idx < row.chunk_index && idx > l2Idx) l2Idx = idx;
+        }
+        const parentId = l2Idx >= 0 ? l2ByIdx.get(l2Idx) : null;
+        // root 指向包含此 L2 的 L1
+        let rootId: bigint | null = null;
+        if (parentId) {
+          let l1TargetIdx = -1;
+          for (const idx of l1ByIdx.keys()) {
+            if (idx < l2Idx && idx > l1TargetIdx) l1TargetIdx = idx;
+          }
+          rootId = l1TargetIdx >= 0 ? l1ByIdx.get(l1TargetIdx) ?? null : null;
+        }
+        row.parent_chunk_id = parentId;
+        row.root_chunk_id = rootId;
+      }
+      await tx.b_document_chunks.createMany({ data: allLevel3Rows });
     });
 
     return {
-      chunkIds: rows.map((item) => item.vector_id ?? '').filter(Boolean),
-      totalChunks: rows.length,
+      chunkIds: allLevel3Rows
+        .map((r) => r.vector_id ?? '')
+        .filter(Boolean),
+      totalChunks: allLevel3Rows.length,
       totalTokens,
     };
   }
 
   /**
-   * 优先基于结构块切分文本，结构不足时回退到全文递归切分。
+   * 获取可用的 section 列表。
+   * 当 parsed.sections 有有效内容时使用之，否则回退到全文作为单一 section。
    */
-  private async createStructuredChunks(parsed: ParsedDocument) {
-    const sections = parsed.sections
-      .map((section) => this.normalizeSection(section, parsed))
+  private resolveSections(parsed: ParsedDocument) {
+    const normalized = parsed.sections
+      .map((s) => this.normalizeSection(s, parsed))
       .filter(Boolean) as Array<
       ParsedSection & {
         content: string;
@@ -136,107 +293,54 @@ export class DocumentChunkService {
       }
     >;
 
-    if (sections.length === 0) {
-      return this.createFallbackChunks(parsed);
-    }
+    if (normalized.length > 0) return normalized;
 
-    const chunkDrafts: StructuredChunkDraft[] = [];
-    for (const section of sections) {
-      if (this.estimateTokenCount(section.content) <= DOCUMENT_CHUNK_SIZE) {
-        chunkDrafts.push({
-          content: section.content,
-          pageNo: section.pageNo,
-          charStart: section.charStart,
-          charEnd: section.charEnd,
-          titlePath: section.titlePath,
-          sectionLevel: section.level ?? null,
-          chunkStrategy: 'structured-token-aware',
-        });
-        continue;
-      }
-
-      const splittedChunks = await this.splitOversizedSection(section);
-      chunkDrafts.push(...splittedChunks);
-    }
-
-    return chunkDrafts.length > 0
-      ? chunkDrafts
-      : this.createFallbackChunks(parsed);
+    // fallback：全文作为单一 section
+    const trimmed = parsed.plainText.trim();
+    if (!trimmed) return [];
+    return [
+      {
+        content: trimmed,
+        pageNo: null,
+        charStart: 0,
+        charEnd: trimmed.length,
+        titlePath: [],
+        level: undefined,
+        type: 'text' as const,
+      },
+    ];
   }
 
   /**
-   * 对超长结构块执行近似 token 窗口二次切分。
+   * 根据文档 section 组成特征自动选择最优 chunk profile。
+   *
+   * 启发式规则（优先级从高到低）：
+   * 1. 代码块占比 > 30% → code-heavy（更大窗口保护代码完整性）
+   * 2. 表格占比 > 20% 或平均 content 长度 > 2000 字符 → verbose
+   * 3. 平均 content 长度 < 500 字符 → compact（文本密度高，小块足够）
+   * 4. 其余 → default
    */
-  private async splitOversizedSection(
-    section: ParsedSection & {
-      content: string;
-      pageNo: number | null;
-      charStart: number;
-      charEnd: number;
-      titlePath: string[];
-    },
-  ) {
-    const splitter = this.createTextSplitter();
-    const chunks = await splitter.splitText(section.content);
-    const normalizedChunks = chunks.map((item) => item.trim()).filter(Boolean);
+  private selectChunkProfile(
+    sections: Array<{ type?: string; content: string }>,
+  ): ChunkProfile {
+    const total = sections.length || 1;
+    const codeRatio =
+      sections.filter((s) => s.type === 'code').length / total;
+    const tableRatio =
+      sections.filter((s) => s.type === 'table').length / total;
+    const avgLen =
+      sections.reduce((sum, s) => sum + (s.content?.length ?? 0), 0) / total;
 
-    const draftChunks: StructuredChunkDraft[] = [];
-    let localCursor = 0;
-
-    for (const chunk of normalizedChunks) {
-      const searchStart = Math.max(0, localCursor - Math.max(1, chunk.length));
-      const localStart = section.content.indexOf(chunk, searchStart);
-      const safeLocalStart = localStart >= 0 ? localStart : localCursor;
-      const safeLocalEnd = safeLocalStart + chunk.length;
-
-      draftChunks.push({
-        content: chunk,
-        pageNo: section.pageNo,
-        charStart: section.charStart + safeLocalStart,
-        charEnd: section.charStart + safeLocalEnd,
-        titlePath: section.titlePath,
-        sectionLevel: section.level ?? null,
-        chunkStrategy: 'structured-token-aware',
-      });
-
-      localCursor = safeLocalEnd;
+    if (codeRatio > CODE_HEAVY_RATIO_THRESHOLD) {
+      return CHUNK_PROFILES['code-heavy'];
     }
-
-    return draftChunks;
-  }
-
-  /**
-   * 当结构信息不可用时，回退到全文递归切分。
-   */
-  private async createFallbackChunks(parsed: ParsedDocument) {
-    const splitter = this.createTextSplitter();
-    const chunks = await splitter.splitText(parsed.plainText);
-    const normalizedChunks = chunks.map((item) => item.trim()).filter(Boolean);
-    const draftChunks: StructuredChunkDraft[] = [];
-    let cursor = 0;
-
-    for (const content of normalizedChunks) {
-      const searchStart = Math.max(0, cursor - Math.max(1, content.length));
-      const startIndex = parsed.plainText.indexOf(content, searchStart);
-      const charStart = startIndex >= 0 ? startIndex : cursor;
-      const charEnd = charStart + content.length;
-      const section = this.resolveSection(parsed.sections, charStart, charEnd);
-
-      draftChunks.push({
-        content,
-        pageNo: this.resolvePageNumber(parsed, charStart, charEnd),
-        charStart,
-        charEnd,
-        titlePath:
-          section?.titlePath ?? (section?.title ? [section.title] : []),
-        sectionLevel: section?.level ?? null,
-        chunkStrategy: 'plainText-recursive',
-      });
-
-      cursor = charEnd;
+    if (tableRatio > TABLE_HEAVY_RATIO_THRESHOLD || avgLen > 2000) {
+      return CHUNK_PROFILES['verbose'];
     }
-
-    return draftChunks;
+    if (avgLen < COMPACT_CONTENT_LENGTH_THRESHOLD) {
+      return CHUNK_PROFILES['compact'];
+    }
+    return CHUNK_PROFILES['default'];
   }
 
   /**
@@ -266,14 +370,67 @@ export class DocumentChunkService {
   }
 
   /**
-   * 构建统一的文本切分器，按近似 token 长度控制分片大小。
+   * 按指定 token 大小对文本做递归切分，复用中文分隔符 + 真实 tokenizer。
    */
-  private createTextSplitter() {
+  private async splitText(text: string, chunkSize: number): Promise<string[]> {
+    if (!text.trim()) return [];
+    const splitter = this.createHierarchicalSplitter(chunkSize);
+    const chunks = await splitter.splitText(text);
+    return chunks.map((c) => c.trim()).filter(Boolean);
+  }
+
+  /**
+   * 构建单层分块器，参数由调用方指定 chunkSize，分隔符与 lengthFunction 统一复用。
+   */
+  private createHierarchicalSplitter(chunkSize: number) {
     return new RecursiveCharacterTextSplitter({
-      chunkSize: DOCUMENT_CHUNK_SIZE,
-      chunkOverlap: DOCUMENT_CHUNK_OVERLAP,
-      lengthFunction: (text) => this.estimateTokenCount(text),
+      chunkSize,
+      chunkOverlap: HIERARCHICAL_CHUNK_OVERLAP,
+      separators: [
+        '\n\n',    // 段落边界
+        '\n',      // 行边界
+        '。',      // 中文句号
+        '！',      // 中文感叹号
+        '？',      // 中文问号
+        '；',      // 中文分号
+        '，',      // 中文逗号
+        '. ',      // 英文句号
+        '! ',      // 英文感叹号
+        '? ',      // 英文问号
+        '; ',      // 英文分号
+        ', ',      // 英文逗号
+        ' ',       // 空格
+        '',        // 字符级兜底
+      ],
+      lengthFunction: (text) => this.tokenService.tokenCount(text),
     });
+  }
+
+  /**
+   * 构建统一的 chunk 行数据，含层级字段。
+   */
+  private buildChunkRow(
+    document: ChunkSourceDocument,
+    version: number,
+    draft: HierarchicalChunkDraft,
+  ): Prisma.b_document_chunksCreateManyInput {
+    const contextualizedContent = this.buildContextualizedContent(draft);
+    return {
+      doc_id: document.id,
+      chunk_index: draft.chunkIndex,
+      content: contextualizedContent,
+      token_count: this.tokenCount(contextualizedContent),
+      page_no: draft.pageNo,
+      char_start: draft.charStart ?? 0,
+      char_end: draft.charEnd ?? 0,
+      vector_id: draft.chunkLevel === 3
+        ? buildDocumentChunkVectorId(document.id, draft.chunkIndex, version)
+        : null,
+      metadata_json: this.buildChunkMetadata(document, version, draft),
+      embedding_status: 'pending',
+      chunk_level: draft.chunkLevel,
+      is_root: draft.isRoot ?? false,
+    };
   }
 
   /**
@@ -291,6 +448,8 @@ export class DocumentChunkService {
       titlePath: chunk.titlePath,
       sectionLevel: chunk.sectionLevel,
       chunkStrategy: chunk.chunkStrategy,
+      blockType: chunk.blockType,
+      chunkProfile: chunk.chunkProfile,
     };
   }
 
@@ -351,10 +510,26 @@ export class DocumentChunkService {
   }
 
   /**
-   * 当前阶段尚未接入模型 tokenizer，先用轻量估算值支撑治理字段。
+   * 利用 titlePath 为 chunk content 附加结构上下文。
+   *
+   * 轻量版上下文增强 — 零额外 API 调用成本，利用解析阶段已产出的标题路径
+   * 让 embedding 向量携带文档结构定位信息，提升检索阶段的结构感知能力。
+   *
+   * 示例：["第三章", "3.1 系统架构"] → "第三章 > 3.1 系统架构"
    */
-  private estimateTokenCount(content: string) {
-    return Math.max(1, Math.ceil(content.length / 4));
+  private buildContextualizedContent(chunk: StructuredChunkDraft): string {
+    const pathStr = chunk.titlePath.length > 0
+      ? chunk.titlePath.join(' > ')
+      : '';
+    if (!pathStr) return chunk.content;
+    return `[文档段落路径: ${pathStr}]\n${chunk.content}`;
+  }
+
+  /**
+   * 真实 token 计数，基于 tiktoken cl100k_base 编码器（百炼 text-embedding-v4 兼容）。
+   */
+  private tokenCount(content: string): number {
+    return this.tokenService.tokenCount(content);
   }
 
   /**

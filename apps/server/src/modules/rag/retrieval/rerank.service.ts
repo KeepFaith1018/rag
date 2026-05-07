@@ -58,14 +58,20 @@ export class RerankService {
 
       const maxFusionScore = candidates[0]?.fusionScore ?? 1;
       const results = candidates
-        .map((c, i) => ({
-          hit: c,
-          rerankScore: scores[i] ?? 0,
-          fusionScore:
-            maxFusionScore > 0
-              ? Math.round((c.fusionScore / maxFusionScore) * 1000) / 1000
-              : c.fusionScore,
-        }))
+        .map((c, i) => {
+          const baseScore = scores[i] ?? 0;
+          // O7: titlePath 查询匹配加权
+          const tpBoost = this.computeTitlePathBoost(c.payload, queries);
+          const rerankScore = Math.min(baseScore * tpBoost, 1.0);
+          return {
+            hit: c,
+            rerankScore,
+            fusionScore:
+              maxFusionScore > 0
+                ? Math.round((c.fusionScore / maxFusionScore) * 1000) / 1000
+                : c.fusionScore,
+          };
+        })
         .sort((a, b) => b.rerankScore - a.rerankScore)
         .slice(0, topN);
 
@@ -156,8 +162,12 @@ export class RerankService {
         if (questionType === 'fact_lookup' && q === queries[0]) break;
       }
 
-      const rerankScore =
-        Math.round((c.fusionScore * 0.7 + bestOverlapRatio * 0.3) * 1000) / 1000;
+      // O7: titlePath 查询匹配加权
+      const tpBoost = this.computeTitlePathBoost(c.payload, queries);
+      const rerankScore = Math.min(
+        Math.round((c.fusionScore * 0.7 + bestOverlapRatio * 0.3) * tpBoost * 1000) / 1000,
+        1.0,
+      );
 
       return {
         chunkId: c.chunkId,
@@ -231,11 +241,48 @@ export class RerankService {
   }
 
   /**
+   * O7: 计算 titlePath 查询匹配加权。
+   *
+   * 当查询词与 chunk 的标题路径有较高重叠（>50%）时，
+   * 说明该 chunk 在文档结构中与查询高度相关，给予适度加权。
+   *
+   * @returns 乘数 1.0 ~ 1.10
+   */
+  private computeTitlePathBoost(
+    payload: Record<string, unknown>,
+    queries: string[],
+  ): number {
+    const tpVal = payload['titlePath'];
+    const tpArr: string[] = Array.isArray(tpVal)
+      ? tpVal.map(String)
+      : typeof tpVal === 'string'
+        ? (() => { try { return JSON.parse(tpVal) as string[]; } catch { return []; } })()
+        : [];
+    if (tpArr.length === 0) return 1.0;
+
+    const tpLower = tpArr.join(' ').toLowerCase();
+    let maxOverlap = 0;
+    for (const q of queries) {
+      const tokens = this.tokenize(q.toLowerCase());
+      if (tokens.length === 0) continue;
+      const matched = tokens.filter(
+        (t) => t.length > 1 && tpLower.includes(t),
+      ).length;
+      const ratio = matched / tokens.length;
+      if (ratio > maxOverlap) maxOverlap = ratio;
+    }
+
+    return maxOverlap > 0.5
+      ? Math.round((1.0 + (maxOverlap - 0.5) * 0.2) * 1000) / 1000
+      : 1.0;
+  }
+
+  /**
    * 简单分词，供文本匹配计分使用。
    */
   private tokenize(text: string): string[] {
     return text
-      .split(/[\s,，。！？、；：""''（）()［］【】{}<>\/\\|@#$%^&*+=~`]+/)
+      .split(/[\s,，。！？、；：""''（）()［］【】{}<>/\\|@#$%^&*+=~`]+/)
       .filter((t) => t.length > 1);
   }
 }
