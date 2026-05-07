@@ -65,52 +65,95 @@ export class ElasticsearchService {
   }
 
   /**
-   * 确保索引存在（若不存在则创建）
+   * 确保索引存在且 mapping 版本兼容（E1: search_analyzer 分离, E2: 同义词词典）。
+   *
+   * 若已有索引缺 search_analyzer 则删除并重建，保证索引阶段 ik_max_word +
+   * 搜索阶段 ik_smart 正确分离。
    */
   async ensureIndex(): Promise<void> {
     const exists = await this.client.indices.exists({
       index: this.indexName,
     });
 
-    if (!exists) {
-      await this.client.indices.create({
+    if (exists) {
+      const currentMapping = await this.client.indices.getMapping({
         index: this.indexName,
-        settings: {
-          number_of_shards: 1,
-          number_of_replicas: 0,
-          analysis: {
-            analyzer: {
-              chunk_analyzer: {
-                type: 'custom',
-                tokenizer: 'ik_max_word',
-                filter: ['lowercase'],
-              },
-            },
-          },
-        },
-        mappings: {
-          properties: {
-            chunkId: { type: 'keyword' },
-            docId: { type: 'keyword' },
-            kbId: { type: 'keyword' },
-            content: {
-              type: 'text',
-              analyzer: 'chunk_analyzer',
-            },
-            title: {
-              type: 'text',
-              analyzer: 'chunk_analyzer',
-            },
-            metadata: {
-              type: 'object',
-              enabled: false,
-            },
-          },
-        },
       });
-
-      this.logger.info(`[Elasticsearch] 索引 ${this.indexName} 创建成功`);
+      const properties =
+        (currentMapping[this.indexName]?.mappings?.properties as Record<string, Record<string, unknown>>) ?? {};
+      const contentProp = properties['content'];
+      if (contentProp && !contentProp['search_analyzer']) {
+        this.logger.warn(
+          `[Elasticsearch] 索引 ${this.indexName} 缺少 search_analyzer，重建中...`,
+        );
+        await this.client.indices.delete({ index: this.indexName });
+        await this.createIndex();
+        return;
+      }
+      return;
     }
+
+    await this.createIndex();
+  }
+
+  /**
+   * 创建索引，包含完整的 settings/mappings（E1+E2 组合配置）。
+   */
+  private async createIndex(): Promise<void> {
+    await this.client.indices.create({
+      index: this.indexName,
+      settings: {
+        number_of_shards: 1,
+        number_of_replicas: 0,
+        analysis: {
+          filter: {
+            rag_synonym: {
+              type: 'synonym',
+              synonyms: [
+                'RAG, 检索增强生成',
+                'LLM, 大模型, 大语言模型',
+                'Embedding, 向量化, 向量嵌入',
+                '向量检索, 语义检索, 稠密检索',
+                '混合检索, 混合搜索, 多路召回',
+                'Rerank, 重排序, 精排',
+                '知识库, 知识底座, 知识管理',
+                '切块, 分块, 分片',
+              ],
+            },
+          },
+          analyzer: {
+            chunk_analyzer: {
+              type: 'custom',
+              tokenizer: 'ik_max_word',
+              filter: ['lowercase', 'rag_synonym'],
+            },
+          },
+        },
+      },
+      mappings: {
+        properties: {
+          chunkId: { type: 'keyword' },
+          docId: { type: 'keyword' },
+          kbId: { type: 'keyword' },
+          content: {
+            type: 'text',
+            analyzer: 'chunk_analyzer',
+            search_analyzer: 'ik_smart',
+          },
+          title: {
+            type: 'text',
+            analyzer: 'chunk_analyzer',
+            search_analyzer: 'ik_smart',
+          },
+          metadata: {
+            type: 'object',
+            enabled: false,
+          },
+        },
+      },
+    });
+
+    this.logger.info(`[Elasticsearch] 索引 ${this.indexName} 创建成功`);
   }
 
   /**
@@ -162,45 +205,59 @@ export class ElasticsearchService {
   }
 
   /**
-   * 搜索文档
+   * 搜索文档（E6: 二阶段 Rescore）。
+   *
+   * 第一阶段宽召回 topK*3 候选，第二阶段用 AND 严格匹配前 topK 条重排序，
+   * title 字段天然加权 ^2，确保标题命中优先于正文命中。
    */
   async search(
     query: string,
     kbIds: string[],
     topK: number,
   ): Promise<EsSearchHit[]> {
+    const recallWindow = topK * 3;
+
     const response = await this.client.search({
       index: this.indexName,
       query: {
         bool: {
           should: [
             {
-              match: {
-                content: {
-                  query,
-                  boost: 1.0,
-                },
+              multi_match: {
+                query,
+                fields: ['title^2', 'content^1'],
+                type: 'best_fields',
               },
             },
             {
               match_phrase: {
-                content: {
-                  query,
-                  boost: 2.0,
-                },
+                content: { query, boost: 2.0 },
               },
             },
           ],
+          minimum_should_match: 1,
           filter: [{ terms: { kbId: kbIds } }],
         },
       },
-      size: topK,
+      size: recallWindow,
+      rescore: {
+        window_size: topK,
+        query: {
+          query_weight: 0.2,
+          rescore_query_weight: 1.0,
+          rescore_query: {
+            match: {
+              content: { query, operator: 'AND' },
+            },
+          },
+        },
+      },
       _source: ['chunkId', 'docId', 'kbId', 'content', 'title'],
     });
 
     const hits: EsSearchHit[] = [];
 
-    for (const hit of response.hits.hits) {
+    for (const hit of response.hits.hits.slice(0, topK)) {
       const source = hit._source as Record<string, unknown>;
       hits.push({
         chunkId: String(source['chunkId']),
