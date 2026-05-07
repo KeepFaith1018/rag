@@ -5,6 +5,8 @@ import { ParsedSection } from './parsed-section.interface';
  */
 export interface ParsedDocument {
   plainText: string;
+  /** Markdown 格式输出（PDF/DOCX/MD 有，TXT 无） */
+  markdown?: string;
   sections: ParsedSection[];
   pageMap?: Array<{
     pageNo: number;

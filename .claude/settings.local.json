@@ -36,7 +36,24 @@
       "Bash(pnpm --filter server remove ai @ai-sdk/langchain)",
       "Bash(docker compose *)",
       "Bash(timeout 15 pnpm --filter server start:dev)",
-      "Bash(pnpm --filter server test)"
+      "Bash(pnpm --filter server test)",
+      "Bash(npx nest *)",
+      "Bash(cp 'd:/Faith/Project/rag-knowledge-base/node_modules/.pnpm/@fontsource+space-grotesk@5.2.10/node_modules/@fontsource/space-grotesk/files/*.woff2' d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/)",
+      "Bash(cp 'd:/Faith/Project/rag-knowledge-base/node_modules/.pnpm/@fontsource+inter@5.2.8/node_modules/@fontsource/inter/files/*.woff2' d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/)",
+      "Bash(mkdir -p \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts\" && mv \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/outlined.css\" \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/\" && mv \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/material-symbols-\"*.woff2 \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/\" && ls \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/\")",
+      "Bash(mv \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/\"*.woff2 \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/\" && mv \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/outlined.css\" \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/\" && ls \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/\")",
+      "Bash(git checkout *)",
+      "WebFetch(domain:api.npmjs.org)",
+      "Bash(node -e \"const p = require\\('pdfexcavator'\\); console.log\\(Object.keys\\(p\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const m = require\\('mammoth'\\); console.log\\(Object.keys\\(m\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const m = require\\('mammoth'\\); console.log\\(typeof m.convertToMarkdown, typeof m.convertToMarkdown === 'function'\\)\")",
+      "Bash(node -e \"try { require\\('archiver'\\); console.log\\('archiver available'\\) } catch\\(e\\) { console.log\\('no archiver'\\) }; try { require\\('pdf-lib'\\); console.log\\('pdf-lib available'\\) } catch\\(e\\) { console.log\\('no pdf-lib'\\) }\")",
+      "Bash(pnpm --filter server test -- -t \"DocumentParserService\")",
+      "Bash(npx eslint *)"
+    ],
+    "additionalDirectories": [
+      "d:\\Faith\\Project\\rag-knowledge-base\\apps\\web\\public\\fonts",
+      "d:\\Faith\\Project\\rag-knowledge-base\\apps\\web\\src\\assets\\fonts"
     ]
   },
   "enabledPlugins": {
