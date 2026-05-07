@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
 import { TokenService } from '@common/utils/token.service';
+import { CacheModule } from '@common/cache/cache.module';
 import { EmbeddingService } from './embedding.service';
 import { ChatModelService } from './chat-model.service';
 import { AiController } from './ai.controller';
@@ -12,7 +13,7 @@ import { AiController } from './ai.controller';
  * 供上层业务模块（chat、rag 等）按需注入使用。
  */
 @Module({
-  imports: [ConfigModule],
+  imports: [ConfigModule, CacheModule],
   controllers: [AiController],
   providers: [EmbeddingService, ChatModelService, TokenService],
   exports: [EmbeddingService, ChatModelService],

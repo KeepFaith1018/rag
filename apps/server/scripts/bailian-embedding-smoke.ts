@@ -1,6 +1,7 @@
 import 'dotenv/config';
 import { ConfigService } from '@nestjs/config';
 import { TokenService } from '../src/common/utils/token.service';
+import { RedisCacheService } from '../src/common/cache/redis-cache.service';
 import { EmbeddingService } from '../src/modules/rag/ai/embedding.service';
 
 /**
@@ -9,7 +10,9 @@ import { EmbeddingService } from '../src/modules/rag/ai/embedding.service';
 async function main() {
   const configService = new ConfigService(process.env);
   const tokenService = new TokenService();
-  const embeddingService = new EmbeddingService(configService, tokenService);
+  // smoke 脚本不依赖真实 Redis，提供无操作桩
+  const cacheStub = { get: () => Promise.resolve(null), set: async () => {} } as unknown as RedisCacheService;
+  const embeddingService = new EmbeddingService(configService, tokenService, cacheStub);
   const debugSummary = embeddingService.getDebugSummary();
   const apiKey = process.env.BAILIAN_API_KEY || '';
   const dryRun =
