@@ -1,4 +1,19 @@
 {
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; $notify = New-Object System.Windows.Forms.NotifyIcon; $notify.Icon = [System.Drawing.SystemIcons]::Information; $notify.BalloonTipTitle = 'Claude Code'; $notify.BalloonTipText = 'Claude 已完成响应。下一步: /review 审查代码 | /commit 提交 | 继续对话'; $notify.Visible = $true; $notify.ShowBalloonTip(5000); Start-Sleep -Seconds 1; $notify.Dispose(); @{ systemMessage = 'Claude 已完成。下一步: /review 审查 | /commit 提交 | 继续对话' } | ConvertTo-Json -Compress | Write-Output",
+            "timeout": 15,
+            "statusMessage": "发送通知提醒..."
+          }
+        ]
+      }
+    ]
+  },
   "permissions": {
     "allow": [
       "Bash(pnpm --filter backend build)",
