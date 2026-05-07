@@ -1,11 +1,9 @@
-import { createHash } from 'node:crypto';
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { OpenAIEmbeddings } from '@langchain/openai';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 import { TokenService } from '@common/utils/token.service';
-import { RedisCacheService } from '@common/cache/redis-cache.service';
 import {
   DOCUMENT_EMBEDDING_CONFIG_ERROR_CODE,
   DOCUMENT_EMBEDDING_ERROR_CODE,
@@ -30,106 +28,38 @@ export class EmbeddingService {
   constructor(
     private readonly configService: ConfigService,
     private readonly tokenService: TokenService,
-    private readonly cacheService: RedisCacheService,
   ) {}
 
   /**
    * 批量获取文本向量，内部自动做分批、限频与重试。
    */
   async embedDocuments(texts: string[]) {
-    const startedAt = Date.now();
-
     if (texts.length === 0) {
       return {
         vectors: [],
         totalTokens: 0,
-        cacheHits: 0,
-        apiCallCount: 0,
-        durationMs: 0,
       };
     }
 
     const config = this.getEmbeddingConfig();
     const embeddings = this.createEmbeddingsClient(config);
-
-    // E3: 缓存层 — 按 content SHA-256 查 Redis，命中跳过 API 调用
-    const vectors: (number[] | undefined)[] = new Array<number[]>(texts.length);
-    const uncachedIndices: number[] = [];
-    const uncachedTexts: string[] = [];
-
-    for (let i = 0; i < texts.length; i++) {
-      const hash = this.hashContent(texts[i]);
-      const cached = await this.cacheService.get(`embed:${hash}`);
-      if (cached) {
-        try {
-          vectors[i] = JSON.parse(cached) as number[];
-          continue;
-        } catch { /* 反序列化失败视为未命中 */ }
-      }
-      uncachedIndices.push(i);
-      uncachedTexts.push(texts[i]);
-    }
-
+    const vectors: number[][] = [];
     let totalTokens = 0;
-    const cacheHits = texts.length - uncachedTexts.length;
-    let apiCallCount = 0;
 
-    if (uncachedTexts.length > 0) {
-      // E4: Token-count-based 动态批次 — 按 token 累积分组，最大化每批吞吐
-      const MAX_TOKENS_PER_BATCH = 7500; // 百炼 text-embedding-v4 安全上限 ~8100
-      const batches: { indices: number[]; texts: string[] }[] = [];
-      let currentIndices: number[] = [];
-      let currentTexts: string[] = [];
-      let currentTokens = 0;
+    for (let index = 0; index < texts.length; index += config.batchSize) {
+      const batch = texts.slice(index, index + config.batchSize);
+      const result = await this.embedBatchWithRetry(batch, embeddings, config);
+      vectors.push(...result.vectors);
+      totalTokens += result.promptTokens;
 
-      for (let i = 0; i < uncachedTexts.length; i++) {
-        const tokens = this.tokenService.tokenCount(uncachedTexts[i]);
-        // 单条超限：独立成批，让 API 自行处理
-        if (tokens > MAX_TOKENS_PER_BATCH && currentTexts.length === 0) {
-          batches.push({ indices: [uncachedIndices[i]], texts: [uncachedTexts[i]] });
-          continue;
-        }
-        // token 累积超限：关闭当前批次，开启新批次
-        if (currentTokens + tokens > MAX_TOKENS_PER_BATCH && currentTexts.length > 0) {
-          batches.push({ indices: currentIndices, texts: currentTexts });
-          currentIndices = [];
-          currentTexts = [];
-          currentTokens = 0;
-        }
-        currentIndices.push(uncachedIndices[i]);
-        currentTexts.push(uncachedTexts[i]);
-        currentTokens += tokens;
-      }
-      if (currentTexts.length > 0) {
-        batches.push({ indices: currentIndices, texts: currentTexts });
-      }
-
-      for (let b = 0; b < batches.length; b++) {
-        const batch = batches[b];
-        apiCallCount++;
-        const result = await this.embedBatchWithRetry(batch.texts, embeddings, config);
-
-        for (let j = 0; j < result.vectors.length; j++) {
-          const originalIndex = batch.indices[j];
-          vectors[originalIndex] = result.vectors[j];
-          const hash = this.hashContent(batch.texts[j]);
-          this.cacheService.set(`embed:${hash}`, JSON.stringify(result.vectors[j]))
-            .catch(() => { /* 缓存写入失败不影响主流程 */ });
-        }
-        totalTokens += result.promptTokens;
-
-        if (b < batches.length - 1) {
-          await this.sleep(config.requestIntervalMs);
-        }
+      if (index + config.batchSize < texts.length) {
+        await this.sleep(config.requestIntervalMs);
       }
     }
 
     return {
       vectors,
       totalTokens,
-      cacheHits,
-      apiCallCount,
-      durationMs: Date.now() - startedAt,
     };
   }
 
@@ -140,7 +70,7 @@ export class EmbeddingService {
     texts: string[],
     embeddings: OpenAIEmbeddings,
     config: EmbeddingRuntimeConfig,
-  ): Promise<{ vectors: number[][] }> {
+  ) {
     let lastError: unknown;
 
     for (let attempt = 0; attempt <= config.retryCount; attempt += 1) {
@@ -334,13 +264,6 @@ export class EmbeddingService {
     const parsedValue =
       typeof rawValue === 'number' ? rawValue : Number(rawValue);
     return Number.isNaN(parsedValue) ? undefined : parsedValue;
-  }
-
-  /**
-   * 对文本内容做 SHA-256 哈希，作为缓存键。
-   */
-  private hashContent(text: string): string {
-    return createHash('sha256').update(text).digest('hex');
   }
 
   /**

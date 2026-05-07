@@ -1,7 +1,5 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { Logger } from 'winston';
 import { DenseRetrievalService } from './dense-retrieval.service';
 import { ElasticsearchSparseRetrievalService } from './elasticsearch-sparse-retrieval.service';
 import { FusionService } from './fusion.service';
@@ -43,7 +41,6 @@ export class RetrievalService {
     private readonly fusionService: FusionService,
     private readonly rerankService: RerankService,
     private readonly prisma: PrismaService,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
   /**
@@ -76,22 +73,12 @@ export class RetrievalService {
       scoreThreshold,
     });
 
-    // 2. 稀疏关键词检索（E8: ES 不可用时降级为空结果，不中断检索流水线）
-    let sparseHits: SparseHit[] = [];
-    try {
-      sparseHits = await this.sparseService.retrieve({
-        queries,
-        kbIds,
-        topK: sparseTopK,
-      });
-    } catch (error) {
-      this.logger.warn('[Retrieval] ES 检索失败，降级为仅稠密检索', {
-        error: error instanceof Error ? error.message : String(error),
-        kbIdsCount: kbIds.length,
-        queriesCount: queries.length,
-      });
-      sparseHits = [];
-    }
+    // 2. 稀疏关键词检索
+    const sparseHits = await this.sparseService.retrieve({
+      queries,
+      kbIds,
+      topK: sparseTopK,
+    });
 
     // 3. RRF 融合
     const fusedHits = this.fusionService.fuse({

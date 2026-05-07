@@ -73,10 +73,6 @@ export class FusionService {
         }
       }
 
-      // E12: 基于 Shannon 熵的置信度加权 — 分数分布越集中置信度越高
-      const denseConf = this.computePathConfidence(denseHits);
-      const sparseConf = this.computePathConfidence(sparseHits);
-
       // 计算每个 chunk 的 RRF 分数
       const fusedList: FusedHit[] = [];
 
@@ -86,10 +82,10 @@ export class FusionService {
 
         let fusionScore = 0;
         if (denseRank !== undefined) {
-          fusionScore += denseConf / (k + (denseRank));
+          fusionScore += 1 / (k + (denseRank));
         }
         if (sparseRank !== undefined) {
-          fusionScore += sparseConf / (k + (sparseRank));
+          fusionScore += 1 / (k + (sparseRank));
         }
 
         // O7: 基于 chunk 元数据的质量加权
@@ -166,36 +162,6 @@ export class FusionService {
     }
 
     return Math.round(multiplier * 1000) / 1000;
-  }
-
-  /**
-   * E12: 基于 Shannon 熵计算检索路径的置信度权重。
-   *
-   * 分数分布越集中（熵低）→ 置信度越高；越平均（熵高）→ 置信度越低。
-   * 返回值 [0.5, 1.0]，避免任一路径被完全清零。
-   */
-  private computePathConfidence<T extends { score: number }>(hits: T[]): number {
-    const n = Math.min(hits.length, 50);
-    if (n <= 1) return 1.0;
-
-    const scores = hits.slice(0, n).map((h) => h.score);
-    const maxScore = scores[0] ?? 0;
-    if (maxScore <= 0) return 0.5;
-
-    // softmax 归一化
-    const expScores = scores.map((s) => Math.exp(s - maxScore));
-    const sumExp = expScores.reduce((a, b) => a + b, 0);
-    const probs = expScores.map((e) => e / sumExp);
-
-    // Shannon 熵
-    let entropy = 0;
-    for (const p of probs) {
-      if (p > 0) entropy -= p * Math.log(p);
-    }
-    const normalizedEntropy = entropy / Math.log(n); // 0=集中, 1=均匀
-
-    // 置信度: 低熵=高置信度，限定范围 [0.5, 1.0]
-    return Math.round((1 - normalizedEntropy * 0.5) * 1000) / 1000;
   }
 
   /**

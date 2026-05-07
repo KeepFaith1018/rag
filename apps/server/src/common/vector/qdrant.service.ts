@@ -1,17 +1,10 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { QdrantClient } from '@qdrant/js-client-rest';
-import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
-import { Logger } from 'winston';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 import { DOCUMENT_VECTOR_INDEX_ERROR_CODE } from '../../modules/document/document-processing.constants';
-import {
-  QDRANT_DOCUMENT_COLLECTION_NAME,
-  QDRANT_HNSW_M,
-  QDRANT_HNSW_EF_CONSTRUCT,
-  QDRANT_EF_SEARCH,
-} from './qdrant.constants';
+import { QDRANT_DOCUMENT_COLLECTION_NAME } from './qdrant.constants';
 
 export interface QdrantChunkPoint {
   id: string;
@@ -51,10 +44,7 @@ export interface SearchChunkVectorsParams {
 export class QdrantService {
   private readonly client: QdrantClient;
 
-  constructor(
-    private readonly configService: ConfigService,
-    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
-  ) {
+  constructor(private readonly configService: ConfigService) {
     const url = this.configService.get<string>('QDRANT_URL');
     if (!url) {
       throw new BusinessException(
@@ -80,17 +70,6 @@ export class QdrantService {
       );
 
       if (exists) {
-        const info = await this.client.getCollection(
-          QDRANT_DOCUMENT_COLLECTION_NAME,
-        );
-        const config = (info.config as Record<string, unknown> | undefined) ?? {};
-        if (!config['quantization_config']) {
-          this.logger.warn(
-            `[Qdrant] collection ${QDRANT_DOCUMENT_COLLECTION_NAME} 未配置量化，建议运行迁移脚本`,
-          );
-        }
-        // E13: 确保 payload 索引存在
-        await this.ensurePayloadIndexes();
         return;
       }
 
@@ -99,17 +78,7 @@ export class QdrantService {
           size: vectorSize,
           distance: 'Cosine',
         },
-        hnsw_config: {
-          m: QDRANT_HNSW_M,
-          ef_construct: QDRANT_HNSW_EF_CONSTRUCT,
-        },
-        quantization_config: {
-          scalar: { type: 'int8', quantile: 0.99, always_ram: true },
-        },
       });
-
-      // E13: 为新 collection 创建 payload 索引
-      await this.ensurePayloadIndexes();
     } catch (error) {
       throw new BusinessException(ErrorCode.VECTOR_INDEX_FAILED, {
         message: 'Qdrant collection 初始化失败',
@@ -249,7 +218,6 @@ export class QdrantService {
           limit: params.topK,
           score_threshold: params.scoreThreshold,
           filter,
-          params: { ef: QDRANT_EF_SEARCH },
           with_payload: true,
         },
       );
@@ -279,25 +247,6 @@ export class QdrantService {
           topK: params.topK,
         },
       });
-    }
-  }
-
-  /**
-   * E13: 为常用过滤字段创建 payload 索引，避免大规模数据下全扫描。
-   *
-   * 幂等操作 — 重复创建已存在索引不会报错。
-   */
-  private async ensurePayloadIndexes() {
-    const fields = ['kbId', 'docId', 'chunkLevel'] as const;
-    for (const field of fields) {
-      try {
-        await this.client.createPayloadIndex(
-          QDRANT_DOCUMENT_COLLECTION_NAME,
-          { field_name: field, field_schema: 'keyword' },
-        );
-      } catch {
-        // 索引已存在或创建失败均不阻塞
-      }
     }
   }
 
