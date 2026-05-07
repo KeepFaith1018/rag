@@ -19,7 +19,7 @@ export class DictService {
         orderBy: { created_at: 'asc' },
         include: {
           _count: {
-            select: { sys_dict_item: true },
+            select: { items: true },
           },
         },
       });
@@ -29,7 +29,7 @@ export class DictService {
         code: t.code,
         name: t.name,
         remark: t.remark,
-        itemCount: t._count.sys_dict_item,
+        itemCount: t._count.items,
         createdAt: t.created_at.toISOString(),
       }));
     } catch (error) {
@@ -44,7 +44,7 @@ export class DictService {
       const type = await this.prisma.sys_dict_type.findUnique({
         where: { code },
         include: {
-          sys_dict_item: {
+          items: {
             orderBy: { sort: 'asc' },
           },
         },
@@ -59,19 +59,13 @@ export class DictService {
         code: type.code,
         name: type.name,
         remark: type.remark,
-        items: (type.sys_dict_item as any[]).map((item: any) => ({
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+        items: type.items.map((item) => ({
           id: String(item.id),
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           value: String(item.value),
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           label: String(item.label),
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           sort: Number(item.sort),
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
           status: Boolean(item.status),
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
-          createdAt: (item).created_at?.toISOString() ?? '',
+          createdAt: item.created_at?.toISOString() ?? '',
         })),
         createdAt: type.created_at.toISOString(),
       };

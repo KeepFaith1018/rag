@@ -6,7 +6,7 @@ import { AdminAuthGuard } from '../guards/admin-auth.guard';
 import { AdminAuth } from '../decorators/admin-auth.decorator';
 import { CurrentAdmin } from '../decorators/admin-user.decorator';
 
-@Controller('auth')
+@Controller('admin/auth')
 export class AdminAuthController {
   constructor(private readonly adminAuthService: AdminAuthService) {}
 

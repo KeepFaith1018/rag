@@ -735,7 +735,7 @@ export namespace Prisma {
   ? False
   : T extends Uint8Array
   ? False
-  : T extends BigInt
+  : T extends bigint
   ? False
   : T extends object
   ? True
@@ -3252,6 +3252,37 @@ export namespace Prisma {
 
 
   /**
+   * Count Type Sys_dict_typeCountOutputType
+   */
+
+  export type Sys_dict_typeCountOutputType = {
+    items: number
+  }
+
+  export type Sys_dict_typeCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | Sys_dict_typeCountOutputTypeCountItemsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * Sys_dict_typeCountOutputType without action
+   */
+  export type Sys_dict_typeCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Sys_dict_typeCountOutputType
+     */
+    select?: Sys_dict_typeCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * Sys_dict_typeCountOutputType without action
+   */
+  export type Sys_dict_typeCountOutputTypeCountItemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: sys_dict_itemWhereInput
+  }
+
+
+  /**
    * Models
    */
 
@@ -3897,20 +3928,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -5129,20 +5160,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -6159,20 +6190,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -7118,20 +7149,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -8118,20 +8149,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -9133,20 +9164,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -10106,20 +10137,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -11133,20 +11164,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -12176,20 +12207,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -13276,20 +13307,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -14315,20 +14346,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -15510,20 +15541,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -16798,20 +16829,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -17871,20 +17902,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -18934,20 +18965,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -19959,20 +19990,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -21001,20 +21032,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -22034,20 +22065,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -23190,20 +23221,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -24268,20 +24299,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -25339,20 +25370,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -26351,20 +26382,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -27299,20 +27330,20 @@ export namespace Prisma {
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -27907,6 +27938,8 @@ export namespace Prisma {
     name?: boolean
     remark?: boolean
     created_at?: boolean
+    items?: boolean | sys_dict_type$itemsArgs<ExtArgs>
+    _count?: boolean | Sys_dict_typeCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sys_dict_type"]>
 
 
@@ -27920,10 +27953,16 @@ export namespace Prisma {
   }
 
   export type sys_dict_typeOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "code" | "name" | "remark" | "created_at", ExtArgs["result"]["sys_dict_type"]>
+  export type sys_dict_typeInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    items?: boolean | sys_dict_type$itemsArgs<ExtArgs>
+    _count?: boolean | Sys_dict_typeCountOutputTypeDefaultArgs<ExtArgs>
+  }
 
   export type $sys_dict_typePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "sys_dict_type"
-    objects: {}
+    objects: {
+      items: Prisma.$sys_dict_itemPayload<ExtArgs>[]
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
       code: string
@@ -28270,26 +28309,27 @@ export namespace Prisma {
    */
   export interface Prisma__sys_dict_typeClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    items<T extends sys_dict_type$itemsArgs<ExtArgs> = {}>(args?: Subset<T, sys_dict_type$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$sys_dict_itemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -28321,6 +28361,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
+    /**
      * Filter, which sys_dict_type to fetch.
      */
     where: sys_dict_typeWhereUniqueInput
@@ -28339,6 +28383,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
+    /**
      * Filter, which sys_dict_type to fetch.
      */
     where: sys_dict_typeWhereUniqueInput
@@ -28356,6 +28404,10 @@ export namespace Prisma {
      * Omit specific fields from the sys_dict_type
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
     /**
      * Filter, which sys_dict_type to fetch.
      */
@@ -28405,6 +28457,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
+    /**
      * Filter, which sys_dict_type to fetch.
      */
     where?: sys_dict_typeWhereInput
@@ -28453,6 +28509,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
+    /**
      * Filter, which sys_dict_types to fetch.
      */
     where?: sys_dict_typeWhereInput
@@ -28496,6 +28556,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
+    /**
      * The data needed to create a sys_dict_type.
      */
     data: XOR<sys_dict_typeCreateInput, sys_dict_typeUncheckedCreateInput>
@@ -28524,6 +28588,10 @@ export namespace Prisma {
      * Omit specific fields from the sys_dict_type
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
     /**
      * The data needed to update a sys_dict_type.
      */
@@ -28565,6 +28633,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
+    /**
      * The filter to search for the sys_dict_type to update in case it exists.
      */
     where: sys_dict_typeWhereUniqueInput
@@ -28591,6 +28663,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
+    /**
      * Filter which sys_dict_type to delete.
      */
     where: sys_dict_typeWhereUniqueInput
@@ -28611,6 +28687,30 @@ export namespace Prisma {
   }
 
   /**
+   * sys_dict_type.items
+   */
+  export type sys_dict_type$itemsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sys_dict_item
+     */
+    select?: sys_dict_itemSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sys_dict_item
+     */
+    omit?: sys_dict_itemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
+    where?: sys_dict_itemWhereInput
+    orderBy?: sys_dict_itemOrderByWithRelationInput | sys_dict_itemOrderByWithRelationInput[]
+    cursor?: sys_dict_itemWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: Sys_dict_itemScalarFieldEnum | Sys_dict_itemScalarFieldEnum[]
+  }
+
+  /**
    * sys_dict_type without action
    */
   export type sys_dict_typeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -28622,6 +28722,10 @@ export namespace Prisma {
      * Omit specific fields from the sys_dict_type
      */
     omit?: sys_dict_typeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
   }
 
 
@@ -28843,6 +28947,7 @@ export namespace Prisma {
     sort?: boolean
     status?: boolean
     created_at?: boolean
+    type?: boolean | sys_dict_item$typeArgs<ExtArgs>
   }, ExtArgs["result"]["sys_dict_item"]>
 
 
@@ -28858,10 +28963,15 @@ export namespace Prisma {
   }
 
   export type sys_dict_itemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "type_code" | "value" | "label" | "sort" | "status" | "created_at", ExtArgs["result"]["sys_dict_item"]>
+  export type sys_dict_itemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    type?: boolean | sys_dict_item$typeArgs<ExtArgs>
+  }
 
   export type $sys_dict_itemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "sys_dict_item"
-    objects: {}
+    objects: {
+      type: Prisma.$sys_dict_typePayload<ExtArgs> | null
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
       type_code: string
@@ -29210,26 +29320,27 @@ export namespace Prisma {
    */
   export interface Prisma__sys_dict_itemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    type<T extends sys_dict_item$typeArgs<ExtArgs> = {}>(args?: Subset<T, sys_dict_item$typeArgs<ExtArgs>>): Prisma__sys_dict_typeClient<$Result.GetResult<Prisma.$sys_dict_typePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of which ever callback is executed.
      */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>)   | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>)   | null): $Utils.JsPromise<TResult1 | TResult2>
     /**
      * Attaches a callback for only the rejection of the Promise.
      * @param onrejected The callback to execute when the Promise is rejected.
      * @returns A Promise for the completion of the callback.
      */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>)   | null): $Utils.JsPromise<T | TResult>
     /**
      * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
      * resolved value cannot be modified from the callback.
      * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
      * @returns A Promise for the completion of the callback.
      */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+    finally(onfinally?: (() => void)   | null): $Utils.JsPromise<T>
   }
 
 
@@ -29263,6 +29374,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
+    /**
      * Filter, which sys_dict_item to fetch.
      */
     where: sys_dict_itemWhereUniqueInput
@@ -29281,6 +29396,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
+    /**
      * Filter, which sys_dict_item to fetch.
      */
     where: sys_dict_itemWhereUniqueInput
@@ -29298,6 +29417,10 @@ export namespace Prisma {
      * Omit specific fields from the sys_dict_item
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
     /**
      * Filter, which sys_dict_item to fetch.
      */
@@ -29347,6 +29470,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
+    /**
      * Filter, which sys_dict_item to fetch.
      */
     where?: sys_dict_itemWhereInput
@@ -29395,6 +29522,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
+    /**
      * Filter, which sys_dict_items to fetch.
      */
     where?: sys_dict_itemWhereInput
@@ -29438,6 +29569,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
+    /**
      * The data needed to create a sys_dict_item.
      */
     data: XOR<sys_dict_itemCreateInput, sys_dict_itemUncheckedCreateInput>
@@ -29466,6 +29601,10 @@ export namespace Prisma {
      * Omit specific fields from the sys_dict_item
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
     /**
      * The data needed to update a sys_dict_item.
      */
@@ -29507,6 +29646,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
+    /**
      * The filter to search for the sys_dict_item to update in case it exists.
      */
     where: sys_dict_itemWhereUniqueInput
@@ -29533,6 +29676,10 @@ export namespace Prisma {
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
+    /**
      * Filter which sys_dict_item to delete.
      */
     where: sys_dict_itemWhereUniqueInput
@@ -29553,6 +29700,25 @@ export namespace Prisma {
   }
 
   /**
+   * sys_dict_item.type
+   */
+  export type sys_dict_item$typeArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the sys_dict_type
+     */
+    select?: sys_dict_typeSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the sys_dict_type
+     */
+    omit?: sys_dict_typeOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_typeInclude<ExtArgs> | null
+    where?: sys_dict_typeWhereInput
+  }
+
+  /**
    * sys_dict_item without action
    */
   export type sys_dict_itemDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -29564,6 +29730,10 @@ export namespace Prisma {
      * Omit specific fields from the sys_dict_item
      */
     omit?: sys_dict_itemOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: sys_dict_itemInclude<ExtArgs> | null
   }
 
 
@@ -32453,6 +32623,7 @@ export namespace Prisma {
     name?: StringFilter<"sys_dict_type"> | string
     remark?: StringNullableFilter<"sys_dict_type"> | string | null
     created_at?: DateTimeFilter<"sys_dict_type"> | Date | string
+    items?: Sys_dict_itemListRelationFilter
   }
 
   export type sys_dict_typeOrderByWithRelationInput = {
@@ -32461,6 +32632,7 @@ export namespace Prisma {
     name?: SortOrder
     remark?: SortOrderInput | SortOrder
     created_at?: SortOrder
+    items?: sys_dict_itemOrderByRelationAggregateInput
     _relevance?: sys_dict_typeOrderByRelevanceInput
   }
 
@@ -32473,6 +32645,7 @@ export namespace Prisma {
     name?: StringFilter<"sys_dict_type"> | string
     remark?: StringNullableFilter<"sys_dict_type"> | string | null
     created_at?: DateTimeFilter<"sys_dict_type"> | Date | string
+    items?: Sys_dict_itemListRelationFilter
   }, "id" | "code">
 
   export type sys_dict_typeOrderByWithAggregationInput = {
@@ -32510,6 +32683,7 @@ export namespace Prisma {
     sort?: IntFilter<"sys_dict_item"> | number
     status?: BoolFilter<"sys_dict_item"> | boolean
     created_at?: DateTimeFilter<"sys_dict_item"> | Date | string
+    type?: XOR<Sys_dict_typeNullableScalarRelationFilter, sys_dict_typeWhereInput> | null
   }
 
   export type sys_dict_itemOrderByWithRelationInput = {
@@ -32520,6 +32694,7 @@ export namespace Prisma {
     sort?: SortOrder
     status?: SortOrder
     created_at?: SortOrder
+    type?: sys_dict_typeOrderByWithRelationInput
     _relevance?: sys_dict_itemOrderByRelevanceInput
   }
 
@@ -32535,6 +32710,7 @@ export namespace Prisma {
     sort?: IntFilter<"sys_dict_item"> | number
     status?: BoolFilter<"sys_dict_item"> | boolean
     created_at?: DateTimeFilter<"sys_dict_item"> | Date | string
+    type?: XOR<Sys_dict_typeNullableScalarRelationFilter, sys_dict_typeWhereInput> | null
   }, "id" | "type_code_value">
 
   export type sys_dict_itemOrderByWithAggregationInput = {
@@ -34889,6 +35065,7 @@ export namespace Prisma {
     name: string
     remark?: string | null
     created_at?: Date | string
+    items?: sys_dict_itemCreateNestedManyWithoutTypeInput
   }
 
   export type sys_dict_typeUncheckedCreateInput = {
@@ -34897,6 +35074,7 @@ export namespace Prisma {
     name: string
     remark?: string | null
     created_at?: Date | string
+    items?: sys_dict_itemUncheckedCreateNestedManyWithoutTypeInput
   }
 
   export type sys_dict_typeUpdateInput = {
@@ -34905,6 +35083,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: sys_dict_itemUpdateManyWithoutTypeNestedInput
   }
 
   export type sys_dict_typeUncheckedUpdateInput = {
@@ -34913,6 +35092,7 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     remark?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: sys_dict_itemUncheckedUpdateManyWithoutTypeNestedInput
   }
 
   export type sys_dict_typeCreateManyInput = {
@@ -34941,12 +35121,12 @@ export namespace Prisma {
 
   export type sys_dict_itemCreateInput = {
     id?: bigint | number
-    type_code: string
     value: string
     label: string
     sort?: number
     status?: boolean
     created_at?: Date | string
+    type?: sys_dict_typeCreateNestedOneWithoutItemsInput
   }
 
   export type sys_dict_itemUncheckedCreateInput = {
@@ -34961,12 +35141,12 @@ export namespace Prisma {
 
   export type sys_dict_itemUpdateInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    type_code?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     sort?: IntFieldUpdateOperationsInput | number
     status?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    type?: sys_dict_typeUpdateOneWithoutItemsNestedInput
   }
 
   export type sys_dict_itemUncheckedUpdateInput = {
@@ -34991,7 +35171,6 @@ export namespace Prisma {
 
   export type sys_dict_itemUpdateManyMutationInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    type_code?: StringFieldUpdateOperationsInput | string
     value?: StringFieldUpdateOperationsInput | string
     label?: StringFieldUpdateOperationsInput | string
     sort?: IntFieldUpdateOperationsInput | number
@@ -36934,6 +37113,16 @@ export namespace Prisma {
     admin_id?: SortOrder
   }
 
+  export type Sys_dict_itemListRelationFilter = {
+    every?: sys_dict_itemWhereInput
+    some?: sys_dict_itemWhereInput
+    none?: sys_dict_itemWhereInput
+  }
+
+  export type sys_dict_itemOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type sys_dict_typeOrderByRelevanceInput = {
     fields: sys_dict_typeOrderByRelevanceFieldEnum | sys_dict_typeOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -36970,6 +37159,11 @@ export namespace Prisma {
 
   export type sys_dict_typeSumOrderByAggregateInput = {
     id?: SortOrder
+  }
+
+  export type Sys_dict_typeNullableScalarRelationFilter = {
+    is?: sys_dict_typeWhereInput | null
+    isNot?: sys_dict_typeWhereInput | null
   }
 
   export type sys_dict_itemOrderByRelevanceInput = {
@@ -38543,6 +38737,64 @@ export namespace Prisma {
     delete?: sys_adminsWhereInput | boolean
     connect?: sys_adminsWhereUniqueInput
     update?: XOR<XOR<sys_adminsUpdateToOneWithWhereWithoutAudit_logsInput, sys_adminsUpdateWithoutAudit_logsInput>, sys_adminsUncheckedUpdateWithoutAudit_logsInput>
+  }
+
+  export type sys_dict_itemCreateNestedManyWithoutTypeInput = {
+    create?: XOR<sys_dict_itemCreateWithoutTypeInput, sys_dict_itemUncheckedCreateWithoutTypeInput> | sys_dict_itemCreateWithoutTypeInput[] | sys_dict_itemUncheckedCreateWithoutTypeInput[]
+    connectOrCreate?: sys_dict_itemCreateOrConnectWithoutTypeInput | sys_dict_itemCreateOrConnectWithoutTypeInput[]
+    createMany?: sys_dict_itemCreateManyTypeInputEnvelope
+    connect?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+  }
+
+  export type sys_dict_itemUncheckedCreateNestedManyWithoutTypeInput = {
+    create?: XOR<sys_dict_itemCreateWithoutTypeInput, sys_dict_itemUncheckedCreateWithoutTypeInput> | sys_dict_itemCreateWithoutTypeInput[] | sys_dict_itemUncheckedCreateWithoutTypeInput[]
+    connectOrCreate?: sys_dict_itemCreateOrConnectWithoutTypeInput | sys_dict_itemCreateOrConnectWithoutTypeInput[]
+    createMany?: sys_dict_itemCreateManyTypeInputEnvelope
+    connect?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+  }
+
+  export type sys_dict_itemUpdateManyWithoutTypeNestedInput = {
+    create?: XOR<sys_dict_itemCreateWithoutTypeInput, sys_dict_itemUncheckedCreateWithoutTypeInput> | sys_dict_itemCreateWithoutTypeInput[] | sys_dict_itemUncheckedCreateWithoutTypeInput[]
+    connectOrCreate?: sys_dict_itemCreateOrConnectWithoutTypeInput | sys_dict_itemCreateOrConnectWithoutTypeInput[]
+    upsert?: sys_dict_itemUpsertWithWhereUniqueWithoutTypeInput | sys_dict_itemUpsertWithWhereUniqueWithoutTypeInput[]
+    createMany?: sys_dict_itemCreateManyTypeInputEnvelope
+    set?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+    disconnect?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+    delete?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+    connect?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+    update?: sys_dict_itemUpdateWithWhereUniqueWithoutTypeInput | sys_dict_itemUpdateWithWhereUniqueWithoutTypeInput[]
+    updateMany?: sys_dict_itemUpdateManyWithWhereWithoutTypeInput | sys_dict_itemUpdateManyWithWhereWithoutTypeInput[]
+    deleteMany?: sys_dict_itemScalarWhereInput | sys_dict_itemScalarWhereInput[]
+  }
+
+  export type sys_dict_itemUncheckedUpdateManyWithoutTypeNestedInput = {
+    create?: XOR<sys_dict_itemCreateWithoutTypeInput, sys_dict_itemUncheckedCreateWithoutTypeInput> | sys_dict_itemCreateWithoutTypeInput[] | sys_dict_itemUncheckedCreateWithoutTypeInput[]
+    connectOrCreate?: sys_dict_itemCreateOrConnectWithoutTypeInput | sys_dict_itemCreateOrConnectWithoutTypeInput[]
+    upsert?: sys_dict_itemUpsertWithWhereUniqueWithoutTypeInput | sys_dict_itemUpsertWithWhereUniqueWithoutTypeInput[]
+    createMany?: sys_dict_itemCreateManyTypeInputEnvelope
+    set?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+    disconnect?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+    delete?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+    connect?: sys_dict_itemWhereUniqueInput | sys_dict_itemWhereUniqueInput[]
+    update?: sys_dict_itemUpdateWithWhereUniqueWithoutTypeInput | sys_dict_itemUpdateWithWhereUniqueWithoutTypeInput[]
+    updateMany?: sys_dict_itemUpdateManyWithWhereWithoutTypeInput | sys_dict_itemUpdateManyWithWhereWithoutTypeInput[]
+    deleteMany?: sys_dict_itemScalarWhereInput | sys_dict_itemScalarWhereInput[]
+  }
+
+  export type sys_dict_typeCreateNestedOneWithoutItemsInput = {
+    create?: XOR<sys_dict_typeCreateWithoutItemsInput, sys_dict_typeUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: sys_dict_typeCreateOrConnectWithoutItemsInput
+    connect?: sys_dict_typeWhereUniqueInput
+  }
+
+  export type sys_dict_typeUpdateOneWithoutItemsNestedInput = {
+    create?: XOR<sys_dict_typeCreateWithoutItemsInput, sys_dict_typeUncheckedCreateWithoutItemsInput>
+    connectOrCreate?: sys_dict_typeCreateOrConnectWithoutItemsInput
+    upsert?: sys_dict_typeUpsertWithoutItemsInput
+    disconnect?: sys_dict_typeWhereInput | boolean
+    delete?: sys_dict_typeWhereInput | boolean
+    connect?: sys_dict_typeWhereUniqueInput
+    update?: XOR<XOR<sys_dict_typeUpdateToOneWithWhereWithoutItemsInput, sys_dict_typeUpdateWithoutItemsInput>, sys_dict_typeUncheckedUpdateWithoutItemsInput>
   }
 
   export type NestedBigIntFilter<$PrismaModel = never> = {
@@ -43071,6 +43323,111 @@ export namespace Prisma {
     admin_sessions?: sys_admin_sessionsUncheckedUpdateManyWithoutSys_adminsNestedInput
   }
 
+  export type sys_dict_itemCreateWithoutTypeInput = {
+    id?: bigint | number
+    value: string
+    label: string
+    sort?: number
+    status?: boolean
+    created_at?: Date | string
+  }
+
+  export type sys_dict_itemUncheckedCreateWithoutTypeInput = {
+    id?: bigint | number
+    value: string
+    label: string
+    sort?: number
+    status?: boolean
+    created_at?: Date | string
+  }
+
+  export type sys_dict_itemCreateOrConnectWithoutTypeInput = {
+    where: sys_dict_itemWhereUniqueInput
+    create: XOR<sys_dict_itemCreateWithoutTypeInput, sys_dict_itemUncheckedCreateWithoutTypeInput>
+  }
+
+  export type sys_dict_itemCreateManyTypeInputEnvelope = {
+    data: sys_dict_itemCreateManyTypeInput | sys_dict_itemCreateManyTypeInput[]
+    skipDuplicates?: boolean
+  }
+
+  export type sys_dict_itemUpsertWithWhereUniqueWithoutTypeInput = {
+    where: sys_dict_itemWhereUniqueInput
+    update: XOR<sys_dict_itemUpdateWithoutTypeInput, sys_dict_itemUncheckedUpdateWithoutTypeInput>
+    create: XOR<sys_dict_itemCreateWithoutTypeInput, sys_dict_itemUncheckedCreateWithoutTypeInput>
+  }
+
+  export type sys_dict_itemUpdateWithWhereUniqueWithoutTypeInput = {
+    where: sys_dict_itemWhereUniqueInput
+    data: XOR<sys_dict_itemUpdateWithoutTypeInput, sys_dict_itemUncheckedUpdateWithoutTypeInput>
+  }
+
+  export type sys_dict_itemUpdateManyWithWhereWithoutTypeInput = {
+    where: sys_dict_itemScalarWhereInput
+    data: XOR<sys_dict_itemUpdateManyMutationInput, sys_dict_itemUncheckedUpdateManyWithoutTypeInput>
+  }
+
+  export type sys_dict_itemScalarWhereInput = {
+    AND?: sys_dict_itemScalarWhereInput | sys_dict_itemScalarWhereInput[]
+    OR?: sys_dict_itemScalarWhereInput[]
+    NOT?: sys_dict_itemScalarWhereInput | sys_dict_itemScalarWhereInput[]
+    id?: BigIntFilter<"sys_dict_item"> | bigint | number
+    type_code?: StringFilter<"sys_dict_item"> | string
+    value?: StringFilter<"sys_dict_item"> | string
+    label?: StringFilter<"sys_dict_item"> | string
+    sort?: IntFilter<"sys_dict_item"> | number
+    status?: BoolFilter<"sys_dict_item"> | boolean
+    created_at?: DateTimeFilter<"sys_dict_item"> | Date | string
+  }
+
+  export type sys_dict_typeCreateWithoutItemsInput = {
+    id?: bigint | number
+    code: string
+    name: string
+    remark?: string | null
+    created_at?: Date | string
+  }
+
+  export type sys_dict_typeUncheckedCreateWithoutItemsInput = {
+    id?: bigint | number
+    code: string
+    name: string
+    remark?: string | null
+    created_at?: Date | string
+  }
+
+  export type sys_dict_typeCreateOrConnectWithoutItemsInput = {
+    where: sys_dict_typeWhereUniqueInput
+    create: XOR<sys_dict_typeCreateWithoutItemsInput, sys_dict_typeUncheckedCreateWithoutItemsInput>
+  }
+
+  export type sys_dict_typeUpsertWithoutItemsInput = {
+    update: XOR<sys_dict_typeUpdateWithoutItemsInput, sys_dict_typeUncheckedUpdateWithoutItemsInput>
+    create: XOR<sys_dict_typeCreateWithoutItemsInput, sys_dict_typeUncheckedCreateWithoutItemsInput>
+    where?: sys_dict_typeWhereInput
+  }
+
+  export type sys_dict_typeUpdateToOneWithWhereWithoutItemsInput = {
+    where?: sys_dict_typeWhereInput
+    data: XOR<sys_dict_typeUpdateWithoutItemsInput, sys_dict_typeUncheckedUpdateWithoutItemsInput>
+  }
+
+  export type sys_dict_typeUpdateWithoutItemsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    remark?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type sys_dict_typeUncheckedUpdateWithoutItemsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    code?: StringFieldUpdateOperationsInput | string
+    name?: StringFieldUpdateOperationsInput | string
+    remark?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type b_chat_sessionsCreateManyB_usersInput = {
     id: string
     kb_id?: bigint | number | null
@@ -44600,6 +44957,42 @@ export namespace Prisma {
     score?: NullableFloatFieldUpdateOperationsInput | number | null
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     order_no?: IntFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type sys_dict_itemCreateManyTypeInput = {
+    id?: bigint | number
+    value: string
+    label: string
+    sort?: number
+    status?: boolean
+    created_at?: Date | string
+  }
+
+  export type sys_dict_itemUpdateWithoutTypeInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    value?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    sort?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type sys_dict_itemUncheckedUpdateWithoutTypeInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    value?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    sort?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type sys_dict_itemUncheckedUpdateManyWithoutTypeInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    value?: StringFieldUpdateOperationsInput | string
+    label?: StringFieldUpdateOperationsInput | string
+    sort?: IntFieldUpdateOperationsInput | number
+    status?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
