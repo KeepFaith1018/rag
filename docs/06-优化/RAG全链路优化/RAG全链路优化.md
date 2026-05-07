@@ -8,7 +8,7 @@
 > - [x] 01-文件解析优化 — 2026-05-07 已完成
 > - [x] 02-测试规范 — 2026-05-07 已完成（E2E 框架 + Mock 方案 + 模板）
 > - [x] 03-文档切块优化 — 2026-05-07 已完成（P0: O1+O2+O3，P1: O4 三层粒度父子检索，P2: O6+O7+O8）
-> - [ ] 04-向量化优化 — 待实施
+> - [x] 04-向量化与ES优化 — 2026-05-08 已完成（P0: E1+E2+E3，P1: E4+E5+E6，P2: E7+E8+E9，P3: E12+E13，E10含E5，E11暂缓）
 
 ---
 
@@ -368,3 +368,36 @@ Qdrant 和 ES 是**顺序写入**，非并行。任一写入失败都会导致�
 
 ### 8.8 Chunk 元数据未充分利用
 - **问题**: `b_document_chunks.metadata_json` 中有 `titlePath`、`sectionLevel`、`chunkStrategy` 等信息，但在检索阶段未用于过滤或加权
+
+---
+
+## 九、紧急 Bug 修复记录
+
+### 2026-05-08: chunking 卡死 + StructuredOutput 解析错误 + embedding 日志规范化
+
+#### Bug 1：chunking 阶段进程卡死（根因：O(n²) 雪崩）
+
+**触发条件**：用户上传含大量内嵌 base64 图片的 DOCX 文件，mammoth 解析后 sections 为空（自定义样式不识别），全篇 62 万字符落入单一 section。
+
+**根因链路**：
+1. mammoth 不识别自定义 Word 样式（"标题 #2"、"论文正文"、"1.1" 等）→ Markdown 无 `#` 标题 → `sections=[]`
+2. mammoth 将内嵌图片转为 `data:image/png;base64,...` data URI，每个 10~60 万字符
+3. `RecursiveCharacterTextSplitter` 在找不到任何分隔符后，退化到字符级切分 + O(n²) 合并
+4. 处理 62 万字符时内存暴涨，进程假死
+
+**修复**：
+- `PRE_SPLIT_MAX_CHARS=5000` 预切分策略（按 `\n\n` 粗切段落，超长段落按 `\n` 拆行）
+- 解析阶段 `stripDataUris()` + 切块阶段二次兜底，双重剥除 base64 data URI
+- `document-chunk.service.ts` 注入 Winston Logger，各阶段耗时可见
+
+#### Bug 2：rewrite 节点 LangChain `withStructuredOutput` 解析失败
+
+**根因**：`withStructuredOutput(..., { method: 'jsonMode' })` 只强制 JSON 格式，**不强制字段名**，LLM 输出 `original_query` 而非 `rewritten`。
+
+**修复**：rewrite prompt 末尾显式给出 JSON 结构示例（含字段名），标注"不得修改字段名"。
+
+#### Bug 3：embedding 阶段进度不透明
+
+**修复**：`[EmbeddingCost]` 结构化日志记录 `totalTokens`/`cacheHits`/`apiCallCount`/`durationMs`；`console.log` 替换为 Winston logger；Qdrant + ES 并行写入统一异常处理。
+
+**端到端验证**：processing_version=5 全链路 65 秒完成（1038 chunks，508 缓存命中）
