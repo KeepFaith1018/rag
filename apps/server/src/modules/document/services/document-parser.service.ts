@@ -402,7 +402,7 @@ export class DocumentParserService {
     const mammoth = (await import('mammoth')) as unknown as MammothWithMarkdown;
     const result = await mammoth.convertToMarkdown({ buffer: fileBuffer });
 
-    const markdown = result.value.trim();
+    let markdown = result.value.trim();
     if (!markdown) {
       throw new BusinessException(ErrorCode.VECTOR_FILE_IMG_EMPTY, {
         message: 'DOCX 解析结果为空',
@@ -413,6 +413,8 @@ export class DocumentParserService {
       });
     }
 
+    // 剥除 base64 内嵌图片，避免巨量连续字符导致 RecursiveCharacterTextSplitter 字符级回退 O(n²)
+    markdown = this.stripDataUris(markdown);
     const plainText = markdown.replace(/^#{1,6}\s+/gm, '').replace(/```[\s\S]*?```/g, '');
     const sections = this.parseMarkdownSections(markdown);
 
@@ -513,16 +515,18 @@ export class DocumentParserService {
         });
       }
 
+      const text = this.stripDataUris(rawText);
+
       // frontmatter 提取（仅 Markdown）
-      let plainText = rawText;
+      let plainText = text;
       let frontmatter: Record<string, unknown> | undefined;
       let markdown: string | undefined;
 
       if (mode === 'markdown') {
-        const fm = this.extractFrontmatter(rawText);
+        const fm = this.extractFrontmatter(text);
         plainText = fm.body;
         frontmatter = fm.frontmatter;
-        markdown = rawText; // 保留完整 Markdown（含结构）
+        markdown = text; // 保留完整 Markdown（含结构）
         const sections = this.parseMarkdownSections(plainText);
         return {
           plainText: sections.map((s) => s.content).join('\n\n'),
@@ -757,6 +761,22 @@ export class DocumentParserService {
 
     // 用累积偏移量修正位置
     return this.applyCumulativeOffsets(sections);
+  }
+
+  /**
+   * 剥除 Markdown/HTML 中的 base64 data URI（图片、视频等内嵌资源）。
+   *
+   * 这些内容对 embedding 无意义，且连续数万~数十万字符无任何分隔符，
+   * 会导致 `RecursiveCharacterTextSplitter` 退化到字符级切分后 O(n²) 合并。
+   */
+  private stripDataUris(text: string): string {
+    return text
+      // Markdown 图片: ![alt](data:...)
+      .replace(/!\[.*?\]\(data:[^)]+\)/g, '[图片]')
+      // HTML img: <img src="data:..." ...>
+      .replace(/<img[^>]*src="data:[^"]*"[^>]*>/g, '[图片]')
+      // 裸 data URI: data:image/...;base64,...
+      .replace(/data:[a-zA-Z][\w+-]*\/[a-zA-Z][\w+-]*;base64,[A-Za-z0-9+/=]+/g, '[内嵌资源]');
   }
 
   /**

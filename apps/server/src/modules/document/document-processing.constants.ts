@@ -165,3 +165,10 @@ export const TABLE_HEAVY_RATIO_THRESHOLD = 0.2;
 
 /** 平均 section 内容长度低于此值（字符数）触发 compact profile */
 export const COMPACT_CONTENT_LENGTH_THRESHOLD = 500;
+
+/**
+ * `splitText` 预切分阈值（字符数）。
+ * 超过此长度的文本先按段落/行粗切，避免 `RecursiveCharacterTextSplitter`
+ * 在巨量文本上因字符级回退产生 O(n²) 内存开销导致进程假死。
+ */
+export const PRE_SPLIT_MAX_CHARS = 5000;

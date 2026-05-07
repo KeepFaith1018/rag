@@ -1,9 +1,11 @@
 import { createHash } from 'node:crypto';
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { RecursiveCharacterTextSplitter } from '@langchain/textsplitters';
 import { Prisma } from '@prisma-client';
 import { PrismaService } from '@common/prisma/prisma.service';
 import { TokenService } from '@common/utils/token.service';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 import {
   HIERARCHICAL_CHUNK_OVERLAP,
   CHUNK_PROFILES,
@@ -11,6 +13,7 @@ import {
   CODE_HEAVY_RATIO_THRESHOLD,
   TABLE_HEAVY_RATIO_THRESHOLD,
   COMPACT_CONTENT_LENGTH_THRESHOLD,
+  PRE_SPLIT_MAX_CHARS,
 } from '../document-processing.constants';
 import { ParsedDocument } from '../parsed-document.interface';
 import { ParsedSection } from '../parsed-section.interface';
@@ -78,6 +81,7 @@ export class DocumentChunkService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly tokenService: TokenService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
   /**
@@ -91,18 +95,26 @@ export class DocumentChunkService {
     version: number,
   ): Promise<CreatedChunkResult> {
     // 1. 清空旧数据
+    this.logger.info('[Chunking] 开始切块，即将清空旧数据', { documentId: document.id.toString() });
     await this.prisma.b_document_chunks.deleteMany({
       where: { doc_id: document.id },
     });
+    this.logger.info('[Chunking] 旧数据已清空');
 
     // 2. 获取可用的 section 列表，无结构时用全文作为单一 section
     const sections = this.resolveSections(parsed);
     if (sections.length === 0) {
       return { chunkIds: [], totalChunks: 0, totalTokens: 0 };
     }
+    this.logger.info('[Chunking] sections 解析完成', {
+      documentId: document.id.toString(),
+      sectionCount: sections.length,
+      totalChars: sections.reduce((s, sec) => s + sec.content.length, 0),
+    });
 
     // 3. 根据文档内容特征选择自适应 chunk profile
     const profile = this.selectChunkProfile(sections);
+    this.logger.info('[Chunking] chunk profile 已选择', { profile: profile.name, rootSize: profile.rootSize, parentSize: profile.parentSize, childSize: profile.childSize });
 
     // 4. 三层切块：逐 section → Level 1 → Level 2 → Level 3
     const allLevel1Rows: Prisma.b_document_chunksCreateManyInput[] = [];
@@ -112,13 +124,26 @@ export class DocumentChunkService {
     let globalIndex = 0;
     let totalTokens = 0;
 
+    let sectionIdx = 0;
     for (const section of sections) {
+      sectionIdx++;
+      const sectionStartTime = Date.now();
       // O8: 代码块/表格块作为原子单元，不拆分，保持完整性
       const isAtomic =
         section.type === 'code' || section.type === 'table';
+      this.logger.info(`[Chunking] 处理 section ${sectionIdx}/${sections.length}`, {
+        isAtomic,
+        contentLen: section.content.length,
+        titlePath: section.titlePath.join(' > '),
+      });
       const level1Texts = isAtomic
         ? [section.content]
         : await this.splitText(section.content, profile.rootSize);
+
+      this.logger.info(`[Chunking]  section ${sectionIdx} L1 拆分完成`, {
+        l1Count: level1Texts.length,
+        durationMs: Date.now() - sectionStartTime,
+      });
 
       for (const l1Text of level1Texts) {
         const l1Index = globalIndex++;
@@ -216,6 +241,13 @@ export class DocumentChunkService {
       return { chunkIds: [], totalChunks: 0, totalTokens: 0 };
     }
 
+    this.logger.info('[Chunking] 拆分循环完成，即将入库', {
+      l1Rows: allLevel1Rows.length,
+      l2Rows: allLevel2Rows.length,
+      l3Rows: allLevel3Rows.length,
+      totalTokens,
+    });
+
     // 4. 按层级顺序入库（Level 1 → Level 2 → Level 3），通过 $transaction 保证写入完整性
     await this.prisma.$transaction(async (tx) => {
       // Level 1
@@ -266,6 +298,8 @@ export class DocumentChunkService {
       }
       await tx.b_document_chunks.createMany({ data: allLevel3Rows });
     });
+
+    this.logger.info('[Chunking] 入库完成');
 
     return {
       chunkIds: allLevel3Rows
@@ -371,9 +405,53 @@ export class DocumentChunkService {
 
   /**
    * 按指定 token 大小对文本做递归切分，复用中文分隔符 + 真实 tokenizer。
+   *
+   * 大文本预切分：当输入文本超过 PRE_SPLIT_MAX_CHARS 时，先按段落（\n\n）粗切，
+   * 避免 RecursiveCharacterTextSplitter 在巨量文本上产生 O(n²) 的内存与计算开销。
    */
   private async splitText(text: string, chunkSize: number): Promise<string[]> {
     if (!text.trim()) return [];
+
+    // 防御性剥除 data URI（解析阶段已处理，此处二次兜底）
+    text = text.replace(/!\[.*?\]\(data:[^)]+\)/g, '[图片]')
+      .replace(/data:[a-zA-Z][\w+-]*\/[a-zA-Z][\w+-]*;base64,[A-Za-z0-9+/=]+/g, '[内嵌资源]');
+
+    if (text.length > PRE_SPLIT_MAX_CHARS) {
+      this.logger.info('[Chunking] 大文本预切分开始', { textLen: text.length, chunkSize });
+      const results: string[] = [];
+      const paragraphs = text.split('\n\n');
+      const oversized = paragraphs.filter((p) => p.length > PRE_SPLIT_MAX_CHARS);
+      if (oversized.length > 0) {
+        this.logger.warn('[Chunking] 存在超长段落需按行拆分', { oversizedCount: oversized.length, maxLen: Math.max(...paragraphs.map((p) => p.length)) });
+      }
+
+      for (const para of paragraphs) {
+        if (para.length > PRE_SPLIT_MAX_CHARS) {
+          const lines = para.split('\n');
+          for (const line of lines) {
+            const subChunks = await this.doSplit(line, chunkSize);
+            results.push(...subChunks);
+          }
+        } else {
+          const subChunks = await this.doSplit(para, chunkSize);
+          results.push(...subChunks);
+        }
+      }
+      this.logger.info('[Chunking] 大文本预切分完成', { paragraphCount: paragraphs.length, totalChunks: results.length });
+      return results;
+    }
+
+    return this.doSplit(text, chunkSize);
+  }
+
+  /**
+   * 实际调用 RecursiveCharacterTextSplitter，不对输入做预切分。
+   */
+  private async doSplit(text: string, chunkSize: number): Promise<string[]> {
+    if (!text.trim()) return [];
+    if (text.length > 20000) {
+      this.logger.warn('[Chunking] doSplit 处理超长单块文本', { textLen: text.length, chunkSize });
+    }
     const splitter = this.createHierarchicalSplitter(chunkSize);
     const chunks = await splitter.splitText(text);
     return chunks.map((c) => c.trim()).filter(Boolean);

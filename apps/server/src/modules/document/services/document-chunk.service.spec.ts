@@ -1,6 +1,7 @@
 /// <reference types="jest" />
 
 import { Test } from '@nestjs/testing';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { TokenService } from '@common/utils/token.service';
 import { DocumentChunkService } from './document-chunk.service';
 import { PrismaService } from '@common/prisma/prisma.service';
@@ -82,6 +83,10 @@ describe('DocumentChunkService', () => {
         {
           provide: PrismaService,
           useValue: mockPrismaWithTx,
+        },
+        {
+          provide: WINSTON_MODULE_PROVIDER,
+          useValue: { info: jest.fn(), error: jest.fn(), warn: jest.fn(), debug: jest.fn() },
         },
       ],
     }).compile();
