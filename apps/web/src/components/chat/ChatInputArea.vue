@@ -123,7 +123,7 @@ function handleCancel() {
       <div class="flex items-center gap-1">
         <template v-if="isStreaming">
           <button
-            class="bg-error-container hover:bg-error/20 text-on-error-container p-2 rounded-xl transition-all shadow-lg active:scale-95 focus:outline-none"
+            class="bg-error-container hover:bg-error/20 text-on-error-container p-2 rounded-full aspect-square transition-all shadow-lg active:scale-95 focus:outline-none"
             @click="handleCancel"
           >
             <span class="material-symbols-outlined text-xl">close</span>
@@ -134,7 +134,7 @@ function handleCancel() {
             <span class="material-symbols-outlined text-xl">mic</span>
           </button>
           <button
-            class="bg-primary-container hover:bg-primary text-on-primary-container p-2 rounded-xl transition-all shadow-lg active:scale-95 focus:outline-none"
+            class="bg-primary-container hover:bg-primary text-on-primary-container p-2 rounded-full aspect-square transition-all shadow-lg active:scale-95 focus:outline-none"
             @click="handleSend"
           >
             <span class="material-symbols-outlined text-xl">arrow_upward</span>

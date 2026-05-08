@@ -15,7 +15,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   retry: []
-  stop: []
 }>()
 
 const chatStore = useChatStore()
@@ -50,14 +49,6 @@ const validationLabel = computed(() => {
   if (props.message.messageStatus === 'validating') return '正在校验回答...'
   if (props.message.messageStatus === 'supplementing') return '正在补充内容...'
   return ''
-})
-
-/** 停止按钮文本（按当前阶段显示） */
-const stopLabel = computed(() => {
-  if (props.message.messageStatus === 'streaming') return '停止生成'
-  if (props.message.messageStatus === 'validating') return '跳过校验'
-  if (props.message.messageStatus === 'supplementing') return '停止补充'
-  return '停止'
 })
 
 /** 历史消息回退：无 blocks/htmlContent 时，将 content (Markdown) 转为 HTML */
@@ -441,19 +432,6 @@ function handleRetry() {
         </button>
       </div>
 
-      <!-- 流式/校验中操作栏 -->
-      <div
-        v-if="isStreaming"
-        class="flex items-center justify-end gap-1 mt-2 pt-2 border-t border-outline-variant/10"
-      >
-        <button
-          class="flex items-center gap-1 px-2 py-1 text-xs text-outline hover:text-on-surface hover:bg-surface-container-low rounded transition-colors"
-          @click="emit('stop')"
-        >
-          <span class="material-symbols-outlined text-xs">stop</span>
-          {{ stopLabel }}
-        </button>
-      </div>
     </div>
   </div>
 </template>
