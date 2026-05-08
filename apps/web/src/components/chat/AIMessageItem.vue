@@ -15,6 +15,7 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   retry: []
+  stop: []
 }>()
 
 const chatStore = useChatStore()
@@ -22,7 +23,11 @@ const messageToast = useMessage()
 const copied = ref(false)
 const stepsExpanded = ref(true)
 
-const isStreaming = computed(() => props.message.messageStatus === 'streaming')
+const isStreaming = computed(() =>
+  props.message.messageStatus === 'streaming' ||
+  props.message.messageStatus === 'validating' ||
+  props.message.messageStatus === 'supplementing',
+)
 const isError = computed(() => props.message.messageStatus === 'error')
 const isAborted = computed(() => props.message.messageStatus === 'aborted')
 const isRagMode = computed(() => props.message.chatMode === 'rag')
@@ -30,6 +35,21 @@ const isRagMode = computed(() => props.message.chatMode === 'rag')
 const hasContent = computed(() =>
   props.message.htmlContent || props.message.content || props.message.blocks?.length,
 )
+
+/** 校验阶段标签 */
+const validationLabel = computed(() => {
+  if (props.message.messageStatus === 'validating') return '正在校验回答...'
+  if (props.message.messageStatus === 'supplementing') return '正在补充内容...'
+  return ''
+})
+
+/** 停止按钮文本（按当前阶段显示） */
+const stopLabel = computed(() => {
+  if (props.message.messageStatus === 'streaming') return '停止生成'
+  if (props.message.messageStatus === 'validating') return '跳过校验'
+  if (props.message.messageStatus === 'supplementing') return '停止补充'
+  return '停止'
+})
 
 /** 历史消息回退：无 blocks/htmlContent 时，将 content (Markdown) 转为 HTML */
 const fallbackHtml = computed(() => {
@@ -321,6 +341,24 @@ function handleRetry() {
         v-html="message.htmlContent || fallbackHtml || message.content"
       />
 
+      <!-- 校验状态指示器 -->
+      <div
+        v-if="isStreaming && hasContent && isRagMode"
+        class="flex items-center gap-2 mt-2 pt-2 border-t border-outline-variant/10"
+      >
+        <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
+        <span class="text-xs text-outline">{{ validationLabel }}</span>
+      </div>
+
+      <!-- 校验完成标识 -->
+      <div
+        v-if="!isStreaming && hasContent && isRagMode && message.messageStatus === 'completed'"
+        class="flex items-center gap-2 mt-2 pt-2 border-t border-outline-variant/10"
+      >
+        <span class="material-symbols-outlined text-xs text-green-400">verified</span>
+        <span class="text-xs text-outline/50">已校验</span>
+      </div>
+
       <!-- 已取消 -->
       <div v-if="isAborted" class="text-xs text-error mt-2">请求已取消</div>
 
@@ -356,6 +394,20 @@ function handleRetry() {
         >
           <span class="material-symbols-outlined text-xs">refresh</span>
           重试
+        </button>
+      </div>
+
+      <!-- 流式/校验中操作栏 -->
+      <div
+        v-if="isStreaming"
+        class="flex items-center justify-end gap-1 mt-2 pt-2 border-t border-outline-variant/10"
+      >
+        <button
+          class="flex items-center gap-1 px-2 py-1 text-xs text-outline hover:text-on-surface hover:bg-surface-container-low rounded transition-colors"
+          @click="emit('stop')"
+        >
+          <span class="material-symbols-outlined text-xs">stop</span>
+          {{ stopLabel }}
         </button>
       </div>
     </div>
