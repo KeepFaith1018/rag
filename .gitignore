@@ -54,3 +54,4 @@ Thumbs.db
 # SSE capture outputs
 sse-capture-*.txt
 sse-capture-*.json
+evaluation-report-*.json
