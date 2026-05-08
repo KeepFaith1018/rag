@@ -1,403 +1,84 @@
 /**
  * 流式 Markdown 增量渲染 Composable
  *
- * 策略：逐 token 接收文本增量，在句子/短语边界处 flush，实现接近打字机的逐句渲染。
- * 通过内联语法完整性检查防止 **加粗** 等 Markdown 格式被切割。
- * 代码高亮使用 Shiki，替换原先的 highlight.js。
+ * 策略：Incremark 内部缓冲 + 判定稳定边界，
+ * 我们只消费 completed/updated blocks 并通过 onBlocks 回调输出。
+ * 代码高亮由下游 CodeBlock 组件负责。
  */
-import { marked } from 'marked'
-import { getHighlighter } from '../utils/shiki'
-import type { HighlighterCore } from 'shiki/core'
-
-marked.setOptions({
-  breaks: true,
-  gfm: true,
-})
-
-/**
- * HTML 实体编码
- */
-function encodeHTML(str: string): string {
-  return str
-    .replace(/&/g, '&amp;')
-    .replace(/</g, '&lt;')
-    .replace(/>/g, '&gt;')
-    .replace(/"/g, '&quot;')
-    .replace(/'/g, '&#039;')
-}
-
-/**
- * 检测文本中是否存在未闭合的 Markdown 内联语法。
- * 配对计数法：统计每种分隔符的出现次数，奇数表示有未闭合的语法。
- */
-function hasUnclosedInlineSyntax(text: string): boolean {
-  // ** 加粗
-  if ((text.split('**').length - 1) % 2 !== 0) return true
-  // __ 加粗
-  if ((text.split('__').length - 1) % 2 !== 0) return true
-  // ~~ 删除线
-  if ((text.split('~~').length - 1) % 2 !== 0) return true
-  // ` 行内代码
-  if ((text.split('`').length - 1) % 2 !== 0) return true
-
-  // 单 * 斜体（先去掉 **，再数 *）
-  const withoutBoldStars = text.replace(/\*\*/g, '')
-  if ((withoutBoldStars.split('*').length - 1) % 2 !== 0) return true
-
-  // 单 _ 斜体（先去掉 __，再数 _）
-  const withoutBoldUnderscores = text.replace(/__/g, '')
-  if ((withoutBoldUnderscores.split('_').length - 1) % 2 !== 0) return true
-
-  return false
-}
-
-/**
- * 查找最近的句子/短语边界，用于实现更流畅的逐句流式渲染。
- * 匹配中英文标点后跟随内容的位置。
- */
-function findSentenceBoundary(text: string): number {
-  // 中文标点: 。！？，；：、
-  // 英文标点: . ! ? , ; : 后需跟空格或换行
-  const pattern = /[。！？，；：、]|[.!?,;:](?=\s)/g
-  let match: RegExpExecArray | null
-  let lastBoundary = 0
-
-  while ((match = pattern.exec(text)) !== null) {
-    lastBoundary = match.index + 1
-  }
-
-  // 只接受至少 10 个字符后的边界（避免过于碎片化）
-  if (lastBoundary > 10) return lastBoundary
-  return 0
-}
-
-/** 内部状态 */
-interface StreamingMarkdownState {
-  buffer: string
-  isInCodeBlock: boolean
-  codeBlockBuffer: string
-  codeBlockLang: string
-}
+import { createIncremarkParser } from '@incremark/core'
+import type { IncremarkParser, ParsedBlock } from '@incremark/core'
 
 interface StreamingMarkdownOptions {
-  /** 每次 flush 回调，接收增量 HTML 片段 */
-  onFlush: (html: string) => void
+  /** 每次有新的已完成 blocks 时回调 */
+  onBlocks: (blocks: ParsedBlock[]) => void
   /** 解析完成回调 */
   onComplete?: () => void
   /** 错误回调 */
   onError?: (error: Error) => void
-  /** 是否启用代码高亮，默认 true */
-  highlight?: boolean
-  /** buffer 安全上限，无标点/段落边界时才触发，默认 80 */
-  flushThreshold?: number
 }
 
-/**
- * 创建流式 Markdown 渲染器
- */
 export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
-  const {
-    onFlush,
-    onComplete,
-    onError,
-    highlight = true,
-    flushThreshold = 80,
-  } = options
+  const { onBlocks, onComplete, onError } = options
 
-  const state: StreamingMarkdownState = {
-    buffer: '',
-    isInCodeBlock: false,
-    codeBlockBuffer: '',
-    codeBlockLang: '',
-  }
+  let parser: IncremarkParser | null = null
 
-  let highlighter: HighlighterCore | null = null
-  let isFlushing = false
-
-  // 预加载 Shiki 高亮器
-  getHighlighter().then((h) => {
-    highlighter = h
-  })
-
-  /**
-   * 解析 Markdown 文本为 HTML
-   */
-  function parseMarkdown(text: string): string {
-    try {
-      return marked.parse(text, { async: false }) as string
-    } catch (err) {
-      onError?.(err instanceof Error ? err : new Error(String(err)))
-      return encodeHTML(text)
-    }
+  try {
+    parser = createIncremarkParser({ gfm: true })
+  } catch (err) {
+    onError?.(err instanceof Error ? err : new Error(String(err)))
   }
 
   /**
-   * 提取代码块信息
-   */
-  function extractCodeBlock(text: string): { lang: string; code: string } | null {
-    const match = text.match(/^```(\w*)\n([\s\S]*?)```$/m)
-    if (!match) return null
-    return {
-      lang: match[1] || 'plaintext',
-      code: match[2],
-    }
-  }
-
-  /**
-   * 使用 Shiki 语法高亮代码块。
-   * 高亮器被预加载，通常调用时已完成初始化。
-   */
-  async function highlightCode(code: string, lang: string): Promise<string> {
-    if (!highlight) {
-      return encodeHTML(code)
-    }
-
-    if (!highlighter) {
-      // 高亮器尚未初始化完成，回退纯文本
-      return encodeHTML(code)
-    }
-
-    try {
-      const langName = lang || 'text'
-      const theme = 'github-dark'
-      const loadedLangs = highlighter.getLoadedLanguages()
-
-      if (loadedLangs.includes(langName as string)) {
-        return highlighter.codeToHtml(code.trimEnd(), {
-          lang: langName,
-          theme,
-        })
-      }
-
-      // 语言未注册则回退纯文本
-      return highlighter.codeToHtml(code.trimEnd(), { lang: 'text', theme })
-    } catch {
-      return `<pre><code>${encodeHTML(code)}</code></pre>`
-    }
-  }
-
-  /**
-   * 处理代码块内容为 HTML
-   */
-  async function processCodeBlock(code: string, lang: string): Promise<string> {
-    return highlightCode(code, lang)
-  }
-
-  /**
-   * 执行一次 flush：检测缓冲中的完整块并输出 HTML。
-   */
-  async function doFlush(force: boolean): Promise<void> {
-    const { buffer } = state
-
-    // 检测代码块状态
-    if (!state.isInCodeBlock && buffer.includes('```')) {
-      const firstCodeIdx = buffer.indexOf('```')
-      const lastCodeIdx = buffer.lastIndexOf('```')
-      if (firstCodeIdx !== lastCodeIdx) {
-        // 有完整的代码块
-        const before = buffer.slice(0, firstCodeIdx)
-        const codeBlock = buffer.slice(firstCodeIdx, lastCodeIdx + 3)
-        const after = buffer.slice(lastCodeIdx + 3)
-
-        if (before.trim()) {
-          const html = parseMarkdown(before)
-          if (html) onFlush(html)
-        }
-
-        const codeInfo = extractCodeBlock(codeBlock)
-        if (codeInfo) {
-          const html = await processCodeBlock(codeInfo.code, codeInfo.lang)
-          onFlush(html)
-        }
-
-        state.buffer = after
-        return doFlush(force)
-      } else {
-        // 只有一个 ```，进入代码块模式
-        state.isInCodeBlock = true
-        state.codeBlockBuffer = buffer.slice(firstCodeIdx + 3)
-        state.codeBlockLang = ''
-        state.buffer = ''
-        // 尝试提取语言标识
-        const langMatch = state.codeBlockBuffer.match(/^(\w+)\n/)
-        if (langMatch) {
-          state.codeBlockLang = langMatch[1]
-          state.codeBlockBuffer = state.codeBlockBuffer.slice(langMatch[0].length)
-        }
-        return
-      }
-    }
-
-    // 处理代码块内
-    if (state.isInCodeBlock) {
-      if (state.buffer.includes('```')) {
-        const lastCodeIdx = state.buffer.lastIndexOf('```')
-        const codeContent = state.buffer.slice(0, lastCodeIdx)
-        const rest = state.buffer.slice(lastCodeIdx + 3)
-
-        const html = await processCodeBlock(
-          state.codeBlockBuffer + codeContent,
-          state.codeBlockLang,
-        )
-        onFlush(html)
-        state.isInCodeBlock = false
-        state.codeBlockBuffer = ''
-        state.codeBlockLang = ''
-        state.buffer = rest
-        return doFlush(force)
-      }
-      // 还在代码块内，累积
-      state.codeBlockBuffer += state.buffer
-      state.buffer = ''
-      return
-    }
-
-    // 常规 flush：贪婪寻找当前 buffer 中最大的安全切割位置
-    let flushPoint = 0
-
-    if (force) {
-      flushPoint = buffer.length
-    } else {
-      // 1. 段落分隔 (\n\n) — Markdown 天然安全边界，内联语法不可能跨段
-      const lastParaBreak = buffer.lastIndexOf('\n\n')
-      if (lastParaBreak > 0) {
-        flushPoint = lastParaBreak
-      }
-
-      // 2. 标题行 — 一行完整的 # 标题立即 flush
-      if (flushPoint === 0) {
-        const headingEnd = buffer.indexOf('\n')
-        if (/^#{1,6}\s.+$/m.test(buffer) && headingEnd > 0) {
-          flushPoint = headingEnd
-        }
-      }
-
-      // 3. 句子/短语边界 — 对标点符号处切割，实现逐句渲染
-      if (flushPoint === 0) {
-        const sentenceBoundary = findSentenceBoundary(buffer)
-        if (sentenceBoundary > 0) {
-          flushPoint = sentenceBoundary
-        }
-      }
-
-      // 4. 阈值兜底 — buffer 过大时强制 flush，但必须确保内联语法完整
-      if (flushPoint === 0 && buffer.length > flushThreshold) {
-        if (!hasUnclosedInlineSyntax(buffer)) {
-          flushPoint = buffer.length
-        }
-        // 有未闭合语法 → 推迟 flush，等待后续 delta 补全
-      }
-    }
-
-    if (flushPoint === 0) return
-
-    // 额外安全检查：非 force 模式下，待 flush 部分不能包含未闭合语法
-    const toFlush = buffer.slice(0, flushPoint)
-    if (!force && hasUnclosedInlineSyntax(toFlush)) return
-
-    const remaining = buffer.slice(flushPoint)
-
-    if (toFlush.trim()) {
-      const html = parseMarkdown(toFlush)
-      if (html) onFlush(html)
-    }
-
-    state.buffer = remaining
-  }
-
-  /**
-   * 入队 flush 操作，确保同一时间只有一个 flush 在执行。
-   */
-  function tryFlush(force = false): void {
-    if (isFlushing) return // 已有 flush 在执行，新数据会在当前 flush 完成后处理
-    isFlushing = true
-    const bufferLenBefore = state.buffer.length
-    doFlush(force)
-      .finally(() => {
-        isFlushing = false
-      })
-      .then(() => {
-        // 仅在 buffer 有新数据（长度变化）时继续处理，防止无限微任务循环
-        if (state.buffer.length > 0 && state.buffer.length !== bufferLenBefore) {
-          tryFlush()
-        }
-      })
-  }
-
-  /**
-   * 接收文本增量
+   * 接收文本增量。
    */
   function pushDelta(delta: string): void {
-    if (!delta) return
+    if (!delta || !parser) return
 
-    state.buffer += delta
+    try {
+      const update = parser.append(delta)
+      const blocks = [...update.completed, ...update.updated]
+      if (blocks.length > 0) {
+        onBlocks(blocks)
+      }
+    } catch (err) {
+      onError?.(err instanceof Error ? err : new Error(String(err)))
+    }
+  }
 
-    // 检测单行完整标题并立即 flush
-    const lastLine = state.buffer.split('\n').pop() || ''
-    if (/^#{1,6}\s/.test(lastLine) && lastLine.length > 2) {
-      tryFlush(true)
+  /**
+   * 强制 flush：标记解析完成，输出所有剩余内容。
+   */
+  function flush(): void {
+    if (!parser) {
+      onComplete?.()
       return
     }
 
-    tryFlush()
-  }
-
-  /**
-   * 强制 flush 剩余 buffer
-   */
-  async function flush(): Promise<void> {
-    // 等待当前 flush 完成后再执行最终 flush
-    isFlushing = true
     try {
-      await doFlush(true)
-
-      // 处理剩余的代码块
-      if (state.isInCodeBlock && state.codeBlockBuffer) {
-        const html = await processCodeBlock(
-          state.codeBlockBuffer,
-          state.codeBlockLang,
-        )
-        onFlush(html)
-        state.isInCodeBlock = false
-        state.codeBlockBuffer = ''
-        state.codeBlockLang = ''
+      const update = parser.finalize()
+      const blocks = [...update.completed, ...update.pending]
+      if (blocks.length > 0) {
+        onBlocks(blocks)
       }
-
-      // 处理剩余文本
-      if (state.buffer.trim()) {
-        const html = parseMarkdown(state.buffer)
-        if (html) onFlush(html)
-        state.buffer = ''
-      }
-
       onComplete?.()
-    } finally {
-      isFlushing = false
+    } catch (err) {
+      onError?.(err instanceof Error ? err : new Error(String(err)))
+      onComplete?.()
     }
   }
 
   /**
-   * 获取当前 buffer 内容
-   */
-  function getBuffer(): string {
-    return state.buffer
-  }
-
-  /**
-   * 重置状态
+   * 重置解析器状态。
    */
   function reset(): void {
-    state.buffer = ''
-    state.isInCodeBlock = false
-    state.codeBlockBuffer = ''
-    state.codeBlockLang = ''
-    isFlushing = false
+    if (parser) {
+      parser.reset()
+    }
   }
 
   return {
     pushDelta,
     flush,
-    getBuffer,
     reset,
   }
 }
