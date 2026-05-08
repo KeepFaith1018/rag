@@ -52,5 +52,5 @@ Thumbs.db
 **/.vscode/*
 !**/.vscode/extensions.json
 # SSE capture outputs
-apps/server/sse-capture-*.txt
-apps/server/sse-capture-*.json
+sse-capture-*.txt
+sse-capture-*.json
