@@ -98,6 +98,19 @@ export interface TextMessageEndEvent extends BaseEvent {
   messageId: string;
 }
 
+// ── 校验生命周期 ──
+
+export interface ValidationStartedEvent extends BaseEvent {
+  type: 'VALIDATION_STARTED';
+}
+
+export interface ValidationCompletedEvent extends BaseEvent {
+  type: 'VALIDATION_COMPLETED';
+  factCheckRisk?: 'low' | 'medium' | 'high';
+  completenessCoverage?: number;
+  supplementAdded: boolean;
+}
+
 /** 所有 AG-UI 事件联合类型 */
 export type AguiEvent =
   | RunStartedEvent
@@ -109,7 +122,9 @@ export type AguiEvent =
   | ToolCallResultEvent
   | TextMessageStartEvent
   | TextMessageContentEvent
-  | TextMessageEndEvent;
+  | TextMessageEndEvent
+  | ValidationStartedEvent
+  | ValidationCompletedEvent;
 
 /**
  * SSE 流写入器。

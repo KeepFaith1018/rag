@@ -887,12 +887,19 @@ export class MultiAgentOrchestratorService {
             output: { answerLength: answer.length },
             durationMs: Date.now() - stepStart,
           });
+          writer.write({ type: 'VALIDATION_STARTED' });
 
           return { draftAnswer: answer, currentPhase: 'writing' };
         })
         // ── 质量校验阶段 ──
         .addNode('fact_check', async (s) => {
-          checkAborted();
+          if (signal?.aborted) {
+            writer.write({
+              type: 'STEP_FINISHED', stepName: 'fact_check',
+              output: { skipped: true, reason: 'aborted' },
+            });
+            return { factCheckResult: null, currentPhase: 'verifying' };
+          }
           writer.write({
             type: 'STEP_STARTED',
             stepName: 'fact_check',
@@ -952,68 +959,16 @@ export class MultiAgentOrchestratorService {
             currentPhase: 'verifying',
           };
         })
-        .addNode('writer_correct', async (s) => {
-          checkAborted();
-          writer.write({
-            type: 'STEP_STARTED',
-            stepName: 'writer_correct',
-            timestamp: Date.now(),
-          });
-          const stepStart = Date.now();
-
-          // 用事实校验反馈修正回答
-          const contradictions = s.factCheckResult?.items
-            .filter((item) => item.verdict === 'contradicted')
-            .map((item) => item.statement)
-            .join('\n');
-          const unverified = s.factCheckResult?.items
-            .filter((item) => item.verdict === 'not_verified')
-            .map((item) => item.statement)
-            .join('\n');
-
-          const correctionPrompt = `${WRITER_SYSTEM_PROMPT.replace('{context}', buildContextText(s.rerankedHits, s.webSearchResults))}\n\n【修正指示】请修正上一轮回答中的以下问题：\n${contradictions ? `与检索证据矛盾的内容（必须删除或重写）：\n${contradictions}\n` : ''}${unverified ? `证据不足的内容（请标注为"待验证"）：\n${unverified}\n` : ''}`;
-
-          const correctModel = self.chatModelService.createModel({
-            temperature: 0.3,
-            streaming: true,
-          });
-
-          const lcStream = await correctModel.stream([
-            new SystemMessage(correctionPrompt),
-            new HumanMessage(
-              `原始问题: ${s.originalQuery}\n上一轮回答: ${s.draftAnswer}\n请修正后重新回答。`,
-            ),
-          ]);
-
-          const msgId = `msg_${Date.now()}`;
-          writer.write({ type: 'TEXT_MESSAGE_START', messageId: msgId });
-
-          let answer = '';
-          for await (const chunk of lcStream) {
-            if (signal?.aborted) break;
-            const text = extractMessageContent(chunk);
-            if (text) {
-              answer += text;
-              writer.write({
-                type: 'TEXT_MESSAGE_CONTENT',
-                messageId: msgId,
-                delta: text,
-              });
-            }
-          }
-
-          writer.write({ type: 'TEXT_MESSAGE_END', messageId: msgId });
-          writer.write({
-            type: 'STEP_FINISHED',
-            stepName: 'writer_correct',
-            output: { answerLength: answer.length },
-            durationMs: Date.now() - stepStart,
-          });
-
-          return { draftAnswer: answer, currentPhase: 'writing' };
-        })
+        // @deprecated writer_correct — 离线化预留
+        // .addNode('writer_correct', async (s) => { ... })
         .addNode('completeness_check', async (s) => {
-          checkAborted();
+          if (signal?.aborted) {
+            writer.write({
+              type: 'STEP_FINISHED', stepName: 'completeness_check',
+              output: { skipped: true, reason: 'aborted' },
+            });
+            return { completenessResult: null, currentPhase: 'verifying' };
+          }
           writer.write({
             type: 'STEP_STARTED',
             stepName: 'completeness_check',
@@ -1219,11 +1174,14 @@ export class MultiAgentOrchestratorService {
         .addEdge('web_search', 'writer')
         .addEdge('rewrite_fallback', 'tools')
         .addEdge('writer', 'fact_check')
+        .addEdge('fact_check', 'completeness_check')
+        /* @deprecated writer_correct 修正环 — 离线化预留
         .addConditionalEdges('fact_check', factCheckEdge, {
           completeness_check: 'completeness_check',
           writer_correct: 'writer_correct',
         })
         .addEdge('writer_correct', 'fact_check')
+        */
         .addConditionalEdges('completeness_check', completenessEdge, {
           supplement_retrieve: 'supplement_retrieve',
           __end__: '__end__',
@@ -1255,6 +1213,12 @@ export class MultiAgentOrchestratorService {
         supplementAnswer: '',
       } satisfies AgentState);
 
+      writer.write({
+        type: 'VALIDATION_COMPLETED',
+        factCheckRisk: (finalState as unknown as AgentState).factCheckResult?.overallRisk,
+        completenessCoverage: (finalState as unknown as AgentState).completenessResult?.overallCoverage,
+        supplementAdded: !!((finalState as unknown as AgentState).supplementAnswer),
+      });
       writer.write({ type: 'RUN_FINISHED', runId });
 
       // 标记 Agent Run 完成
@@ -1276,7 +1240,7 @@ export class MultiAgentOrchestratorService {
           const fullContent =
             (state.draftAnswer ?? '') +
             (state.supplementAnswer
-              ? '\n\n---\n**补充说明：**\n' + state.supplementAnswer
+              ? '\n\n---\n**补充内容：**\n' + state.supplementAnswer
               : '');
           await onFinish({
             content: fullContent,
