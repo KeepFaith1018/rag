@@ -22,6 +22,15 @@ const chatStore = useChatStore()
 const messageToast = useMessage()
 const copied = ref(false)
 const stepsExpanded = ref(true)
+const expandedTools = ref<Set<string>>(new Set())
+
+function toggleToolQueries(toolCallId: string) {
+  if (expandedTools.value.has(toolCallId)) {
+    expandedTools.value.delete(toolCallId)
+  } else {
+    expandedTools.value.add(toolCallId)
+  }
+}
 
 const isStreaming = computed(() =>
   props.message.messageStatus === 'streaming' ||
@@ -146,6 +155,26 @@ function stepOutputSummary(step: AguiStepRecord): string {
   }
   if (step.stepName === 'writer') {
     return `回答生成完成 → ${step.output.answerLength ?? 0} 字`
+  }
+  if (step.stepName === 'fact_check') {
+    if (step.output?.skipped) return '已跳过'
+    const risk = step.output?.overallRisk as string | undefined
+    if (risk === 'low') return '风险: 低'
+    if (risk === 'medium') return '风险: 中'
+    if (risk === 'high') return '风险: 高'
+    return step.output?.itemCount != null ? `审核 ${step.output.itemCount} 条` : ''
+  }
+  if (step.stepName === 'completeness_check') {
+    if (step.output?.skipped) return '已跳过'
+    const cov = step.output?.coverage as number | undefined
+    return cov != null ? `覆盖率: ${Math.round(cov * 100)}%` : ''
+  }
+  if (step.stepName === 'relevance_check') {
+    const v = step.output?.verdict as string | undefined
+    if (v === 'relevant') return '相关'
+    if (v === 'not_relevant') return '不相关'
+    if (v === 'partial') return '部分相关'
+    return ''
   }
   return ''
 }
@@ -307,9 +336,24 @@ function handleRetry() {
                     </div>
                     <div
                       v-if="entry.tool.input && entry.tool.toolCallName === 'search_knowledge_base'"
-                      class="text-[10px] text-outline mt-0.5 truncate"
+                      class="text-[10px] text-outline mt-0.5"
                     >
-                      查询: {{ (entry.tool.input.queries as string[] | undefined)?.join(', ') ?? '' }}
+                      <template v-if="(entry.tool.input.queries as string[])?.length">
+                        <span
+                          v-if="!expandedTools.has(entry.tool.toolCallId)"
+                          class="cursor-pointer hover:text-on-surface transition-colors"
+                          @click="toggleToolQueries(entry.tool.toolCallId)"
+                        >
+                          {{ (entry.tool.input.queries as string[]).length }} 条查询 ▸
+                        </span>
+                        <span
+                          v-else
+                          class="cursor-pointer hover:text-on-surface transition-colors"
+                          @click="toggleToolQueries(entry.tool.toolCallId)"
+                        >
+                          {{ (entry.tool.input.queries as string[]).join('；') }} ▾
+                        </span>
+                      </template>
                     </div>
                     <div
                       v-if="toolOutputSummary(entry.tool)"

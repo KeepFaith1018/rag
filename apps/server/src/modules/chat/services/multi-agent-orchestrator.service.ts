@@ -718,13 +718,25 @@ export class MultiAgentOrchestratorService {
         // ── 检索质量评估 ──
         .addNode('relevance_check', async (s) => {
           checkAborted();
+          const stepStart = Date.now();
+          let relevanceResult: Partial<AgentState>;
+
+          // 0 条命中 → 必然不相关，跳过 LLM 调用
+          if (s.rerankedHits.length === 0) {
+            writer.write({
+              type: 'STEP_FINISHED',
+              stepName: 'relevance_check',
+              output: { verdict: 'not_relevant', shortcut: true },
+              durationMs: Date.now() - stepStart,
+            });
+            return { relevanceVerdict: 'not_relevant' as const };
+          }
+
           writer.write({
             type: 'STEP_STARTED',
             stepName: 'relevance_check',
             timestamp: Date.now(),
           });
-          const stepStart = Date.now();
-          let relevanceResult: Partial<AgentState>;
           try {
             relevanceResult = await relevanceCheckNode(
               s,
