@@ -238,7 +238,7 @@ export function useAgentChat(options?: UseAgentChatOptions) {
               break;
 
             case 'TEXT_MESSAGE_END':
-              flush();
+              await flush();
               break;
           }
         }
@@ -252,7 +252,7 @@ export function useAgentChat(options?: UseAgentChatOptions) {
         }
       }
 
-      flush();
+      await flush();
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
 

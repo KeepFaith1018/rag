@@ -11,13 +11,17 @@
   "dependencies": {
     "@fontsource/inter": "^5.2.8",
     "@fontsource/space-grotesk": "^5.2.10",
+    "@incremark/core": "^1.0.2",
+    "@shikijs/langs": "^4.0.2",
+    "@shikijs/themes": "^4.0.2",
     "@vueuse/core": "^14.2.1",
     "clsx": "^2.1.1",
     "entities": "^8.0.0",
-    "highlight.js": "^11.11.1",
     "marked": "^18.0.2",
     "material-symbols": "^0.44.4",
     "pinia": "^3.0.4",
+    "shiki": "^4.0.2",
+    "shiki-stream": "^0.1.4",
     "tailwind-merge": "^3.5.0",
     "vue": "^3.5.32",
     "vue-router": "^4.6.4"
