@@ -66,23 +66,24 @@ function extractMetrics(events) {
     error: null,
   }
 
-  const startEvent = events.find(e => e.type === 'RUN_STARTED')
-  const finishEvent = events.find(e => e.type === 'RUN_FINISHED')
   const errorEvent = events.find(e => e.type === 'RUN_ERROR')
-
-  if (startEvent && finishEvent) {
-    metrics.totalDurationMs = (finishEvent.timestamp || 0) - (startEvent.timestamp || 0)
-  }
   if (errorEvent) {
     metrics.error = errorEvent.error
     return metrics
+  }
+
+  // 用各步骤耗时累加估算总耗时（SSE 事件无统一 timestamp）
+  for (const e of events) {
+    if (e.type === 'STEP_FINISHED' && e.durationMs) {
+      metrics.totalDurationMs += e.durationMs
+    }
   }
 
   for (const e of events) {
     if (e.type === 'STEP_FINISHED') {
       switch (e.stepName) {
         case 'fact_check':
-          metrics.factCheckRisk = e.output?.overallRisk || e.output?.skipped ? 'skipped' : null
+          metrics.factCheckRisk = e.output?.skipped ? 'skipped' : (e.output?.overallRisk || null)
           metrics.factCheckItemCount = e.output?.itemCount || 0
           break
         case 'completeness_check':
