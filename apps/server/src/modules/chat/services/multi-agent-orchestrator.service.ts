@@ -1199,7 +1199,8 @@ export class MultiAgentOrchestratorService {
         )
         .addEdge('web_search', 'writer')
         .addEdge('rewrite_fallback', 'tools')
-        .addConditionalEdges('writer', factCheckEdge, {
+        .addEdge('writer', 'fact_check')
+        .addConditionalEdges('fact_check', factCheckEdge, {
           completeness_check: 'completeness_check',
           writer_correct: 'writer_correct',
         })
