@@ -4,6 +4,7 @@ import type { ChatMessageItem } from '@/modules/chat/types/chat'
 import type { AguiStepRecord, AguiToolCallRecord, TimelineEntry } from '@/modules/chat/types/stream'
 import { useChatStore } from '@/stores/chat'
 import { useMessage } from '@/composables/useMessage'
+import MarkdownRenderer from '@/components/chat/MarkdownRenderer.vue'
 
 const props = defineProps<{
   message: ChatMessageItem
@@ -294,9 +295,14 @@ function handleRetry() {
         </div>
       </div>
 
-      <!-- Markdown 内容 -->
+      <!-- Markdown 内容 (Incremark AST blocks) -->
+      <MarkdownRenderer
+        v-if="hasContent && message.blocks?.length"
+        :blocks="message.blocks"
+      />
+      <!-- 兼容旧消息（无 blocks 的历史数据） -->
       <div
-        v-if="hasContent"
+        v-else-if="hasContent"
         class="prose prose-invert max-w-none text-on-surface-variant text-sm leading-relaxed"
         v-html="message.htmlContent || message.content"
       />
