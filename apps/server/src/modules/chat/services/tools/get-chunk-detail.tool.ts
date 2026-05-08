@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
+import { parseBigInt } from '@common/utils/bigint.utils';
 
 export interface ChunkDetail {
   chunkId: string;
@@ -26,7 +27,7 @@ export class GetChunkDetailTool {
   constructor(private readonly prisma: PrismaService) {}
 
   async execute(chunkId: string): Promise<ChunkDetail | null> {
-    const parsedId = BigInt(chunkId);
+    const parsedId = parseBigInt(chunkId);
 
     const chunk = await this.prisma.b_document_chunks.findUnique({
       where: { id: parsedId },

@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { ElasticsearchService } from '@common/vector/elasticsearch.service';
+import { dedupByHighestScore } from '@common/utils/retrieval.utils';
 import type { SparseHit } from './interfaces/sparse-hit.interface';
 
 export interface SparseRetrieveParams {
@@ -37,27 +38,20 @@ export class ElasticsearchSparseRetrievalService {
     );
 
     // 按 chunkId 去重，保留最高分
-    const seen = new Map<string, SparseHit>();
-    for (const group of resultGroups) {
-      for (const hit of group) {
-        const existing = seen.get(hit.chunkId);
-        if (!existing || hit.score > existing.score) {
-          seen.set(hit.chunkId, {
-            chunkId: hit.chunkId,
-            docId: hit.docId,
-            kbId: hit.kbId,
-            content: hit.content,
-            title: hit.title,
-            score: hit.score,
-            titlePath: undefined,
-            keywordText: undefined,
-          });
-        }
-      }
-    }
-
-    return Array.from(seen.values())
-      .sort((a, b) => b.score - a.score)
-      .slice(0, topK);
+    return dedupByHighestScore(
+      resultGroups.map((group) =>
+        group.map((hit) => ({
+          chunkId: hit.chunkId,
+          docId: hit.docId,
+          kbId: hit.kbId,
+          content: hit.content,
+          title: hit.title,
+          score: hit.score,
+          titlePath: undefined,
+          keywordText: undefined,
+        })),
+      ),
+      topK,
+    );
   }
 }

@@ -553,9 +553,17 @@ export const useChatStore = defineStore('chat', () => {
   function stepLabel(stepName: string): string {
     const map: Record<string, string> = {
       route: '路由分析',
+      decompose: '问题拆解',
       rewrite: '查询改写',
+      rewrite_fallback: '改写回退',
+      relevance_check: '相关性校验',
       audit: '检索审计',
       writer: '生成回答',
+      writer_correct: '修正回答',
+      writer_supplement: '补充回答',
+      fact_check: '事实审核',
+      completeness_check: '完整性校验',
+      supplement_retrieve: '补充检索',
     };
     return map[stepName] ?? stepName;
   }

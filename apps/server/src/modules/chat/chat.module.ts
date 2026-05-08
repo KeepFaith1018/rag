@@ -8,7 +8,6 @@ import { ChatMessageService } from './services/chat-message.service';
 import { ChatStreamService } from './services/chat-stream.service';
 import { AgentTraceService } from './services/agent-trace.service';
 import { MultiAgentOrchestratorService } from './services/multi-agent-orchestrator.service';
-import { SearchKnowledgeBaseTool } from './services/tools/search-knowledge-base.tool';
 import { GetChunkDetailTool } from './services/tools/get-chunk-detail.tool';
 
 /**
@@ -27,7 +26,6 @@ import { GetChunkDetailTool } from './services/tools/get-chunk-detail.tool';
     ChatStreamService,
     AgentTraceService,
     MultiAgentOrchestratorService,
-    SearchKnowledgeBaseTool,
     GetChunkDetailTool,
   ],
   exports: [
@@ -35,7 +33,6 @@ import { GetChunkDetailTool } from './services/tools/get-chunk-detail.tool';
     ChatMessageService,
     AgentTraceService,
     MultiAgentOrchestratorService,
-    SearchKnowledgeBaseTool,
     GetChunkDetailTool,
   ],
 })

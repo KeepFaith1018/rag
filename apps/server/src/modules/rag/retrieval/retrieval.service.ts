@@ -6,6 +6,7 @@ import { DenseRetrievalService } from './dense-retrieval.service';
 import { ElasticsearchSparseRetrievalService } from './elasticsearch-sparse-retrieval.service';
 import { FusionService } from './fusion.service';
 import { RerankService } from './rerank.service';
+import type { QuestionType } from '@common/types/rag.types';
 import type { DenseHit } from './interfaces/dense-hit.interface';
 import type { SparseHit } from './interfaces/sparse-hit.interface';
 import type { FusedHit } from './interfaces/fused-hit.interface';
@@ -18,7 +19,7 @@ export interface RetrieveParams {
   sparseTopK?: number;
   fusionTopK?: number;
   scoreThreshold?: number;
-  questionType?: 'fact_lookup' | 'compare_analysis' | 'research_or_open_world';
+  questionType?: QuestionType;
 }
 
 export interface RetrieveResult {
@@ -68,29 +69,35 @@ export class RetrievalService {
 
     const startedAt = Date.now();
 
-    // 1. 稠密向量检索
-    const denseHits = await this.denseService.retrieve({
-      queries,
-      kbIds,
-      topK: denseTopK,
-      scoreThreshold,
-    });
-
-    // 2. 稀疏关键词检索（E8: ES 不可用时降级为空结果，不中断检索流水线）
-    let sparseHits: SparseHit[] = [];
-    try {
-      sparseHits = await this.sparseService.retrieve({
+    // 1. 稠密 + 稀疏并行检索（ES 不可用时降级为空结果，不中断检索流水线）
+    const [denseResult, sparseResult] = await Promise.allSettled([
+      this.denseService.retrieve({
+        queries,
+        kbIds,
+        topK: denseTopK,
+        scoreThreshold,
+      }),
+      this.sparseService.retrieve({
         queries,
         kbIds,
         topK: sparseTopK,
-      });
-    } catch (error) {
+      }),
+    ]);
+
+    const denseHits = denseResult.status === 'fulfilled' ? denseResult.value : [];
+
+    let sparseHits: SparseHit[] = [];
+    if (sparseResult.status === 'fulfilled') {
+      sparseHits = sparseResult.value;
+    } else {
       this.logger.warn('[Retrieval] ES 检索失败，降级为仅稠密检索', {
-        error: error instanceof Error ? error.message : String(error),
+        error:
+          sparseResult.reason instanceof Error
+            ? sparseResult.reason.message
+            : String(sparseResult.reason),
         kbIdsCount: kbIds.length,
         queriesCount: queries.length,
       });
-      sparseHits = [];
     }
 
     // 3. RRF 融合

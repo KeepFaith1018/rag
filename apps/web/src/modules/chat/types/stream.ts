@@ -6,7 +6,19 @@
  */
 
 /** Step 名称 */
-export type StepName = 'route' | 'decompose' | 'rewrite' | 'audit' | 'writer';
+export type StepName =
+  | 'route'
+  | 'decompose'
+  | 'rewrite'
+  | 'rewrite_fallback'
+  | 'relevance_check'
+  | 'audit'
+  | 'writer'
+  | 'writer_correct'
+  | 'writer_supplement'
+  | 'fact_check'
+  | 'completeness_check'
+  | 'supplement_retrieve';
 
 /** Tool 名称 */
 export type ToolCallName = 'search_knowledge_base' | 'web_search';

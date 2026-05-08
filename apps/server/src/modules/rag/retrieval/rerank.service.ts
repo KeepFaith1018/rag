@@ -1,14 +1,16 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { RerankModelService } from './rerank-model.service';
+import { tokenize, roundTo } from '@common/utils/retrieval.utils';
+import { getErrorMessage } from '@common/utils/message.utils';
+import type { QuestionType } from '@common/types/rag.types';
 import type { FusedHit } from './interfaces/fused-hit.interface';
 import type { RerankedHit } from './interfaces/reranked-hit.interface';
 
 export interface RerankParams {
   candidates: FusedHit[];
-  /** 全部检索查询（原始 + 改写 + 拆解），非事实类用多查询评分取 max */
   queries: string[];
-  questionType?: 'fact_lookup' | 'compare_analysis' | 'research_or_open_world';
+  questionType?: QuestionType;
   topN?: number;
 }
 
@@ -68,7 +70,7 @@ export class RerankService {
             rerankScore,
             fusionScore:
               maxFusionScore > 0
-                ? Math.round((c.fusionScore / maxFusionScore) * 1000) / 1000
+                ? roundTo(c.fusionScore / maxFusionScore)
                 : c.fusionScore,
           };
         })
@@ -79,7 +81,7 @@ export class RerankService {
     } catch (error) {
       this.logger.warn(
         `[RerankService] qwen3-rerank 调用失败，回退到轻量级过滤: ${
-          error instanceof Error ? error.message : String(error)
+          getErrorMessage(error)
         }`,
       );
       return this.lightweightRerank(candidates, queries, questionType, topN);
@@ -97,7 +99,7 @@ export class RerankService {
     candidates: FusedHit[],
     queries: string[],
     topN: number,
-    questionType: string,
+    questionType: QuestionType,
   ): Promise<number[]> {
     if (questionType === 'fact_lookup') {
       const mainQuery = queries[0] ?? '';
@@ -135,7 +137,7 @@ export class RerankService {
   private lightweightRerank(
     candidates: FusedHit[],
     queries: string[],
-    questionType: string,
+    questionType: QuestionType,
     topN: number,
   ): RerankedHit[] {
     const maxScore = candidates[0]?.fusionScore ?? 1;
@@ -143,29 +145,27 @@ export class RerankService {
       ...c,
       fusionScore:
         maxScore > 0
-          ? Math.round((c.fusionScore / maxScore) * 1000) / 1000
+          ? roundTo(c.fusionScore / maxScore)
           : c.fusionScore,
     }));
 
     const scored = normalized.map((c) => {
+      const contentLower = c.content.toLowerCase();
       let bestOverlapRatio = 0;
       for (const q of queries) {
-        const queryTokens = this.tokenize(q.toLowerCase());
+        const queryTokens = tokenize(q.toLowerCase());
         if (!queryTokens.length) continue;
-        const contentLower = c.content.toLowerCase();
         const overlapCount = queryTokens.filter(
           (t) => t.length > 1 && contentLower.includes(t),
         ).length;
         const ratio = overlapCount / queryTokens.length;
         if (ratio > bestOverlapRatio) bestOverlapRatio = ratio;
-        // fact_lookup 只用第一条查询
         if (questionType === 'fact_lookup' && q === queries[0]) break;
       }
 
-      // O7: titlePath 查询匹配加权
       const tpBoost = this.computeTitlePathBoost(c.payload, queries);
       const rerankScore = Math.min(
-        Math.round((c.fusionScore * 0.7 + bestOverlapRatio * 0.3) * tpBoost * 1000) / 1000,
+        roundTo((c.fusionScore * 0.7 + bestOverlapRatio * 0.3) * tpBoost),
         1.0,
       );
 
@@ -197,12 +197,6 @@ export class RerankService {
       .slice(0, topN);
   }
 
-  /**
-   * 构建 RerankedHit 列表，附带标题加权。
-   *
-   * 对标题含步骤类关键词（教程/指南/配置/搭建）的块轻微加权，
-   * 提升操作步骤类查询的检索质量。
-   */
   private buildRerankedHits(
     results: Array<{ hit: FusedHit; rerankScore: number; fusionScore: number }>,
     _questionType: string = 'fact_lookup',
@@ -226,7 +220,7 @@ export class RerankService {
         content: r.hit.content,
         title: r.hit.title,
         fusionScore: r.fusionScore,
-        rerankScore: Math.round(adjustedScore * 1000) / 1000,
+        rerankScore: roundTo(adjustedScore),
         payload: r.hit.payload,
         isPrimary: primary,
         isSecondary: secondary,
@@ -240,14 +234,6 @@ export class RerankService {
     return filtered.map(({ isPrimary: _isPrimary, isSecondary: _isSecondary, ...hit }) => hit);
   }
 
-  /**
-   * O7: 计算 titlePath 查询匹配加权。
-   *
-   * 当查询词与 chunk 的标题路径有较高重叠（>50%）时，
-   * 说明该 chunk 在文档结构中与查询高度相关，给予适度加权。
-   *
-   * @returns 乘数 1.0 ~ 1.10
-   */
   private computeTitlePathBoost(
     payload: Record<string, unknown>,
     queries: string[],
@@ -255,15 +241,13 @@ export class RerankService {
     const tpVal = payload['titlePath'];
     const tpArr: string[] = Array.isArray(tpVal)
       ? tpVal.map(String)
-      : typeof tpVal === 'string'
-        ? (() => { try { return JSON.parse(tpVal) as string[]; } catch { return []; } })()
-        : [];
+      : [];
     if (tpArr.length === 0) return 1.0;
 
     const tpLower = tpArr.join(' ').toLowerCase();
     let maxOverlap = 0;
     for (const q of queries) {
-      const tokens = this.tokenize(q.toLowerCase());
+      const tokens = tokenize(q.toLowerCase());
       if (tokens.length === 0) continue;
       const matched = tokens.filter(
         (t) => t.length > 1 && tpLower.includes(t),
@@ -273,16 +257,7 @@ export class RerankService {
     }
 
     return maxOverlap > 0.5
-      ? Math.round((1.0 + (maxOverlap - 0.5) * 0.2) * 1000) / 1000
+      ? roundTo(1.0 + (maxOverlap - 0.5) * 0.2)
       : 1.0;
-  }
-
-  /**
-   * 简单分词，供文本匹配计分使用。
-   */
-  private tokenize(text: string): string[] {
-    return text
-      .split(/[\s,，。！？、；：""''（）()［］【】{}<>/\\|@#$%^&*+=~`]+/)
-      .filter((t) => t.length > 1);
   }
 }

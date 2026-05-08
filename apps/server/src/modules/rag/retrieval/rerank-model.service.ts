@@ -88,6 +88,7 @@ export class RerankModelService {
         top_n: topN,
         return_documents: false,
       }),
+      signal: AbortSignal.timeout(15000),
     });
 
     if (!response.ok) {

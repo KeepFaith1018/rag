@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { EmbeddingService } from '../ai/embedding.service';
 import { QdrantService } from '@common/vector/qdrant.service';
+import { dedupByHighestScore } from '@common/utils/retrieval.utils';
 import type { DenseHit } from './interfaces/dense-hit.interface';
 
 export interface DenseRetrieveParams {
@@ -50,16 +51,6 @@ export class DenseRetrievalService {
     );
 
     // 按 chunkId 去重，保留最高分
-    const seen = new Map<string, DenseHit>();
-    for (const group of resultGroups) {
-      for (const hit of group) {
-        const existing = seen.get(hit.chunkId);
-        if (!existing || hit.score > existing.score) {
-          seen.set(hit.chunkId, hit);
-        }
-      }
-    }
-
-    return Array.from(seen.values()).sort((a, b) => b.score - a.score);
+    return dedupByHighestScore(resultGroups as DenseHit[][]);
   }
 }

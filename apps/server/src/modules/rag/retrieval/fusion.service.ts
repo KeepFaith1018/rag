@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
+import { roundTo } from '@common/utils/retrieval.utils';
 import type { DenseHit } from './interfaces/dense-hit.interface';
 import type { SparseHit } from './interfaces/sparse-hit.interface';
 import type { FusedHit } from './interfaces/fused-hit.interface';
@@ -77,6 +78,10 @@ export class FusionService {
       const denseConf = this.computePathConfidence(denseHits);
       const sparseConf = this.computePathConfidence(sparseHits);
 
+      // 预建 O(1) 索引，避免循环内 O(n) 查找
+      const denseHitMap = new Map(denseHits.map((h) => [h.chunkId, h]));
+      const sparseHitMap = new Map(sparseHits.map((h) => [h.chunkId, h]));
+
       // 计算每个 chunk 的 RRF 分数
       const fusedList: FusedHit[] = [];
 
@@ -97,8 +102,8 @@ export class FusionService {
           payloadMap.get(chunkId),
         );
 
-        const denseHit = denseHits.find((h) => h.chunkId === chunkId);
-        const sparseHit = sparseHits.find((h) => h.chunkId === chunkId);
+        const denseHit = denseHitMap.get(chunkId);
+        const sparseHit = sparseHitMap.get(chunkId);
 
         fusedList.push({
           chunkId,
@@ -106,7 +111,7 @@ export class FusionService {
           kbId: kbIdMap.get(chunkId) ?? '',
           content: contentMap.get(chunkId) ?? '',
           title: titleMap.get(chunkId),
-          fusionScore: Math.round(fusionScore * 1_000_000) / 1_000_000,
+          fusionScore: roundTo(fusionScore, 6),
           denseScore: denseHit?.score,
           sparseScore: sparseHit?.score,
           denseRank: denseRank !== undefined ? (denseRank) + 1 : undefined,
@@ -165,7 +170,7 @@ export class FusionService {
       multiplier *= 1.02;
     }
 
-    return Math.round(multiplier * 1000) / 1000;
+    return roundTo(multiplier);
   }
 
   /**
@@ -195,7 +200,7 @@ export class FusionService {
     const normalizedEntropy = entropy / Math.log(n); // 0=集中, 1=均匀
 
     // 置信度: 低熵=高置信度，限定范围 [0.5, 1.0]
-    return Math.round((1 - normalizedEntropy * 0.5) * 1000) / 1000;
+    return roundTo(1 - normalizedEntropy * 0.5);
   }
 
   /**

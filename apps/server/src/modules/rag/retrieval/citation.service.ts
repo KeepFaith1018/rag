@@ -1,10 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
-import {
-  BusinessException,
-  wrapBusinessException,
-} from '@common/exception/businessException';
+import { wrapBusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
+import { parseBigInt } from '@common/utils/bigint.utils';
 import type { RerankedHit } from './interfaces/reranked-hit.interface';
 
 export interface CreateCitationsParams {
@@ -49,9 +47,9 @@ export class CitationService {
     try {
       const records = hits.map((hit, index) => ({
         message_id: messageId,
-        kb_id: this.toBigInt(hit.kbId),
-        doc_id: this.toBigInt(hit.docId),
-        chunk_id: this.toBigInt(hit.chunkId),
+        kb_id: parseBigInt(hit.kbId),
+        doc_id: parseBigInt(hit.docId),
+        chunk_id: parseBigInt(hit.chunkId),
         score: hit.rerankScore,
         quote: hit.content.slice(0, 200),
         order_no: index,
@@ -67,11 +65,11 @@ export class CitationService {
 
       const [kbList, docList] = await Promise.all([
         this.prisma.b_knowledge_bases.findMany({
-          where: { id: { in: kbIds.map((id) => this.toBigInt(id)) } },
+          where: { id: { in: kbIds.map((id) => parseBigInt(id)) } },
           select: { id: true, name: true },
         }),
         this.prisma.b_documents.findMany({
-          where: { id: { in: docIds.map((id) => this.toBigInt(id)) } },
+          where: { id: { in: docIds.map((id) => parseBigInt(id)) } },
           select: { id: true, title: true },
         }),
       ]);
@@ -159,13 +157,4 @@ export class CitationService {
     }
   }
 
-  private toBigInt(value: string): bigint {
-    try {
-      return BigInt(value);
-    } catch {
-      throw new BusinessException(ErrorCode.PARAM_ERROR, {
-        message: `无法解析 ID: ${value}`,
-      });
-    }
-  }
 }

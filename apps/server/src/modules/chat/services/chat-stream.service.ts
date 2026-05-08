@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { HumanMessage, SystemMessage, AIMessageChunk, type BaseMessage } from '@langchain/core/messages';
+import { HumanMessage, SystemMessage, type BaseMessage } from '@langchain/core/messages';
 import { ChatModelService } from '../../rag/ai/chat-model.service';
 import { ChatSessionService } from './chat-session.service';
 import { ChatMessageService } from './chat-message.service';
@@ -8,6 +8,7 @@ import { KbPermissionService } from '../../knowledge-base/permission/kb-permissi
 import { CitationService } from '../../rag/retrieval/citation.service';
 import { MultiAgentOrchestratorService } from './multi-agent-orchestrator.service';
 import { SseWriter } from '../types/agui-events';
+import { extractMessageContent } from '@common/utils/message.utils';
 import type { StreamChatDto } from '../dto/stream-chat.dto';
 
 /** 普通对话系统提示词 */
@@ -17,17 +18,6 @@ const SYSTEM_PROMPT = `你是 Linsor AI（灵索智能）的智能助手，基�
 - 回答应准确、完整，基于上下文给出有用信息
 - 若问题涉及特定知识库内容但当前未检索到上下文，如实告知用户
 - 使用中文回答`;
-
-function extractChunkText(chunk: AIMessageChunk): string {
-  if (typeof chunk.content === 'string') return chunk.content;
-  if (Array.isArray(chunk.content)) {
-    return chunk.content
-      .filter((c): c is { type: 'text'; text: string } => c.type === 'text')
-      .map((c) => c.text)
-      .join('');
-  }
-  return '';
-}
 
 @Injectable()
 export class ChatStreamService {
@@ -63,7 +53,7 @@ export class ChatStreamService {
       return this.streamRagMode(userId, dto, modelName, traceId, writer, signal);
     }
 
-    return this.streamChatMode(userId, dto, modelName, traceId, writer);
+    return this.streamChatMode(userId, dto, modelName, traceId, writer, signal);
   }
 
   /**
@@ -117,21 +107,38 @@ export class ChatStreamService {
         enableWebSearch: dto.enableWebSearch ?? false,
         signal,
         onFinish: async (result) => {
+          const tasks: Promise<unknown>[] = [];
+
           if (result.citations && result.citations.length > 0) {
-            await this.citationService.createCitations({
-              messageId: assistantMessage.id,
-              hits: result.citations,
-            });
+            tasks.push(
+              this.citationService.createCitations({
+                messageId: assistantMessage.id,
+                hits: result.citations,
+              }),
+            );
           }
-          await this.chatMessageService.finalizeAssistantMessage(
-            assistantMessage.id,
-            { content: result.content, finishReason: 'stop' },
+
+          tasks.push(
+            this.chatMessageService.finalizeAssistantMessage(
+              assistantMessage.id,
+              { content: result.content, finishReason: 'stop' },
+            ),
           );
-          await this.chatSessionService.summarizeTitleIfNeeded(
-            dto.sessionId,
-            dto.message,
-            result.content,
+
+          // 摘要失败不影响主流程，独立 catch
+          tasks.push(
+            this.chatSessionService
+              .summarizeTitleIfNeeded(
+                dto.sessionId,
+                dto.message,
+                result.content,
+              )
+              .catch(() => {
+                /* 摘要生成失败不影响主流程 */
+              }),
           );
+
+          await Promise.all(tasks);
         },
         onError: async () => {
           await this.chatMessageService.markAssistantMessageAborted(
@@ -151,6 +158,7 @@ export class ChatStreamService {
     modelName: string,
     traceId: string,
     writer: SseWriter,
+    signal?: AbortSignal,
   ): Promise<void> {
     const model = this.chatModelService.createModel({
       temperature: 0.7,
@@ -186,7 +194,8 @@ export class ChatStreamService {
 
     try {
       for await (const chunk of lcStream) {
-        const text = extractChunkText(chunk);
+        if (signal?.aborted) break;
+        const text = extractMessageContent(chunk);
         if (text) {
           fullContent += text;
           writer.write({ type: 'TEXT_MESSAGE_CONTENT', messageId: msgId, delta: text });

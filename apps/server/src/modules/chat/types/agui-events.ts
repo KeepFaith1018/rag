@@ -34,7 +34,19 @@ export interface RunErrorEvent extends BaseEvent {
 
 // ── 步骤生命周期 ──
 
-export type StepName = 'route' | 'decompose' | 'rewrite' | 'audit' | 'writer';
+export type StepName =
+  | 'route'
+  | 'decompose'
+  | 'rewrite'
+  | 'rewrite_fallback'
+  | 'relevance_check'
+  | 'audit'
+  | 'writer'
+  | 'writer_correct'
+  | 'writer_supplement'
+  | 'fact_check'
+  | 'completeness_check'
+  | 'supplement_retrieve';
 
 export interface StepStartedEvent extends BaseEvent {
   type: 'STEP_STARTED';

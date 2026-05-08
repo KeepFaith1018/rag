@@ -11,7 +11,6 @@ import { RerankService } from './retrieval/rerank.service';
 import { RerankModelService } from './retrieval/rerank-model.service';
 import { RetrievalService } from './retrieval/retrieval.service';
 import { CitationService } from './retrieval/citation.service';
-import { RetrievalTraceService } from './retrieval/retrieval-trace.service';
 
 /**
  * RAG 核心模块。
@@ -33,13 +32,11 @@ import { RetrievalTraceService } from './retrieval/retrieval-trace.service';
     RerankModelService,
     RetrievalService,
     CitationService,
-    RetrievalTraceService,
   ],
   exports: [
     AiModule,
     RetrievalService,
     CitationService,
-    RetrievalTraceService,
     WebSearchModule,
   ],
 })
