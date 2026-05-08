@@ -1,8 +1,9 @@
 /**
  * 流式 Markdown 增量渲染 Composable
  *
- * 策略：逐 token 接收文本增量，块级 flush，通过 innerHTML 追加实现流畅渲染。
- * 代码高亮使用 Shiki + shiki-stream，替换原先的 highlight.js。
+ * 策略：逐 token 接收文本增量，在句子/短语边界处 flush，实现接近打字机的逐句渲染。
+ * 通过内联语法完整性检查防止 **加粗** 等 Markdown 格式被切割。
+ * 代码高亮使用 Shiki，替换原先的 highlight.js。
  */
 import { marked } from 'marked'
 import { getHighlighter } from '../utils/shiki'
@@ -25,6 +26,51 @@ function encodeHTML(str: string): string {
     .replace(/'/g, '&#039;')
 }
 
+/**
+ * 检测文本中是否存在未闭合的 Markdown 内联语法。
+ * 配对计数法：统计每种分隔符的出现次数，奇数表示有未闭合的语法。
+ */
+function hasUnclosedInlineSyntax(text: string): boolean {
+  // ** 加粗
+  if ((text.split('**').length - 1) % 2 !== 0) return true
+  // __ 加粗
+  if ((text.split('__').length - 1) % 2 !== 0) return true
+  // ~~ 删除线
+  if ((text.split('~~').length - 1) % 2 !== 0) return true
+  // ` 行内代码
+  if ((text.split('`').length - 1) % 2 !== 0) return true
+
+  // 单 * 斜体（先去掉 **，再数 *）
+  const withoutBoldStars = text.replace(/\*\*/g, '')
+  if ((withoutBoldStars.split('*').length - 1) % 2 !== 0) return true
+
+  // 单 _ 斜体（先去掉 __，再数 _）
+  const withoutBoldUnderscores = text.replace(/__/g, '')
+  if ((withoutBoldUnderscores.split('_').length - 1) % 2 !== 0) return true
+
+  return false
+}
+
+/**
+ * 查找最近的句子/短语边界，用于实现更流畅的逐句流式渲染。
+ * 匹配中英文标点后跟随内容的位置。
+ */
+function findSentenceBoundary(text: string): number {
+  // 中文标点: 。！？，；：、
+  // 英文标点: . ! ? , ; : 后需跟空格或换行
+  const pattern = /[。！？，；：、]|[.!?,;:](?=\s)/g
+  let match: RegExpExecArray | null
+  let lastBoundary = 0
+
+  while ((match = pattern.exec(text)) !== null) {
+    lastBoundary = match.index + 1
+  }
+
+  // 只接受至少 10 个字符后的边界（避免过于碎片化）
+  if (lastBoundary > 10) return lastBoundary
+  return 0
+}
+
 /** 内部状态 */
 interface StreamingMarkdownState {
   buffer: string
@@ -42,7 +88,7 @@ interface StreamingMarkdownOptions {
   onError?: (error: Error) => void
   /** 是否启用代码高亮，默认 true */
   highlight?: boolean
-  /** 强制 flush 的 buffer 大小阈值，默认 80 */
+  /** buffer 安全上限，无标点/段落边界时才触发，默认 80 */
   flushThreshold?: number
 }
 
@@ -65,7 +111,6 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
     codeBlockLang: '',
   }
 
-  let lastFlushLen = 0
   let highlighter: HighlighterCore | null = null
   let isFlushing = false
 
@@ -207,25 +252,49 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
       return
     }
 
-    // 常规 flush：遇到空行、buffer 过大或单行标题
-    const shouldFlush =
-      force ||
-      (buffer.length > flushThreshold && lastFlushLen < buffer.length) ||
-      /\n\n/.test(buffer) ||
-      /^#{1,6}\s.+$/m.test(buffer)
+    // 常规 flush：贪婪寻找当前 buffer 中最大的安全切割位置
+    let flushPoint = 0
 
-    if (!shouldFlush) return
+    if (force) {
+      flushPoint = buffer.length
+    } else {
+      // 1. 段落分隔 (\n\n) — Markdown 天然安全边界，内联语法不可能跨段
+      const lastParaBreak = buffer.lastIndexOf('\n\n')
+      if (lastParaBreak > 0) {
+        flushPoint = lastParaBreak
+      }
 
-    // 找到最近的段落分隔位置
-    let flushPoint = buffer.length
-    if (!force) {
-      const lastDoubleNewline = buffer.lastIndexOf('\n\n')
-      if (lastDoubleNewline > 0) {
-        flushPoint = lastDoubleNewline
+      // 2. 标题行 — 一行完整的 # 标题立即 flush
+      if (flushPoint === 0) {
+        const headingEnd = buffer.indexOf('\n')
+        if (/^#{1,6}\s.+$/m.test(buffer) && headingEnd > 0) {
+          flushPoint = headingEnd
+        }
+      }
+
+      // 3. 句子/短语边界 — 对标点符号处切割，实现逐句渲染
+      if (flushPoint === 0) {
+        const sentenceBoundary = findSentenceBoundary(buffer)
+        if (sentenceBoundary > 0) {
+          flushPoint = sentenceBoundary
+        }
+      }
+
+      // 4. 阈值兜底 — buffer 过大时强制 flush，但必须确保内联语法完整
+      if (flushPoint === 0 && buffer.length > flushThreshold) {
+        if (!hasUnclosedInlineSyntax(buffer)) {
+          flushPoint = buffer.length
+        }
+        // 有未闭合语法 → 推迟 flush，等待后续 delta 补全
       }
     }
 
+    if (flushPoint === 0) return
+
+    // 额外安全检查：非 force 模式下，待 flush 部分不能包含未闭合语法
     const toFlush = buffer.slice(0, flushPoint)
+    if (!force && hasUnclosedInlineSyntax(toFlush)) return
+
     const remaining = buffer.slice(flushPoint)
 
     if (toFlush.trim()) {
@@ -233,7 +302,6 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
       if (html) onFlush(html)
     }
 
-    lastFlushLen = remaining.length
     state.buffer = remaining
   }
 
@@ -261,12 +329,6 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
    */
   function pushDelta(delta: string): void {
     if (!delta) return
-
-    if (delta.startsWith('<')) {
-      state.buffer += delta
-      tryFlush(true)
-      return
-    }
 
     state.buffer += delta
 
@@ -308,7 +370,6 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
         state.buffer = ''
       }
 
-      lastFlushLen = 0
       onComplete?.()
     } finally {
       isFlushing = false
@@ -330,7 +391,6 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
     state.isInCodeBlock = false
     state.codeBlockBuffer = ''
     state.codeBlockLang = ''
-    lastFlushLen = 0
     isFlushing = false
   }
 
