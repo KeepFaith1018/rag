@@ -1,10 +1,13 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
+import { marked } from 'marked'
 import type { ChatMessageItem } from '@/modules/chat/types/chat'
 import type { AguiStepRecord, AguiToolCallRecord, TimelineEntry } from '@/modules/chat/types/stream'
 import { useChatStore } from '@/stores/chat'
 import { useMessage } from '@/composables/useMessage'
 import MarkdownRenderer from '@/components/chat/MarkdownRenderer.vue'
+
+marked.setOptions({ breaks: true, gfm: true })
 
 const props = defineProps<{
   message: ChatMessageItem
@@ -25,8 +28,19 @@ const isAborted = computed(() => props.message.messageStatus === 'aborted')
 const isRagMode = computed(() => props.message.chatMode === 'rag')
 
 const hasContent = computed(() =>
-  props.message.htmlContent || props.message.content,
+  props.message.htmlContent || props.message.content || props.message.blocks?.length,
 )
+
+/** 历史消息回退：无 blocks/htmlContent 时，将 content (Markdown) 转为 HTML */
+const fallbackHtml = computed(() => {
+  if (!props.message.content) return ''
+  if (props.message.htmlContent || props.message.blocks?.length) return ''
+  try {
+    return marked.parse(props.message.content, { async: false }) as string
+  } catch {
+    return props.message.content
+  }
+})
 
 /** 优先使用消息自身的步骤数据（历史消息），流式中 fallback store */
 const displaySteps = computed<AguiStepRecord[]>(() =>
@@ -300,11 +314,11 @@ function handleRetry() {
         v-if="hasContent && message.blocks?.length"
         :blocks="message.blocks"
       />
-      <!-- 兼容旧消息（无 blocks 的历史数据） -->
+      <!-- 兼容旧消息/历史消息（无 blocks 时用 Markdown 解析回退） -->
       <div
         v-else-if="hasContent"
         class="prose prose-invert max-w-none text-on-surface-variant text-sm leading-relaxed"
-        v-html="message.htmlContent || message.content"
+        v-html="message.htmlContent || fallbackHtml || message.content"
       />
 
       <!-- 已取消 -->
