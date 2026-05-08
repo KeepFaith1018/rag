@@ -11,14 +11,17 @@ export const RELEVANCE_CHECK_SYSTEM_PROMPT = `你是一个检索质量审核专�
 - 若仅少数分片勉强相关，判定为 "partial"
 - 若基本没有相关内容，判定为 "not_relevant"
 
-请给出判断结果和建议的下一步行动。`;
-
-/** Relevance 校验的结构化输出 schema 文本描述 */
-export const RELEVANCE_CHECK_FUNCTION_CALL = `请以 JSON 格式返回：
+请严格按照以下 JSON 格式返回，字段名必须精确匹配：
 {
-  "verdict": "relevant" | "partial" | "not_relevant",
-  "relevantCount": 数字(相关分片数),
-  "totalCount": 数字(总分片数),
+  "verdict": "relevant",
+  "relevantCount": 3,
+  "totalCount": 5,
   "reason": "简要评估理由",
-  "suggestion": "若 not_relevant 建议重新改写查询，否则建议继续"
-}`;
+  "suggestion": "建议继续后续流程"
+}
+
+注意：
+- 字段名必须是 verdict、relevantCount、totalCount、reason、suggestion
+- verdict 取值：relevant、partial、not_relevant
+- relevantCount 和 totalCount 必须是数字
+- 如果是 not_relevant，suggestion 中建议重新改写查询`;
