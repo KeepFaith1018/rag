@@ -127,18 +127,18 @@ export function useAgentChat(options?: UseAgentChatOptions) {
       flush,
       reset: resetMarkdown,
     } = useStreamingMarkdown({
-      onFlush: (html) => {
-        chatStore.updateAssistantMessageHtml(assistantMsgId, html, 'append');
+      onBlocks: (blocks) => {
+        chatStore.appendMessageBlocks(assistantMsgId, blocks)
       },
       onComplete: () => {
-        chatStore.setMessageStatus(assistantMsgId, 'completed');
-        onMessageFinish?.(assistantMsgId);
+        chatStore.setMessageStatus(assistantMsgId, 'completed')
+        onMessageFinish?.(assistantMsgId)
       },
       onError: (err) => {
-        console.error('[useAgentChat] Markdown 渲染错误:', err);
-        onError?.(err);
+        console.error('[useAgentChat] Markdown 渲染错误:', err)
+        onError?.(err)
       },
-    });
+    })
 
     try {
       const response = await fetchChatStream(request, abortController.value.signal);
@@ -238,7 +238,7 @@ export function useAgentChat(options?: UseAgentChatOptions) {
               break;
 
             case 'TEXT_MESSAGE_END':
-              await flush();
+              flush();
               break;
           }
         }
@@ -252,7 +252,7 @@ export function useAgentChat(options?: UseAgentChatOptions) {
         }
       }
 
-      await flush();
+      flush();
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
 
