@@ -9,6 +9,7 @@ import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { RetrievalService } from '../../rag/retrieval/retrieval.service';
 import { WebSearchService } from '../../rag/web-search/web-search.service';
 import { AgentTraceService } from './agent-trace.service';
+import { EvalQueueService } from './eval-queue.service';
 import type { AgentRunContext } from './agent-trace.service';
 import type { WebSearchResult } from '../../rag/web-search/web-search.service';
 import { SseWriter } from '../types/agui-events';
@@ -453,23 +454,18 @@ function auditEdge(
 /** 事实修正最大轮次，防止无限循环 */
 const MAX_FACT_CHECK_ROUNDS = 3;
 
-function factCheckEdge(
-  state: AgentState,
-): 'completeness_check' | 'writer_correct' {
+/* @deprecated writer_correct 离线化预留
+function factCheckEdge(state: AgentState): 'completeness_check' | 'writer_correct' {
   const result = state.factCheckResult;
   if (!result) return 'completeness_check';
-
   const rounds = state.factCheckRounds ?? 0;
   if (rounds >= MAX_FACT_CHECK_ROUNDS) return 'completeness_check';
-
-  if (
-    (result.overallRisk === 'high' || result.overallRisk === 'medium') &&
-    result.needRevise
-  ) {
+  if ((result.overallRisk === 'high' || result.overallRisk === 'medium') && result.needRevise) {
     return 'writer_correct';
   }
   return 'completeness_check';
 }
+*/
 
 function completenessEdge(
   state: AgentState,
@@ -570,6 +566,7 @@ export class MultiAgentOrchestratorService {
     private readonly retrievalService: RetrievalService,
     private readonly agentTraceService: AgentTraceService,
     private readonly webSearchService: WebSearchService,
+    private readonly evalQueueService: EvalQueueService,
   ) {}
 
   /**
@@ -1255,6 +1252,38 @@ export class MultiAgentOrchestratorService {
       });
       writer.write({ type: 'RUN_FINISHED', runId });
 
+      // 持久化评估数据到 b_agent_runs.metadata_json（供离线评估队列使用）
+      const evalState = finalState as unknown as AgentState;
+      self.agentTraceService
+        .saveEvaluationData(runId, {
+          originalQuery: evalState.originalQuery,
+          draftAnswer: evalState.draftAnswer,
+          supplementAnswer: evalState.supplementAnswer,
+          rewrittenQueries: evalState.rewrittenQueries,
+          rewrittenKeywords: evalState.rewrittenKeywords ?? [],
+          decomposedQueries: evalState.decomposedQueries,
+          rerankedHits: (evalState.rerankedHits ?? []).map((h) => ({
+            chunkId: h.chunkId,
+            docId: h.docId,
+            kbId: h.kbId,
+            content: h.content,
+            title: h.title,
+            fusionScore: h.fusionScore,
+            rerankScore: h.rerankScore,
+          })),
+          factCheckResult: evalState.factCheckResult,
+          completenessResult: evalState.completenessResult,
+          auditVerdict: evalState.auditVerdict,
+          relevanceVerdict: evalState.relevanceVerdict,
+          retrievalRetryCount: evalState.retrievalRetryCount ?? 0,
+          factCheckRounds: evalState.factCheckRounds ?? 0,
+        })
+        .catch((err: unknown) =>
+          self.logger.warn('[Orchestrator] 评估数据持久化失败', {
+            error: err instanceof Error ? err.message : String(err),
+          }),
+        );
+
       // 标记 Agent Run 完成
       self.agentTraceService
         .completeRun(runId, {
@@ -1280,6 +1309,15 @@ export class MultiAgentOrchestratorService {
             content: fullContent,
             citations: state.rerankedHits?.slice(0, 5) ?? [],
           });
+
+          // 离线评估入队
+          self.evalQueueService
+            .enqueueEvaluation(runId)
+            .catch((err: unknown) =>
+              self.logger.warn('[Orchestrator] 评估入队失败', {
+                error: err instanceof Error ? err.message : String(err),
+              }),
+            );
         } catch (finishError) {
           self.logger.error('[Orchestrator] onFinish 回调失败', {
             error:

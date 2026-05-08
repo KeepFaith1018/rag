@@ -225,6 +225,21 @@ export class AgentTraceService {
   }
 
   /**
+   * 保存运行评估数据到 metadata_json，供离线评估队列使用。
+   */
+  async saveEvaluationData(
+    runId: string,
+    data: Record<string, unknown>,
+  ): Promise<void> {
+    await this.prisma.b_agent_runs.update({
+      where: { id: runId },
+      data: {
+        metadata_json: data as Prisma.InputJsonValue,
+      },
+    });
+  }
+
+  /**
    * 获取用户的使用统计摘要。
    */
   async getMetricsSummary(userId: number): Promise<{

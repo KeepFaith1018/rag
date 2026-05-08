@@ -8,6 +8,9 @@ import { ChatMessageService } from './services/chat-message.service';
 import { ChatStreamService } from './services/chat-stream.service';
 import { AgentTraceService } from './services/agent-trace.service';
 import { MultiAgentOrchestratorService } from './services/multi-agent-orchestrator.service';
+import { EvalQueueService } from './services/eval-queue.service';
+import { EvalProcessorService } from './services/eval-processor.service';
+import { EvalPipelineService } from './services/eval-pipeline.service';
 import { GetChunkDetailTool } from './services/tools/get-chunk-detail.tool';
 
 /**
@@ -26,6 +29,9 @@ import { GetChunkDetailTool } from './services/tools/get-chunk-detail.tool';
     ChatStreamService,
     AgentTraceService,
     MultiAgentOrchestratorService,
+    EvalQueueService,
+    EvalProcessorService,
+    EvalPipelineService,
     GetChunkDetailTool,
   ],
   exports: [
