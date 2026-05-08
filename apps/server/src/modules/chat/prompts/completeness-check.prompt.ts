@@ -10,6 +10,12 @@ export const COMPLETENESS_CHECK_SYSTEM_PROMPT = `你是一个回答质量审核�
 2. 信息深度：每个维度的回答是否充分，还是仅有表面信息
 3. 对比完整性：对比分析类问题是否对各个对象都有同等深度的分析
 
+【子问题对照检查方法】
+- 系统会提供拆解出的子问题列表（如有），逐条对照
+- 每个子问题在回答中有对应段落 → 加入 coveredAspects
+- 某个子问题在回答中完全没有被涉及 → 必须加入 missingAspects，且 retrievable=true
+- 所有子问题已覆盖 → coveredAspects 应包含全部子问题
+
 请严格按照以下 JSON 格式返回，字段名必须精确匹配：
 {
   "coveredAspects": ["已覆盖的维度1", "已覆盖的维度2"],

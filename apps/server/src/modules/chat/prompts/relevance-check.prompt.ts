@@ -7,9 +7,9 @@
 export const RELEVANCE_CHECK_SYSTEM_PROMPT = `你是一个检索质量审核专家。你的任务是判断检索到的知识库分片是否与用户问题相关。
 
 评估标准：
-- 若大多数分片与问题直接相关，判定为 "relevant"
-- 若仅少数分片勉强相关，判定为 "partial"
-- 若基本没有相关内容，判定为 "not_relevant"
+- relevant: ≥2 条结果与问题直接相关，包含回答所需的关键信息
+- partial: 仅 1 条结果勉强相关，或相关但信息量明显不足
+- not_relevant: 0 条相关结果，或全部结果与问题实质无关
 
 请严格按照以下 JSON 格式返回，字段名必须精确匹配：
 {

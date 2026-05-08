@@ -49,7 +49,11 @@ const AgentStateAnnotation = Annotation.Root({
   routedPlan: Annotation<RoutedQueryPlan | null>(),
   /** Decompose 节点拆解出的子问题查询文本（仅对比/研究类） */
   decomposedQueries: Annotation<string[]>(),
+  /** decompose 节点提取的关键词（用于稀疏检索） */
+  decomposedKeywords: Annotation<string[]>(),
   rewrittenQueries: Annotation<string[]>(),
+  /** rewrite 节点提取的关键词（用于稀疏检索） */
+  rewrittenKeywords: Annotation<string[]>(),
   rerankedHits: Annotation<RerankedHit[]>(),
   webSearchResults: Annotation<WebSearchResult[]>(),
   draftAnswer: Annotation<string>(),
@@ -226,10 +230,14 @@ async function rewriteQueryNode(
       output: { queries },
     });
 
-    return { rewrittenQueries: queries, currentPhase: 'planning' };
+    // 提取改写查询附带的关键词（用于稀疏检索）
+    const rewriteKw = (output.queries as Array<{ keywords?: string }>)
+      .flatMap(q => q.keywords?.split(/[\s,，]+/).filter(Boolean) ?? []);
+    return { rewrittenQueries: queries, rewrittenKeywords: rewriteKw, currentPhase: 'planning' };
   } catch {
     return {
       rewrittenQueries: [state.originalQuery],
+      rewrittenKeywords: [],
       currentPhase: 'planning',
     };
   }
@@ -330,9 +338,10 @@ async function decomposeQueryNode(
       },
     });
 
-    return { decomposedQueries: queries, currentPhase: 'planning' };
+    const keywords = output.subQueries.flatMap((sq) => sq.keywords || []);
+    return { decomposedQueries: queries, decomposedKeywords: keywords, currentPhase: 'planning' };
   } catch {
-    return { decomposedQueries: [], currentPhase: 'planning' };
+    return { decomposedQueries: [], decomposedKeywords: [], currentPhase: 'planning' };
   }
 }
 
@@ -482,11 +491,17 @@ function completenessEdge(
 
 function buildRetrieveQueries(state: AgentState): string[] {
   const queries: string[] = [state.originalQuery];
+  // decompose 关键词（如有）优先 — 短关键词适合稀疏检索
+  if (state.decomposedKeywords && state.decomposedKeywords.length > 0)
+    queries.push(...state.decomposedKeywords);
   if (state.decomposedQueries.length > 0)
     queries.push(...state.decomposedQueries);
   if (state.rewrittenQueries.length > 0)
     queries.push(...state.rewrittenQueries);
-  return [...new Set(queries)].slice(0, 8);
+  // rewrite 关键词（如有）
+  if (state.rewrittenKeywords && state.rewrittenKeywords.length > 0)
+    queries.push(...state.rewrittenKeywords);
+  return [...new Set(queries)].slice(0, 10);
 }
 
 function buildContextText(
@@ -1216,7 +1231,9 @@ export class MultiAgentOrchestratorService {
         resolvedKbIds: runCtx.resolvedKbIds,
         routedPlan: null,
         decomposedQueries: [],
+        decomposedKeywords: [],
         rewrittenQueries: [],
+        rewrittenKeywords: [],
         rerankedHits: [],
         webSearchResults: [],
         draftAnswer: '',
