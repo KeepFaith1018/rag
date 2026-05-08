@@ -415,8 +415,13 @@ function routeNextEdge(
   return 'rewrite';
 }
 
-function relevanceEdge(state: AgentState): 'audit' | 'rewrite' {
-  if (state.relevanceVerdict === 'not_relevant') return 'rewrite';
+function relevanceEdge(state: AgentState): 'audit' | 'rewrite_fallback' {
+  if (state.relevanceVerdict === 'not_relevant') {
+    const retryCount = state.retrievalRetryCount ?? 0;
+    // 重试耗尽 → 放行到 audit（由 audit 判定 insufficient → writer）
+    if (retryCount >= 2) return 'audit';
+    return 'rewrite_fallback';
+  }
   return 'audit';
 }
 
@@ -1200,7 +1205,7 @@ export class MultiAgentOrchestratorService {
         .addEdge('tools', 'relevance_check')
         .addConditionalEdges('relevance_check', relevanceEdge, {
           audit: 'audit',
-          rewrite: 'rewrite',
+          rewrite_fallback: 'rewrite_fallback',
         })
         .addConditionalEdges(
           'audit',
