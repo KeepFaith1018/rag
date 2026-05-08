@@ -20,6 +20,7 @@ import type {
   KbOption,
   ModelOption,
 } from '@/modules/chat/types/chat';
+import type { ParsedBlock } from '@incremark/core'
 import type {
   AgentPhase,
   Citation,
@@ -354,6 +355,21 @@ export const useChatStore = defineStore('chat', () => {
   }
 
   /**
+   * 追加 Incremark 解析完成的 AST blocks 到助手消息。
+   */
+  function appendMessageBlocks(
+    messageId: number,
+    blocks: ParsedBlock[],
+  ) {
+    const msg = messages.value.find((m) => m.id === messageId)
+    if (!msg) return
+    if (!msg.blocks) {
+      msg.blocks = []
+    }
+    msg.blocks.push(...blocks)
+  }
+
+  /**
    * 设置助手消息状态。
    */
   function setMessageStatus(
@@ -677,6 +693,7 @@ export const useChatStore = defineStore('chat', () => {
     addAssistantMessage,
     updateAssistantMessage,
     updateAssistantMessageHtml,
+    appendMessageBlocks,
     setMessageStatus,
     // 模式切换
     setChatMode,

@@ -2,6 +2,7 @@
  * 聊天消息类型定义
  */
 
+import type { ParsedBlock } from '@incremark/core'
 import type { AguiStepRecord, AguiToolCallRecord } from './stream';
 
 /** 消息角色 */
@@ -45,6 +46,8 @@ export interface ChatMessageItem {
   aguiSteps?: AguiStepRecord[];
   /** AG-UI 工具调用记录 */
   aguiToolCalls?: AguiToolCallRecord[];
+  /** 增量 Markdown 解析块（Incremark AST） */
+  blocks?: ParsedBlock[]
 }
 
 /** 消息状态 */
