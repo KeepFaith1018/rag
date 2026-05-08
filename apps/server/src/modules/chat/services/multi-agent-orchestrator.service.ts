@@ -61,6 +61,8 @@ const AgentStateAnnotation = Annotation.Root({
   retrievalRetryCount: Annotation<number>(),
   /** fact_check 输出 */
   factCheckResult: Annotation<FactCheckResult | null>(),
+  /** 事实修正循环计数（防止无限循环） */
+  factCheckRounds: Annotation<number>(),
   /** completeness_check 输出 */
   completenessResult: Annotation<CompletenessCheckResult | null>(),
   /** 补充回答（缺失维度） */
@@ -426,18 +428,26 @@ function auditEdge(
 
   if (state.auditVerdict === 'sufficient') return 'writer';
 
-  // 检索不充分 → 决策
-  if (enableWebSearch && retryCount === 0) return 'web_search';
+  // 检索不充分 → 优先网络搜索兜底
+  if (enableWebSearch) return 'web_search';
+  // 无网络搜索能力 → 改写重试
   if (retryCount < 2) return 'rewrite_fallback';
   // 重试次数用尽，直接生成（告知用户检索不充分）
   return 'writer';
 }
+
+/** 事实修正最大轮次，防止无限循环 */
+const MAX_FACT_CHECK_ROUNDS = 3;
 
 function factCheckEdge(
   state: AgentState,
 ): 'completeness_check' | 'writer_correct' {
   const result = state.factCheckResult;
   if (!result) return 'completeness_check';
+
+  const rounds = state.factCheckRounds ?? 0;
+  if (rounds >= MAX_FACT_CHECK_ROUNDS) return 'completeness_check';
+
   if (
     (result.overallRisk === 'high' || result.overallRisk === 'medium') &&
     result.needRevise
@@ -931,7 +941,11 @@ export class MultiAgentOrchestratorService {
               : { skipped: true },
             durationMs: Date.now() - stepStart,
           });
-          return { factCheckResult: factResult, currentPhase: 'verifying' };
+          return {
+            factCheckResult: factResult,
+            factCheckRounds: (s.factCheckRounds ?? 0) + 1,
+            currentPhase: 'verifying',
+          };
         })
         .addNode('writer_correct', async (s) => {
           checkAborted();
@@ -1231,6 +1245,7 @@ export class MultiAgentOrchestratorService {
         relevanceVerdict: null,
         retrievalRetryCount: 0,
         factCheckResult: null,
+        factCheckRounds: 0,
         completenessResult: null,
         supplementAnswer: '',
       } satisfies AgentState);
