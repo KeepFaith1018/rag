@@ -194,6 +194,9 @@ export function useAgentChat(options?: UseAgentChatOptions) {
               break;
 
             case 'STEP_STARTED':
+              if (event.stepName === 'supplement_retrieve' || event.stepName === 'writer_supplement') {
+                chatStore.setMessageStatus(assistantMsgId, 'supplementing')
+              }
               chatStore.upsertStep({
                 stepName: event.stepName as StepName,
                 status: 'running',
@@ -240,6 +243,14 @@ export function useAgentChat(options?: UseAgentChatOptions) {
             case 'TEXT_MESSAGE_END':
               flush();
               break;
+
+            case 'VALIDATION_STARTED':
+              chatStore.setMessageStatus(assistantMsgId, 'validating')
+              break
+
+            case 'VALIDATION_COMPLETED':
+              chatStore.setMessageStatus(assistantMsgId, 'completed')
+              break
           }
         }
       }
@@ -275,8 +286,11 @@ export function useAgentChat(options?: UseAgentChatOptions) {
    */
   function abort(): void {
     if (abortController.value) {
-      abortController.value.abort();
+      abortController.value.abort()
     }
+    // Don't set status here — backend SSE events determine final status
+    // If TEXT_MESSAGE_END was already sent, status will be completed
+    // If TEXT_MESSAGE_END wasn't sent yet, the catch block handles it
   }
 
   return {
