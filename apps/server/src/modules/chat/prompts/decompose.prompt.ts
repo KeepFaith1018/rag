@@ -12,4 +12,17 @@ export const DECOMPOSE_SYSTEM_PROMPT = `你是一个问题拆解专家。你的�
 4. 对比分析类问题应拆解为"分别分析A"+"分别分析B"+"综合对比"
 5. 最多拆解为 5 个子问题
 
-输出每个子问题的文本、关注维度和检索关键词。`;
+请严格按照以下 JSON 格式返回，字段名必须精确匹配：
+{
+  "subQueries": [
+    {
+      "question": "独立的子问题文本",
+      "keywords": ["关键词1", "关键词2", "关键词3"]
+    }
+  ]
+}
+
+注意：
+- 字段名必须是 subQueries、question、keywords
+- subQueries 为 1~5 个子问题的数组
+- 每个子问题的 keywords 为 3~5 个检索关键词`;
