@@ -9,11 +9,12 @@
  *   2. 后端开发服务器运行中: pnpm dev:server
  *
  * 使用方式：
- *   node capture-sse.mjs <email> <password> "<问题>" [<知识库ID>]
+ *   node capture-sse.mjs <email> <password> "<问题>" [<知识库ID>] [--web]
  *
  * 示例：
  *   node capture-sse.mjs test@test.com 123456 "Apache Doris 的列式存储引擎如何实现高效压缩？"
  *   node capture-sse.mjs test@test.com 123456 "介绍一下Doris" "kb_abc123"
+ *   node capture-sse.mjs test@test.com 123456 "最新AI动态" "kb_abc123" --web
  *
  * 输出：
  *   sse-capture-YYYYMMDD-HHmmss.txt   — 原始 SSE 事件
@@ -24,12 +25,15 @@ const BASE_URL = process.env.API_BASE || 'http://localhost:3000/api'
 
 async function main() {
   const args = process.argv.slice(2)
-  if (args.length < 3) {
-    console.error('用法: node capture-sse.mjs <email> <password> "<问题>" [<知识库ID>]')
+  const enableWebSearch = args.includes('--web')
+  const filtered = args.filter(a => a !== '--web')
+
+  if (filtered.length < 3) {
+    console.error('用法: node capture-sse.mjs <email> <password> "<问题>" [<知识库ID>] [--web]')
     process.exit(1)
   }
 
-  const [email, password, question, kbId] = args
+  const [email, password, question, kbId] = filtered
   const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19)
 
   console.log('═══════════════════════════════════════════')
@@ -95,6 +99,7 @@ async function main() {
     chatMode: kbId ? 'rag' : 'chat',
     message: question,
     ...(kbId ? { selectedKbIds: [kbId] } : {}),
+    ...(enableWebSearch ? { enableWebSearch: true } : {}),
   }
 
   const streamRes = await fetch(`${BASE_URL}/chat/stream`, {
