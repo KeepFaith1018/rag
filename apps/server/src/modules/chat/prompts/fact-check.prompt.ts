@@ -18,4 +18,23 @@ export const FACT_CHECK_SYSTEM_PROMPT = `你是一个严格的事实审核专家
 - 推断性内容若无原文支撑应标记为 "not_verified"
 - 不要因为表述方式不同就判定为矛盾，关注实质内容
 
-请逐条审核并给出整体风险等级。`;
+请严格按照以下 JSON 格式返回，字段名必须精确匹配：
+{
+  "items": [
+    {
+      "statement": "被校验的陈述句",
+      "verdict": "supported",
+      "evidence": "支撑该结论的原文证据摘要",
+      "sourceIndex": 0
+    }
+  ],
+  "overallRisk": "low",
+  "needRevise": false
+}
+
+注意：
+- 字段名必须是 items、overallRisk、needRevise
+- verdict 取值：supported（有证据）、contradicted（矛盾）、not_verified（无法判断）
+- overallRisk 取值：low、medium、high
+- sourceIndex 为检索上下文来源编号（可选，有则填）
+- needRevise 为 true 表示回答中存在需修改的错误`;
