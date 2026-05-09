@@ -141,7 +141,18 @@ export function useAgentChat(options?: UseAgentChatOptions) {
     })
 
     try {
-      const response = await fetchChatStream(request, abortController.value.signal);
+      // 从 sessionStorage 读取用户自定义模型配置，作为请求头透传
+      const userApiKey = sessionStorage.getItem('user_api_key')
+      const userModel = sessionStorage.getItem('user_model')
+      const userBaseUrl = sessionStorage.getItem('user_base_url')
+
+      const response = await fetchChatStream(request, abortController.value.signal, {
+        headers: {
+          ...(userApiKey ? { 'X-User-API-Key': userApiKey } : {}),
+          ...(userModel ? { 'X-User-Model': userModel } : {}),
+          ...(userBaseUrl ? { 'X-User-Base-URL': userBaseUrl } : {}),
+        },
+      })
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: ${response.statusText}`);
