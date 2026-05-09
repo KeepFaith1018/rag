@@ -1,0 +1,156 @@
+{
+  "kbIds": ["8"],
+  "docsCount": 4,
+  "questions": [
+    {
+      "id": "q01",
+      "text": "大语言模型的'幻觉问题'是什么？有哪些主要的解决思路？",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["生成与事实不符的内容", "RAG检索增强生成", "事实核查模块", "输出置信度评估"]
+    },
+    {
+      "id": "q02",
+      "text": "Transformer架构中的自注意力机制是如何工作的？请说明其核心公式和设计动机。",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["Attention(Q,K,V)公式", "除以√d_k防止梯度消失", "捕捉长距离依赖", "O(n²)复杂度"]
+    },
+    {
+      "id": "q03",
+      "text": "一个完整的RAG系统包含哪两个核心阶段？每个阶段的主要步骤是什么？",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["离线索引阶段", "在线查询阶段", "文档解析→分块→向量化→索引", "查询处理→检索→融合→重排→生成"]
+    },
+    {
+      "id": "q04",
+      "text": "HNSW索引算法中的m、ef_construct、ef三个参数分别控制什么？它们的典型默认值是多少？",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["m控制连接数默认16", "ef_construct控制构建搜索深度默认100", "ef控制查询搜索深度默认128", "越大召回率越高但开销越大"]
+    },
+    {
+      "id": "q05",
+      "text": "RRF（Reciprocal Rank Fusion）融合算法的公式和工作原理是什么？它的平滑因子k有什么作用？",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["RRF_score(d)=Σ1/(k+rank_i(d))", "k为平滑因子默认60", "仅需排名不需原始分数", "避免单路高分过度影响最终排序"]
+    },
+    {
+      "id": "q06",
+      "text": "请说明RAGAS评估框架的三个核心评估维度和各自的评估方法。",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["Faithfulness忠实度", "Answer Relevancy答案相关性", "Context Relevancy上下文相关性", "逐陈述验证", "反向生成", "相关比例计算"]
+    },
+    {
+      "id": "q07",
+      "text": "Qdrant的int8标量量化（Scalar Quantization）技术可以节省多少存储空间？量化原理是什么？",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["节省约75%存储", "float32压缩为int8", "min-max范围映射到0-255", "使用quantile 0.99排除极端值", "召回率损失<2%"]
+    },
+    {
+      "id": "q08",
+      "text": "Linsor AI采用的'Small-to-Big'三层粒度文档分块策略中，Level 1根块大约包含多少tokens？这种策略的核心思想是什么？",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["Level 1约1200 tokens", "Level 2约500 tokens用于检索", "Level 3约300 tokens用于精确匹配", "检索命中L3后展开为L1完整内容"]
+    },
+    {
+      "id": "q09",
+      "text": "GPT-3的参数量是多少？在LLM发展历程中，参数规模的增长带来了哪些涌现能力？",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["1750亿参数", "In-Context Learning", "Chain-of-Thought推理", "指令遵循", "多语言能力"]
+    },
+    {
+      "id": "q10",
+      "text": "旋转位置编码（RoPE）相比原始Transformer的位置编码有什么技术优势？哪些LLM系列采用了RoPE？",
+      "type": "fact_lookup",
+      "expectedKeyPoints": ["相对位置编码", "支持更长上下文", "位置插值可扩展至128K甚至1M tokens", "Llama和Qwen系列采用"]
+    },
+    {
+      "id": "q11",
+      "text": "在RAG系统中，稠密检索（Dense Retrieval）和稀疏检索（Sparse Retrieval）各自有什么优势和不足？为什么需要混合使用？",
+      "type": "compare_analysis",
+      "expectedKeyPoints": ["稠密擅长语义匹配", "稀疏擅长精确关键词匹配", "稠密可能漏掉罕见专业术语", "稀疏对同义改写不敏感", "两者互补覆盖不同检索场景"]
+    },
+    {
+      "id": "q12",
+      "text": "从部署复杂度、适合的场景规模和资源消耗三个角度，详细比较Qdrant和Milvus这两种向量数据库。",
+      "type": "compare_analysis",
+      "expectedKeyPoints": ["Qdrant部署简单单二进制", "Milvus存算分离多组件", "Qdrant适合百万到亿级", "Milvus适合十亿级以上", "Qdrant资源消耗低", "Milvus需要etcd/MinIO等依赖"]
+    },
+    {
+      "id": "q13",
+      "text": "请从检索能力、查询处理和系统复杂度三个角度，对比Naïve RAG、Advanced RAG和Agentic RAG三种方案的核心差异和适用场景。",
+      "type": "compare_analysis",
+      "expectedKeyPoints": ["Naïve仅有单次稠密检索", "Advanced增加改写+混合检索+重排", "Agentic引入多智能体编排", "检索质量依次提升", "系统复杂度和延迟依次增加"]
+    },
+    {
+      "id": "q14",
+      "text": "OpenAI的GPT系列和Anthropic的Claude系列在技术定位和核心优势上有什么不同？各自适合什么场景？",
+      "type": "compare_analysis",
+      "expectedKeyPoints": ["GPT多模态能力强", "Claude以安全性著称", "GPT-4o统一文本视觉语音", "Claude 4引入扩展思考", "GPT生态丰富", "Claude推理深度突出"]
+    },
+    {
+      "id": "q15",
+      "text": "HNSW和IVF两种ANN算法在索引结构、查询效率和召回率方面有什么本质区别？各自适合什么应用场景？",
+      "type": "compare_analysis",
+      "expectedKeyPoints": ["HNSW多层图结构无需训练", "IVF基于聚类需训练", "HNSW查询O(logN)召回率更高", "IVF适合高吞吐场景", "IVF的nprobe控制搜索聚类数"]
+    },
+    {
+      "id": "q16",
+      "text": "在检索参数设置上，事实查询（fact_lookup）和对比分析（compare_analysis）两种问题类型应该采用怎样不同的检索策略？为什么？",
+      "type": "compare_analysis",
+      "expectedKeyPoints": ["事实查询用严格过滤denseTopK=20", "对比分析用宽松过滤denseTopK=30", "事实查询scoreThreshold=0.3", "对比分析scoreThreshold=0.15", "对比分析需更大候选池覆盖多维度"]
+    },
+    {
+      "id": "q17",
+      "text": "如果想要从零开始构建一个面向企业内部文档的RAG问答系统，需要选择和组合哪些核心技术组件？请给出系统架构建议。",
+      "type": "research_or_open_world",
+      "expectedKeyPoints": ["文档解析方案选择", "Embedding模型选型", "向量数据库选型", "检索策略设计", "混合检索+RRF+Rerank", "提示词工程", "评估体系"]
+    },
+    {
+      "id": "q18",
+      "text": "在实际项目中，可以采用哪些策略和技术来减少大语言模型生成内容中的幻觉？请从检索、生成和校验三个层面分析。",
+      "type": "research_or_open_world",
+      "expectedKeyPoints": ["RAG提供外部知识约束", "事实校验Agent逐条验证", "提示词中明确要求诚实回答", "降低temperature减少随机性", "检索相关性审计"]
+    },
+    {
+      "id": "q19",
+      "text": "设计一个RAG系统的评估方案需要关注哪些维度？除了RAGAS的三大指标外，还有哪些实际生产中需要考虑的评估角度？",
+      "type": "research_or_open_world",
+      "expectedKeyPoints": ["检索效率指标", "生成质量指标", "答案完整性", "系统鲁棒性", "延迟和成本", "用户满意度"]
+    },
+    {
+      "id": "q20",
+      "text": "选择Embedding模型时应该考虑哪些因素？在中文为主的RAG场景中，有哪些推荐的Embedding模型？",
+      "type": "research_or_open_world",
+      "expectedKeyPoints": ["维度与精度权衡", "最大输入长度", "语言支持", "API成本和延迟", "text-embedding-v4适合中文", "BGE-M3多语言", "缓存机制优化成本"]
+    },
+    {
+      "id": "q21",
+      "text": "如何设计一个具备容错和降级能力的高可用RAG检索管线？请从检索组件冗余、异常处理和用户体验三个角度给出建议。",
+      "type": "research_or_open_world",
+      "expectedKeyPoints": ["ES不可用时降级为空结果", "稠密+稀疏并行不串行", "改写失败回退原始查询", "Rerank失败回退轻量级评分", "检索不足触发改写重试", "网络搜索兜底"]
+    },
+    {
+      "id": "q22",
+      "text": "对于包含百万级以上文档片段的大规模RAG系统，可以从哪些方面进行性能优化？请从存储、检索和生成三个层面分析。",
+      "type": "research_or_open_world",
+      "expectedKeyPoints": ["标量量化节省存储", "payload索引加速过滤", "Embedding缓存复用", "检索结果缓存", "模型分级使用", "流式输出降低首token延迟"]
+    },
+    {
+      "id": "q23",
+      "text": "Agentic RAG中的多智能体编排（Multi-Agent Orchestration）相比传统单管线RAG增加了哪些能力？在什么业务场景下值得引入这种复杂架构？",
+      "type": "research_or_open_world",
+      "expectedKeyPoints": ["自我评估和自我修正", "检索质量审计与重试", "事实校验与完整性检查", "补充检索触发", "复杂对比分析场景", "高准确率要求场景"]
+    },
+    {
+      "id": "q24",
+      "text": "你好！请问你是谁？你能帮我做什么？",
+      "type": "greeting",
+      "expectedKeyPoints": ["自我介绍为AI助手", "说明可以回答知识库相关问题", "语气友好自然"]
+    },
+    {
+      "id": "q25",
+      "text": "早上好！今天有什么可以帮助我的？",
+      "type": "greeting",
+      "expectedKeyPoints": ["友好回应问候", "表示愿意提供帮助", "不涉及检索"]
+    }
+  ]
+}

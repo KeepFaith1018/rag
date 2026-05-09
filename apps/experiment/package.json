@@ -1,0 +1,23 @@
+{
+  "name": "rag-experiment",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "naive": "tsx src/run-naive.ts",
+    "advanced": "tsx src/run-advanced.ts",
+    "agentic": "tsx src/run-agentic.ts",
+    "summary": "tsx src/generate-summary.ts"
+  },
+  "dependencies": {
+    "@langchain/openai": "^1.4.4",
+    "@langchain/core": "^1.1.41",
+    "@prisma/adapter-mariadb": "^7.3.0",
+    "@prisma/client": "^7.2.0",
+    "@qdrant/js-client-rest": "^1.16.2",
+    "dotenv": "^16.4.7",
+    "tsx": "^4.21.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.3"
+  }
+}
