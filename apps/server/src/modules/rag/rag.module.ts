@@ -3,6 +3,8 @@ import { ConfigModule } from '@nestjs/config';
 import { QdrantModule } from '@common/vector/qdrant.module';
 import { ElasticsearchModule } from '@common/vector/elasticsearch.module';
 import { AiModule } from './ai/ai.module';
+import { UserModelConfigController } from './ai/user-model-config.controller';
+import { UserModelConfigService } from './ai/user-model-config.service';
 import { WebSearchModule } from './web-search/web-search.module';
 import { DenseRetrievalService } from './retrieval/dense-retrieval.service';
 import { ElasticsearchSparseRetrievalService } from './retrieval/elasticsearch-sparse-retrieval.service';
@@ -22,8 +24,11 @@ import { CitationService } from './retrieval/citation.service';
  */
 @Module({
   imports: [ConfigModule, QdrantModule, ElasticsearchModule, AiModule, WebSearchModule],
-  controllers: [],
+  controllers: [UserModelConfigController],
   providers: [
+    // 模型配置
+    UserModelConfigService,
+
     // 检索服务
     DenseRetrievalService,
     ElasticsearchSparseRetrievalService,
