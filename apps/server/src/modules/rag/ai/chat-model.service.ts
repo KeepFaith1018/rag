@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ChatOpenAI } from '@langchain/openai';
+import { BusinessException } from '@common/exception/businessException';
+import { ErrorCode } from '@common/utils/errorCodeMap';
 
 /** 模型能力开关 */
 export interface ModelCapabilities {
@@ -108,5 +110,40 @@ export class ChatModelService {
     capability: keyof ModelCapabilities,
   ): boolean {
     return this.getModelCapabilities(modelName)[capability];
+  }
+
+  /**
+   * 测试模型连通性。
+   *
+   * 使用给定的模型配置向模型服务商发起一次简单调用，
+   * 验证 API Key、模型名、Base URL 等配置是否有效，
+   * 并返回请求延迟。
+   */
+  async testConnectivity(dto: {
+    provider: string;
+    modelName: string;
+    baseUrl?: string;
+    apiKey: string;
+  }): Promise<{ success: boolean; latencyMs: number }> {
+    const startedAt = Date.now();
+    try {
+      const model = this.createModel({
+        model: dto.modelName,
+        apiKey: dto.apiKey,
+        baseURL: dto.baseUrl,
+        temperature: 0,
+        maxTokens: 10,
+        streaming: false,
+        timeout: 10000,
+      });
+      await model.invoke('ping');
+      return { success: true, latencyMs: Date.now() - startedAt };
+    } catch (error) {
+      const errMsg = error instanceof Error ? error.message : String(error);
+      throw new BusinessException(
+        ErrorCode.MODEL_CONNECTION_FAILED,
+        `模型连接失败：${errMsg}`,
+      );
+    }
   }
 }

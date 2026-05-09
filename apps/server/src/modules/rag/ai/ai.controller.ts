@@ -1,7 +1,8 @@
-import { Controller, Get, UseGuards } from '@nestjs/common';
+import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { Auth } from '@common/decorators/auth.decorator';
 import { AuthGuard } from '@common/guards/auth.guard';
 import { ChatModelService } from './chat-model.service';
+import { TestConnectivityDto } from './dto/test-connectivity.dto';
 
 /**
  * AI 基础能力接口控制器。
@@ -33,5 +34,17 @@ export class AiController {
         source: 'system' as const,
       },
     ];
+  }
+
+  /**
+   * 测试模型连通性。
+   *
+   * 使用给定的模型配置发起一次简单调用，验证能否正常连接模型服务商。
+   */
+  @Post('test-connectivity')
+  async testConnectivity(
+    @Body() dto: TestConnectivityDto,
+  ): Promise<{ success: boolean; latencyMs: number }> {
+    return this.chatModelService.testConnectivity(dto);
   }
 }
