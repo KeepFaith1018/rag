@@ -43,17 +43,22 @@ export class ChatStreamService {
     dto: StreamChatDto,
     writer: SseWriter,
     signal?: AbortSignal,
+    modelOptions?: {
+      userApiKey?: string;
+      userModel?: string;
+      userBaseUrl?: string;
+    },
   ): Promise<void> {
     await this.chatSessionService.assertSessionOwnership(userId, dto.sessionId);
 
-    const modelName = this.chatModelService.getDefaultModelName();
+    const modelName = modelOptions?.userModel || this.chatModelService.getDefaultModelName();
     const traceId = randomUUID();
 
     if (dto.chatMode === 'rag' && dto.selectedKbIds?.length) {
-      return this.streamRagMode(userId, dto, modelName, traceId, writer, signal);
+      return this.streamRagMode(userId, dto, modelName, traceId, writer, signal, modelOptions);
     }
 
-    return this.streamChatMode(userId, dto, modelName, traceId, writer, signal);
+    return this.streamChatMode(userId, dto, modelName, traceId, writer, signal, modelOptions);
   }
 
   /**
@@ -66,6 +71,7 @@ export class ChatStreamService {
     traceId: string,
     writer: SseWriter,
     signal?: AbortSignal,
+    _modelOptions?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
   ): Promise<void> {
     const permContexts = await this.kbPermissionService.authorizeMany(
       userId,
@@ -159,6 +165,7 @@ export class ChatStreamService {
     traceId: string,
     writer: SseWriter,
     signal?: AbortSignal,
+    _modelOptions?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
   ): Promise<void> {
     const model = this.chatModelService.createModel({
       temperature: 0.7,

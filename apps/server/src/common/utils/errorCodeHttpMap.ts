@@ -74,4 +74,9 @@ export const ErrorCodeHttpStatusMap: Record<ErrorCode, HttpStatus> = {
   [ErrorCode.ADMIN_FORBIDDEN]: HttpStatus.FORBIDDEN,
   [ErrorCode.ADMIN_CANNOT_DELETE_SELF]: HttpStatus.BAD_REQUEST,
   [ErrorCode.ADMIN_CANNOT_DISABLE_SELF]: HttpStatus.BAD_REQUEST,
+
+  [ErrorCode.MODEL_NOT_FOUND]: HttpStatus.NOT_FOUND,
+  [ErrorCode.MODEL_CONNECTION_FAILED]: HttpStatus.BAD_GATEWAY,
+  [ErrorCode.MODEL_CONFIG_INVALID]: HttpStatus.BAD_REQUEST,
+  [ErrorCode.MODEL_API_KEY_MISSING]: HttpStatus.BAD_REQUEST,
 }

@@ -8,6 +8,7 @@ import {
   Param,
   Query,
   Res,
+  Headers,
   UseGuards,
 } from '@nestjs/common';
 import type { Response } from 'express';
@@ -119,10 +120,14 @@ export class ChatController {
   @UseGuards(AuthGuard, StreamRateLimitGuard)
   @Auth()
   @SkipResponseTransform()
+  // eslint-disable-next-line @typescript-eslint/require-await
   async streamChat(
     @CurrentUser('sub') userId: string,
     @Body() dto: StreamChatDto,
     @Res({ passthrough: false }) res: Response,
+    @Headers('x-user-api-key') userApiKey?: string,
+    @Headers('x-user-model') userModel?: string,
+    @Headers('x-user-base-url') userBaseUrl?: string,
   ): Promise<void> {
     res.setHeader('Content-Type', 'text/event-stream');
     res.setHeader('Cache-Control', 'no-cache');
@@ -140,7 +145,11 @@ export class ChatController {
 
     const writer = new SseWriter(res);
     void this.chatStreamService
-      .streamChat(Number(userId), dto, writer, abortController.signal)
+      .streamChat(Number(userId), dto, writer, abortController.signal, {
+        userApiKey,
+        userModel,
+        userBaseUrl,
+      })
       .catch((err) => {
         writer.write({
           type: 'RUN_ERROR',

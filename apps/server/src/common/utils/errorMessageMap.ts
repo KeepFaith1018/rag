@@ -75,4 +75,9 @@ export const ErrorMessageMap: Record<ErrorCode, string> = {
   [ErrorCode.ADMIN_FORBIDDEN]: '权限不足，无法访问该功能',
   [ErrorCode.ADMIN_CANNOT_DELETE_SELF]: '不能删除自己的账号',
   [ErrorCode.ADMIN_CANNOT_DISABLE_SELF]: '不能禁用自己的账号',
+
+  [ErrorCode.MODEL_NOT_FOUND]: '模型配置未找到，请检查配置',
+  [ErrorCode.MODEL_CONNECTION_FAILED]: '模型连接失败',
+  [ErrorCode.MODEL_CONFIG_INVALID]: '模型配置参数无效，请检查填写内容',
+  [ErrorCode.MODEL_API_KEY_MISSING]: '请先填写 API Key',
 }
