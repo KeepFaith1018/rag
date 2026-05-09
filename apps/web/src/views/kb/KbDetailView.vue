@@ -1364,27 +1364,6 @@ onMounted(() => {
             </div>
           </div>
 
-          <div
-            class="bg-surface-container-low rounded-xl p-6 shadow-lg border border-outline-variant/5"
-          >
-            <h4
-              class="text-[10px] font-bold uppercase tracking-widest text-on-surface-variant font-label mb-4"
-            >
-              联调提示
-            </h4>
-            <div class="space-y-4 text-sm text-on-surface-variant leading-6">
-              <p>
-                当前页已接入真实知识库详情、文档列表、设置写入和成员管理接口。
-              </p>
-              <p>
-                成员列表与邀请列表目前受后端权限约束，仅 owner / manager
-                可查看。
-              </p>
-              <p>
-                后续建议继续补齐页面截图、公开访客视角和更细的成员只读展示。
-              </p>
-            </div>
-          </div>
         </div>
       </div>
     </div>
