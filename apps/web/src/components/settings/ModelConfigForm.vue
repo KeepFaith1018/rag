@@ -49,11 +49,11 @@ async function handleSave() {
   }
   saving.value = true
   try {
-    // Save API key to sessionStorage (not DB!)
+    // Save API key to localStorage (browser-side, not DB)
     if (form.apiKey) {
-      sessionStorage.setItem('user_api_key', form.apiKey)
-      sessionStorage.setItem('user_model', form.modelName)
-      sessionStorage.setItem('user_base_url', form.baseUrl)
+      localStorage.setItem('user_api_key', form.apiKey)
+      localStorage.setItem('user_model', form.modelName)
+      localStorage.setItem('user_base_url', form.baseUrl)
     }
     if (isEdit) {
       await store.updateUserModel(props.model!.id, {

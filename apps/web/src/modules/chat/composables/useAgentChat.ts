@@ -141,10 +141,10 @@ export function useAgentChat(options?: UseAgentChatOptions) {
     })
 
     try {
-      // 从 sessionStorage 读取用户自定义模型配置，作为请求头透传
-      const userApiKey = sessionStorage.getItem('user_api_key')
-      const userModel = sessionStorage.getItem('user_model')
-      const userBaseUrl = sessionStorage.getItem('user_base_url')
+      // 从 localStorage 读取用户自定义模型配置，作为请求头透传
+      const userApiKey = localStorage.getItem('user_api_key')
+      const userModel = localStorage.getItem('user_model')
+      const userBaseUrl = localStorage.getItem('user_base_url')
 
       const response = await fetchChatStream(request, abortController.value.signal, {
         headers: {
