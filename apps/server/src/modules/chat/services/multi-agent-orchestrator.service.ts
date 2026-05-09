@@ -12,6 +12,7 @@ import { AgentTraceService } from './agent-trace.service';
 import { EvalQueueService } from './eval-queue.service';
 import type { AgentRunContext } from './agent-trace.service';
 import type { WebSearchResult } from '../../rag/web-search/web-search.service';
+import type { ResolvedModelParams } from './model-config-resolution.service';
 import { SseWriter } from '../types/agui-events';
 import { extractMessageContent, getErrorMessage } from '@common/utils/message.utils';
 
@@ -62,7 +63,7 @@ const AgentStateAnnotation = Annotation.Root({
   auditVerdict: Annotation<string | null>(),
   /** relevance_check 输出 */
   relevanceVerdict: Annotation<string | null>(),
-  /** 检索重试计数，最大 2 */
+  /** 检索重试计数，最大 1 */
   retrievalRetryCount: Annotation<number>(),
   /** fact_check 输出 */
   factCheckResult: Annotation<FactCheckResult | null>(),
@@ -167,12 +168,12 @@ async function routeQueryNode(
   chatModelService: ChatModelService,
   runId: string,
   traceService: AgentTraceService,
-  mo?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+  mo?: ResolvedModelParams,
 ): Promise<Partial<AgentState>> {
   const model = chatModelService.createModel({
-    model: mo?.userModel || chatModelService.getLightModelName(),
-    apiKey: mo?.userApiKey,
-    baseURL: mo?.userBaseUrl,
+    model: mo?.modelName || chatModelService.getLightModelName(),
+    apiKey: mo?.apiKey,
+    baseURL: mo?.baseURL,
     temperature: 0.2,
     streaming: false,
     timeout: 15000,
@@ -204,12 +205,12 @@ async function rewriteQueryNode(
   chatModelService: ChatModelService,
   runId: string,
   traceService: AgentTraceService,
-  mo?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+  mo?: ResolvedModelParams,
 ): Promise<Partial<AgentState>> {
   const model = chatModelService.createModel({
-    model: mo?.userModel || chatModelService.getLightModelName(),
-    apiKey: mo?.userApiKey,
-    baseURL: mo?.userBaseUrl,
+    model: mo?.modelName || chatModelService.getLightModelName(),
+    apiKey: mo?.apiKey,
+    baseURL: mo?.baseURL,
     temperature: 0.3,
     streaming: false,
     timeout: 15000,
@@ -258,12 +259,12 @@ async function rewriteFallbackNode(
   chatModelService: ChatModelService,
   runId: string,
   traceService: AgentTraceService,
-  mo?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+  mo?: ResolvedModelParams,
 ): Promise<Partial<AgentState>> {
   const model = chatModelService.createModel({
-    model: mo?.userModel || chatModelService.getLightModelName(),
-    apiKey: mo?.userApiKey,
-    baseURL: mo?.userBaseUrl,
+    model: mo?.modelName || chatModelService.getLightModelName(),
+    apiKey: mo?.apiKey,
+    baseURL: mo?.baseURL,
     temperature: 0.5,
     streaming: false,
     timeout: 15000,
@@ -313,12 +314,12 @@ async function decomposeQueryNode(
   chatModelService: ChatModelService,
   runId: string,
   traceService: AgentTraceService,
-  mo?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+  mo?: ResolvedModelParams,
 ): Promise<Partial<AgentState>> {
   const model = chatModelService.createModel({
-    model: mo?.userModel || chatModelService.getLightModelName(),
-    apiKey: mo?.userApiKey,
-    baseURL: mo?.userBaseUrl,
+    model: mo?.modelName || chatModelService.getLightModelName(),
+    apiKey: mo?.apiKey,
+    baseURL: mo?.baseURL,
     temperature: 0.2,
     streaming: false,
     timeout: 15000,
@@ -361,12 +362,12 @@ async function decomposeQueryNode(
 async function relevanceCheckNode(
   state: AgentState,
   chatModelService: ChatModelService,
-  mo?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+  mo?: ResolvedModelParams,
 ): Promise<Partial<AgentState>> {
   const model = chatModelService.createModel({
-    model: mo?.userModel || chatModelService.getLightModelName(),
-    apiKey: mo?.userApiKey,
-    baseURL: mo?.userBaseUrl,
+    model: mo?.modelName || chatModelService.getLightModelName(),
+    apiKey: mo?.apiKey,
+    baseURL: mo?.baseURL,
     temperature: 0.1,
     streaming: false,
     timeout: 10000,
@@ -401,12 +402,12 @@ async function relevanceCheckNode(
 async function auditRetrievalNode(
   state: AgentState,
   chatModelService: ChatModelService,
-  mo?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+  mo?: ResolvedModelParams,
 ): Promise<Partial<AgentState>> {
   const model = chatModelService.createModel({
-    model: mo?.userModel || chatModelService.getLightModelName(),
-    apiKey: mo?.userApiKey,
-    baseURL: mo?.userBaseUrl,
+    model: mo?.modelName || chatModelService.getLightModelName(),
+    apiKey: mo?.apiKey,
+    baseURL: mo?.baseURL,
     temperature: 0.1,
     streaming: false,
     timeout: 10000,
@@ -447,7 +448,7 @@ function relevanceEdge(state: AgentState): 'audit' | 'rewrite_fallback' {
   if (state.relevanceVerdict === 'not_relevant') {
     const retryCount = state.retrievalRetryCount ?? 0;
     // 重试耗尽 → 放行到 audit（由 audit 判定 insufficient → writer）
-    if (retryCount >= 2) return 'audit';
+    if (retryCount >= 1) return 'audit';
     return 'rewrite_fallback';
   }
   return 'audit';
@@ -464,7 +465,7 @@ function auditEdge(
   // 检索不充分 → 优先网络搜索兜底
   if (enableWebSearch) return 'web_search';
   // 无网络搜索能力 → 改写重试
-  if (retryCount < 2) return 'rewrite_fallback';
+  if (retryCount < 1) return 'rewrite_fallback';
   // 重试次数用尽，直接生成（告知用户检索不充分）
   return 'writer';
 }
@@ -594,7 +595,7 @@ export class MultiAgentOrchestratorService {
    *    → decompose → rewrite → retrieve_prep → tools → relevance_check
    *    → [not_relevant? → rewrite] → audit
    *    → [sufficient? → writer] / [insufficient+web → web_search → writer]
-   *    / [insufficient+retry<2 → rewrite_fallback → tools → audit]
+   *    / [insufficient+retry<1 → rewrite_fallback → tools → audit]
    *    → writer → fact_check → [high_risk? → writer_correct → fact_check]
    *    → completeness_check → [missing? → supplement_retrieve → writer_supplement]
    *    → __end__
@@ -605,11 +606,7 @@ export class MultiAgentOrchestratorService {
     options?: {
       enableWebSearch?: boolean;
       signal?: AbortSignal;
-      modelOptions?: {
-        userApiKey?: string;
-        userModel?: string;
-        userBaseUrl?: string;
-      };
+      modelOptions?: ResolvedModelParams;
       onFinish?: (result: {
         content: string;
         citations: RerankedHit[];
@@ -912,9 +909,9 @@ export class MultiAgentOrchestratorService {
             : prompt;
 
           const draftModel = self.chatModelService.createModel({
-            model: modelOptions?.userModel,
-            apiKey: modelOptions?.userApiKey,
-            baseURL: modelOptions?.userBaseUrl,
+            model: modelOptions?.modelName,
+            apiKey: modelOptions?.apiKey,
+            baseURL: modelOptions?.baseURL,
             temperature: 0.5,
             streaming: true,
           });
@@ -970,9 +967,9 @@ export class MultiAgentOrchestratorService {
           let factResult: FactCheckResult | null = null;
           try {
             const model = self.chatModelService.createModel({
-              model: modelOptions?.userModel || self.chatModelService.getLightModelName(),
-              apiKey: modelOptions?.userApiKey,
-              baseURL: modelOptions?.userBaseUrl,
+              model: modelOptions?.modelName || self.chatModelService.getLightModelName(),
+              apiKey: modelOptions?.apiKey,
+              baseURL: modelOptions?.baseURL,
               temperature: 0.1,
               streaming: false,
               timeout: 15000,
@@ -1041,9 +1038,9 @@ export class MultiAgentOrchestratorService {
           let compResult: CompletenessCheckResult | null = null;
           try {
             const model = self.chatModelService.createModel({
-              model: modelOptions?.userModel || self.chatModelService.getLightModelName(),
-              apiKey: modelOptions?.userApiKey,
-              baseURL: modelOptions?.userBaseUrl,
+              model: modelOptions?.modelName || self.chatModelService.getLightModelName(),
+              apiKey: modelOptions?.apiKey,
+              baseURL: modelOptions?.baseURL,
               temperature: 0.1,
               streaming: false,
               timeout: 15000,
@@ -1172,9 +1169,9 @@ export class MultiAgentOrchestratorService {
           const supplementPrompt = `你是 Linsor AI 的智能助手。请基于知识库内容，补充回答以下缺失的维度：${missingAspects}\n\n原始问题: ${s.originalQuery}\n已有回答: ${s.draftAnswer}\n\n请只输出补充内容，不需要重复已有回答。\n\n知识库内容：\n${context}`;
 
           const suppModel = self.chatModelService.createModel({
-            model: modelOptions?.userModel,
-            apiKey: modelOptions?.userApiKey,
-            baseURL: modelOptions?.userBaseUrl,
+            model: modelOptions?.modelName,
+            apiKey: modelOptions?.apiKey,
+            baseURL: modelOptions?.baseURL,
             temperature: 0.5,
             streaming: true,
           });

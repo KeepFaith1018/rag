@@ -50,8 +50,8 @@ const messages = computed(() => message.messages.value);
             }}
           </span>
 
-          <div class="min-w-0 flex-1">
-            <p class="text-sm leading-6">{{ item.text }}</p>
+          <div class="min-w-0 flex-1 overflow-hidden">
+            <p class="text-sm leading-6 break-words max-h-32 overflow-y-auto">{{ item.text }}</p>
           </div>
 
           <button

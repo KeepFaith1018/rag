@@ -76,7 +76,7 @@ const displayToolCalls = computed<AguiToolCallRecord[]>(() =>
 )
 
 const hasAgentData = computed(() =>
-  isRagMode.value && (displaySteps.value.length > 0 || displayToolCalls.value.length > 0),
+  displaySteps.value.length > 0 || displayToolCalls.value.length > 0,
 )
 
 /** 合并步骤和工具为统一时间线，按到达顺序排列 */
@@ -202,28 +202,30 @@ function handleRetry() {
 </script>
 
 <template>
-  <div class="px-6 py-2">
-    <div class="max-w-3xl">
+  <div class="px-0 py-2">
+    <div>
       <!-- 流式等待：还没有文字，显示阶段状态 -->
-      <div
-        v-if="!hasContent && isStreaming && isRagMode"
-        class="flex items-center gap-2 py-2"
-      >
-        <span class="inline-block w-2 h-4 bg-primary rounded-sm animate-pulse" />
-        <span class="text-xs text-outline">
-          {{ chatStore.agentPhaseLabel || '正在思考...' }}
-          <span v-if="chatStore.agentPhaseDetail" class="ml-2 text-outline/60">— {{ chatStore.agentPhaseDetail }}</span>
-        </span>
-      </div>
+      <Transition name="msg-fade">
+        <div
+          v-if="!hasContent && isStreaming && isRagMode"
+          class="flex items-center gap-2 py-2"
+        >
+          <span class="inline-block w-2 h-4 bg-primary rounded-sm animate-pulse" />
+          <span class="text-xs text-outline">
+            {{ chatStore.agentPhaseLabel || '正在思考...' }}
+            <span v-if="chatStore.agentPhaseDetail" class="ml-2 text-outline/60">— {{ chatStore.agentPhaseDetail }}</span>
+          </span>
+        </div>
 
-      <!-- 普通模式等待 -->
-      <div
-        v-else-if="!hasContent && isStreaming"
-        class="flex items-center gap-2 py-2"
-      >
-        <span class="inline-block w-2 h-4 bg-primary rounded-sm animate-pulse" />
-        <span class="text-xs text-outline">思考中...</span>
-      </div>
+        <!-- 普通模式等待 -->
+        <div
+          v-else-if="!hasContent && isStreaming"
+          class="flex items-center gap-2 py-2"
+        >
+          <span class="inline-block w-2 h-4 bg-primary rounded-sm animate-pulse" />
+          <span class="text-xs text-outline">思考中...</span>
+        </div>
+      </Transition>
 
       <!-- Agent 步骤面板 -->
       <div
@@ -262,7 +264,7 @@ function handleRetry() {
               <!-- 步骤 -->
               <div
                 v-if="entry.kind === 'step' && entry.step"
-                class="flex items-start gap-2 py-1.5 border-b border-outline-variant/5 last:border-0"
+                class="step-item flex items-start gap-2 py-2 border-b border-outline-variant/5 last:border-0"
               >
                 <span
                   v-if="entry.step.status === 'running'"
@@ -301,7 +303,7 @@ function handleRetry() {
               <!-- 工具调用 -->
               <div
                 v-if="entry.kind === 'tool' && entry.tool"
-                class="ml-4 pl-3 py-1.5 border-l-2 border-outline-variant/20 rounded"
+                class="step-item ml-4 pl-3 py-2 border-l-2 border-outline-variant/20 rounded"
               >
                 <div class="flex items-start gap-2">
                   <span
@@ -365,16 +367,25 @@ function handleRetry() {
       </div>
 
       <!-- Markdown 内容 (Incremark AST blocks) -->
-      <MarkdownRenderer
-        v-if="hasContent && message.blocks?.length"
-        :blocks="message.blocks"
-      />
-      <!-- 兼容旧消息/历史消息（无 blocks 时用 Markdown 解析回退） -->
-      <div
-        v-else-if="hasContent"
-        class="prose prose-invert max-w-none text-on-surface-variant text-sm leading-relaxed"
-        v-html="message.htmlContent || fallbackHtml || message.content"
-      />
+      <Transition name="msg-fade">
+        <div v-if="hasContent">
+          <MarkdownRenderer
+            v-if="message.blocks?.length"
+            :blocks="message.blocks"
+          />
+          <!-- 兼容旧消息/历史消息 -->
+          <div
+            v-else
+            class="prose prose-invert max-w-none text-on-surface-variant text-base leading-relaxed"
+            v-html="message.htmlContent || fallbackHtml || message.content"
+          />
+          <!-- 流式打字机光标 -->
+          <span
+            v-if="isStreaming"
+            class="inline-block w-2 h-4 bg-primary ml-0.5 animate-pulse align-middle rounded-sm"
+          />
+        </div>
+      </Transition>
 
       <!-- 校验状态指示器 -->
       <div
@@ -412,7 +423,7 @@ function handleRetry() {
       <!-- 底部操作栏 -->
       <div
         v-if="!isStreaming"
-        class="flex items-center justify-end gap-1 mt-2 pt-2 border-t border-outline-variant/10"
+        class="flex items-center justify-start gap-1 mt-2 pt-2 border-t border-outline-variant/10"
       >
         <button
           v-if="hasContent"
@@ -435,3 +446,38 @@ function handleRetry() {
     </div>
   </div>
 </template>
+
+<style scoped>
+.msg-fade-enter-active {
+  transition: all 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.msg-fade-enter-from {
+  opacity: 0;
+  transform: translateY(10px);
+}
+
+.step-item {
+  animation: stepIn 0.3s ease both;
+}
+.step-item:nth-child(1) { animation-delay: 0s; }
+.step-item:nth-child(2) { animation-delay: 0.04s; }
+.step-item:nth-child(3) { animation-delay: 0.08s; }
+.step-item:nth-child(4) { animation-delay: 0.12s; }
+.step-item:nth-child(5) { animation-delay: 0.16s; }
+.step-item:nth-child(6) { animation-delay: 0.20s; }
+.step-item:nth-child(7) { animation-delay: 0.24s; }
+.step-item:nth-child(8) { animation-delay: 0.28s; }
+.step-item:nth-child(9) { animation-delay: 0.32s; }
+.step-item:nth-child(10) { animation-delay: 0.36s; }
+
+@keyframes stepIn {
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+</style>

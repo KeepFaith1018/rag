@@ -130,6 +130,30 @@ export class DocumentController {
   }
 
   /**
+   * 预览知识库文档（浏览器内渲染）。
+   *
+   * PDF 使用浏览器原生阅读器，TXT/MD 直接显示文本内容，
+   * DOCX 等二进制格式降级为下载。
+   */
+  @Get('knowledge-bases/:kbId/documents/:documentId/preview')
+  @KbPermission({ action: 'read' })
+  async preview(
+    @Param('kbId') kbId: string,
+    @Param('documentId') documentId: string,
+    @Res() response: Response,
+  ) {
+    const payload = await this.documentService.getPreviewPayload(
+      kbId,
+      documentId,
+    );
+
+    response.setHeader('Content-Type', payload.mimeType);
+    response.setHeader('Content-Disposition', payload.disposition);
+    response.setHeader('Cache-Control', 'private, max-age=3600');
+    payload.stream.pipe(response);
+  }
+
+  /**
    * 删除知识库文档。
    */
   @Delete('knowledge-bases/:kbId/documents/:documentId')

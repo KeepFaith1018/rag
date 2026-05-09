@@ -53,7 +53,7 @@ export interface UserModelsResponse {
  */
 export function getSystemModels() {
   return apiRequest<SystemModelsResponse>({
-    url: "/model-config/system",
+    url: "/ai/model-configs",
     method: "GET",
   });
 }
@@ -63,7 +63,7 @@ export function getSystemModels() {
  */
 export function getUserModels() {
   return apiRequest<UserModelsResponse>({
-    url: "/model-config/user",
+    url: "/user/model-configs",
     method: "GET",
   });
 }
@@ -73,7 +73,7 @@ export function getUserModels() {
  */
 export function createUserModel(data: CreateUserModelPayload) {
   return apiRequest<UserModelItem>({
-    url: "/model-config/user",
+    url: "/user/model-configs",
     method: "POST",
     body: data,
   });
@@ -84,8 +84,8 @@ export function createUserModel(data: CreateUserModelPayload) {
  */
 export function updateUserModel(id: number, data: UpdateUserModelPayload) {
   return apiRequest<UserModelItem>({
-    url: `/model-config/user/${id}`,
-    method: "PATCH",
+    url: `/user/model-configs/${id}`,
+    method: "PUT",
     body: data,
   });
 }
@@ -95,7 +95,7 @@ export function updateUserModel(id: number, data: UpdateUserModelPayload) {
  */
 export function deleteUserModel(id: number) {
   return apiRequest<void>({
-    url: `/model-config/user/${id}`,
+    url: `/user/model-configs/${id}`,
     method: "DELETE",
   });
 }
@@ -105,7 +105,7 @@ export function deleteUserModel(id: number) {
  */
 export function testConnectivity(data: TestConnectivityPayload) {
   return apiRequest<TestConnectivityResult>({
-    url: "/model-config/test",
+    url: "/ai/test-connectivity",
     method: "POST",
     body: data,
   });

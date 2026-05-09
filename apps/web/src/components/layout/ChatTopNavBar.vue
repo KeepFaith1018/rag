@@ -8,7 +8,7 @@ const chatStore = useChatStore()
 
 <template>
   <header
-    class="flex justify-between items-center w-full px-6 h-20 sticky top-0 z-40 bg-surface/80 backdrop-blur-xl transition-colors duration-300"
+    class="flex justify-between items-center w-full px-4 md:px-6 h-16 sticky top-0 z-40 bg-surface/80 backdrop-blur-xl transition-colors duration-300"
   >
     <!-- 左侧：会话标题 -->
     <SessionTitle :title="chatStore.currentSession?.title || '新建会话'" />

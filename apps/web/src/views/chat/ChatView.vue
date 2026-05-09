@@ -5,10 +5,10 @@ import ChatTopNavBar from '@/components/layout/ChatTopNavBar.vue';
 import ChatStream from '@/components/chat/ChatStream.vue';
 import ChatInputArea from '@/components/chat/ChatInputArea.vue';
 import ChatCitationPanel from '@/components/chat/ChatCitationPanel.vue';
-import ChatSettingsBar from '@/components/chat/ChatSettingsBar.vue';
 import { useChatStore } from '@/stores/chat';
 import { useAgentChat } from '@/modules/chat/composables/useAgentChat';
 import { listAvailableKbs, listAvailableModels } from '@/api/chat';
+import { getUserModels } from '@/api/model-config';
 
 const chatStore = useChatStore();
 const { sendMessage, abort, isStreaming } = useAgentChat();
@@ -34,15 +34,27 @@ onMounted(async () => {
     console.error('[ChatView] 加载知识库失败:', e);
   }
   try {
-    const models = await listAvailableModels();
-    chatStore.setAvailableModels(
-      models.map((m) => ({
+    const [sysModels, userModels] = await Promise.all([
+      listAvailableModels(),
+      getUserModels().catch(() => [] as Awaited<ReturnType<typeof getUserModels>>),
+    ]);
+
+    const merged = [
+      ...sysModels.map((m) => ({
         configId: m.configId,
         modelName: m.modelName,
         provider: m.provider,
         source: m.source,
       })),
-    );
+      ...(Array.isArray(userModels) ? userModels : []).map((m) => ({
+        configId: String(m.id),
+        modelName: m.model_name,
+        provider: m.provider,
+        source: 'user' as const,
+      })),
+    ];
+
+    chatStore.setAvailableModels(merged);
   } catch (e) {
     console.error('[ChatView] 加载模型失败:', e);
   }
@@ -82,34 +94,36 @@ async function handleRetry(messageId: string | number) {
 </script>
 
 <template>
-  <div class="flex flex-col h-full w-full relative">
+  <div class="flex flex-col h-full w-full">
     <ChatTopNavBar />
 
     <!-- 警告横幅 -->
     <ChatStatusBanner v-if="chatStore.hasWarnings" />
 
-    <!-- 设置条：模式/知识库/模型选择 -->
-    <div class="px-6 py-3 border-b border-outline-variant/10">
-      <ChatSettingsBar />
-    </div>
-
     <!-- 主内容区 -->
-    <div class="flex-1 overflow-hidden flex flex-col relative">
-      <!-- 消息流区域：占满上方空间，底部留出输入框空间 -->
-      <div class="flex-1 overflow-y-auto pb-36">
-        <ChatStream :messages="chatStore.messages" :is-agent-working="isStreaming" @retry="handleRetry" />
+    <div class="flex-1 overflow-hidden flex flex-col">
+      <!-- 消息流区域：独立滚动 -->
+      <div class="flex-1 overflow-y-auto">
+        <div class="max-w-4xl mx-auto px-4 md:px-6">
+          <ChatStream :messages="chatStore.messages" :is-agent-working="isStreaming" @retry="handleRetry" />
+        </div>
       </div>
 
       <!-- 引用面板 -->
       <ChatCitationPanel v-if="showCitationPanel" />
 
-      <!-- 浮动输入框，绝对定位在底部 -->
-      <div class="absolute bottom-0 left-0 right-0 px-6 py-4">
-        <ChatInputArea
-          :is-streaming="isStreaming"
-          @send="handleSendMessage"
-          @cancel="handleCancel"
-        />
+      <!-- 输入区：文档流内，独立空间 -->
+      <div class="shrink-0 border-t border-outline-variant/10 bg-surface/80 backdrop-blur-xl">
+        <div class="max-w-4xl mx-auto px-4 md:px-6 py-3">
+          <ChatInputArea
+            :is-streaming="isStreaming"
+            @send="handleSendMessage"
+            @cancel="handleCancel"
+          />
+          <p class="text-center text-[10px] text-outline/50 mt-2">
+            Linsor AI 可能产生不准确答案，请核实关键信息
+          </p>
+        </div>
       </div>
     </div>
   </div>

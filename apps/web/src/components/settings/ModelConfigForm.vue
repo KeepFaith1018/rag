@@ -2,7 +2,6 @@
 import { ref, reactive } from 'vue'
 import { useModelConfigStore, type UserModelConfig } from '@/stores/model-config'
 import { useMessage } from '@/composables/useMessage'
-import { encryptApiKey, secureSet } from '@/utils/secure-storage'
 
 const props = defineProps<{ model: UserModelConfig | null }>()
 const emit = defineEmits<{ close: []; saved: [] }>()
@@ -50,13 +49,6 @@ async function handleSave() {
   }
   saving.value = true
   try {
-    // API Key 加密后存入 localStorage（后端共享密钥解密）
-    if (form.apiKey) {
-      const encrypted = await encryptApiKey(form.apiKey)
-      secureSet('user_api_key', encrypted)
-      localStorage.setItem('user_model', form.modelName)
-      localStorage.setItem('user_base_url', form.baseUrl)
-    }
     if (isEdit) {
       await store.updateUserModel(props.model!.id, {
         provider: form.provider,
@@ -109,8 +101,8 @@ async function handleSave() {
           <label class="text-xs text-outline block mb-1">API Key</label>
           <div class="relative">
             <input :type="showKey ? 'text' : 'password'" v-model="form.apiKey" class="w-full bg-surface-container-low border border-outline-variant/10 rounded-lg px-3 py-2 pr-10 text-sm text-on-surface placeholder:text-outline/50 focus:outline-none focus:border-primary" :placeholder="isEdit ? '留空则不更改' : 'sk-...'" />
-            <button class="absolute right-2 top-1/2 -translate-y-1/2 p-1 text-outline hover:text-on-surface transition-colors" @click="showKey = !showKey">
-              <span class="material-symbols-outlined text-sm">{{ showKey ? 'visibility_off' : 'visibility' }}</span>
+            <button class="absolute right-2 top-1/2 -translate-y-1/2 w-6 h-6 flex items-center justify-center text-outline hover:text-on-surface transition-colors" @click="showKey = !showKey">
+              <span class="material-symbols-outlined text-sm leading-none">{{ showKey ? 'visibility_off' : 'visibility' }}</span>
             </button>
           </div>
         </div>

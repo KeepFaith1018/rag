@@ -3,3 +3,6 @@ node_modules
 .env
 
 /prisma/generated
+
+# LangGraph API
+.langgraph_api

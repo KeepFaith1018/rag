@@ -70,7 +70,7 @@ function handleRetry(messageId: string | number) {
 <template>
   <section
     ref="containerRef"
-    class="message-stream px-6 py-4 space-y-6 w-full"
+    class="message-stream py-4 space-y-4 w-full"
   >
     <template v-if="messages.length > 0">
       <template

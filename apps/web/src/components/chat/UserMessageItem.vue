@@ -7,8 +7,8 @@ defineProps<{
 </script>
 
 <template>
-  <div class="flex justify-end px-6 py-2">
-    <div class="max-w-[85%] rounded-2xl bg-surface-container-high border border-outline-variant/10 px-4 py-3 text-sm text-on-surface">
+  <div class="flex justify-end py-2">
+    <div class="max-w-[70%] rounded-2xl bg-surface-container-high border border-outline-variant/10 px-4 py-3 text-base text-on-surface">
       {{ message.content }}
     </div>
   </div>

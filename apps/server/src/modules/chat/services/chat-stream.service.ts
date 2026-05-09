@@ -1,22 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { randomUUID } from 'crypto';
-import { HumanMessage, SystemMessage, type BaseMessage } from '@langchain/core/messages';
+import { AIMessage, HumanMessage, SystemMessage, ToolMessage, type BaseMessage } from '@langchain/core/messages';
+import { tool } from '@langchain/core/tools';
 import { ChatModelService } from '../../rag/ai/chat-model.service';
 import { ChatSessionService } from './chat-session.service';
 import { ChatMessageService } from './chat-message.service';
 import { KbPermissionService } from '../../knowledge-base/permission/kb-permission.service';
 import { CitationService } from '../../rag/retrieval/citation.service';
 import { MultiAgentOrchestratorService } from './multi-agent-orchestrator.service';
-import { SseWriter } from '../types/agui-events';
+import { WebSearchService } from '../../rag/web-search/web-search.service';
+import { ModelConfigResolutionService, type ResolvedModelParams } from './model-config-resolution.service';
+import { SseWriter, type ToolCallName } from '../types/agui-events';
 import { extractMessageContent } from '@common/utils/message.utils';
+import { z } from 'zod';
 import type { StreamChatDto } from '../dto/stream-chat.dto';
 
 /** 普通对话系统提示词 */
-const SYSTEM_PROMPT = `你是 Linsor AI（灵索智能）的智能助手，基于知识库为用户提供专业、准确的问答服务。
+const SYSTEM_PROMPT = `你是 Linsor AI（灵索智能）的智能助手，一个通用的 AI 对话助手，可以与用户进行各类话题的交流。
 
 对话规则：
-- 回答应准确、完整，基于上下文给出有用信息
-- 若问题涉及特定知识库内容但当前未检索到上下文，如实告知用户
+- 回答应准确、完整，尽你所能为用户提供有用信息
+- 你可以使用联网搜索工具获取最新信息。对于时效性问题或需要最新数据的问题，主动调用工具搜索
+- 如果问题超出了你的知识范围且联网搜索也未找到相关信息，如实告知用户，不要编造
 - 使用中文回答`;
 
 @Injectable()
@@ -28,6 +33,8 @@ export class ChatStreamService {
     private readonly kbPermissionService: KbPermissionService,
     private readonly citationService: CitationService,
     private readonly orchestrator: MultiAgentOrchestratorService,
+    private readonly webSearchService: WebSearchService,
+    private readonly modelResolutionService: ModelConfigResolutionService,
   ) {}
 
   /**
@@ -43,22 +50,31 @@ export class ChatStreamService {
     dto: StreamChatDto,
     writer: SseWriter,
     signal?: AbortSignal,
-    modelOptions?: {
-      userApiKey?: string;
-      userModel?: string;
-      userBaseUrl?: string;
-    },
+    resolvedModel?: ResolvedModelParams,
   ): Promise<void> {
     await this.chatSessionService.assertSessionOwnership(userId, dto.sessionId);
 
-    const modelName = modelOptions?.userModel || this.chatModelService.getDefaultModelName();
+    // 若前端传了 modelConfigId 但上方未预解析，在此自行解析
+    if (!resolvedModel && dto.modelConfigId && dto.modelSource) {
+      try {
+        resolvedModel = await this.modelResolutionService.resolve(
+          userId,
+          dto.modelConfigId,
+          dto.modelSource as 'system' | 'user',
+        );
+      } catch (err) {
+        // 解析失败不中断请求，回退到 env 默认值
+      }
+    }
+
+    const modelName = resolvedModel?.modelName || this.chatModelService.getDefaultModelName();
     const traceId = randomUUID();
 
     if (dto.chatMode === 'rag' && dto.selectedKbIds?.length) {
-      return this.streamRagMode(userId, dto, modelName, traceId, writer, signal, modelOptions);
+      return this.streamRagMode(userId, dto, modelName, traceId, writer, signal, resolvedModel);
     }
 
-    return this.streamChatMode(userId, dto, modelName, traceId, writer, signal, modelOptions);
+    return this.streamChatMode(userId, dto, modelName, traceId, writer, signal, resolvedModel);
   }
 
   /**
@@ -71,7 +87,7 @@ export class ChatStreamService {
     traceId: string,
     writer: SseWriter,
     signal?: AbortSignal,
-    modelOptions?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+    resolvedModel?: ResolvedModelParams,
   ): Promise<void> {
     const permContexts = await this.kbPermissionService.authorizeMany(
       userId,
@@ -112,7 +128,7 @@ export class ChatStreamService {
       {
         enableWebSearch: dto.enableWebSearch ?? false,
         signal,
-        modelOptions,
+        modelOptions: resolvedModel,
         onFinish: async (result) => {
           const tasks: Promise<unknown>[] = [];
 
@@ -158,6 +174,10 @@ export class ChatStreamService {
 
   /**
    * 普通对话模式：LLM 流式输出，封装为 AG-UI 文本事件。
+   *
+   * 当用户开启联网搜索且服务可用时，模型可自主决策是否调用 web_search 工具：
+   * Phase 1 — 非流式 Agent Loop（bindTools + invoke），执行工具调用并发出 TOOL_CALL 事件；
+   * Phase 2 — 流式生成最终回答。
    */
   private async streamChatMode(
     _userId: number,
@@ -166,12 +186,12 @@ export class ChatStreamService {
     traceId: string,
     writer: SseWriter,
     signal?: AbortSignal,
-    modelOptions?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+    resolvedModel?: ResolvedModelParams,
   ): Promise<void> {
     const model = this.chatModelService.createModel({
-      model: modelOptions?.userModel,
-      apiKey: modelOptions?.userApiKey,
-      baseURL: modelOptions?.userBaseUrl,
+      model: resolvedModel?.modelName,
+      apiKey: resolvedModel?.apiKey,
+      baseURL: resolvedModel?.baseURL,
       temperature: 0.7,
       streaming: true,
     });
@@ -197,23 +217,124 @@ export class ChatStreamService {
     ];
 
     writer.write({ type: 'RUN_STARTED', runId: traceId, timestamp: Date.now() });
-    const msgId = `msg_${Date.now()}`;
-    writer.write({ type: 'TEXT_MESSAGE_START', messageId: msgId });
 
-    const lcStream = await model.stream(messages);
+    const enableToolCalling = dto.enableWebSearch && this.webSearchService.isAvailable();
     let fullContent = '';
 
     try {
-      for await (const chunk of lcStream) {
-        if (signal?.aborted) break;
-        const text = extractMessageContent(chunk);
-        if (text) {
-          fullContent += text;
-          writer.write({ type: 'TEXT_MESSAGE_CONTENT', messageId: msgId, delta: text });
+      if (enableToolCalling) {
+        const webSearchTool = tool(
+          async ({ query }) => {
+            const results = await this.webSearchService.search(query, 5);
+            return JSON.stringify(results);
+          },
+          {
+            name: 'web_search',
+            description:
+              '搜索互联网获取最新信息。当需要实时数据、新闻或用户询问的问题需要联网才能回答时使用此工具。',
+            schema: z.object({
+              query: z.string().describe('搜索查询关键词'),
+            }),
+          },
+        );
+
+        const modelWithTools = this.chatModelService
+          .createModel({
+            model: resolvedModel?.modelName,
+            apiKey: resolvedModel?.apiKey,
+            baseURL: resolvedModel?.baseURL,
+            temperature: 0.7,
+            streaming: false,
+          })
+          .bindTools([webSearchTool]);
+
+        const agentMessages = [...messages];
+        let maxIterations = 3;
+
+        while (maxIterations-- > 0) {
+          if (signal?.aborted) break;
+
+          const aiMsg = await modelWithTools.invoke(agentMessages);
+
+          if (aiMsg.tool_calls && aiMsg.tool_calls.length > 0) {
+            agentMessages.push(aiMsg);
+
+            for (const tc of aiMsg.tool_calls) {
+              // 非流式 invoke 返回的 tool_call 必有 id，类型标注为可选，此处给兜底
+              const toolCallId = tc.id!;
+              const startedAt = Date.now();
+              writer.write({
+                type: 'TOOL_CALL_START',
+                toolCallId,
+                toolCallName: 'web_search' as ToolCallName,
+                input: tc.args as Record<string, unknown>,
+              });
+
+              const args = tc.args as { query: string };
+              const results = await this.webSearchService.search(args.query, 5);
+
+              writer.write({
+                type: 'TOOL_CALL_RESULT',
+                toolCallId,
+                toolCallName: 'web_search' as ToolCallName,
+                output: { resultCount: results.length },
+                durationMs: Date.now() - startedAt,
+              });
+
+              agentMessages.push(
+                new ToolMessage({
+                  content: JSON.stringify(results),
+                  tool_call_id: toolCallId,
+                }),
+              );
+            }
+          } else {
+            // 模型产出文本回答，不需要继续循环
+            break;
+          }
         }
+
+        // Phase 2: 用流式模型基于完整对话历史生成最终回答
+        const msgId = `msg_${Date.now()}`;
+        writer.write({ type: 'TEXT_MESSAGE_START', messageId: msgId });
+
+        const streamingModel = this.chatModelService.createModel({
+          model: resolvedModel?.modelName,
+          apiKey: resolvedModel?.apiKey,
+          baseURL: resolvedModel?.baseURL,
+          temperature: 0.7,
+          streaming: true,
+        });
+
+        const lcStream = await streamingModel.stream(agentMessages);
+        for await (const chunk of lcStream) {
+          if (signal?.aborted) break;
+          const text = extractMessageContent(chunk);
+          if (text) {
+            fullContent += text;
+            writer.write({ type: 'TEXT_MESSAGE_CONTENT', messageId: msgId, delta: text });
+          }
+        }
+
+        writer.write({ type: 'TEXT_MESSAGE_END', messageId: msgId });
+      } else {
+        // 未开启联网搜索：直接流式输出
+        const msgId = `msg_${Date.now()}`;
+        writer.write({ type: 'TEXT_MESSAGE_START', messageId: msgId });
+
+        const lcStream = await model.stream(messages);
+        for await (const chunk of lcStream) {
+          if (signal?.aborted) break;
+          const text = extractMessageContent(chunk);
+          if (text) {
+            fullContent += text;
+            writer.write({ type: 'TEXT_MESSAGE_CONTENT', messageId: msgId, delta: text });
+          }
+        }
+
+        writer.write({ type: 'TEXT_MESSAGE_END', messageId: msgId });
       }
 
-      writer.write({ type: 'TEXT_MESSAGE_END', messageId: msgId });
       writer.write({ type: 'RUN_FINISHED', runId: traceId });
 
       await this.chatMessageService.finalizeAssistantMessage(

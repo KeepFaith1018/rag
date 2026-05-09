@@ -42,15 +42,17 @@ export class AiController {
           modelName: this.chatModelService.getDefaultModelName(),
           provider: 'system',
           source: 'system' as const,
+          isActive: true,
         },
       ];
     }
 
     return rows.map((r) => ({
-      configId: `sys_${r.id}`,
+      configId: String(r.id),
       modelName: r.name,
       provider: r.provider,
       source: 'system' as const,
+      isActive: true,
     }));
   }
 

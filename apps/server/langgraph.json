@@ -1,0 +1,9 @@
+{
+  "node_version": "20",
+  "dockerfile_lines": [],
+  "dependencies": ["./package.json"],
+  "graphs": {
+    "multi-agent-orchestrator": "./src/studio-entry.ts:compiledGraph"
+  },
+  "env": ".env"
+}

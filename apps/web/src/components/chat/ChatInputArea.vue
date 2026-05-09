@@ -1,6 +1,9 @@
 <script setup lang="ts">
-import { ref, watch, nextTick } from 'vue'
+import { computed, ref, watch, nextTick } from 'vue'
 import { useChatStore } from '@/stores/chat'
+import ChatModeToggle from './ChatModeToggle.vue'
+import ChatKbSelector from './ChatKbSelector.vue'
+import ChatModelSelector from './ChatModelSelector.vue'
 
 const props = withDefaults(
   defineProps<{
@@ -21,9 +24,14 @@ const chatStore = useChatStore()
 const inputText = ref('')
 const textareaRef = ref<HTMLTextAreaElement | null>(null)
 
-const LINE_HEIGHT = 24 // 每行高度约 24px
+const LINE_HEIGHT = 24
 const MAX_LINES = 8
 const MAX_HEIGHT = LINE_HEIGHT * MAX_LINES
+
+/** RAG 模式的 placeholder */
+const placeholderText = computed(() =>
+  chatStore.chatMode === 'rag' ? '基于知识库提问...' : '向 灵索智能 发送消息...',
+)
 
 /** 自适应高度 */
 function autoResize() {
@@ -55,7 +63,6 @@ function handleSend() {
 /** 处理键盘事件 */
 function handleKeydown(e: KeyboardEvent) {
   if (e.key === 'Enter' && e.ctrlKey) {
-    // Ctrl + Enter：换行
     e.preventDefault()
     const textarea = textareaRef.value
     if (!textarea) return
@@ -68,7 +75,6 @@ function handleKeydown(e: KeyboardEvent) {
     return
   }
   if (e.key === 'Enter' && !e.shiftKey) {
-    // Enter（无 Ctrl）：发送
     e.preventDefault()
     handleSend()
   }
@@ -81,63 +87,68 @@ function handleCancel() {
 </script>
 
 <template>
-  <!-- 统一容器：上下结构 -->
-  <div class="w-full bg-surface-container-low/80 backdrop-blur-xl rounded-2xl border border-outline-variant/10 shadow-2xl">
-    <!-- 上部：输入区 -->
-    <div class="px-3 pt-3 pb-2">
+  <div class="bg-surface-container/60 backdrop-blur-xl rounded-3xl border border-outline-variant/10 shadow-lg">
+    <!-- textarea 区 -->
+    <div class="px-4 py-3">
       <textarea
         ref="textareaRef"
         v-model="inputText"
         class="w-full bg-transparent focus:outline-none text-on-surface placeholder:text-outline/50 resize-none text-sm leading-6"
-        placeholder="向 灵索智能 发送消息..."
+        :placeholder="placeholderText"
         :style="{ height: 'auto', overflowY: 'hidden' }"
         @keydown="handleKeydown"
       />
     </div>
 
-    <!-- 下部：功能区，左右布局 -->
-    <div class="flex items-center justify-between px-3 pb-3">
-      <!-- 左侧：联网搜索 + 附件 -->
-      <div class="flex items-center gap-1">
+    <!-- 底部控制栏：单行，左右结构 -->
+    <div class="flex items-center justify-between px-4 pb-2 pt-0 gap-3">
+      <!-- 左侧：模式切换 + KB 选择器 + 警告 -->
+      <div class="flex items-center gap-2 flex-1 min-w-0">
+        <ChatModeToggle />
+        <ChatKbSelector v-if="chatStore.chatMode === 'rag' && chatStore.availableKbs.length > 0" compact />
+        <span
+          v-if="chatStore.chatMode === 'rag' && chatStore.selectedKbIds.length === 0 && chatStore.availableKbs.length > 0"
+          class="text-[10px] text-amber-400 flex items-center gap-1 whitespace-nowrap"
+        >
+          <span class="material-symbols-outlined text-[12px]">info</span>
+          请选择
+        </span>
+      </div>
+
+      <!-- 右侧：模型 + 联网 + 发送（贴近排列） -->
+      <div class="flex items-center gap-1 flex-shrink-0">
+        <ChatModelSelector />
         <button
           :class="[
             'flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-all focus:outline-none',
             chatStore.enableWebSearch
               ? 'bg-primary/10 text-primary border border-primary/30'
-              : 'text-outline hover:text-on-surface border border-transparent hover:bg-surface-container-high'
+              : 'text-outline hover:text-on-surface border border-transparent hover:bg-surface-container-high',
           ]"
           title="联网搜索"
           @click="chatStore.toggleWebSearch()"
         >
-          <span class="material-symbols-outlined text-base">
-            {{ chatStore.enableWebSearch ? 'language' : 'language' }}
-          </span>
+          <span class="material-symbols-outlined text-base">language</span>
           <span>联网</span>
         </button>
-        <button class="p-2 text-outline hover:text-primary transition-colors focus:outline-none">
-          <span class="material-symbols-outlined text-xl">attach_file</span>
-        </button>
-      </div>
 
-      <!-- 右侧：语音 + 发送 -->
-      <div class="flex items-center gap-1">
+        <!-- 发送 / 取消 -->
         <template v-if="isStreaming">
           <button
-            class="bg-error-container hover:bg-error/20 text-on-error-container p-2 rounded-full aspect-square transition-all shadow-lg active:scale-95 focus:outline-none"
+            class="w-9 h-9 flex items-center justify-center rounded-full bg-error-container hover:bg-error/20 text-on-error-container transition-all shadow-lg active:scale-95 focus:outline-none"
             @click="handleCancel"
           >
-            <span class="material-symbols-outlined text-xl">close</span>
+            <span class="material-symbols-outlined text-xl leading-none">close</span>
           </button>
         </template>
         <template v-else>
-          <button class="p-2 text-outline hover:text-primary transition-colors focus:outline-none">
-            <span class="material-symbols-outlined text-xl">mic</span>
-          </button>
           <button
-            class="bg-primary-container hover:bg-primary text-on-primary-container p-2 rounded-full aspect-square transition-all shadow-lg active:scale-95 focus:outline-none"
+            class="w-9 h-9 flex items-center justify-center rounded-full bg-primary-container hover:bg-primary text-on-primary-container transition-all shadow-lg active:scale-95 focus:outline-none"
+            :class="{ 'opacity-30 pointer-events-none': !inputText.trim() }"
+            :disabled="!inputText.trim()"
             @click="handleSend"
           >
-            <span class="material-symbols-outlined text-xl">arrow_upward</span>
+            <span class="material-symbols-outlined text-xl leading-none">arrow_upward</span>
           </button>
         </template>
       </div>

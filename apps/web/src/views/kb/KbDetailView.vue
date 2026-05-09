@@ -8,6 +8,7 @@ import { useKbMembers } from "@/composables/useKbMembers";
 import { useMessage } from "@/composables/useMessage";
 import { useGlobalConfirmDialog } from "@/composables/useGlobalConfirmDialog";
 import { useChunkUpload } from "@/modules/document-upload/composables/useChunkUpload";
+import DocumentPreviewModal from "@/components/document/DocumentPreviewModal.vue";
 import { ApiError } from "@/types/api";
 import type {
   KnowledgeBaseDetail,
@@ -25,6 +26,8 @@ const { confirm } = useGlobalConfirmDialog();
 const fileInputRef = ref<HTMLInputElement | null>(null);
 const activeTab = ref<"documents" | "members" | "settings">("documents");
 const documentKeyword = ref("");
+const previewOpen = ref(false);
+const previewDoc = ref<KnowledgeBaseDocumentItem | null>(null);
 const documentView = useKnowledgeBaseDetail();
 const memberView = useKbMembers();
 const { state, isUploading, startUpload, cancel } = useChunkUpload();
@@ -381,6 +384,14 @@ async function reparseDocument(document: KnowledgeBaseDocumentItem) {
   } catch (error) {
     message.error(resolveErrorMessage(error, "触发重解析失败"));
   }
+}
+
+/**
+ * 预览文档（浏览器内打开）。
+ */
+function previewDocument(document: KnowledgeBaseDocumentItem) {
+  previewDoc.value = document;
+  previewOpen.value = true;
 }
 
 /**
@@ -963,6 +974,13 @@ onMounted(() => {
                     </div>
                     <div class="flex items-center gap-2">
                       <BaseButton
+                        variant="outline"
+                        class="!px-3 !py-2"
+                        @click="previewDocument(document)"
+                      >
+                        预览
+                      </BaseButton>
+                      <BaseButton
                         v-if="kb?.permissions.canDownload"
                         variant="outline"
                         class="!px-3 !py-2"
@@ -1494,6 +1512,17 @@ onMounted(() => {
       </div>
     </div>
   </div>
+
+  <!-- 文档预览模态框 -->
+  <DocumentPreviewModal
+    v-if="previewDoc"
+    :open="previewOpen"
+    :kb-id="kbId || ''"
+    :document-id="previewDoc.id"
+    :file-name="previewDoc.originalFilename || previewDoc.title"
+    :file-type="previewDoc.fileType || ''"
+    @close="previewOpen = false"
+  />
 </template>
 
 <style scoped>

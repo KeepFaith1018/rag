@@ -404,6 +404,42 @@ export class DocumentService {
   }
 
   /**
+   * 文档预览载荷 — 获取可读流用于浏览器内预览。
+   *
+   * PDF/TXT/MD 返回 inline 模式（浏览器直接渲染），
+   * DOCX 等二进制格式降级为 attachment 触发下载。
+   */
+  async getPreviewPayload(kbId: string, documentId: string) {
+    try {
+      const document = await this.getDocumentOrThrow(kbId, documentId);
+      if (!this.fileStorageService.exists(document.file_path)) {
+        throw new BusinessException(
+          ErrorCode.FILE_NOT_FOUND,
+          '文档源文件不存在',
+        );
+      }
+
+      const isInline = ['pdf', 'txt', 'md'].includes(document.file_type ?? '');
+
+      return {
+        fileName: document.original_filename ?? document.title,
+        mimeType: isInline ? (document.mime_type ?? 'application/octet-stream') : 'application/octet-stream',
+        disposition: isInline ? 'inline' : `attachment; filename="${encodeURIComponent(document.original_filename ?? document.title)}"`,
+        stream: this.fileStorageService.createFileReadStream(document.file_path),
+      };
+    } catch (error) {
+      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+        context: {
+          module: 'DocumentService',
+          action: 'getPreviewPayload',
+          kbId,
+          documentId,
+        },
+      });
+    }
+  }
+
+  /**
    * 删除文档，并同步清理本地源文件。
    */
   async remove(userId: number, kbId: string, documentId: string) {

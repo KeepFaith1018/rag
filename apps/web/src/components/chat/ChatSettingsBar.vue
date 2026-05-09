@@ -3,7 +3,6 @@ import { ref, computed } from 'vue';
 import { useChatStore } from '@/stores/chat';
 import ChatModeToggle from './ChatModeToggle.vue';
 import ChatKbSelector from './ChatKbSelector.vue';
-import ChatModelSelector from './ChatModelSelector.vue';
 
 const chatStore = useChatStore();
 const isExpanded = ref(false);
@@ -49,13 +48,6 @@ const compactStatus = computed(() => {
           <span class="text-outline">{{ compactStatus.kbText }}</span>
         </div>
 
-        <div class="w-px h-3 bg-outline-variant/30"></div>
-
-        <!-- 模型指示 -->
-        <div class="flex items-center gap-2">
-          <span class="material-symbols-outlined text-[14px] text-outline">psychology</span>
-          <span class="text-outline">{{ chatStore.selectedModel?.modelName || '默认模型' }}</span>
-        </div>
       </div>
 
       <!-- 展开/收起图标 -->
@@ -94,11 +86,6 @@ const compactStatus = computed(() => {
           <ChatKbSelector />
         </div>
 
-        <!-- 模型选择 -->
-        <div>
-          <div class="text-[10px] font-label text-outline uppercase tracking-widest mb-2">模型</div>
-          <ChatModelSelector />
-        </div>
       </div>
     </Transition>
 

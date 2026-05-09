@@ -2,12 +2,21 @@
 import { computed, ref } from 'vue';
 import { useChatStore } from '@/stores/chat';
 
+const props = withDefaults(
+  defineProps<{
+    /** 紧凑模式：去除外层容器，仅保留触发按钮+下拉 */
+    compact?: boolean;
+  }>(),
+  { compact: false },
+);
+
 const chatStore = useChatStore();
 
 /** RAG 模式下且有可用知识库时显示 */
-const visible = computed(
-  () => chatStore.chatMode === 'rag' && chatStore.availableKbs.length > 0,
-);
+const visible = computed(() => {
+  if (props.compact) return true; // compact 模式由父组件控制 v-if
+  return chatStore.chatMode === 'rag' && chatStore.availableKbs.length > 0;
+});
 
 /** 权限配置 */
 const permissionConfig: Record<string, { label: string; color: string }> = {
@@ -114,44 +123,194 @@ const publicKbs = computed(() =>
 </script>
 
 <template>
-  <Transition
-    enter-active-class="transition-all duration-200 ease-out"
-    enter-from-class="opacity-0 -translate-y-2"
-    enter-to-class="opacity-100 translate-y-0"
-    leave-active-class="transition-all duration-150 ease-in"
-    leave-from-class="opacity-100 translate-y-0"
-    leave-to-class="opacity-0 -translate-y-2"
-  >
-    <div
-      v-if="visible"
-      class="relative px-4 py-3 bg-surface-container-low/50 rounded-xl border border-outline-variant/10"
-    >
-      <span class="text-xs text-outline font-medium mr-1 flex items-center gap-1">
-        <span class="material-symbols-outlined text-[14px]">folder_open</span>
-        选择知识库
-      </span>
-
-      <!-- 级联选择器触发按钮 -->
+  <!-- compact 模式：仅触发按钮 + 下拉 -->
+  <template v-if="compact">
+    <div class="relative">
       <button
-        class="mt-2 flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all border border-outline-variant/10 bg-surface-container hover:border-outline min-w-[200px]"
+        class="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-medium transition-all border"
+        :class="isOpen
+          ? 'border-primary/30 bg-primary-container/10 text-primary'
+          : 'border-outline-variant/20 hover:border-outline text-outline hover:text-on-surface'"
         @click="toggleDropdown"
       >
-        <span class="material-symbols-outlined text-[14px] text-primary">
-          library_add
+        <span class="material-symbols-outlined text-[14px]">
+          {{ chatStore.selectedKbCount > 0 ? 'library_books' : 'folder_open' }}
         </span>
-        <span v-if="displayNames" class="flex-1 text-left truncate">
-          {{ displayNames }}
-        </span>
-        <span v-else class="flex-1 text-outline">请选择知识库</span>
+        <span v-if="displayNames" class="truncate max-w-[120px]">{{ displayNames }}</span>
+        <span v-else class="text-outline/70">知识库</span>
         <span
           :class="[
-            'material-symbols-outlined text-[14px] transition-transform',
+            'material-symbols-outlined text-[12px] transition-transform',
             isOpen ? 'rotate-180' : '',
           ]"
-        >
-          expand_more
-        </span>
+        >expand_more</span>
       </button>
+
+      <!-- 下拉面板（复用的完整列表） -->
+      <Transition
+        enter-active-class="transition-all duration-200 ease-out"
+        enter-from-class="opacity-0 translate-y-1"
+        enter-to-class="opacity-100 translate-y-0"
+        leave-active-class="transition-all duration-150 ease-in"
+        leave-from-class="opacity-100 translate-y-0"
+        leave-to-class="opacity-0 translate-y-1"
+      >
+        <div
+          v-if="isOpen"
+          class="kb-selector-dropdown absolute z-50 bottom-full mb-1 left-0 bg-surface-container rounded-xl border border-outline-variant/20 shadow-lg overflow-hidden"
+          style="width: 320px;"
+          @click.stop
+        >
+          <div class="max-h-[300px] overflow-y-auto p-2">
+            <!-- 私人知识库 -->
+            <div v-if="privateKbs.length > 0" class="mb-3">
+              <div class="flex items-center justify-between px-2 py-1">
+                <span class="text-xs font-medium text-outline">私人</span>
+                <button
+                  class="text-[10px] text-primary hover:text-primary-container"
+                  @click="selectAllPrivate"
+                >全选</button>
+              </div>
+              <div class="space-y-1">
+                <button
+                  v-for="kb in privateKbs" :key="kb.kbId"
+                  :class="[
+                    'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all border',
+                    isSelected(kb.kbId)
+                      ? 'bg-primary-container/50 border-primary/30 text-on-primary-container'
+                      : 'bg-transparent border-transparent hover:bg-surface-container-high',
+                  ]"
+                  @click="toggleKb(kb.kbId)"
+                >
+                  <span :class="['material-symbols-outlined text-[14px]', isSelected(kb.kbId) ? 'text-primary' : 'opacity-0']">check_circle</span>
+                  <span class="flex-1 text-left truncate">{{ kb.kbName }}</span>
+                  <span :class="['text-[10px] px-1 py-0.5 rounded', permissionConfig[kb.permission]?.color || 'text-gray-400']">
+                    {{ permissionConfig[kb.permission]?.label }}
+                  </span>
+                </button>
+              </div>
+            </div>
+
+            <!-- 共享知识库 -->
+            <div v-if="sharedOwnedKbs.length > 0 || sharedJoinedKbs.length > 0" class="mb-3">
+              <div class="flex items-center justify-between px-2 py-1">
+                <span class="text-xs font-medium text-outline">共享</span>
+              </div>
+              <div v-if="sharedOwnedKbs.length > 0" class="ml-2 mb-2">
+                <div class="flex items-center justify-between px-2 py-1">
+                  <span class="text-[10px] text-outline/70">我创建</span>
+                  <button class="text-[10px] text-primary hover:text-primary-container" @click="selectAllSharedOwned">全选</button>
+                </div>
+                <div class="space-y-1">
+                  <button
+                    v-for="kb in sharedOwnedKbs" :key="kb.kbId"
+                    :class="[
+                      'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all border',
+                      isSelected(kb.kbId)
+                        ? 'bg-primary-container/50 border-primary/30 text-on-primary-container'
+                        : 'bg-transparent border-transparent hover:bg-surface-container-high',
+                    ]"
+                    @click="toggleKb(kb.kbId)"
+                  >
+                    <span :class="['material-symbols-outlined text-[14px]', isSelected(kb.kbId) ? 'text-primary' : 'opacity-0']">check_circle</span>
+                    <span class="flex-1 text-left truncate">{{ kb.kbName }}</span>
+                    <span :class="['text-[10px] px-1 py-0.5 rounded', permissionConfig[kb.permission]?.color || 'text-gray-400']">
+                      {{ permissionConfig[kb.permission]?.label }}
+                    </span>
+                  </button>
+                </div>
+              </div>
+              <div v-if="sharedJoinedKbs.length > 0" class="ml-2">
+                <div class="flex items-center justify-between px-2 py-1">
+                  <span class="text-[10px] text-outline/70">我加入</span>
+                  <button class="text-[10px] text-primary hover:text-primary-container" @click="selectAllSharedJoined">全选</button>
+                </div>
+                <div class="space-y-1">
+                  <button
+                    v-for="kb in sharedJoinedKbs" :key="kb.kbId"
+                    :class="[
+                      'w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all border',
+                      isSelected(kb.kbId)
+                        ? 'bg-primary-container/50 border-primary/30 text-on-primary-container'
+                        : 'bg-transparent border-transparent hover:bg-surface-container-high',
+                    ]"
+                    @click="toggleKb(kb.kbId)"
+                  >
+                    <span :class="['material-symbols-outlined text-[14px]', isSelected(kb.kbId) ? 'text-primary' : 'opacity-0']">check_circle</span>
+                    <span class="flex-1 text-left truncate">{{ kb.kbName }}</span>
+                    <span :class="['text-[10px] px-1 py-0.5 rounded', permissionConfig[kb.permission]?.color || 'text-gray-400']">
+                      {{ permissionConfig[kb.permission]?.label }}
+                    </span>
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- 公开知识库 -->
+            <div v-if="publicKbs.length > 0">
+              <div class="flex items-center justify-between px-2 py-1">
+                <span class="text-xs font-medium text-outline/50">公开</span>
+              </div>
+              <div class="space-y-1 opacity-50">
+                <div v-for="kb in publicKbs" :key="kb.kbId"
+                  class="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all border border-transparent bg-transparent cursor-not-allowed">
+                  <span class="material-symbols-outlined text-[14px] opacity-0">check_circle</span>
+                  <span class="flex-1 text-left truncate">{{ kb.kbName }}</span>
+                  <span class="text-[10px] px-1 py-0.5 rounded text-gray-400">访客</span>
+                </div>
+              </div>
+              <div class="px-2 py-1 text-[10px] text-amber-400/70">公开知识库需要先加入才能提问</div>
+            </div>
+          </div>
+          <div class="flex items-center justify-between px-3 py-2 border-t border-outline-variant/10 bg-surface-container-low">
+            <button class="text-xs text-outline hover:text-on-primary-container" @click="clearAll">清除全部</button>
+            <button class="text-xs text-primary hover:text-primary-container font-medium" @click="isOpen = false">完成</button>
+          </div>
+        </div>
+      </Transition>
+    </div>
+  </template>
+
+  <!-- 非 compact 模式：保持原样 -->
+  <template v-else>
+    <Transition
+      enter-active-class="transition-all duration-200 ease-out"
+      enter-from-class="opacity-0 -translate-y-2"
+      enter-to-class="opacity-100 translate-y-0"
+      leave-active-class="transition-all duration-150 ease-in"
+      leave-from-class="opacity-100 translate-y-0"
+      leave-to-class="opacity-0 -translate-y-2"
+    >
+      <div
+        v-if="visible"
+        class="relative px-4 py-3 bg-surface-container-low/50 rounded-xl border border-outline-variant/10"
+      >
+        <span class="text-xs text-outline font-medium mr-1 flex items-center gap-1">
+          <span class="material-symbols-outlined text-[14px]">folder_open</span>
+          选择知识库
+        </span>
+
+        <!-- 级联选择器触发按钮 -->
+        <button
+          class="mt-2 flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium transition-all border border-outline-variant/10 bg-surface-container hover:border-outline min-w-[200px]"
+          @click="toggleDropdown"
+        >
+          <span class="material-symbols-outlined text-[14px] text-primary">
+            library_add
+          </span>
+          <span v-if="displayNames" class="flex-1 text-left truncate">
+            {{ displayNames }}
+          </span>
+          <span v-else class="flex-1 text-outline">请选择知识库</span>
+          <span
+            :class="[
+              'material-symbols-outlined text-[14px] transition-transform',
+              isOpen ? 'rotate-180' : '',
+            ]"
+          >
+            expand_more
+          </span>
+        </button>
 
       <!-- 下拉面板 -->
       <Transition
@@ -363,4 +522,5 @@ const publicKbs = computed(() =>
       </span>
     </div>
   </Transition>
+  </template>
 </template>

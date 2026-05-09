@@ -20,6 +20,7 @@ import { StreamRateLimitGuard } from '@common/guards/rate-limit.guard';
 import { ChatSessionService } from './services/chat-session.service';
 import { ChatMessageService } from './services/chat-message.service';
 import { ChatStreamService } from './services/chat-stream.service';
+import { ModelConfigResolutionService, type ResolvedModelParams } from './services/model-config-resolution.service';
 import { CryptoService } from '@common/utils/crypto.service';
 import { SseWriter } from './types/agui-events';
 import { CreateChatSessionDto } from './dto/create-chat-session.dto';
@@ -34,6 +35,7 @@ export class ChatController {
     private readonly chatMessageService: ChatMessageService,
     private readonly chatStreamService: ChatStreamService,
     private readonly cryptoService: CryptoService,
+    private readonly modelResolutionService: ModelConfigResolutionService,
   ) {}
 
   /** 创建新会话 */
@@ -122,7 +124,7 @@ export class ChatController {
   @UseGuards(AuthGuard, StreamRateLimitGuard)
   @Auth()
   @SkipResponseTransform()
-  // eslint-disable-next-line @typescript-eslint/require-await
+   
   async streamChat(
     @CurrentUser('sub') userId: string,
     @Body() dto: StreamChatDto,
@@ -147,22 +149,39 @@ export class ChatController {
 
     const writer = new SseWriter(res);
 
-    // 解密前端传来的加密 API Key
-    let decryptedApiKey: string | undefined;
-    if (userApiKey) {
+    // 解析模型配置：优先从 body 的 modelConfigId + modelSource 查库/解密
+    // 回退到 headers 透传（过渡期兼容旧前端）
+    let resolvedModel: ResolvedModelParams | undefined;
+    if (dto.modelConfigId && dto.modelSource) {
       try {
-        decryptedApiKey = this.cryptoService.decryptTransmission(userApiKey);
+        resolvedModel = await this.modelResolutionService.resolve(
+          Number(userId),
+          dto.modelConfigId,
+          dto.modelSource as 'system' | 'user',
+        );
       } catch {
-        // 解密失败，按未提供处理（兜底使用系统 API Key）
+        // 解析失败，回退到 headers / env 默认值
       }
+    } else if (userModel) {
+      // 旧路径：headers 透传
+      let decryptedApiKey: string | undefined;
+      if (userApiKey) {
+        try {
+          decryptedApiKey = this.cryptoService.decryptTransmission(userApiKey);
+        } catch {
+          // 解密失败，按未提供处理
+        }
+      }
+      resolvedModel = {
+        provider: '',
+        modelName: userModel,
+        apiKey: decryptedApiKey || '',
+        baseURL: userBaseUrl || '',
+      };
     }
 
     void this.chatStreamService
-      .streamChat(Number(userId), dto, writer, abortController.signal, {
-        userApiKey: decryptedApiKey,
-        userModel,
-        userBaseUrl,
-      })
+      .streamChat(Number(userId), dto, writer, abortController.signal, resolvedModel)
       .catch((err) => {
         writer.write({
           type: 'RUN_ERROR',

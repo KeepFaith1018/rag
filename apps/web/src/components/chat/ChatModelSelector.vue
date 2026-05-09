@@ -82,7 +82,7 @@ onBeforeUnmount(() => {
         {{ chatStore.selectedModel?.modelName || '选择模型' }}
       </span>
       <span class="material-symbols-outlined text-[14px] text-outline">
-        {{ isOpen ? 'expand_less' : 'expand_more' }}
+        {{ isOpen ? 'expand_more' : 'expand_less' }}
       </span>
     </button>
 
@@ -97,7 +97,7 @@ onBeforeUnmount(() => {
     >
       <div
         v-if="isOpen"
-        class="absolute right-0 top-full mt-2 w-64 bg-surface-container-high rounded-xl border border-outline-variant/10 shadow-2xl overflow-hidden z-50"
+        class="absolute left-0 bottom-full mb-2 w-64 bg-surface-container-high rounded-xl border border-outline-variant/10 shadow-2xl overflow-hidden z-50"
       >
         <div class="p-2">
           <div class="text-[10px] text-outline uppercase tracking-wider px-2 py-1 font-semibold">

@@ -24,11 +24,13 @@ export const useModelConfigStore = defineStore("model-config", () => {
 
   /**
    * 获取系统预置模型列表。
+   *
+   * 后端直接返回数组，apiRequest 已解包 Result.data。
    */
   async function fetchSystemModels() {
     try {
-      const res = await getSystemModels();
-      systemModels.value = res.systemModels ?? [];
+      const data = await getSystemModels();
+      systemModels.value = Array.isArray(data) ? data : [];
     } catch {
       systemModels.value = [];
     }
@@ -36,12 +38,14 @@ export const useModelConfigStore = defineStore("model-config", () => {
 
   /**
    * 获取用户自定义模型列表。
+   *
+   * 后端直接返回数组，apiRequest 已解包 Result.data。
    */
   async function fetchUserModels() {
     loading.value = true;
     try {
-      const res = await getUserModels();
-      userModels.value = res.userModels ?? [];
+      const data = await getUserModels();
+      userModels.value = Array.isArray(data) ? data : [];
     } catch {
       userModels.value = [];
     } finally {

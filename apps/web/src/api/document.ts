@@ -54,7 +54,23 @@ export function reparseKnowledgeBaseDocument(kbId: string, documentId: string) {
 }
 
 /**
- * 下载知识库原始文档。
+ * 获取文档预览 URL。
+ */
+export function getDocumentPreviewUrl(kbId: string, documentId: string): string {
+  const base = import.meta.env.VITE_API_BASE_URL || '/api';
+  return `${base}/knowledge-bases/${kbId}/documents/${documentId}/preview`;
+}
+
+/**
+ * 获取文档下载 URL。
+ */
+export function getDocumentDownloadUrl(kbId: string, documentId: string): string {
+  const base = import.meta.env.VITE_API_BASE_URL || '/api';
+  return `${base}/knowledge-bases/${kbId}/documents/${documentId}/download`;
+}
+
+/**
+ * 下载知识库原始文档（Blob 方式，支持进度监听）。
  */
 export function downloadKnowledgeBaseDocument(
   kbId: string,

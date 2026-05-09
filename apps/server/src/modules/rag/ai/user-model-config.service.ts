@@ -21,7 +21,7 @@ export class UserModelConfigService {
    * 获取当前用户的所有模型配置（不含 api_key）。
    */
   async findAll(userId: number) {
-    return this.prisma.b_user_model_configs.findMany({
+    const rows = await this.prisma.b_user_model_configs.findMany({
       where: { user_id: BigInt(userId) },
       select: {
         id: true,
@@ -33,6 +33,10 @@ export class UserModelConfigService {
       },
       orderBy: { created_at: 'desc' },
     });
+    return rows.map((r) => ({
+      ...r,
+      id: Number(r.id),
+    }));
   }
 
   /**
@@ -45,7 +49,7 @@ export class UserModelConfigService {
     if (!config) {
       throw new BusinessException(ErrorCode.MODEL_NOT_FOUND);
     }
-    return config;
+    return { ...config, id: Number(config.id) };
   }
 
   /**
@@ -87,7 +91,7 @@ export class UserModelConfigService {
     userId: number,
     dto: { provider: string; modelName: string; baseUrl?: string; apiKey?: string },
   ) {
-    return this.prisma.b_user_model_configs.create({
+    const config = await this.prisma.b_user_model_configs.create({
       data: {
         user_id: BigInt(userId),
         provider: dto.provider,
@@ -104,6 +108,7 @@ export class UserModelConfigService {
         created_at: true,
       },
     });
+    return { ...config, id: Number(config.id) };
   }
 
   /**
@@ -127,7 +132,7 @@ export class UserModelConfigService {
       throw new BusinessException(ErrorCode.MODEL_NOT_FOUND);
     }
 
-    return this.prisma.b_user_model_configs.update({
+    const updated = await this.prisma.b_user_model_configs.update({
       where: { id: BigInt(id) },
       data: {
         ...(dto.provider && { provider: dto.provider }),
@@ -147,6 +152,7 @@ export class UserModelConfigService {
         created_at: true,
       },
     });
+    return { ...updated, id: Number(updated.id) };
   }
 
   /**
