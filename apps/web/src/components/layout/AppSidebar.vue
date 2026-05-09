@@ -5,6 +5,7 @@ import { useMessage } from "@/composables/useMessage";
 import { storeToRefs } from "pinia";
 import { computed, ref, onMounted, onUnmounted } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
+import ModelConfigDialog from "@/components/settings/ModelConfigDialog.vue";
 
 const appStore = useAppStore();
 const authStore = useAuthStore();
@@ -16,6 +17,7 @@ const router = useRouter();
 const { isSidebarOpen, isDark } = storeToRefs(appStore);
 
 const isUserMenuOpen = ref(false);
+const showModelConfig = ref(false);
 
 const toggleUserMenu = () => {
   isUserMenuOpen.value = !isUserMenuOpen.value;
@@ -260,6 +262,15 @@ async function handleLogout() {
           <div class="p-2 space-y-1">
             <button
               class="w-full flex items-center gap-3 px-3 py-2 text-sm text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-colors"
+              @click="showModelConfig = true"
+            >
+              <span class="material-symbols-outlined text-[18px]"
+                >settings</span
+              >
+              <span>模型配置</span>
+            </button>
+            <button
+              class="w-full flex items-center gap-3 px-3 py-2 text-sm text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-colors"
             >
               <span class="material-symbols-outlined text-[18px]"
                 >settings</span
@@ -280,12 +291,6 @@ async function handleLogout() {
                 class="text-[10px] text-outline-variant bg-surface-container-lowest px-1.5 rounded"
                 >{{ isDark ? "暗色" : "亮色" }}</span
               >
-            </button>
-            <button
-              class="w-full flex items-center gap-3 px-3 py-2 text-sm text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-colors"
-            >
-              <span class="material-symbols-outlined text-[18px]">help</span>
-              <span>帮助中心</span>
             </button>
           </div>
           <div class="p-2 border-t border-outline-variant/10">
@@ -337,6 +342,9 @@ async function handleLogout() {
       </button>
     </div>
   </aside>
+
+  <!-- 模型配置弹窗 -->
+  <ModelConfigDialog v-if="showModelConfig" @close="showModelConfig = false" />
 </template>
 
 <style scoped>
