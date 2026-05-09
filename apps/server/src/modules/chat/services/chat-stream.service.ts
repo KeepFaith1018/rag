@@ -71,7 +71,7 @@ export class ChatStreamService {
     traceId: string,
     writer: SseWriter,
     signal?: AbortSignal,
-    _modelOptions?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+    modelOptions?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
   ): Promise<void> {
     const permContexts = await this.kbPermissionService.authorizeMany(
       userId,
@@ -112,6 +112,7 @@ export class ChatStreamService {
       {
         enableWebSearch: dto.enableWebSearch ?? false,
         signal,
+        modelOptions,
         onFinish: async (result) => {
           const tasks: Promise<unknown>[] = [];
 
@@ -165,9 +166,12 @@ export class ChatStreamService {
     traceId: string,
     writer: SseWriter,
     signal?: AbortSignal,
-    _modelOptions?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
+    modelOptions?: { userApiKey?: string; userModel?: string; userBaseUrl?: string },
   ): Promise<void> {
     const model = this.chatModelService.createModel({
+      model: modelOptions?.userModel,
+      apiKey: modelOptions?.userApiKey,
+      baseURL: modelOptions?.userBaseUrl,
       temperature: 0.7,
       streaming: true,
     });

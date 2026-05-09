@@ -12,12 +12,18 @@ import { ErrorCode } from '@common/utils/errorCodeMap';
 @Injectable()
 export class EmailService {
   private transporter: nodemailer.Transporter | null = null;
+  private transporterInitialized = false;
 
   constructor(
     private readonly prisma: PrismaService,
     private readonly configService: ConfigService,
-  ) {
-    this.initTransporter();
+  ) {}
+
+  private ensureTransporter() {
+    if (!this.transporterInitialized) {
+      this.transporterInitialized = true;
+      this.initTransporter();
+    }
   }
 
   /**
@@ -25,6 +31,10 @@ export class EmailService {
    * 当邮件配置不完整时，不在构造阶段直接抛错，避免影响未使用邮件能力的场景启动。
    */
   private initTransporter() {
+    if (!this.configService) {
+      this.transporter = null;
+      return;
+    }
     const host = this.configService.get<string>('EMAIL_HOST');
     const port = this.configService.get<number>('EMAIL_PORT');
     const user = this.configService.get<string>('EMAIL_USER');
@@ -50,6 +60,7 @@ export class EmailService {
    * 获取可用的邮件发送器。
    */
   private getTransporter(): nodemailer.Transporter {
+    this.ensureTransporter();
     if (!this.transporter) {
       throw new BusinessException(ErrorCode.EMAIL_CONFIG_INVALID);
     }

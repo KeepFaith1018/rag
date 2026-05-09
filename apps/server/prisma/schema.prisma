@@ -102,30 +102,30 @@ model sys_admin_sessions {
 
 // 系统提供模型配置，有额度限制
 // 对话和向量化
+/// 系统模型配置（密钥从 .env 读取，不留 DB）
 model sys_model_configs {
   id          BigInt   @id @default(autoincrement())
-  provider    String   @db.VarChar(50)
-  name        String   @db.VarChar(100)
-  type        String   @db.VarChar(50)
+  provider    String   @db.VarChar(50)  // bailian / openai / deepseek
+  name        String   @db.VarChar(100) // qwen3.6-plus / gpt-4o
+  type        String   @db.VarChar(50)  // main / light / embedding / rerank
   base_url    String?  @db.VarChar(255)
-  api_key     String?  @db.VarChar(500)
-  config_json Json?
+  config_json Json?                      // { temperature, maxTokens, topP }
   is_default  Boolean  @default(false)
   is_active   Boolean  @default(true)
   created_at  DateTime @default(now()) @db.DateTime(0)
   updated_at  DateTime @default(now()) @db.DateTime(0)
 }
-// 用户自定义模型，自接入私有模型
+/// 用户自定义模型配置（apiKey AES-256-GCM 加密存储）
 model b_user_model_configs {
-  id         BigInt   @id @default(autoincrement())
-  user_id    BigInt
-  provider   String   @db.VarChar(50)
-  model_name String   @db.VarChar(100)
-  base_url   String?  @db.VarChar(255)
-  api_key    String?  @db.VarChar(500)
-  is_active  Boolean  @default(true)
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @db.DateTime(0)
+  id                BigInt   @id @default(autoincrement())
+  user_id           BigInt
+  provider          String   @db.VarChar(50)
+  model_name        String   @db.VarChar(100)
+  base_url          String?  @db.VarChar(255)
+  api_key_encrypted String?  @db.VarChar(500) // AES-256-GCM 加密
+  is_active         Boolean  @default(true)
+  created_at        DateTime @default(now()) @db.DateTime(0)
+  updated_at        DateTime @default(now()) @db.DateTime(0)
 
   b_users b_users @relation(fields: [user_id], references: [id], onDelete: Cascade)
 

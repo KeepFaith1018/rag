@@ -22,11 +22,6 @@ export class UpdateModelConfigDto {
   baseUrl?: string;
 
   @IsOptional()
-  @IsString()
-  @MaxLength(500)
-  apiKey?: string;
-
-  @IsOptional()
   @IsObject()
   configJson?: Record<string, unknown>;
 

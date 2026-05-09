@@ -1,6 +1,7 @@
 import { Body, Controller, Get, Post, UseGuards } from '@nestjs/common';
 import { Auth } from '@common/decorators/auth.decorator';
 import { AuthGuard } from '@common/guards/auth.guard';
+import { PrismaService } from '@common/prisma/prisma.service';
 import { ChatModelService } from './chat-model.service';
 import { TestConnectivityDto } from './dto/test-connectivity.dto';
 
@@ -8,32 +9,49 @@ import { TestConnectivityDto } from './dto/test-connectivity.dto';
  * AI 基础能力接口控制器。
  *
  * 提供对话模块所需的 AI 能力接口：
- * - 获取可用的模型配置列表
+ * - 获取可用的模型配置列表（仅 main 类型，light 系统内部自动选用）
+ * - 测试模型连通性
  */
 @Controller('ai')
 @UseGuards(AuthGuard)
 @Auth()
 export class AiController {
-  constructor(private readonly chatModelService: ChatModelService) {}
+  constructor(
+    private readonly chatModelService: ChatModelService,
+    private readonly prisma: PrismaService,
+  ) {}
 
   /**
-   * 获取当前用户可用的模型配置列表。
+   * 获取系统可用的主生成模型列表（仅 main 类型）。
    *
-   * 首版返回系统默认模型。后续可扩展为从数据库读取用户自定义配置。
+   * light 类型（路由/改写/审计等轻量节点）不在前端暴露，
+   * 由 ChatModelService.getLightModelName() 自动选用。
    */
   @Get('model-configs')
-  listModelConfigs() {
-    const defaultModel = this.chatModelService.getDefaultModelName();
+  async listModelConfigs() {
+    const rows = await this.prisma.sys_model_configs.findMany({
+      where: { type: 'main', is_active: true },
+      orderBy: [{ is_default: 'desc' }, { created_at: 'desc' }],
+    });
 
-    // 首版返回系统默认模型
-    return [
-      {
-        configId: 'system-default',
-        modelName: defaultModel,
-        provider: 'system',
-        source: 'system' as const,
-      },
-    ];
+    if (rows.length === 0) {
+      // 兜底：DB 无数据时返回 .env 默认模型
+      return [
+        {
+          configId: 'system-default',
+          modelName: this.chatModelService.getDefaultModelName(),
+          provider: 'system',
+          source: 'system' as const,
+        },
+      ];
+    }
+
+    return rows.map((r) => ({
+      configId: `sys_${r.id}`,
+      modelName: r.name,
+      provider: r.provider,
+      source: 'system' as const,
+    }));
   }
 
   /**

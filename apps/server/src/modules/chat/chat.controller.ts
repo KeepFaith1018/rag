@@ -20,6 +20,7 @@ import { StreamRateLimitGuard } from '@common/guards/rate-limit.guard';
 import { ChatSessionService } from './services/chat-session.service';
 import { ChatMessageService } from './services/chat-message.service';
 import { ChatStreamService } from './services/chat-stream.service';
+import { CryptoService } from '@common/utils/crypto.service';
 import { SseWriter } from './types/agui-events';
 import { CreateChatSessionDto } from './dto/create-chat-session.dto';
 import { ListChatSessionsDto } from './dto/list-chat-sessions.dto';
@@ -32,6 +33,7 @@ export class ChatController {
     private readonly chatSessionService: ChatSessionService,
     private readonly chatMessageService: ChatMessageService,
     private readonly chatStreamService: ChatStreamService,
+    private readonly cryptoService: CryptoService,
   ) {}
 
   /** 创建新会话 */
@@ -144,9 +146,20 @@ export class ChatController {
     });
 
     const writer = new SseWriter(res);
+
+    // 解密前端传来的加密 API Key
+    let decryptedApiKey: string | undefined;
+    if (userApiKey) {
+      try {
+        decryptedApiKey = this.cryptoService.decryptTransmission(userApiKey);
+      } catch {
+        // 解密失败，按未提供处理（兜底使用系统 API Key）
+      }
+    }
+
     void this.chatStreamService
       .streamChat(Number(userId), dto, writer, abortController.signal, {
-        userApiKey,
+        userApiKey: decryptedApiKey,
         userModel,
         userBaseUrl,
       })

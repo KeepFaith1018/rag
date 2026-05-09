@@ -40,12 +40,12 @@ export type b_user_sessions = $Result.DefaultSelection<Prisma.$b_user_sessionsPa
 export type sys_admin_sessions = $Result.DefaultSelection<Prisma.$sys_admin_sessionsPayload>
 /**
  * Model sys_model_configs
- * 
+ * 系统模型配置（密钥从 .env 读取，不留 DB）
  */
 export type sys_model_configs = $Result.DefaultSelection<Prisma.$sys_model_configsPayload>
 /**
  * Model b_user_model_configs
- * 
+ * 用户自定义模型配置（apiKey AES-256-GCM 加密存储）
  */
 export type b_user_model_configs = $Result.DefaultSelection<Prisma.$b_user_model_configsPayload>
 /**
@@ -8576,7 +8576,6 @@ export namespace Prisma {
     name: string | null
     type: string | null
     base_url: string | null
-    api_key: string | null
     is_default: boolean | null
     is_active: boolean | null
     created_at: Date | null
@@ -8589,7 +8588,6 @@ export namespace Prisma {
     name: string | null
     type: string | null
     base_url: string | null
-    api_key: string | null
     is_default: boolean | null
     is_active: boolean | null
     created_at: Date | null
@@ -8602,7 +8600,6 @@ export namespace Prisma {
     name: number
     type: number
     base_url: number
-    api_key: number
     config_json: number
     is_default: number
     is_active: number
@@ -8626,7 +8623,6 @@ export namespace Prisma {
     name?: true
     type?: true
     base_url?: true
-    api_key?: true
     is_default?: true
     is_active?: true
     created_at?: true
@@ -8639,7 +8635,6 @@ export namespace Prisma {
     name?: true
     type?: true
     base_url?: true
-    api_key?: true
     is_default?: true
     is_active?: true
     created_at?: true
@@ -8652,7 +8647,6 @@ export namespace Prisma {
     name?: true
     type?: true
     base_url?: true
-    api_key?: true
     config_json?: true
     is_default?: true
     is_active?: true
@@ -8753,7 +8747,6 @@ export namespace Prisma {
     name: string
     type: string
     base_url: string | null
-    api_key: string | null
     config_json: JsonValue | null
     is_default: boolean
     is_active: boolean
@@ -8786,7 +8779,6 @@ export namespace Prisma {
     name?: boolean
     type?: boolean
     base_url?: boolean
-    api_key?: boolean
     config_json?: boolean
     is_default?: boolean
     is_active?: boolean
@@ -8802,7 +8794,6 @@ export namespace Prisma {
     name?: boolean
     type?: boolean
     base_url?: boolean
-    api_key?: boolean
     config_json?: boolean
     is_default?: boolean
     is_active?: boolean
@@ -8810,7 +8801,7 @@ export namespace Prisma {
     updated_at?: boolean
   }
 
-  export type sys_model_configsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "provider" | "name" | "type" | "base_url" | "api_key" | "config_json" | "is_default" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["sys_model_configs"]>
+  export type sys_model_configsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "provider" | "name" | "type" | "base_url" | "config_json" | "is_default" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["sys_model_configs"]>
 
   export type $sys_model_configsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "sys_model_configs"
@@ -8821,7 +8812,6 @@ export namespace Prisma {
       name: string
       type: string
       base_url: string | null
-      api_key: string | null
       config_json: Prisma.JsonValue | null
       is_default: boolean
       is_active: boolean
@@ -9201,7 +9191,6 @@ export namespace Prisma {
     readonly name: FieldRef<"sys_model_configs", 'String'>
     readonly type: FieldRef<"sys_model_configs", 'String'>
     readonly base_url: FieldRef<"sys_model_configs", 'String'>
-    readonly api_key: FieldRef<"sys_model_configs", 'String'>
     readonly config_json: FieldRef<"sys_model_configs", 'Json'>
     readonly is_default: FieldRef<"sys_model_configs", 'Boolean'>
     readonly is_active: FieldRef<"sys_model_configs", 'Boolean'>
@@ -9556,7 +9545,7 @@ export namespace Prisma {
     provider: string | null
     model_name: string | null
     base_url: string | null
-    api_key: string | null
+    api_key_encrypted: string | null
     is_active: boolean | null
     created_at: Date | null
     updated_at: Date | null
@@ -9568,7 +9557,7 @@ export namespace Prisma {
     provider: string | null
     model_name: string | null
     base_url: string | null
-    api_key: string | null
+    api_key_encrypted: string | null
     is_active: boolean | null
     created_at: Date | null
     updated_at: Date | null
@@ -9580,7 +9569,7 @@ export namespace Prisma {
     provider: number
     model_name: number
     base_url: number
-    api_key: number
+    api_key_encrypted: number
     is_active: number
     created_at: number
     updated_at: number
@@ -9604,7 +9593,7 @@ export namespace Prisma {
     provider?: true
     model_name?: true
     base_url?: true
-    api_key?: true
+    api_key_encrypted?: true
     is_active?: true
     created_at?: true
     updated_at?: true
@@ -9616,7 +9605,7 @@ export namespace Prisma {
     provider?: true
     model_name?: true
     base_url?: true
-    api_key?: true
+    api_key_encrypted?: true
     is_active?: true
     created_at?: true
     updated_at?: true
@@ -9628,7 +9617,7 @@ export namespace Prisma {
     provider?: true
     model_name?: true
     base_url?: true
-    api_key?: true
+    api_key_encrypted?: true
     is_active?: true
     created_at?: true
     updated_at?: true
@@ -9727,7 +9716,7 @@ export namespace Prisma {
     provider: string
     model_name: string
     base_url: string | null
-    api_key: string | null
+    api_key_encrypted: string | null
     is_active: boolean
     created_at: Date
     updated_at: Date
@@ -9758,7 +9747,7 @@ export namespace Prisma {
     provider?: boolean
     model_name?: boolean
     base_url?: boolean
-    api_key?: boolean
+    api_key_encrypted?: boolean
     is_active?: boolean
     created_at?: boolean
     updated_at?: boolean
@@ -9773,13 +9762,13 @@ export namespace Prisma {
     provider?: boolean
     model_name?: boolean
     base_url?: boolean
-    api_key?: boolean
+    api_key_encrypted?: boolean
     is_active?: boolean
     created_at?: boolean
     updated_at?: boolean
   }
 
-  export type b_user_model_configsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "provider" | "model_name" | "base_url" | "api_key" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["b_user_model_configs"]>
+  export type b_user_model_configsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "user_id" | "provider" | "model_name" | "base_url" | "api_key_encrypted" | "is_active" | "created_at" | "updated_at", ExtArgs["result"]["b_user_model_configs"]>
   export type b_user_model_configsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
   }
@@ -9795,7 +9784,7 @@ export namespace Prisma {
       provider: string
       model_name: string
       base_url: string | null
-      api_key: string | null
+      api_key_encrypted: string | null
       is_active: boolean
       created_at: Date
       updated_at: Date
@@ -10174,7 +10163,7 @@ export namespace Prisma {
     readonly provider: FieldRef<"b_user_model_configs", 'String'>
     readonly model_name: FieldRef<"b_user_model_configs", 'String'>
     readonly base_url: FieldRef<"b_user_model_configs", 'String'>
-    readonly api_key: FieldRef<"b_user_model_configs", 'String'>
+    readonly api_key_encrypted: FieldRef<"b_user_model_configs", 'String'>
     readonly is_active: FieldRef<"b_user_model_configs", 'Boolean'>
     readonly created_at: FieldRef<"b_user_model_configs", 'DateTime'>
     readonly updated_at: FieldRef<"b_user_model_configs", 'DateTime'>
@@ -29941,7 +29930,6 @@ export namespace Prisma {
     name: 'name',
     type: 'type',
     base_url: 'base_url',
-    api_key: 'api_key',
     config_json: 'config_json',
     is_default: 'is_default',
     is_active: 'is_active',
@@ -29958,7 +29946,7 @@ export namespace Prisma {
     provider: 'provider',
     model_name: 'model_name',
     base_url: 'base_url',
-    api_key: 'api_key',
+    api_key_encrypted: 'api_key_encrypted',
     is_active: 'is_active',
     created_at: 'created_at',
     updated_at: 'updated_at'
@@ -30374,8 +30362,7 @@ export namespace Prisma {
     provider: 'provider',
     name: 'name',
     type: 'type',
-    base_url: 'base_url',
-    api_key: 'api_key'
+    base_url: 'base_url'
   };
 
   export type sys_model_configsOrderByRelevanceFieldEnum = (typeof sys_model_configsOrderByRelevanceFieldEnum)[keyof typeof sys_model_configsOrderByRelevanceFieldEnum]
@@ -30385,7 +30372,7 @@ export namespace Prisma {
     provider: 'provider',
     model_name: 'model_name',
     base_url: 'base_url',
-    api_key: 'api_key'
+    api_key_encrypted: 'api_key_encrypted'
   };
 
   export type b_user_model_configsOrderByRelevanceFieldEnum = (typeof b_user_model_configsOrderByRelevanceFieldEnum)[keyof typeof b_user_model_configsOrderByRelevanceFieldEnum]
@@ -31021,7 +31008,6 @@ export namespace Prisma {
     name?: StringFilter<"sys_model_configs"> | string
     type?: StringFilter<"sys_model_configs"> | string
     base_url?: StringNullableFilter<"sys_model_configs"> | string | null
-    api_key?: StringNullableFilter<"sys_model_configs"> | string | null
     config_json?: JsonNullableFilter<"sys_model_configs">
     is_default?: BoolFilter<"sys_model_configs"> | boolean
     is_active?: BoolFilter<"sys_model_configs"> | boolean
@@ -31035,7 +31021,6 @@ export namespace Prisma {
     name?: SortOrder
     type?: SortOrder
     base_url?: SortOrderInput | SortOrder
-    api_key?: SortOrderInput | SortOrder
     config_json?: SortOrderInput | SortOrder
     is_default?: SortOrder
     is_active?: SortOrder
@@ -31053,7 +31038,6 @@ export namespace Prisma {
     name?: StringFilter<"sys_model_configs"> | string
     type?: StringFilter<"sys_model_configs"> | string
     base_url?: StringNullableFilter<"sys_model_configs"> | string | null
-    api_key?: StringNullableFilter<"sys_model_configs"> | string | null
     config_json?: JsonNullableFilter<"sys_model_configs">
     is_default?: BoolFilter<"sys_model_configs"> | boolean
     is_active?: BoolFilter<"sys_model_configs"> | boolean
@@ -31067,7 +31051,6 @@ export namespace Prisma {
     name?: SortOrder
     type?: SortOrder
     base_url?: SortOrderInput | SortOrder
-    api_key?: SortOrderInput | SortOrder
     config_json?: SortOrderInput | SortOrder
     is_default?: SortOrder
     is_active?: SortOrder
@@ -31089,7 +31072,6 @@ export namespace Prisma {
     name?: StringWithAggregatesFilter<"sys_model_configs"> | string
     type?: StringWithAggregatesFilter<"sys_model_configs"> | string
     base_url?: StringNullableWithAggregatesFilter<"sys_model_configs"> | string | null
-    api_key?: StringNullableWithAggregatesFilter<"sys_model_configs"> | string | null
     config_json?: JsonNullableWithAggregatesFilter<"sys_model_configs">
     is_default?: BoolWithAggregatesFilter<"sys_model_configs"> | boolean
     is_active?: BoolWithAggregatesFilter<"sys_model_configs"> | boolean
@@ -31106,7 +31088,7 @@ export namespace Prisma {
     provider?: StringFilter<"b_user_model_configs"> | string
     model_name?: StringFilter<"b_user_model_configs"> | string
     base_url?: StringNullableFilter<"b_user_model_configs"> | string | null
-    api_key?: StringNullableFilter<"b_user_model_configs"> | string | null
+    api_key_encrypted?: StringNullableFilter<"b_user_model_configs"> | string | null
     is_active?: BoolFilter<"b_user_model_configs"> | boolean
     created_at?: DateTimeFilter<"b_user_model_configs"> | Date | string
     updated_at?: DateTimeFilter<"b_user_model_configs"> | Date | string
@@ -31119,7 +31101,7 @@ export namespace Prisma {
     provider?: SortOrder
     model_name?: SortOrder
     base_url?: SortOrderInput | SortOrder
-    api_key?: SortOrderInput | SortOrder
+    api_key_encrypted?: SortOrderInput | SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -31136,7 +31118,7 @@ export namespace Prisma {
     provider?: StringFilter<"b_user_model_configs"> | string
     model_name?: StringFilter<"b_user_model_configs"> | string
     base_url?: StringNullableFilter<"b_user_model_configs"> | string | null
-    api_key?: StringNullableFilter<"b_user_model_configs"> | string | null
+    api_key_encrypted?: StringNullableFilter<"b_user_model_configs"> | string | null
     is_active?: BoolFilter<"b_user_model_configs"> | boolean
     created_at?: DateTimeFilter<"b_user_model_configs"> | Date | string
     updated_at?: DateTimeFilter<"b_user_model_configs"> | Date | string
@@ -31149,7 +31131,7 @@ export namespace Prisma {
     provider?: SortOrder
     model_name?: SortOrder
     base_url?: SortOrderInput | SortOrder
-    api_key?: SortOrderInput | SortOrder
+    api_key_encrypted?: SortOrderInput | SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -31169,7 +31151,7 @@ export namespace Prisma {
     provider?: StringWithAggregatesFilter<"b_user_model_configs"> | string
     model_name?: StringWithAggregatesFilter<"b_user_model_configs"> | string
     base_url?: StringNullableWithAggregatesFilter<"b_user_model_configs"> | string | null
-    api_key?: StringNullableWithAggregatesFilter<"b_user_model_configs"> | string | null
+    api_key_encrypted?: StringNullableWithAggregatesFilter<"b_user_model_configs"> | string | null
     is_active?: BoolWithAggregatesFilter<"b_user_model_configs"> | boolean
     created_at?: DateTimeWithAggregatesFilter<"b_user_model_configs"> | Date | string
     updated_at?: DateTimeWithAggregatesFilter<"b_user_model_configs"> | Date | string
@@ -33310,7 +33292,6 @@ export namespace Prisma {
     name: string
     type: string
     base_url?: string | null
-    api_key?: string | null
     config_json?: NullableJsonNullValueInput | InputJsonValue
     is_default?: boolean
     is_active?: boolean
@@ -33324,7 +33305,6 @@ export namespace Prisma {
     name: string
     type: string
     base_url?: string | null
-    api_key?: string | null
     config_json?: NullableJsonNullValueInput | InputJsonValue
     is_default?: boolean
     is_active?: boolean
@@ -33338,7 +33318,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
     config_json?: NullableJsonNullValueInput | InputJsonValue
     is_default?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -33352,7 +33331,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
     config_json?: NullableJsonNullValueInput | InputJsonValue
     is_default?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -33366,7 +33344,6 @@ export namespace Prisma {
     name: string
     type: string
     base_url?: string | null
-    api_key?: string | null
     config_json?: NullableJsonNullValueInput | InputJsonValue
     is_default?: boolean
     is_active?: boolean
@@ -33380,7 +33357,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
     config_json?: NullableJsonNullValueInput | InputJsonValue
     is_default?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -33394,7 +33370,6 @@ export namespace Prisma {
     name?: StringFieldUpdateOperationsInput | string
     type?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
     config_json?: NullableJsonNullValueInput | InputJsonValue
     is_default?: BoolFieldUpdateOperationsInput | boolean
     is_active?: BoolFieldUpdateOperationsInput | boolean
@@ -33407,7 +33382,7 @@ export namespace Prisma {
     provider: string
     model_name: string
     base_url?: string | null
-    api_key?: string | null
+    api_key_encrypted?: string | null
     is_active?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -33420,7 +33395,7 @@ export namespace Prisma {
     provider: string
     model_name: string
     base_url?: string | null
-    api_key?: string | null
+    api_key_encrypted?: string | null
     is_active?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -33431,7 +33406,7 @@ export namespace Prisma {
     provider?: StringFieldUpdateOperationsInput | string
     model_name?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
+    api_key_encrypted?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33444,7 +33419,7 @@ export namespace Prisma {
     provider?: StringFieldUpdateOperationsInput | string
     model_name?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
+    api_key_encrypted?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33456,7 +33431,7 @@ export namespace Prisma {
     provider: string
     model_name: string
     base_url?: string | null
-    api_key?: string | null
+    api_key_encrypted?: string | null
     is_active?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -33467,7 +33442,7 @@ export namespace Prisma {
     provider?: StringFieldUpdateOperationsInput | string
     model_name?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
+    api_key_encrypted?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -33479,7 +33454,7 @@ export namespace Prisma {
     provider?: StringFieldUpdateOperationsInput | string
     model_name?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
+    api_key_encrypted?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -35928,7 +35903,6 @@ export namespace Prisma {
     name?: SortOrder
     type?: SortOrder
     base_url?: SortOrder
-    api_key?: SortOrder
     config_json?: SortOrder
     is_default?: SortOrder
     is_active?: SortOrder
@@ -35946,7 +35920,6 @@ export namespace Prisma {
     name?: SortOrder
     type?: SortOrder
     base_url?: SortOrder
-    api_key?: SortOrder
     is_default?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
@@ -35959,7 +35932,6 @@ export namespace Prisma {
     name?: SortOrder
     type?: SortOrder
     base_url?: SortOrder
-    api_key?: SortOrder
     is_default?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
@@ -36008,7 +35980,7 @@ export namespace Prisma {
     provider?: SortOrder
     model_name?: SortOrder
     base_url?: SortOrder
-    api_key?: SortOrder
+    api_key_encrypted?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -36025,7 +35997,7 @@ export namespace Prisma {
     provider?: SortOrder
     model_name?: SortOrder
     base_url?: SortOrder
-    api_key?: SortOrder
+    api_key_encrypted?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -36037,7 +36009,7 @@ export namespace Prisma {
     provider?: SortOrder
     model_name?: SortOrder
     base_url?: SortOrder
-    api_key?: SortOrder
+    api_key_encrypted?: SortOrder
     is_active?: SortOrder
     created_at?: SortOrder
     updated_at?: SortOrder
@@ -39588,7 +39560,7 @@ export namespace Prisma {
     provider: string
     model_name: string
     base_url?: string | null
-    api_key?: string | null
+    api_key_encrypted?: string | null
     is_active?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -39599,7 +39571,7 @@ export namespace Prisma {
     provider: string
     model_name: string
     base_url?: string | null
-    api_key?: string | null
+    api_key_encrypted?: string | null
     is_active?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -39960,7 +39932,7 @@ export namespace Prisma {
     provider?: StringFilter<"b_user_model_configs"> | string
     model_name?: StringFilter<"b_user_model_configs"> | string
     base_url?: StringNullableFilter<"b_user_model_configs"> | string | null
-    api_key?: StringNullableFilter<"b_user_model_configs"> | string | null
+    api_key_encrypted?: StringNullableFilter<"b_user_model_configs"> | string | null
     is_active?: BoolFilter<"b_user_model_configs"> | boolean
     created_at?: DateTimeFilter<"b_user_model_configs"> | Date | string
     updated_at?: DateTimeFilter<"b_user_model_configs"> | Date | string
@@ -43965,7 +43937,7 @@ export namespace Prisma {
     provider: string
     model_name: string
     base_url?: string | null
-    api_key?: string | null
+    api_key_encrypted?: string | null
     is_active?: boolean
     created_at?: Date | string
     updated_at?: Date | string
@@ -44285,7 +44257,7 @@ export namespace Prisma {
     provider?: StringFieldUpdateOperationsInput | string
     model_name?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
+    api_key_encrypted?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44296,7 +44268,7 @@ export namespace Prisma {
     provider?: StringFieldUpdateOperationsInput | string
     model_name?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
+    api_key_encrypted?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
@@ -44307,7 +44279,7 @@ export namespace Prisma {
     provider?: StringFieldUpdateOperationsInput | string
     model_name?: StringFieldUpdateOperationsInput | string
     base_url?: NullableStringFieldUpdateOperationsInput | string | null
-    api_key?: NullableStringFieldUpdateOperationsInput | string | null
+    api_key_encrypted?: NullableStringFieldUpdateOperationsInput | string | null
     is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     updated_at?: DateTimeFieldUpdateOperationsInput | Date | string

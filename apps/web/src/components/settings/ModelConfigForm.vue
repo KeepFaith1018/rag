@@ -2,6 +2,7 @@
 import { ref, reactive } from 'vue'
 import { useModelConfigStore, type UserModelConfig } from '@/stores/model-config'
 import { useMessage } from '@/composables/useMessage'
+import { encryptApiKey, secureSet } from '@/utils/secure-storage'
 
 const props = defineProps<{ model: UserModelConfig | null }>()
 const emit = defineEmits<{ close: []; saved: [] }>()
@@ -49,9 +50,10 @@ async function handleSave() {
   }
   saving.value = true
   try {
-    // Save API key to localStorage (browser-side, not DB)
+    // API Key 加密后存入 localStorage（后端共享密钥解密）
     if (form.apiKey) {
-      localStorage.setItem('user_api_key', form.apiKey)
+      const encrypted = await encryptApiKey(form.apiKey)
+      secureSet('user_api_key', encrypted)
       localStorage.setItem('user_model', form.modelName)
       localStorage.setItem('user_base_url', form.baseUrl)
     }
@@ -60,12 +62,14 @@ async function handleSave() {
         provider: form.provider,
         modelName: form.modelName,
         baseUrl: form.baseUrl || undefined,
+        apiKey: form.apiKey || undefined,
       })
     } else {
       await store.createUserModel({
         provider: form.provider,
         modelName: form.modelName,
         baseUrl: form.baseUrl || undefined,
+        apiKey: form.apiKey || undefined,
       })
     }
     toast.success(isEdit ? '模型已更新' : '模型已添加')

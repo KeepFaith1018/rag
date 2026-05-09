@@ -9,6 +9,7 @@
  */
 import { ref, shallowRef } from 'vue';
 import { fetchChatStream } from '@/api/chat';
+import { secureGet } from '@/utils/secure-storage'; // 返回密文，不解密
 import type { StreamChatRequest } from '@/modules/chat/types/chat';
 import {
   type AguiEvent,
@@ -141,8 +142,8 @@ export function useAgentChat(options?: UseAgentChatOptions) {
     })
 
     try {
-      // 从 localStorage 读取用户自定义模型配置，作为请求头透传
-      const userApiKey = localStorage.getItem('user_api_key')
+      // 从 localStorage 读取用户自定义模型配置（API Key 需解密），作为请求头透传
+      const userApiKey = await secureGet('user_api_key')
       const userModel = localStorage.getItem('user_model')
       const userBaseUrl = localStorage.getItem('user_base_url')
 

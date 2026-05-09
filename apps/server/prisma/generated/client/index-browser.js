@@ -179,7 +179,6 @@ exports.Prisma.Sys_model_configsScalarFieldEnum = {
   name: 'name',
   type: 'type',
   base_url: 'base_url',
-  api_key: 'api_key',
   config_json: 'config_json',
   is_default: 'is_default',
   is_active: 'is_active',
@@ -193,7 +192,7 @@ exports.Prisma.B_user_model_configsScalarFieldEnum = {
   provider: 'provider',
   model_name: 'model_name',
   base_url: 'base_url',
-  api_key: 'api_key',
+  api_key_encrypted: 'api_key_encrypted',
   is_active: 'is_active',
   created_at: 'created_at',
   updated_at: 'updated_at'
@@ -522,15 +521,14 @@ exports.Prisma.sys_model_configsOrderByRelevanceFieldEnum = {
   provider: 'provider',
   name: 'name',
   type: 'type',
-  base_url: 'base_url',
-  api_key: 'api_key'
+  base_url: 'base_url'
 };
 
 exports.Prisma.b_user_model_configsOrderByRelevanceFieldEnum = {
   provider: 'provider',
   model_name: 'model_name',
   base_url: 'base_url',
-  api_key: 'api_key'
+  api_key_encrypted: 'api_key_encrypted'
 };
 
 exports.Prisma.b_knowledge_basesOrderByRelevanceFieldEnum = {

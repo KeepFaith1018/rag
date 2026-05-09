@@ -18,12 +18,14 @@ export interface CreateUserModelPayload {
   provider: string;
   modelName: string;
   baseUrl?: string;
+  apiKey?: string;
 }
 
 export interface UpdateUserModelPayload {
   provider?: string;
   modelName?: string;
   baseUrl?: string;
+  apiKey?: string;
   isActive?: boolean;
 }
 
