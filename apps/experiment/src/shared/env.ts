@@ -1,5 +1,7 @@
 /**
- * 从 apps/server/.env 加载环境变量。
+ * 加载环境变量：
+ * 1. 实验项目自身的 .env（优先级最高）
+ * 2. apps/server/.env（回退）
  */
 import { config } from 'dotenv';
 import { resolve, dirname } from 'path';
@@ -7,7 +9,9 @@ import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// 先加载 server 基线的 .env，然后加载实验项目自身的 .env 覆盖
 config({ path: resolve(__dirname, '../../../server/.env') });
+config({ path: resolve(__dirname, '../../.env'), override: true });
 
 export function env(key: string, fallback?: string): string {
   const val = process.env[key];

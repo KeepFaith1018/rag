@@ -48,7 +48,7 @@ export class AuthService {
       }
 
       await this.emailService.sendVerificationCode(dto.email, dto.purpose);
-      return { message: 'Verification code sent' };
+      return { message: '验证码发送成功' };
     } catch (error) {
       throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
         context: {

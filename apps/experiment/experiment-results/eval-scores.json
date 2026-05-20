@@ -1,0 +1,952 @@
+[
+  {
+    "questionId": "q01",
+    "question": "大语言模型的'幻觉问题'是什么？有哪些主要的解决思路？",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "生成与事实不符的内容",
+      "RAG检索增强生成",
+      "事实核查模块",
+      "输出置信度评估"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "完整覆盖全部4个关键点，并补充了额外解决思路。表述准确简洁，基本回答了问题。"
+      },
+      "advanced": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "与Naïve RAG基本相同，覆盖全部关键点，表述更正式，但信息量和结构无显著差异。"
+      },
+      "agentic": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "覆盖全部关键点并引用知识库来源，信息最完整详细，结构清晰，解释充分，为最佳答案。"
+      }
+    }
+  },
+  {
+    "questionId": "q02",
+    "question": "Transformer架构中的自注意力机制是如何工作的？请说明其核心公式和设计动机。",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "Attention(Q,K,V)公式",
+      "除以√d_k防止梯度消失",
+      "捕捉长距离依赖",
+      "O(n²)复杂度"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "完整覆盖全部4个期望关键点，公式准确，参数说明清晰，设计动机（捕捉长距离依赖、防止梯度消失）阐述到位，工作机制解释充分，末尾补充O(n²)复杂度作为收尾，信息结构完整，无冗余。"
+      },
+      "advanced": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "在Naïve版本基础上额外增加了位置编码的补充说明和多头注意力的引导提示，覆盖更全面；结构化程度更高（emoji标签、分点叙述），既完整回答核心问题又适度拓展，符合Advanced定位。"
+      },
+      "agentic": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 8,
+        "overall": 8,
+        "comment": "覆盖全部关键点且事实准确；但工作机制的系统性阐述稍弱——'通过计算序列内所有位置两两之间的关联度来实现信息聚合'一句相对简略，未完整展开注意力权重计算→归一化→加权求和的流程；此外每个自然段都标注[来源X]虽显学术规范但影响阅读流畅性，拉低了相关性和完整性评价。"
+      }
+    }
+  },
+  {
+    "questionId": "q03",
+    "question": "一个完整的RAG系统包含哪两个核心阶段？每个阶段的主要步骤是什么？",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "离线索引阶段",
+      "在线查询阶段",
+      "文档解析→分块→向量化→索引",
+      "查询处理→检索→融合→重排→生成"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 10,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 10,
+        "overall": 9,
+        "comment": "准确覆盖全部期望关键点，两阶段划分清晰，步骤完整，表述简洁直接，格式规整，无冗余内容。"
+      },
+      "advanced": {
+        "coverage": 10,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 10,
+        "overall": 9,
+        "comment": "覆盖全部关键点，格式更规范清晰，每个阶段增加了目的说明，信息量略优于Naïve版本，标注了参考来源。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "完整覆盖全部关键点，且对RRF融合、重排序等步骤提供了深度补充说明（工作原理、作用），信息最为完整充分，来源标注完整。"
+      }
+    }
+  },
+  {
+    "questionId": "q04",
+    "question": "HNSW索引算法中的m、ef_construct、ef三个参数分别控制什么？它们的典型默认值是多少？",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "m控制连接数默认16",
+      "ef_construct控制构建搜索深度默认100",
+      "ef控制查询搜索深度默认128",
+      "越大召回率越高但开销越大"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 9,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "完美覆盖全部关键点，表格形式清晰，三个参数的默认值（16/100/128）准确，调参影响提示完整。"
+      },
+      "advanced": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 9,
+        "relevance": 10,
+        "overall": 9,
+        "comment": "关键点和事实均正确，但调参影响表述略简（用'索引质量'和'查询延迟'替代'召回率'），不如答案A直接明确。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 10,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "信息最完整，包含引用标注、生产环境配置验证、参数平衡总结，且诚实说明知识库缺失内容。综合表现最佳。"
+      }
+    }
+  },
+  {
+    "questionId": "q05",
+    "question": "RRF（Reciprocal Rank Fusion）融合算法的公式和工作原理是什么？它的平滑因子k有什么作用？",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "RRF_score(d)=Σ1/(k+rank_i(d))",
+      "k为平滑因子默认60",
+      "仅需排名不需原始分数",
+      "避免单路高分过度影响最终排序"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 10,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "完整覆盖所有期望关键点，公式正确，k默认值60明确说明，'仅需排名不需原始分数'和'避免单路高分过度影响'都有清晰阐述，解释充分且有工程定位信息"
+      },
+      "advanced": {
+        "coverage": 9,
+        "accuracy": 10,
+        "completeness": 9,
+        "relevance": 10,
+        "overall": 9,
+        "comment": "准确覆盖核心关键点，k=60、仅需排名信息、避免分数极端化均有说明。信息完整但缺少Naive答案中关于RRF在RAG系统中定位（精排前候选池筛选）的额外细节"
+      },
+      "agentic": {
+        "coverage": 8,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "覆盖了公式、k=60、仅需排名三个核心关键点。第四点'避免单路高分过度影响'表述偏向数值稳定性而非直接命中。此外引入了Shannon熵置信度加权这一期望关键点外的信息，虽有价值但略微冲淡了核心要点的聚焦度"
+      }
+    }
+  },
+  {
+    "questionId": "q06",
+    "question": "请说明RAGAS评估框架的三个核心评估维度和各自的评估方法。",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "Faithfulness忠实度",
+      "Answer Relevancy答案相关性",
+      "Context Relevancy上下文相关性",
+      "逐陈述验证",
+      "反向生成",
+      "相关比例计算"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 9,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "完整覆盖全部6个期望关键点，评估方法表述精准，逻辑清晰，格式简洁。"
+      },
+      "advanced": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 10,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "完整覆盖全部6个期望关键点，评估方法描述详细准确，每个维度都包含评估目标和方法的完整阐释。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 10,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "完整覆盖全部6个期望关键点，各维度评估方法精准，且带有知识库引用标注，体现了一定的溯源意识，结构完整。"
+      }
+    }
+  },
+  {
+    "questionId": "q07",
+    "question": "Qdrant的int8标量量化（Scalar Quantization）技术可以节省多少存储空间？量化原理是什么？",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "节省约75%存储",
+      "float32压缩为int8",
+      "min-max范围映射到0-255",
+      "使用quantile 0.99排除极端值",
+      "召回率损失<2%"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 8,
+        "relevance": 10,
+        "overall": 9,
+        "comment": "完整覆盖全部5个期望关键点，事实准确，简洁明了，唯一的微缺是没有A的部分补充扩展信息。"
+      },
+      "advanced": {
+        "coverage": 9,
+        "accuracy": 10,
+        "completeness": 7,
+        "relevance": 10,
+        "overall": 8,
+        "comment": "准确覆盖了核心关键点（节省75%、float32→int8、min-max映射、quantile 0.99），但缺少召回率损失<2%这一关键点，完整性略逊于A。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 10,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "全面覆盖所有关键点，且提供了配置示例（scalar: { type: 'int8', quantile: 0.99, always_ram: true }）和量化误差控制细节，信息最完整，结构清晰，优于A和B。"
+      }
+    }
+  },
+  {
+    "questionId": "q08",
+    "question": "Linsor AI采用的'Small-to-Big'三层粒度文档分块策略中，Level 1根块大约包含多少tokens？这种策略的核心思想是什么？",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "Level 1约1200 tokens",
+      "Level 2约500 tokens用于检索",
+      "Level 3约300 tokens用于精确匹配",
+      "检索命中L3后展开为L1完整内容"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 7,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 7,
+        "comment": "准确覆盖了L1(1200 tokens)、L3(300 tokens)及展开机制，遗漏了L2(500 tokens)；信息简洁但足够回答问题核心。"
+      },
+      "advanced": {
+        "coverage": 7,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "同样遗漏了L2信息，但相比A版增加了检索精度与上下文完整性的矛盾分析，解释更为系统全面。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "完整覆盖全部4个期望关键点，明确标注了L1/L2/L3各层级tokens及用途；引用标注规范，分层机制描述清晰，是最完整的答案。"
+      }
+    }
+  },
+  {
+    "questionId": "q09",
+    "question": "GPT-3的参数量是多少？在LLM发展历程中，参数规模的增长带来了哪些涌现能力？",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "1750亿参数",
+      "In-Context Learning",
+      "Chain-of-Thought推理",
+      "指令遵循",
+      "多语言能力"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "完整覆盖全部5个期望关键点，事实准确，但信息较为简略，仅列举关键能力名称而未展开解释。"
+      },
+      "advanced": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "与Naïve RAG质量相近，完整覆盖关键点且表述准确，但深度不足，未能提供额外的机制分析或细节补充。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 9,
+        "completeness": 10,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "不仅完整覆盖全部关键点，还从表征容量扩张、临界点触发、协同缩放机制、稀疏化架构等维度深入剖析，提供了高质量的扩展信息，结构清晰、引用规范。"
+      }
+    }
+  },
+  {
+    "questionId": "q10",
+    "question": "旋转位置编码（RoPE）相比原始Transformer的位置编码有什么技术优势？哪些LLM系列采用了RoPE？",
+    "questionType": "fact_lookup",
+    "expectedKeyPoints": [
+      "相对位置编码",
+      "支持更长上下文",
+      "位置插值可扩展至128K甚至1M tokens",
+      "Llama和Qwen系列采用"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "答案完整覆盖全部4个期望关键点，语言简洁准确。'无需额外训练'虽非期望关键点但属于合理扩展。不存在事实错误或幻觉，信息量适中但偏简略。"
+      },
+      "advanced": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "与答案A质量相当，完整覆盖全部关键点，标注了来源片段[片段1]。信息量一致，简洁但缺少额外解释深度。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 9,
+        "completeness": 10,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "不仅完整覆盖全部期望关键点，还额外提供了原始Transformer正弦位置编码的原理与局限性、RoPE的数学推导细节、以及长度外推的多种技术方案（线性插值、NTK-aware缩放、YaRN等），大幅提升了信息完整性和可解释性。所有引用标注清晰准确。"
+      }
+    }
+  },
+  {
+    "questionId": "q11",
+    "question": "在RAG系统中，稠密检索（Dense Retrieval）和稀疏检索（Sparse Retrieval）各自有什么优势和不足？为什么需要混合使用？",
+    "questionType": "compare_analysis",
+    "expectedKeyPoints": [
+      "稠密擅长语义匹配",
+      "稀疏擅长精确关键词匹配",
+      "稠密可能漏掉罕见专业术语",
+      "稀疏对同义改写不敏感",
+      "两者互补覆盖不同检索场景"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "答案结构清晰，五大关键点均有覆盖。稀疏检索的不足（改写/同义替换敏感度低）虽有提及但表述位置略靠后；混合使用原因阐述详尽，包含RRF融合机制和鲁棒性增强。"
+      },
+      "advanced": {
+        "coverage": 7,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 8,
+        "overall": 8,
+        "comment": "核心论点到位，但关键点3（稠密漏掉专业术语）和关键点4（稀疏不敏感同义改写）均通过间接对比推断得出，而非明确陈述，覆盖率因此略低。RRF融合机制说明简洁准确。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 10,
+        "comment": "最全面且有据可查的答案。五大关键点均有明确对应引用（KB-3/KB-8/KB-9），专业术语、代码标识符、版本号等具体例子充分佐证了稠密不足；'意思相似'与'精确匹配'的分工论述完整呼应了互补逻辑。结构最清晰，三部分逻辑递进。"
+      }
+    }
+  },
+  {
+    "questionId": "q12",
+    "question": "从部署复杂度、适合的场景规模和资源消耗三个角度，详细比较Qdrant和Milvus这两种向量数据库。",
+    "questionType": "compare_analysis",
+    "expectedKeyPoints": [
+      "Qdrant部署简单单二进制",
+      "Milvus存算分离多组件",
+      "Qdrant适合百万到亿级",
+      "Milvus适合十亿级以上",
+      "Qdrant资源消耗低",
+      "Milvus需要etcd/MinIO等依赖"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "表格形式清晰呈现对比，三个维度的六个关键点全部覆盖，结论明确。信息完整度尚可，可补充一些技术细节增强说服力。"
+      },
+      "advanced": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "结构清晰，编号列表层次分明，六个关键点均有体现，并附选型建议。对比维度覆盖全面，信息完整性优于答案A。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "标注来源引用增强了可信度，六个关键点完整覆盖且解释充分，特别是etcd/MinIO等依赖细节明确，Memmap机制也有说明。选型建议结合了来源标注，整体最完整。"
+      }
+    }
+  },
+  {
+    "questionId": "q13",
+    "question": "请从检索能力、查询处理和系统复杂度三个角度，对比Naïve RAG、Advanced RAG和Agentic RAG三种方案的核心差异和适用场景。",
+    "questionType": "compare_analysis",
+    "expectedKeyPoints": [
+      "Naïve仅有单次稠密检索",
+      "Advanced增加改写+混合检索+重排",
+      "Agentic引入多智能体编排",
+      "检索质量依次提升",
+      "系统复杂度和延迟依次增加"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 10,
+        "overall": 9,
+        "comment": "结构清晰完整，三维对比表和适用场景表覆盖全部期望关键点。Naïve单次检索、Advanced改写+混合检索+重排、Agentic多智能体编排的演进逻辑清晰。检索质量提升和复杂度增加的暗含关系通过表格对比自然呈现。引用标注合理，评分为三份中最高。"
+      },
+      "advanced": {
+        "coverage": 7,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 8,
+        "overall": 8,
+        "comment": "三个维度覆盖基本到位，事实准确，但相比A和C缺少对检索质量演进和复杂度递增的显式总结归纳。适用场景描述较为简略，'检索质量依次提升'和'系统复杂度依次增加'两条暗含线索未能明确提炼。表格形式稍显简单，补充说明部分的深度不如A和C。"
+      },
+      "agentic": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "与答案A旗鼓相当，结构略有不同（四维度而非三维，但核心一致）。明确覆盖多智能体编排、动态检索、状态图架构等Agentic核心特征，适用场景最为具体详细。结尾'总结建议'部分清晰点出三条演进路径，对检索质量提升和复杂度增加的趋势有明确呼应。"
+      }
+    }
+  },
+  {
+    "questionId": "q14",
+    "question": "OpenAI的GPT系列和Anthropic的Claude系列在技术定位和核心优势上有什么不同？各自适合什么场景？",
+    "questionType": "compare_analysis",
+    "expectedKeyPoints": [
+      "GPT多模态能力强",
+      "Claude以安全性著称",
+      "GPT-4o统一文本视觉语音",
+      "Claude 4引入扩展思考",
+      "GPT生态丰富",
+      "Claude推理深度突出"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 6,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "覆盖了5/6个关键点，信息完整且结构清晰，对比表格直观；缺失'GPT生态丰富'这一期望点；准确性和相关性均优秀，答复完整充实"
+      },
+      "advanced": {
+        "coverage": 5,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 7,
+        "comment": "覆盖了4/6个关键点，缺少'GPT生态丰富'和'Claude推理深度突出'；准确性和相关性高，但信息完整度较A有所欠缺，未充分展开各版本细节"
+      },
+      "agentic": {
+        "coverage": 5,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 7.5,
+        "comment": "覆盖了5/6个关键点，缺失'GPT生态丰富'；准确性最高（带来源标注），信息完整且诚实说明了知识库局限性；但综合评价略低于Naive RAG，因后者信息呈现更流畅丰富"
+      }
+    }
+  },
+  {
+    "questionId": "q15",
+    "question": "HNSW和IVF两种ANN算法在索引结构、查询效率和召回率方面有什么本质区别？各自适合什么应用场景？",
+    "questionType": "compare_analysis",
+    "expectedKeyPoints": [
+      "HNSW多层图结构无需训练",
+      "IVF基于聚类需训练",
+      "HNSW查询O(logN)召回率更高",
+      "IVF适合高吞吐场景",
+      "IVF的nprobe控制搜索聚类数"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 8,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "答案结构清晰，覆盖了4个期望关键点。准确描述了HNSW的多层图结构和IVF的聚类划分结构，以及HNSW的O(logN)复杂度和IVF的nprobe参数。但遗漏了'HNSW无需训练'这一重要区别点，导致对两者本质差异的刻画不够完整。"
+      },
+      "advanced": {
+        "coverage": 8,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "与Naïve版本质量相当，同样覆盖了4个关键点。优点是补充了'ef=128时召回率>99%'等量化信息，表格形式更直观。但同样缺少'HNSW无需训练'与'IVF需训练'这一核心区别的直接阐述，两者在训练需求上的本质差异不够突出。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "最佳答案。完整覆盖全部5个期望关键点，清晰对比了HNSW'无需训练'与IVF'需预先训练聚类中心'的本质区别。包含量化指标(QPS、延迟、Recall数值)和来源标注，信息完整且结构化。综合对比表格直观展现了两种算法的核心差异。"
+      }
+    }
+  },
+  {
+    "questionId": "q16",
+    "question": "在检索参数设置上，事实查询（fact_lookup）和对比分析（compare_analysis）两种问题类型应该采用怎样不同的检索策略？为什么？",
+    "questionType": "compare_analysis",
+    "expectedKeyPoints": [
+      "事实查询用严格过滤denseTopK=20",
+      "对比分析用宽松过滤denseTopK=30",
+      "事实查询scoreThreshold=0.3",
+      "对比分析scoreThreshold=0.15",
+      "对比分析需更大候选池覆盖多维度"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "答案完整覆盖全部5个期望关键点，参数对比表格清晰，策略差异与原因解释充分，核心差异总结到位（精准命中 vs 多维覆盖）。无冗余信息，直接回应用户问题。"
+      },
+      "advanced": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "准确覆盖全部期望关键点，表格对比简洁明了，多查询融合策略说明合理。相较于A和C，缺少对Rerank阶段具体操作（多查询评分取最大值）的展开，以及核心逻辑的深度总结。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 10,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "最完整答案，精确覆盖全部关键点并标注知识库来源（[来源1]、[来源3]等）。信息完整度最高：包含检索参数、查询分解、多查询融合评分机制、底层逻辑总结及综合对比表格。对比分析的大候选池策略与多维度覆盖原因解释透彻。"
+      }
+    }
+  },
+  {
+    "questionId": "q17",
+    "question": "如果想要从零开始构建一个面向企业内部文档的RAG问答系统，需要选择和组合哪些核心技术组件？请给出系统架构建议。",
+    "questionType": "research_or_open_world",
+    "expectedKeyPoints": [
+      "文档解析方案选择",
+      "Embedding模型选型",
+      "向量数据库选型",
+      "检索策略设计",
+      "混合检索+RRF+Rerank",
+      "提示词工程",
+      "评估体系"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "架构设计完整清晰，从双阶段架构到进阶架构到落地建议层次递进，全面覆盖关键点，Agentic RAG部分阐述详细，评估体系指标明确。略有不足：Embedding模型和向量库未给出具体选型推荐。"
+      },
+      "advanced": {
+        "coverage": 7,
+        "accuracy": 8,
+        "completeness": 6,
+        "relevance": 8,
+        "overall": 7,
+        "comment": "结构合理但与Naive版本高度重复，缺乏细节差异化。Agentic部分只是功能列表式描述，未深入展开。文档解析、分块、Embedding和向量库的具体选型与工具推荐缺失，评估体系仅一笔带过。"
+      },
+      "agentic": {
+        "coverage": 4,
+        "accuracy": 8,
+        "completeness": 5,
+        "relevance": 7,
+        "overall": 6,
+        "comment": "在文档解析方案、Embedding模型选型、向量数据库选型上给出了具体工具推荐（PyMuPDF、Qdrant、BGE-M3等），这是亮点。但核心缺失：完全未提及混合检索+RRF+Rerank，未展开提示词工程，评估体系缺失。诚实说明了知识库局限性。"
+      }
+    }
+  },
+  {
+    "questionId": "q18",
+    "question": "在实际项目中，可以采用哪些策略和技术来减少大语言模型生成内容中的幻觉？请从检索、生成和校验三个层面分析。",
+    "questionType": "research_or_open_world",
+    "expectedKeyPoints": [
+      "RAG提供外部知识约束",
+      "事实校验Agent逐条验证",
+      "提示词中明确要求诚实回答",
+      "降低temperature减少随机性",
+      "检索相关性审计"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 9,
+        "accuracy": 10,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "答案完整覆盖全部5个期望关键点，且在每个层面都有合理扩展（如检索不足时的分层应对策略、模型分级调度等）。事实表述准确，信息充分结构清晰，直接回应用户问题的三个层面需求。"
+      },
+      "advanced": {
+        "coverage": 7,
+        "accuracy": 10,
+        "completeness": 6,
+        "relevance": 8,
+        "overall": 7,
+        "comment": "答案覆盖了全部关键点，但表述相对简略，缺少如诚实性指令的具体措辞、检索相关性审计的详细机制等细节。信息量处于基本完整但重要细节不足的状态，适合作为概览而非详细方案。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 9,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "答案质量最优，全面覆盖全部关键点且每个维度都有深入展开（如混合检索+RRF融合、高质量分块策略、多阶段协同校验等）。事实准确，引用了多个知识库来源[KB-x]，信息充分完整，精准命中问题核心，结论有力度。"
+      }
+    }
+  },
+  {
+    "questionId": "q19",
+    "question": "设计一个RAG系统的评估方案需要关注哪些维度？除了RAGAS的三大指标外，还有哪些实际生产中需要考虑的评估角度？",
+    "questionType": "research_or_open_world",
+    "expectedKeyPoints": [
+      "检索效率指标",
+      "生成质量指标",
+      "答案完整性",
+      "系统鲁棒性",
+      "延迟和成本",
+      "用户满意度"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 8,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "覆盖5/6个期望关键点，缺失用户满意度维度但整体覆盖完整。信息详尽，指标解释清晰，结构层次分明，是高质量的回答。"
+      },
+      "advanced": {
+        "coverage": 8,
+        "accuracy": 8,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 8,
+        "comment": "覆盖度与Naive相近，采用表格形式呈现使结构清晰，但信息密度和深度略低于Naive版本，部分引用标注不够精确。"
+      },
+      "agentic": {
+        "coverage": 8,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "覆盖5/6个期望关键点，引用来源标注清晰完整。特别补充了Agentic RAG特有的评估角度（如Completeness Checker Agent、检索相关性审计），体现了对该场景的深入理解。评估实验设计原则的总结也是亮点。"
+      }
+    }
+  },
+  {
+    "questionId": "q20",
+    "question": "选择Embedding模型时应该考虑哪些因素？在中文为主的RAG场景中，有哪些推荐的Embedding模型？",
+    "questionType": "research_or_open_world",
+    "expectedKeyPoints": [
+      "维度与精度权衡",
+      "最大输入长度",
+      "语言支持",
+      "API成本和延迟",
+      "text-embedding-v4适合中文",
+      "BGE-M3多语言",
+      "缓存机制优化成本"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 5,
+        "accuracy": 7,
+        "completeness": 5,
+        "relevance": 7,
+        "overall": 6,
+        "comment": "覆盖了维度/精度权衡、最大输入长度、语言支持及两款推荐模型，但遗漏了API成本与延迟、缓存机制等关键维度，信息量适中，结构清晰。"
+      },
+      "advanced": {
+        "coverage": 6,
+        "accuracy": 7,
+        "completeness": 6,
+        "relevance": 8,
+        "overall": 7,
+        "comment": "在naive基础上补充了功能特性（如混合检索、LoRA），选型建议更具实践价值，但同样未涵盖API成本与缓存机制，整体略优于naive。"
+      },
+      "agentic": {
+        "coverage": 5,
+        "accuracy": 7,
+        "completeness": 6,
+        "relevance": 8,
+        "overall": 6,
+        "comment": "以表格形式清晰呈现模型对比，信息完整度较好，且诚实声明了知识库局限性；但期望关键点覆盖仍不完整，API成本/延迟和缓存机制均未涉及。"
+      }
+    }
+  },
+  {
+    "questionId": "q21",
+    "question": "如何设计一个具备容错和降级能力的高可用RAG检索管线？请从检索组件冗余、异常处理和用户体验三个角度给出建议。",
+    "questionType": "research_or_open_world",
+    "expectedKeyPoints": [
+      "ES不可用时降级为空结果",
+      "稠密+稀疏并行不串行",
+      "改写失败回退原始查询",
+      "Rerank失败回退轻量级评分",
+      "检索不足触发改写重试",
+      "网络搜索兜底"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 6,
+        "accuracy": 7,
+        "completeness": 5,
+        "relevance": 8,
+        "overall": 7,
+        "comment": "并行检索、改写重试、网络搜索兜底等关键点覆盖较好，但ES不可用降级、Rerank失败回退、轻量级评分等关键机制缺失。异常处理和用户体验描述较全面但深度不足，部分设计停留在概念层面，缺乏具体技术细节。"
+      },
+      "advanced": {
+        "coverage": 8,
+        "accuracy": 8,
+        "completeness": 8,
+        "relevance": 8,
+        "overall": 8,
+        "comment": "明确提及稠密+稀疏混合检索、RRF融合、精排层冗余（Rerank）、改写重试机制，完整覆盖了核心降级策略。对Rerank失败回退到轻量级评分的设计尤为精准。状态图编排、查询路由分流、质量门禁等机制描述清晰且有层次。唯一缺失的是ES不可用时降级为空结果的具体处理。"
+      },
+      "agentic": {
+        "coverage": 6,
+        "accuracy": 7,
+        "completeness": 6,
+        "relevance": 7,
+        "overall": 7,
+        "comment": "多路检索冗余、智能体职责隔离、质量审计与条件降级等机制覆盖到位，改写重试和Web搜索兜底也有体现。但并行检索的'不串行'特性强调不足，ES降级、Rerank失败回退原始查询、轻量级评分等关键点缺失。末尾主动说明知识库局限性，体现了诚实性，但整体建议偏概念化，具体实现细节不够充分。"
+      }
+    }
+  },
+  {
+    "questionId": "q22",
+    "question": "对于包含百万级以上文档片段的大规模RAG系统，可以从哪些方面进行性能优化？请从存储、检索和生成三个层面分析。",
+    "questionType": "research_or_open_world",
+    "expectedKeyPoints": [
+      "标量量化节省存储",
+      "payload索引加速过滤",
+      "Embedding缓存复用",
+      "检索结果缓存",
+      "模型分级使用",
+      "流式输出降低首token延迟"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 3,
+        "accuracy": 8,
+        "completeness": 6,
+        "relevance": 7,
+        "overall": 5,
+        "comment": "答案覆盖了部分检索和生成优化（如并行检索、模型分级、流式输出），但缺少存储层面的关键优化。核心缺陷：完全未提及标量量化节省存储和Payload索引加速过滤，仅笼统提到层级分块结构，信息深度不足。适合大规模场景的底层存储与缓存策略覆盖较薄弱。"
+      },
+      "advanced": {
+        "coverage": 5,
+        "accuracy": 8,
+        "completeness": 7,
+        "relevance": 7,
+        "overall": 7,
+        "comment": "覆盖了Embedding缓存复用、检索结果缓存、模型分级、流式输出等关键点，信息完整性和结构化程度较好。但存储层面仍未覆盖标量量化和Payload索引这两个核心技术点，略显遗憾。此外补充了提示词工程和智能体自我修正，内容丰富但未能命中全部期望关键点。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 9,
+        "completeness": 9,
+        "relevance": 8,
+        "overall": 9,
+        "comment": "完整覆盖全部六个期望关键点，且每点均给出具体技术细节（标量量化75%存储节省、Payload索引、Redis缓存TTL、模型分级超时配置、Streaming+AbortSignal等），信息充分、结构清晰、与问题高度相关。在research_or_open_world类型下，综合覆盖率和完整性均达到优秀水平。"
+      }
+    }
+  },
+  {
+    "questionId": "q23",
+    "question": "Agentic RAG中的多智能体编排（Multi-Agent Orchestration）相比传统单管线RAG增加了哪些能力？在什么业务场景下值得引入这种复杂架构？",
+    "questionType": "research_or_open_world",
+    "expectedKeyPoints": [
+      "自我评估和自我修正",
+      "检索质量审计与重试",
+      "事实校验与完整性检查",
+      "补充检索触发",
+      "复杂对比分析场景",
+      "高准确率要求场景"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 10,
+        "accuracy": 9,
+        "completeness": 8,
+        "relevance": 9,
+        "overall": 9,
+        "comment": "全面覆盖所有6个期望关键点，自我评估与修正、检索质量审计、事实完整性检查、补充检索触发均详细阐述；业务场景部分虽主要基于推断但合理且有价值；引用片段标注增强了可信度；信息组织结构清晰，技术能力和场景分析兼顾。"
+      },
+      "advanced": {
+        "coverage": 9,
+        "accuracy": 9,
+        "completeness": 7,
+        "relevance": 8,
+        "overall": 8,
+        "comment": "覆盖了所有关键能力点，但表述相对精简，部分细节展开不足；业务场景分析逻辑合理但缺少具体引用依据；整体回答质量中规中矩，在completeness上略有欠缺，未能像A那样深入展开各能力的实现机制。"
+      },
+      "agentic": {
+        "coverage": 10,
+        "accuracy": 10,
+        "completeness": 9,
+        "relevance": 10,
+        "overall": 10,
+        "comment": "最佳答案：完整覆盖所有期望关键点，每个能力点均附带具体Agent名称和实现机制；知识库引用精准（[KB-1][KB-3][KB-4]）；业务场景与能力特性高度匹配；综合建议部分清晰界定了适用边界；信息密度高且结构化优秀。"
+      }
+    }
+  },
+  {
+    "questionId": "q24",
+    "question": "你好！请问你是谁？你能帮我做什么？",
+    "questionType": "greeting",
+    "expectedKeyPoints": [
+      "自我介绍为AI助手",
+      "说明可以回答知识库相关问题",
+      "语气友好自然"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 5,
+        "accuracy": 5,
+        "completeness": 5,
+        "relevance": 10,
+        "overall": 9,
+        "comment": "三个关键点均完美覆盖：清晰自我介绍为AI助手，列举了知识库问答相关能力，语气热情友好，使用表情符号增强亲和力，完全符合问候类问题的期望。"
+      },
+      "advanced": {
+        "coverage": 5,
+        "accuracy": 5,
+        "completeness": 5,
+        "relevance": 10,
+        "overall": 9,
+        "comment": "同样出色地覆盖全部关键点：自我介绍准确，涵盖知识库问答能力，语气自然亲切。结构清晰，使用 emoji 视觉引导，可读性强。表现与 Naïve 版本相近。"
+      },
+      "agentic": {
+        "coverage": 5,
+        "accuracy": 5,
+        "completeness": 5,
+        "relevance": 5,
+        "overall": 5,
+        "comment": "虽然自我定位清晰，但表述过于技术化和机械，强调系统规则、来源标注、执行步骤等，这与友好自然的问候风格明显偏离。且未直接回应用户「能帮我做什么」的问题核心。语气生硬，不符合 greeting 类型期望。"
+      }
+    }
+  },
+  {
+    "questionId": "q25",
+    "question": "早上好！今天有什么可以帮助我的？",
+    "questionType": "greeting",
+    "expectedKeyPoints": [
+      "友好回应问候",
+      "表示愿意提供帮助",
+      "不涉及检索"
+    ],
+    "scores": {
+      "naive": {
+        "coverage": 5,
+        "accuracy": 5,
+        "completeness": 5,
+        "relevance": 10,
+        "overall": 8,
+        "comment": "友好温暖的问候，完整覆盖三个期望关键点，列举具体帮助事项，语气亲切自然。"
+      },
+      "advanced": {
+        "coverage": 5,
+        "accuracy": 5,
+        "completeness": 5,
+        "relevance": 10,
+        "overall": 8,
+        "comment": "正式友善的问候，结构清晰，积极表达服务意愿，列举服务范围全面。"
+      },
+      "agentic": {
+        "coverage": 2,
+        "accuracy": 6,
+        "completeness": 5,
+        "relevance": 6,
+        "overall": 4,
+        "comment": "虽然有问候回应，但明确提及检索相关（知识库检索内容为空），违反'不涉及检索'关键点；过多强调系统限制而非积极表达帮助意愿。"
+      }
+    }
+  }
+]

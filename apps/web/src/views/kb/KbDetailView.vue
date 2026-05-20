@@ -864,7 +864,7 @@ onMounted(() => {
               </div>
               <div class="flex items-center gap-3">
                 <BaseButton :disabled="!canUpload" @click.stop="openFilePicker">
-                  浏览文件
+                  上传文件
                 </BaseButton>
                 <BaseButton
                   v-if="isUploading && state.uploadId"
