@@ -46,6 +46,23 @@ services:
     networks:
       - rag_network
 
+  es:
+    build: ./elasticsearch
+    container_name: rag_es
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - xpack.security.enabled=false
+      - xpack.security.http.ssl.enabled=false
+      - xpack.security.transport.ssl.enabled=false
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    volumes:
+      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/es:/usr/share/elasticsearch/data
+    restart: always
+    networks:
+      - rag_network
+
 volumes:
   mysql_data:
   qdrant_data:
