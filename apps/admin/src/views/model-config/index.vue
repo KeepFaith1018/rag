@@ -230,6 +230,7 @@ onMounted(() => fetchData());
             @click="page = Math.max(1, page - 1); fetchData()"
             :disabled="page <= 1"
             class="btn-secondary px-3 py-1.5 text-sm"
+            :disabled="page <= 1"
           >
             上一页
           </button>
