@@ -42,6 +42,9 @@ apps/server/storage/
 # Playwright MCP
 .playwright-mcp/
 
+# Git worktrees
+.worktrees/
+
 # Editor / OS
 .DS_Store
 Thumbs.db

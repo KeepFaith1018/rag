@@ -614,33 +614,6 @@ onMounted(() => {
       </section>
     </div>
 
-    <footer
-      class="absolute bottom-0 left-0 w-full h-12 flex items-center px-12 justify-between border-t border-outline-variant/5 bg-surface/50 backdrop-blur-md"
-    >
-      <div class="flex gap-8">
-        <span
-          class="text-[10px] font-label tracking-tighter text-outline uppercase"
-        >
-          接口源: knowledge-base/*
-        </span>
-        <span
-          class="text-[10px] font-label tracking-tighter text-outline uppercase"
-        >
-          当前条数: {{ kbList.items.value.length }}
-        </span>
-      </div>
-      <div class="flex gap-4 items-center">
-        <span
-          class="w-1.5 h-1.5 rounded-full bg-primary animate-pulse shadow-[0_0_5px_#c3c0ff]"
-        ></span>
-        <span
-          class="text-[10px] font-label tracking-tighter text-outline uppercase"
-        >
-          数据同步: 已接入
-        </span>
-      </div>
-    </footer>
-
     <div
       v-if="showManageModal"
       class="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm flex items-center justify-center px-4"

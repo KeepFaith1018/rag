@@ -59,10 +59,12 @@ function handleRetry(messageId: string | number) {
       >
         <UserMessageItem
           v-if="msg.role === 'user'"
+          v-memo="[msg.content]"
           :message="msg"
         />
         <AIMessageItem
           v-else
+          v-memo="[msg.content, msg.messageStatus, msg.blocks?.length ?? 0]"
           :message="msg"
           @retry="handleRetry(msg.id)"
         />
