@@ -53,9 +53,11 @@ export const useChatConfigStore = defineStore('chat-config', () => {
 
   function setAvailableKbs(kbs: AvailableKb[]) {
     availableKbs.value = kbs;
-    // 自动全选 owner 权限的知识库
-    const ownerKbIds = kbs.filter((kb) => kb.permission === 'owner').map((kb) => kb.kbId);
-    selectedKbIds.value = ownerKbIds;
+    // 仅在首次（未选择时）自动全选 owner 权限的知识库
+    if (selectedKbIds.value.length === 0) {
+      const ownerKbIds = kbs.filter((kb) => kb.permission === 'owner').map((kb) => kb.kbId);
+      selectedKbIds.value = ownerKbIds;
+    }
   }
 
   function toggleKb(kbId: string) {
@@ -74,7 +76,8 @@ export const useChatConfigStore = defineStore('chat-config', () => {
   function setAvailableModels(models: AvailableModel[]) {
     availableModels.value = models;
     if (models.length > 0 && !selectedModel.value) {
-      selectedModel.value = models[0]!;
+      // 优先选择系统模型，回退到列表第一个
+      selectedModel.value = models.find((m) => m.source === 'system') ?? models[0]!;
     }
   }
 

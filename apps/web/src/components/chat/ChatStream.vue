@@ -88,6 +88,7 @@ function handleRetry(messageId: string | number) {
 <style scoped>
 .message-stream {
   overflow-y: auto;
+  scrollbar-gutter: stable;
   scrollbar-width: thin;
   scrollbar-color: var(--color-surface-container-high) transparent;
 }

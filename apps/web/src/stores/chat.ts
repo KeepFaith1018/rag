@@ -5,7 +5,8 @@
  * 保持与旧版 API 完全兼容。
  */
 import { defineStore, storeToRefs } from 'pinia';
-import { ref, computed } from 'vue';
+import { ref, computed, watch, toRef } from 'vue';
+import type { Ref } from 'vue';
 import {
   listChatSessions,
   getChatSession,
@@ -13,6 +14,7 @@ import {
 } from '@/api/chat';
 import type {
   ChatMessageItem,
+  ChatSessionSummary,
   ChatMode,
   KbOption,
   ModelOption,
@@ -32,10 +34,11 @@ export const useChatStore = defineStore('chat', () => {
   const agentStore = useChatAgentStore();
   const configStore = useChatConfigStore();
 
-  // ─── Session 代理（storeToRefs 保留 Ref 响应性） ─────────
+  // ─── Session 代理（storeToRefs / toRef 保留 Ref 响应性） ──
 
   const { sessions, messages, isSending } = storeToRefs(sessionStore);
-  const currentSession = ref(sessionStore.currentSession);
+  // 使用 toRef 创建双向绑定 ref，避免 watch 克隆的微任务窗口和双写不一致
+  const currentSession = toRef(sessionStore, 'currentSession') as Ref<ChatSessionSummary | null>;
 
   const isLoadingSessions = ref(false);
   const isLoadingMessages = ref(false);
@@ -47,11 +50,17 @@ export const useChatStore = defineStore('chat', () => {
   // ─── Config 代理 ───────────────────────────────────────────
 
   const { chatMode, selectedKbIds, selectedKbCount, enableWebSearch } = storeToRefs(configStore);
-  const selectedModel = ref<ModelOption | null>(null);
-  const lastUserMessage = configStore.lastUserMessage;
+  // 使用 toRef 而非直接取值，保持双向响应式绑定
+  const lastUserMessage = toRef(configStore, 'lastUserMessage') as Ref<string>;
 
   const availableKbs = ref<KbOption[]>([]);
   const availableModels = ref<ModelOption[]>([]);
+  const selectedModel = ref<ModelOption | null>(null);
+
+  // 保持 config store 的 refs 与本地 refs 同步
+  watch(() => configStore.availableKbs, (val) => { availableKbs.value = val as unknown as KbOption[]; }, { immediate: true });
+  watch(() => configStore.availableModels, (val) => { availableModels.value = val as unknown as ModelOption[]; }, { immediate: true });
+  watch(() => configStore.selectedModel, (val) => { selectedModel.value = (val as unknown as ModelOption | null) ?? null; }, { immediate: true });
 
   // ─── Agent 代理 ────────────────────────────────────────────
 
@@ -95,8 +104,8 @@ export const useChatStore = defineStore('chat', () => {
     return session;
   }
 
-  function selectSession(sessionId: string) {
-    sessionStore.selectSession(sessionId);
+  async function selectSession(sessionId: string) {
+    await sessionStore.selectSession(sessionId);
   }
 
   async function removeSession(sessionId: string) {
@@ -129,8 +138,8 @@ export const useChatStore = defineStore('chat', () => {
     return msg;
   }
 
-  function setMessageStatus(msgIndex: number, status: string) {
-    sessionStore.setMessageStatus(msgIndex, status as never);
+  function setMessageStatus(msgId: number, status: string) {
+    sessionStore.setMessageStatus(msgId, status as never);
   }
 
   function setSending(val: boolean) {

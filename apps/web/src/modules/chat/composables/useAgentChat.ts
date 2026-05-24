@@ -132,7 +132,8 @@ export function useAgentChat(options?: UseAgentChatOptions) {
         chatStore.appendMessageBlocks(assistantMsgId, blocks as RenderableBlock[])
       },
       onComplete: () => {
-        chatStore.setMessageStatus(assistantMsgId, 'completed')
+        // 打字机动画播放完毕 ≠ 消息整体完成（后端可能还在校验/补充）
+        // 仅通知外部，不修改消息状态
         onMessageFinish?.(assistantMsgId)
       },
       onError: (err) => {
@@ -188,6 +189,10 @@ export function useAgentChat(options?: UseAgentChatOptions) {
                 if (msg) {
                   msg.aguiSteps = [...chatStore.aguiSteps];
                   msg.aguiToolCalls = [...chatStore.aguiToolCalls];
+                  // 兜底：非 RAG 模式无 VALIDATION_COMPLETED，在此完成消息
+                  if (msg.messageStatus === 'streaming' || msg.messageStatus === 'validating' || msg.messageStatus === 'supplementing') {
+                    chatStore.setMessageStatus(assistantMsgId, 'completed')
+                  }
                 }
               }
               break;
@@ -277,6 +282,7 @@ export function useAgentChat(options?: UseAgentChatOptions) {
         onError?.(error);
       }
     } finally {
+      // 仅重置 parser，不重置 transformer（否则会 emit 空 blocks 导致已显示内容消失）
       resetMarkdown();
       chatStore.setSending(false);
       isStreaming.value = false;

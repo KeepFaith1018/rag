@@ -78,7 +78,11 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
       pauseOnHidden: true,
       plugins,
       onChange: ((displayBlocks) => {
-        onBlocks(displayBlocks as DisplayBlock<ParsedBlock | undefined>[]);
+        // 跳过空数组：transformer 全部处理完后 processNext 会 emit 空结果，
+        // 直接应用会导致已显示内容被清空
+        if (displayBlocks.length > 0) {
+          onBlocks(displayBlocks as DisplayBlock<ParsedBlock | undefined>[]);
+        }
       }) as (displayBlocks: DisplayBlock<unknown>[]) => void,
       onAllComplete: () => {
         onComplete?.()
@@ -89,7 +93,11 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
   }
 
   /**
-   * 接收文本增量，先喂给 parser，再把结果推入 transformer。
+   * 接收文本增量。
+   *
+   * 关键：每次 push 必须传入 parser 的全部已完成 block，
+   * 因为 BlockTransformer.push() 会按输入的 id 集合过滤内部 completedBlocks，
+   * 只传增量会导致之前已完成的 block 被移除。
    */
   function pushDelta(delta: string): void {
     if (!delta || !parser || !transformer) return
@@ -99,9 +107,22 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
 
     try {
       const update = parser.append(normalized)
-      const blocks = [...update.completed, ...update.updated] as ParsedBlock[]
-      if (blocks.length > 0) {
-        transformer.push(blocks)
+      // 必须传入 parser 全部已完成 block + 本次 updated block，
+      // 否则 transformer 内部会移除不在 id 集合中的已完成 block
+      const allBlocks = [
+        ...parser.getCompletedBlocks(),
+        ...update.updated,
+      ] as ParsedBlock[]
+
+      if (allBlocks.length === 0) return
+
+      transformer.push(allBlocks)
+      const displayBlocks = transformer.getDisplayBlocks() as DisplayBlock<ParsedBlock | undefined>[]
+
+      if (displayBlocks.length > 0) {
+        onBlocks(displayBlocks)
+      } else {
+        onBlocks(allBlocks as unknown as DisplayBlock<ParsedBlock | undefined>[])
       }
     } catch (err) {
       onError?.(err instanceof Error ? err : new Error(String(err)))
@@ -119,9 +140,12 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
 
     try {
       const update = parser.finalize()
-      const blocks = [...update.completed, ...update.pending] as ParsedBlock[]
-      if (blocks.length > 0) {
-        transformer.push(blocks)
+      const allBlocks = [
+        ...parser.getCompletedBlocks(),
+        ...update.pending,
+      ] as ParsedBlock[]
+      if (allBlocks.length > 0) {
+        transformer.push(allBlocks)
       }
       // finalize 后 transformer 可能已无待处理 block，直接触发完成
       if (!transformer.isProcessing()) {
@@ -141,9 +165,20 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
   }
 
   /**
-   * 重置解析器和 transformer。
+   * 重置解析器（流结束后调用）。
+   *
+   * 注意：不重置 transformer — transformer 持有最终的 display blocks，
+   * 重置会导致 emit 空数组，使已显示的内容消失。
+   * 在新消息开始时，composable 会重新创建全新鲜 parser + transformer。
    */
   function reset(): void {
+    if (parser) parser.reset()
+  }
+
+  /**
+   * 完全重置解析器和 transformer（仅在新消息开始时调用）。
+   */
+  function resetAll(): void {
     if (parser) parser.reset()
     if (transformer) transformer.reset()
   }
@@ -160,6 +195,7 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
     flush,
     skip,
     reset,
+    resetAll,
     isProcessing,
   }
 }

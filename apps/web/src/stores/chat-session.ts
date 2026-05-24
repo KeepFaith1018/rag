@@ -11,6 +11,7 @@ import {
   createChatSession,
   deleteChatSession,
   renameChatSession,
+  listChatMessages,
 } from '@/api/chat';
 
 export const useChatSessionStore = defineStore('chat-session', () => {
@@ -30,6 +31,7 @@ export const useChatSessionStore = defineStore('chat-session', () => {
     try {
       const result = await listChatSessions();
       sessions.value = result.list;
+      sessionsLoaded.value = true;
     } catch {
       // 静默失败
     }
@@ -46,10 +48,17 @@ export const useChatSessionStore = defineStore('chat-session', () => {
     }
   }
 
-  function selectSession(sessionId: string) {
+  async function selectSession(sessionId: string) {
     const session = sessions.value.find((s) => s.id === sessionId);
     if (session) {
       currentSession.value = session;
+      // 加载该会话的历史消息
+      try {
+        const result = await listChatMessages(sessionId);
+        messages.value = result.list;
+      } catch {
+        messages.value = [];
+      }
     }
   }
 
@@ -112,23 +121,23 @@ export const useChatSessionStore = defineStore('chat-session', () => {
     return msg;
   }
 
-  function setMessageStatus(msgIndex: number, status: MessageStatus) {
-    const msg = messages.value[msgIndex];
+  function setMessageStatus(msgId: number, status: MessageStatus) {
+    const msg = messages.value.find((m) => m.id === msgId);
     if (msg) msg.messageStatus = status;
   }
 
-  function setMessageContent(msgIndex: number, content: string) {
-    const msg = messages.value[msgIndex];
+  function setMessageContent(msgId: number, content: string) {
+    const msg = messages.value.find((m) => m.id === msgId);
     if (msg) msg.content = content;
   }
 
-  function appendMessageHtml(msgIndex: number, html: string) {
-    const msg = messages.value[msgIndex];
+  function appendMessageHtml(msgId: number, html: string) {
+    const msg = messages.value.find((m) => m.id === msgId);
     if (msg) msg.htmlContent = (msg.htmlContent ?? '') + html;
   }
 
-  function appendMessageBlocks(msgIndex: number, blocks: RenderableBlock[]) {
-    const msg = messages.value[msgIndex];
+  function appendMessageBlocks(msgId: number, blocks: RenderableBlock[]) {
+    const msg = messages.value.find((m) => m.id === msgId);
     if (msg) msg.blocks = blocks;
   }
 
