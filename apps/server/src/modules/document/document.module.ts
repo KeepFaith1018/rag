@@ -16,6 +16,7 @@ import { DocumentProcessingService } from './services/document-processing.servic
 import { DocumentProcessingStateService } from './services/document-processing-state.service';
 import { DocumentProcessingTaskService } from './services/document-processing-task.service';
 import { DocumentProcessingMonitorService } from './services/document-processing-monitor.service';
+import { CleanupService } from './services/cleanup.service';
 import { DocumentSseService } from './services/document-sse.service';
 import { DocumentSseController } from './document-sse.controller';
 
@@ -50,6 +51,7 @@ import { DocumentSseController } from './document-sse.controller';
     DocumentProcessingStateService,
     DocumentProcessingTaskService,
     DocumentProcessingMonitorService,
+    CleanupService,
     DocumentSseService,
     TokenService,
   ],

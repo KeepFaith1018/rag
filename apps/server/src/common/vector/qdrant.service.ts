@@ -229,6 +229,44 @@ export class QdrantService {
   }
 
   /**
+   * 删除指定知识库的全部向量。
+   */
+  async deleteByKbId(kbId: string) {
+    try {
+      if (!(await this.collectionExists())) {
+        return;
+      }
+
+      await this.client.delete(QDRANT_DOCUMENT_COLLECTION_NAME, {
+        wait: true,
+        filter: {
+          must: [
+            {
+              key: 'kbId',
+              match: {
+                value: kbId,
+              },
+            },
+          ],
+        },
+      });
+
+      this.logger.info(
+        `[Qdrant] 已删除 kbId=${kbId} 的全部向量`,
+      );
+    } catch (error) {
+      throw new BusinessException(ErrorCode.VECTOR_INDEX_FAILED, {
+        message: 'Qdrant 删除知识库向量失败',
+        cause: error,
+        context: {
+          internalErrorCode: DOCUMENT_VECTOR_INDEX_ERROR_CODE,
+          kbId,
+        },
+      });
+    }
+  }
+
+  /**
    * 向量相似度检索，支持多知识库过滤与分数阈值。
    */
   async searchChunkVectors(params: SearchChunkVectorsParams): Promise<DenseHit[]> {
@@ -280,6 +318,45 @@ export class QdrantService {
         },
       });
     }
+  }
+
+  /**
+   * 遍历 collection 中所有 point 的 docId，通过回调找出孤立文档 ID。
+   *
+   * 回调接收去重后的 docId 列表，返回其中已不存在的 docId。
+   */
+  async findOrphanDocIds(
+    resolveOrphans: (docIds: string[]) => Promise<string[]>,
+  ): Promise<string[]> {
+    if (!(await this.collectionExists())) {
+      return [];
+    }
+
+    const docIds = new Set<string>();
+    let offset: string | number | null = null;
+    const batchSize = 1000;
+
+    do {
+      const response = await this.client.scroll(
+        QDRANT_DOCUMENT_COLLECTION_NAME,
+        {
+          limit: batchSize,
+          offset,
+          with_payload: ['docId'],
+        },
+      );
+
+      for (const point of response.points) {
+        const docId = (point.payload as Record<string, unknown> | null)?.['docId'];
+        if (typeof docId === 'string') {
+          docIds.add(docId);
+        }
+      }
+
+      offset = (response.next_page_offset as string | number | null) ?? null;
+    } while (offset !== null);
+
+    return resolveOrphans([...docIds]);
   }
 
   /**

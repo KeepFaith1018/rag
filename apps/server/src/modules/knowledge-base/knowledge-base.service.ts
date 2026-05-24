@@ -6,6 +6,9 @@ import {
   wrapBusinessException,
 } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
+import { QdrantService } from '@common/vector/qdrant.service';
+import { ElasticsearchService } from '@common/vector/elasticsearch.service';
+import { FileStorageService } from '@common/storage/file-storage.service';
 import { CreateKnowledgeBaseDto } from './dto/create-knowledge-base.dto';
 import {
   ListKnowledgeBasesDto,
@@ -42,6 +45,9 @@ export class KnowledgeBaseService {
   constructor(
     private readonly prisma: PrismaService,
     private readonly kbPermissionService: KbPermissionService,
+    private readonly qdrantService: QdrantService,
+    private readonly elasticsearchService: ElasticsearchService,
+    private readonly fileStorageService: FileStorageService,
   ) {}
 
   /**
@@ -298,7 +304,7 @@ export class KnowledgeBaseService {
   }
 
   /**
-   * 删除知识库。
+   * 删除知识库，同步清理向量、ES 索引和本地文件。
    */
   async remove(userId: number, kbId: string) {
     try {
@@ -313,6 +319,25 @@ export class KnowledgeBaseService {
 
       this.assertOwner(existing.owner_id, BigInt(userId));
 
+      // 在级联删除前先查出所有文档路径，供后续文件清理使用
+      const documents = await this.prisma.b_documents.findMany({
+        where: { kb_id: kbBigIntId },
+        select: { id: true, file_path: true },
+      });
+
+      // 清理 Qdrant 向量
+      await this.qdrantService.deleteByKbId(kbId);
+
+      // 清理 ES 索引
+      await this.elasticsearchService.deleteByKbId(kbId);
+
+      // 清理所有文档源文件与文档目录
+      for (const doc of documents) {
+        await this.fileStorageService.deleteFile(doc.file_path);
+      }
+      await this.fileStorageService.deleteDirectory(`documents/${kbId}`);
+
+      // 最后删除 DB（级联清理 chunks / members / invitations 等）
       await this.prisma.b_knowledge_bases.delete({
         where: { id: kbBigIntId },
       });

@@ -20,7 +20,7 @@
 
 ### 2.1 创建测试问题集
 
-**文件**：`docs/06-优化/RAG全链路优化/test-questions.json`
+**文件**：`docs/04-changes/测试数据/test-questions.json`
 
 ```json
 [
@@ -195,7 +195,7 @@ ORDER BY created_at DESC;
 ## 六、Phase 1 立即开始
 
 **需创建文件**：
-- `docs/06-优化/RAG全链路优化/test-questions.json` — 10 个测试问题
+- `docs/04-changes/测试数据/test-questions.json` — 10 个测试问题
 - `scripts/evaluate.mjs` — 批量评估脚本
 
 **执行步骤**：

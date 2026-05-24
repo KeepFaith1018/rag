@@ -290,6 +290,26 @@ export class ElasticsearchService {
   }
 
   /**
+   * 删除指定文档的全部索引文档（所有版本）。
+   */
+  async deleteByDocument(docId: string): Promise<void> {
+    const exists = await this.client.indices.exists({ index: this.indexName });
+    if (!exists) return;
+
+    await this.client.deleteByQuery({
+      index: this.indexName,
+      refresh: true,
+      query: {
+        term: { docId },
+      },
+    });
+
+    this.logger.info(
+      `[Elasticsearch] 已删除 docId=${docId} 的全部索引文档`,
+    );
+  }
+
+  /**
    * 删除指定文档版本的索引文档（用于 reparse 时清理旧版本 ES 数据）。
    */
   async deleteByDocumentVersion(
@@ -314,6 +334,50 @@ export class ElasticsearchService {
     this.logger.info(
       `[Elasticsearch] 已删除 docId=${docId} v${processingVersion} 的文档`,
     );
+  }
+
+  /**
+   * 遍历索引中所有文档的 docId，通过回调找出孤立文档 ID。
+   *
+   * 回调接收去重后的 docId 列表，返回其中已不存在的 docId。
+   */
+  async findOrphanDocIds(
+    resolveOrphans: (docIds: string[]) => Promise<string[]>,
+  ): Promise<string[]> {
+    const exists = await this.client.indices.exists({ index: this.indexName });
+    if (!exists) return [];
+
+    const docIds = new Set<string>();
+    const batchSize = 1000;
+
+    let searchResponse = await this.client.search({
+      index: this.indexName,
+      scroll: '2m',
+      size: batchSize,
+      _source: ['docId'],
+      query: { match_all: {} },
+    });
+
+    while (true) {
+      for (const hit of searchResponse.hits.hits) {
+        const source = hit._source as Record<string, unknown> | undefined;
+        const docId = source?.['docId'];
+        if (typeof docId === 'string') {
+          docIds.add(docId);
+        }
+      }
+
+      if (searchResponse.hits.hits.length < batchSize) {
+        break;
+      }
+
+      searchResponse = await this.client.scroll({
+        scroll_id: searchResponse._scroll_id!,
+        scroll: '2m',
+      });
+    }
+
+    return resolveOrphans([...docIds]);
   }
 
   /**

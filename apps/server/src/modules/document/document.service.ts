@@ -453,6 +453,7 @@ export class DocumentService {
       this.assertCanManageDocument(permission, document.uploader_id, 'delete');
 
       await this.qdrantService.deleteByDocument(document.id.toString());
+      await this.elasticsearchService.deleteByDocument(document.id.toString());
       await this.prisma.b_documents.delete({
         where: {
           id: document.id,
