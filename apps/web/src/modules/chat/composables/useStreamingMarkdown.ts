@@ -1,73 +1,107 @@
 /**
- * 流式 Markdown 增量渲染 Composable
+ * 流式 Markdown 增量渲染 Composable（带打字机效果）
  *
- * 策略：Incremark 内部缓冲 + 判定稳定边界，
- * 我们只消费 completed/updated blocks 并通过 onBlocks 回调输出。
- * 代码高亮由下游 CodeBlock 组件负责。
+ * 三层架构：IncremarkParser（增量解析）→ BlockTransformer（打字机控制）→ onBlocks 回调
+ *
+ * BlockTransformer 内置 requestAnimationFrame 驱动，自动帧率对齐。
+ * 通过 DisplayBlock.displayNode（截断 AST）实现 AST 级别的逐字打字效果，
+ * 保证 Markdown 语法完整性，不会出现闪烁的半成品标记。
  */
-import { createIncremarkParser } from '@incremark/core'
-import type { IncremarkParser, ParsedBlock } from '@incremark/core'
+import {
+  createIncremarkParser,
+  createBlockTransformer,
+  defaultPlugins,
+  codeBlockPlugin,
+} from '@incremark/core'
+import type {
+  IncremarkParser,
+  ParsedBlock,
+  BlockTransformer,
+  DisplayBlock,
+} from '@incremark/core'
 
 interface StreamingMarkdownOptions {
-  /** 每次有新的已完成 blocks 时回调 */
-  onBlocks: (blocks: ParsedBlock[]) => void
-  /** 解析完成回调 */
+  /** 每次 transformer tick 时回调（DisplayBlock 数组） */
+  onBlocks: (blocks: DisplayBlock<ParsedBlock | undefined>[]) => void
+  /** 全部动画完成回调 */
   onComplete?: () => void
   /** 错误回调 */
   onError?: (error: Error) => void
+  /** 打字速度配置 */
+  typewriter?: {
+    /** 每帧字符数，支持固定值或随机区间，默认 [1, 3] */
+    charsPerTick?: number | [number, number]
+    /** 帧间隔 ms，默认 25 */
+    tickInterval?: number
+    /** 动画效果，默认 'typing' */
+    effect?: 'typing' | 'fade-in'
+    /** 代码块是否逐字显示，默认 false（整体显示） */
+    codeBlockTypewriter?: boolean
+  }
 }
 
 /**
  * 预处理文本，修复 CommonMark 分界符 flanking 失效的边缘情况。
- *
- * 当 ** / * / ~~ 紧邻非空白字符且内侧为标点符号时，
- * 分界符的 flanking 判定失败 → 整个加粗/斜体/删除线不生效。
- * 此处补一个空格使分界符成为合法 flanking。
  */
 function normalizeEmphasis(text: string): string {
-  // 非空白字符（触碰分界符的那一侧）
   const ch = '[^\\s]'
-  // 内侧标点：中英文引号 + 书名号等（CommonMark 归为 punctuation）
   const q = '["\\u201c\\u201d\\u2018\\u2019\\u300c\\u300d\\u300e\\u300f\\u300a\\u300b\\u3008\\u3009\\u3010\\u3011]'
   const e = '\\'
 
   return text
-    // **bold** — 左侧触碰 + 内侧标点 → 在 ** 前补空格
     .replace(new RegExp(`(${ch})${e}*${e}*(${q})`, 'g'), '$1 **$2')
-    // **bold** — 标点 + ** + 右侧触碰 → 在 ** 后补空格
     .replace(new RegExp(`(${q})${e}*${e}*(${ch})`, 'g'), '$1** $2')
-    // *italic* — 同上（确保不是 ** 的一部分）
     .replace(new RegExp(`(${ch})${e}*(?!${e}*)(${q})`, 'g'), '$1 *$2')
     .replace(new RegExp(`(${q})${e}*(?!${e}*)(${ch})`, 'g'), '$1* $2')
-    // ~~strikethrough~~ — 同上
     .replace(new RegExp(`(${ch})~~(${q})`, 'g'), '$1 ~~$2')
     .replace(new RegExp(`(${q})~~(${ch})`, 'g'), '$1~~ $2')
 }
 
 export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
-  const { onBlocks, onComplete, onError } = options
+  const { onBlocks, onComplete, onError, typewriter } = options
 
   let parser: IncremarkParser | null = null
+  let transformer: BlockTransformer<ParsedBlock | undefined> | null = null
 
   try {
     parser = createIncremarkParser({ gfm: true })
+
+    const plugins = [
+      ...defaultPlugins,
+      ...(typewriter?.codeBlockTypewriter ? [] : [codeBlockPlugin]),
+    ]
+
+    transformer = createBlockTransformer({
+      charsPerTick: typewriter?.charsPerTick ?? [1, 3],
+      tickInterval: typewriter?.tickInterval ?? 25,
+      effect: typewriter?.effect ?? 'typing',
+      pauseOnHidden: true,
+      plugins,
+      onChange: ((displayBlocks) => {
+        onBlocks(displayBlocks as DisplayBlock<ParsedBlock | undefined>[]);
+      }) as (displayBlocks: DisplayBlock<unknown>[]) => void,
+      onAllComplete: () => {
+        onComplete?.()
+      },
+    } as Parameters<typeof createBlockTransformer>[0])
   } catch (err) {
     onError?.(err instanceof Error ? err : new Error(String(err)))
   }
 
   /**
-   * 接收文本增量。
+   * 接收文本增量，先喂给 parser，再把结果推入 transformer。
    */
   function pushDelta(delta: string): void {
-    if (!delta || !parser) return
+    if (!delta || !parser || !transformer) return
 
-    const normalized = normalizeEmphasis(delta)
+    const needsNormalize = delta.includes('*') || delta.includes('~')
+    const normalized = needsNormalize ? normalizeEmphasis(delta) : delta
 
     try {
       const update = parser.append(normalized)
-      const blocks = [...update.completed, ...update.updated]
+      const blocks = [...update.completed, ...update.updated] as ParsedBlock[]
       if (blocks.length > 0) {
-        onBlocks(blocks)
+        transformer.push(blocks)
       }
     } catch (err) {
       onError?.(err instanceof Error ? err : new Error(String(err)))
@@ -75,21 +109,24 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
   }
 
   /**
-   * 强制 flush：标记解析完成，输出所有剩余内容。
+   * 强制 flush：finalize parser → push 最终 blocks 到 transformer。
    */
   function flush(): void {
-    if (!parser) {
+    if (!parser || !transformer) {
       onComplete?.()
       return
     }
 
     try {
       const update = parser.finalize()
-      const blocks = [...update.completed, ...update.pending]
+      const blocks = [...update.completed, ...update.pending] as ParsedBlock[]
       if (blocks.length > 0) {
-        onBlocks(blocks)
+        transformer.push(blocks)
       }
-      onComplete?.()
+      // finalize 后 transformer 可能已无待处理 block，直接触发完成
+      if (!transformer.isProcessing()) {
+        onComplete?.()
+      }
     } catch (err) {
       onError?.(err instanceof Error ? err : new Error(String(err)))
       onComplete?.()
@@ -97,17 +134,32 @@ export function useStreamingMarkdown(options: StreamingMarkdownOptions) {
   }
 
   /**
-   * 重置解析器状态。
+   * 跳过动画，立即显示全部已解析内容。
+   */
+  function skip(): void {
+    transformer?.skip()
+  }
+
+  /**
+   * 重置解析器和 transformer。
    */
   function reset(): void {
-    if (parser) {
-      parser.reset()
-    }
+    if (parser) parser.reset()
+    if (transformer) transformer.reset()
+  }
+
+  /**
+   * 是否正在播放打字机动画。
+   */
+  function isProcessing(): boolean {
+    return transformer?.isProcessing() ?? false
   }
 
   return {
     pushDelta,
     flush,
+    skip,
     reset,
+    isProcessing,
   }
 }

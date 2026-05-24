@@ -7,7 +7,7 @@
  * 3. 通过 useStreamingMarkdown 渲染文本增量
  * 4. 更新 chatStore 中的 Agent 状态
  */
-import { ref, shallowRef } from 'vue';
+import { ref, shallowRef, onUnmounted } from 'vue';
 import { fetchChatStream } from '@/api/chat';
 import type { StreamChatRequest } from '@/modules/chat/types/chat';
 import {
@@ -17,7 +17,7 @@ import {
 } from '@/modules/chat/types/stream';
 import { useStreamingMarkdown } from './useStreamingMarkdown';
 import { useChatStore } from '@/stores/chat';
-import type { ChatMessageItem } from '@/modules/chat/types/chat';
+import type { ChatMessageItem, RenderableBlock } from '@/modules/chat/types/chat';
 
 interface UseAgentChatOptions {
   onMessageStart?: (messageId: number) => void;
@@ -121,14 +121,15 @@ export function useAgentChat(options?: UseAgentChatOptions) {
         | ChatMessageItem
         | undefined;
 
-    // Markdown 渲染器
+    // Markdown 渲染器（带打字机效果）
     const {
       pushDelta,
       flush,
+      skip: skipTypewriter,
       reset: resetMarkdown,
     } = useStreamingMarkdown({
       onBlocks: (blocks) => {
-        chatStore.appendMessageBlocks(assistantMsgId, blocks)
+        chatStore.appendMessageBlocks(assistantMsgId, blocks as RenderableBlock[])
       },
       onComplete: () => {
         chatStore.setMessageStatus(assistantMsgId, 'completed')
@@ -139,6 +140,8 @@ export function useAgentChat(options?: UseAgentChatOptions) {
         onError?.(err)
       },
     })
+
+    currentSkipTypewriter.value = skipTypewriter;
 
     try {
       const response = await fetchChatStream(request, abortController.value.signal)
@@ -282,16 +285,21 @@ export function useAgentChat(options?: UseAgentChatOptions) {
   }
 
   /**
-   * 中止当前流式请求。
+   * 中止当前流式请求，并跳过打字机动画。
    */
+  const currentSkipTypewriter = ref<(() => void) | null>(null);
+
   function abort(): void {
+    currentSkipTypewriter.value?.();
     if (abortController.value) {
       abortController.value.abort()
     }
-    // Don't set status here — backend SSE events determine final status
-    // If TEXT_MESSAGE_END was already sent, status will be completed
-    // If TEXT_MESSAGE_END wasn't sent yet, the catch block handles it
   }
+
+  // 组件卸载时自动中断进行中的流，避免后台资源泄漏
+  onUnmounted(() => {
+    abort();
+  });
 
   return {
     sendMessage,

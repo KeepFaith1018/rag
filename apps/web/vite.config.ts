@@ -18,4 +18,24 @@ export default defineConfig({
       "@assets": fileURLToPath(new URL("./src/assets", import.meta.url)),
     },
   },
+  build: {
+    chunkSizeWarningLimit: 1000,
+    rollupOptions: {
+      output: {
+        manualChunks(id: string) {
+          if (id.includes('node_modules')) {
+            if (id.includes('vue') || id.includes('vue-router') || id.includes('pinia') || id.includes('@vueuse')) {
+              return 'vue-vendor';
+            }
+            if (id.includes('shiki') || id.includes('@shikijs')) {
+              return 'shiki-vendor';
+            }
+            if (id.includes('marked') || id.includes('@incremark')) {
+              return 'markdown-vendor';
+            }
+          }
+        },
+      },
+    },
+  },
 });

@@ -9,9 +9,11 @@ import { useChatStore } from '@/stores/chat';
 import { useAgentChat } from '@/modules/chat/composables/useAgentChat';
 import { listAvailableKbs, listAvailableModels } from '@/api/chat';
 import { getUserModels } from '@/api/model-config';
+import { useMessage } from '@/composables/useMessage';
 
 const chatStore = useChatStore();
 const { sendMessage, abort, isStreaming } = useAgentChat();
+const message = useMessage();
 
 // 是否显示引用面板
 const showCitationPanel = computed(() => chatStore.hasCitations);
@@ -26,17 +28,17 @@ onMounted(async () => {
         kbId: kb.kbId,
         kbName: kb.kbName,
         permission: kb.permission as 'owner' | 'manager' | 'collaborator' | 'member' | 'publicVisitor',
-        visibility: kb.visibility,
+        visibility: kb.visibility || 'private',
         isPublic: kb.isPublic,
       })),
     );
   } catch (e) {
-    console.error('[ChatView] 加载知识库失败:', e);
+    message.error('加载知识库失败，请刷新重试');
   }
   try {
     const [sysModels, userModels] = await Promise.all([
       listAvailableModels(),
-      getUserModels().catch(() => [] as Awaited<ReturnType<typeof getUserModels>>),
+      getUserModels().catch(() => [] as unknown as Awaited<ReturnType<typeof getUserModels>>),
     ]);
 
     const merged = [
@@ -56,7 +58,7 @@ onMounted(async () => {
 
     chatStore.setAvailableModels(merged);
   } catch (e) {
-    console.error('[ChatView] 加载模型失败:', e);
+    message.error('加载模型配置失败，请刷新重试');
   }
 });
 
@@ -80,8 +82,9 @@ async function handleRetry(messageId: string | number) {
   // 从失败消息往前找最近一条用户消息
   let lastUserMsg = '';
   for (let i = msgIndex - 1; i >= 0; i--) {
-    if (chatStore.messages[i].role === 'user') {
-      lastUserMsg = chatStore.messages[i].content;
+    const msg = chatStore.messages[i];
+    if (msg && msg.role === 'user') {
+      lastUserMsg = msg.content;
       break;
     }
   }

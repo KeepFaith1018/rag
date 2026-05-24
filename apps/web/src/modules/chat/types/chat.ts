@@ -5,6 +5,16 @@
 import type { ParsedBlock } from '@incremark/core'
 import type { AguiStepRecord, AguiToolCallRecord } from './stream';
 
+/** 可渲染的块类型（兼容 DisplayBlock 的 displayNode 字段） */
+export interface RenderableBlock {
+  id: string;
+  node: ParsedBlock['node'];
+  status: string;
+  displayNode?: ParsedBlock['node'];
+  progress?: number;
+  isDisplayComplete?: boolean;
+}
+
 /** 消息角色 */
 export type MessageRole = 'ai' | 'user' | 'assistant';
 
@@ -46,8 +56,8 @@ export interface ChatMessageItem {
   aguiSteps?: AguiStepRecord[];
   /** AG-UI 工具调用记录 */
   aguiToolCalls?: AguiToolCallRecord[];
-  /** 增量 Markdown 解析块（Incremark AST） */
-  blocks?: ParsedBlock[]
+  /** 增量 Markdown 解析块（Incremark AST），支持 ParsedBlock 和 DisplayBlock */
+  blocks?: ParsedBlock[] | RenderableBlock[]
 }
 
 /** 消息状态 */

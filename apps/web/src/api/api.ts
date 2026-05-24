@@ -36,6 +36,22 @@ let authFailureHandler: AuthFailureHandler | null = null;
 
 const pendingQueue: PendingRequest[] = [];
 
+/** 默认请求超时 (毫秒) */
+const DEFAULT_TIMEOUT_MS = 30000;
+
+/** GET 请求去重缓存：相同 url+params 复用 pending Promise */
+const pendingRequests = new Map<string, Promise<unknown>>();
+
+function pendingKey(url: string, params?: ApiQueryParams): string {
+  const sorted = params
+    ? Object.entries(params)
+        .sort(([a], [b]) => a.localeCompare(b))
+        .map(([k, v]) => `${k}=${String(v)}`)
+        .join('&')
+    : '';
+  return `${url}?${sorted}`;
+}
+
 /**
  * 注册认证失败后的统一回调，便于后续接 store 或路由跳转。
  */
@@ -47,47 +63,74 @@ export function setApiAuthFailureHandler(handler: AuthFailureHandler | null) {
  * 统一发起 API 请求，并处理 token、刷新与错误转换。
  */
 export async function apiRequest<T>(options: ApiRequestOptions): Promise<T> {
-  const { url, params, skipAuth, skipRefreshRetry, _retry, body, ...rest } =
+  const { url, params, skipAuth, skipRefreshRetry, _retry, body, method, ...rest } =
     options;
   const requestBody = normalizeRequestBody(body);
   const requestHeaders = createHeaders(options, requestBody);
 
-  let response: Response;
-
-  try {
-    response = await fetch(buildRequestUrl(url, params), {
-      ...rest,
-      body: requestBody,
-      headers: requestHeaders,
-    });
-  } catch (error) {
-    throw createNetworkError(error);
+  // GET 请求去重（仅对非重试的首次请求生效）
+  const isGet = !method || method === 'GET';
+  const key = isGet && !_retry ? pendingKey(url, params) : null;
+  if (key) {
+    const pending = pendingRequests.get(key);
+    if (pending) {
+      return pending as Promise<T>;
+    }
   }
 
-  const result = await parseApiResult<T>(response);
+  const fetchPromise = doFetch();
 
-  if (response.ok && result?.success) {
-    return result.data as T;
+  if (key) {
+    pendingRequests.set(key, fetchPromise);
+    fetchPromise.finally(() => pendingRequests.delete(key));
   }
 
-  if (response.ok && !result) {
-    return undefined as T;
-  }
+  return fetchPromise;
 
-  if (
-    !skipAuth &&
-    !skipRefreshRetry &&
-    !_retry &&
-    shouldRefresh(response.status, result)
-  ) {
-    await ensureFreshAccessToken();
-    return apiRequest<T>({
-      ...options,
-      _retry: true,
-    });
-  }
+  async function doFetch(): Promise<T> {
+    const signal = AbortSignal.timeout(DEFAULT_TIMEOUT_MS);
 
-  throw createApiError(response.status, result);
+    let response: Response;
+    try {
+      response = await fetch(buildRequestUrl(url, params), {
+        ...rest,
+        method,
+        body: requestBody,
+        headers: requestHeaders,
+        signal,
+      });
+    } catch (error) {
+      if (error instanceof DOMException && error.name === 'TimeoutError') {
+        throw createNetworkError(new Error('请求超时'));
+      }
+      throw createNetworkError(error);
+    }
+
+    const result = await parseApiResult<T>(response);
+
+    if (response.ok && result?.success) {
+      return result.data as T;
+    }
+
+    if (response.ok && !result) {
+      return undefined as T;
+    }
+
+    if (
+      !skipAuth &&
+      !skipRefreshRetry &&
+      !_retry &&
+      shouldRefresh(response.status, result)
+    ) {
+      await ensureFreshAccessToken();
+      return apiRequest<T>({
+        ...options,
+        _retry: true,
+      });
+    }
+
+    throw createApiError(response.status, result);
+  }
 }
 
 /**
@@ -108,6 +151,7 @@ export async function apiRequestBlob(
       ...rest,
       body: requestBody,
       headers: requestHeaders,
+      signal: AbortSignal.timeout(DEFAULT_TIMEOUT_MS),
     });
   } catch (error) {
     throw createNetworkError(error);

@@ -407,6 +407,7 @@ export function useChunkUpload() {
     const runWorker = async () => {
       while (pointer < pendingChunks.length && !pauseRequested) {
         const currentChunk = pendingChunks[pointer];
+        if (!currentChunk) break;
         pointer += 1;
 
         await uploadChunkWithRetry(kbId, uploadId, currentChunk);

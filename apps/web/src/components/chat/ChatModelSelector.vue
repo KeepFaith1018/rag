@@ -47,7 +47,7 @@ function selectModel(configId: string) {
  */
 function getCurrentIcon(): string {
   const provider = chatStore.selectedModel?.provider || '';
-  return providerIcon[provider] || providerIcon.default;
+  return providerIcon[provider] ?? providerIcon['default'] ?? 'smart_toy';
 }
 
 /**
@@ -116,7 +116,7 @@ onBeforeUnmount(() => {
             @click="selectModel(model.configId)"
           >
             <span class="material-symbols-outlined text-[18px] text-primary">
-              {{ providerIcon[model.provider] || providerIcon.default }}
+              {{ providerIcon[model.provider] ?? providerIcon.default }}
             </span>
             <div class="flex-1 min-w-0">
               <div class="text-sm font-medium truncate">{{ model.modelName }}</div>

@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch, nextTick, onMounted, onUnmounted } from 'vue';
+import { ref, watch, nextTick, onMounted } from 'vue';
 import UserMessageItem from './UserMessageItem.vue';
 import AIMessageItem from './AIMessageItem.vue';
 import type { ChatMessageItem } from '@/modules/chat/types/chat';
@@ -13,54 +13,34 @@ const emit = defineEmits<{
   retry: [messageId: string | number]
 }>();
 
-/** 自动滚动到底部 */
 const containerRef = ref<HTMLElement | null>(null);
-let observer: MutationObserver | null = null;
 
-function scrollToBottom() {
-  nextTick(() => {
+/** 检查是否在底部附近（用于滚动锚定），默认阈值 200px */
+function isNearBottom(): boolean {
+  const el = containerRef.value;
+  if (!el) return true;
+  return el.scrollHeight - el.scrollTop - el.clientHeight < 200;
+}
+
+/** 滚动到底部，仅当用户未手动上滚时执行 */
+function scrollToBottom(force = false) {
+  if (!force && !isNearBottom()) return;
+  requestAnimationFrame(() => {
     if (containerRef.value) {
       containerRef.value.scrollTop = containerRef.value.scrollHeight;
     }
   });
 }
 
-/** 使用 MutationObserver 监听 DOM 变化实现流式滚动 */
-function setupObserver() {
-  if (!containerRef.value) return;
-
-  observer = new MutationObserver(() => {
-    scrollToBottom();
-  });
-
-  observer.observe(containerRef.value, {
-    childList: true,
-    subtree: true,
-    characterData: true,
-  });
-}
-
-onMounted(() => {
-  setupObserver();
-  scrollToBottom();
-});
-
-onUnmounted(() => {
-  observer?.disconnect();
-});
-
-/** 监听消息变化，自动滚动 */
+/** 统一滚动触发：新消息 / Agent 状态变化时滚动 */
 watch(
-  () => props.messages.length,
+  () => [props.messages.length, props.isAgentWorking, props.messages.at(-1)?.content?.length ?? 0],
   () => scrollToBottom(),
 );
 
-watch(
-  () => props.isAgentWorking,
-  (working) => {
-    if (working) scrollToBottom();
-  },
-);
+onMounted(() => {
+  nextTick(() => scrollToBottom(true));
+});
 
 function handleRetry(messageId: string | number) {
   emit('retry', messageId);

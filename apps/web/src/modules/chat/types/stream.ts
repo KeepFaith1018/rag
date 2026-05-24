@@ -106,7 +106,19 @@ export type AguiEvent =
   | ToolCallResultEvent
   | TextMessageStartEvent
   | TextMessageContentEvent
-  | TextMessageEndEvent;
+  | TextMessageEndEvent
+  | ValidationStartedEvent
+  | ValidationCompletedEvent;
+
+/** 校验事件类型定义 */
+
+export interface ValidationStartedEvent {
+  type: 'VALIDATION_STARTED';
+}
+
+export interface ValidationCompletedEvent {
+  type: 'VALIDATION_COMPLETED';
+}
 
 /** 聚合到消息上的步骤记录（STEP_FINISHED 的快照） */
 export interface AguiStepRecord {

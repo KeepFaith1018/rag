@@ -9,6 +9,7 @@ export function decodeJwtPayload(token: string): Record<string, unknown> | null 
       return null;
     }
     const payload = parts[1];
+    if (!payload) return null;
     // Base64url 解码
     const padded = payload + '='.repeat((4 - (payload.length % 4)) % 4);
     const decoded = atob(padded.replace(/-/g, '+').replace(/_/g, '/'));

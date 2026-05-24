@@ -1,17 +1,26 @@
 <script setup lang="ts">
+import { computed } from 'vue'
 import type { RootContent } from 'mdast'
-import type { ParsedBlock } from '@incremark/core'
+import type { RenderableBlock } from '@/modules/chat/types/chat'
 import InlineRenderer from './InlineRenderer.vue'
 import CodeBlock from './CodeBlock.vue'
 
-defineProps<{
-  blocks: ParsedBlock[]
+const props = defineProps<{
+  blocks: RenderableBlock[]
 }>()
+
+/** 将 DisplayBlock.displayNode 映射到 node，统一渲染逻辑 */
+const normalizedBlocks = computed(() =>
+  props.blocks.map((block) => ({
+    ...block,
+    node: (block.displayNode ?? block.node) as RootContent,
+  })),
+);
 </script>
 
 <template>
   <div class="prose prose-invert max-w-none text-on-surface-variant text-sm leading-relaxed">
-    <template v-for="block in blocks" :key="block.id">
+    <template v-for="block in normalizedBlocks" :key="block.id">
       <!-- Heading -->
       <component
         v-if="block.node.type === 'heading'"

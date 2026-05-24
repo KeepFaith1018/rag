@@ -30,7 +30,7 @@ async function deriveKey(): Promise<CryptoKey> {
 function bufToBase64url(buf: Uint8Array): string {
   let binary = '';
   for (let i = 0; i < buf.byteLength; i++) {
-    binary += String.fromCharCode(buf[i]);
+    binary += String.fromCharCode(buf[i]!);
   }
   return btoa(binary)
     .replace(/\+/g, '-')

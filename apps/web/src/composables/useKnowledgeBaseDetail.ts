@@ -399,7 +399,10 @@ export function useKnowledgeBaseDetail() {
       return;
     }
 
-    const updated = { ...documents.value[index] };
+    const existing = documents.value[index];
+    if (!existing) return;
+
+    const updated = { ...existing };
     updated.status = payload.status;
     updated.currentStage =
       payload.currentStage as KnowledgeBaseDocumentItem["currentStage"];
