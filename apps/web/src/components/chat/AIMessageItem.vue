@@ -34,9 +34,7 @@ const messageToast = useMessage()
 const copied = ref(false)
 
 const isStreaming = computed(() =>
-  props.message.messageStatus === 'streaming' ||
-  props.message.messageStatus === 'validating' ||
-  props.message.messageStatus === 'supplementing',
+  props.message.messageStatus === 'streaming',
 )
 const isError = computed(() => props.message.messageStatus === 'error')
 const isAborted = computed(() => props.message.messageStatus === 'aborted')
@@ -45,13 +43,6 @@ const isRagMode = computed(() => props.message.chatMode === 'rag')
 const hasContent = computed(() =>
   props.message.htmlContent || props.message.content || props.message.blocks?.length,
 )
-
-/** 校验阶段标签 */
-const validationLabel = computed(() => {
-  if (props.message.messageStatus === 'validating') return '正在校验回答...'
-  if (props.message.messageStatus === 'supplementing') return '正在补充内容...'
-  return ''
-})
 
 /** 解析后的 blocks：流式消息直接用 message.blocks，历史消息用 Incremark 一次性解析 */
 const resolvedBlocks = computed(() => {
@@ -132,24 +123,6 @@ function handleRetry() {
             class="inline-block w-2 h-4 bg-primary ml-0.5 animate-pulse align-middle rounded-sm"
           />
         </div>
-
-      <!-- 校验状态指示器 -->
-      <div
-        v-if="isStreaming && hasContent && isRagMode"
-        class="flex items-center gap-2 mt-2 pt-2 border-t border-outline-variant/10"
-      >
-        <span class="inline-block w-2 h-2 rounded-full bg-amber-400 animate-pulse flex-shrink-0" />
-        <span class="text-xs text-outline">{{ validationLabel }}</span>
-      </div>
-
-      <!-- 校验完成标识 -->
-      <div
-        v-if="!isStreaming && hasContent && isRagMode && message.messageStatus === 'completed'"
-        class="flex items-center gap-2 mt-2 pt-2 border-t border-outline-variant/10"
-      >
-        <span class="material-symbols-outlined text-xs text-green-400">verified</span>
-        <span class="text-xs text-outline/50">已校验</span>
-      </div>
 
       <!-- 已取消 -->
       <div v-if="isAborted" class="text-xs text-error mt-2">请求已取消</div>

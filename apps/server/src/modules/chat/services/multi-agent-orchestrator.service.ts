@@ -67,14 +67,6 @@ const AgentStateAnnotation = Annotation.Root({
   relevanceVerdict: Annotation<string | null>(),
   /** 检索重试计数，最大 1 */
   retrievalRetryCount: Annotation<number>(),
-  /** fact_check 输出 */
-  factCheckResult: Annotation<FactCheckResult | null>(),
-  /** 事实修正循环计数（防止无限循环） */
-  factCheckRounds: Annotation<number>(),
-  /** completeness_check 输出 */
-  completenessResult: Annotation<CompletenessCheckResult | null>(),
-  /** 补充回答（缺失维度） */
-  supplementAnswer: Annotation<string>(),
 });
 
 type AgentState = typeof AgentStateAnnotation.State;
@@ -97,7 +89,6 @@ const RelevanceCheckSchema = z.object({
     .describe('检索结果是否与用户问题相关'),
   relevantCount: z.number().int().describe('相关的分片数量'),
   totalCount: z.number().int().describe('总分片数量'),
-  reason: z.string().describe('简要评估理由'),
 });
 
 /** ═══════════════════════════════════════════
@@ -472,36 +463,6 @@ function auditEdge(
   return 'writer';
 }
 
-/** 事实修正最大轮次，防止无限循环 */
-const MAX_FACT_CHECK_ROUNDS = 3;
-
-/* @deprecated writer_correct 离线化预留
-function factCheckEdge(state: AgentState): 'completeness_check' | 'writer_correct' {
-  const result = state.factCheckResult;
-  if (!result) return 'completeness_check';
-  const rounds = state.factCheckRounds ?? 0;
-  if (rounds >= MAX_FACT_CHECK_ROUNDS) return 'completeness_check';
-  if ((result.overallRisk === 'high' || result.overallRisk === 'medium') && result.needRevise) {
-    return 'writer_correct';
-  }
-  return 'completeness_check';
-}
-*/
-
-function completenessEdge(
-  state: AgentState,
-): '__end__' | 'supplement_retrieve' {
-  const result = state.completenessResult;
-  if (!result) return '__end__';
-  if (
-    result.overallCoverage < 0.8 &&
-    result.missingAspects.some((a) => a.retrievable)
-  ) {
-    return 'supplement_retrieve';
-  }
-  return '__end__';
-}
-
 /** ═══════════════════════════════════════════
  * 辅助
  * ═══════════════════════════════════════════ */
@@ -599,9 +560,9 @@ export class MultiAgentOrchestratorService {
    *    → [not_relevant? → rewrite] → audit
    *    → [sufficient? → writer] / [insufficient+web → web_search → writer]
    *    / [insufficient+retry<1 → rewrite_fallback → tools → audit]
-   *    → writer → fact_check → [high_risk? → writer_correct → fact_check]
-   *    → completeness_check → [missing? → supplement_retrieve → writer_supplement]
-   *    → __end__
+   *    → writer → __end__
+   *
+   * 事实核查和完整性检查已离线异步执行（runAsyncValidation），不再阻塞主响应流。
    */
   async streamRun(
     runCtx: AgentRunContext,
@@ -980,305 +941,8 @@ export class MultiAgentOrchestratorService {
             output: { answerLength: answer.length },
             durationMs: Date.now() - stepStart,
           });
-          writer.write({ type: 'VALIDATION_STARTED' });
 
           return { draftAnswer: answer, currentPhase: 'writing' };
-        })
-        // ── 质量校验阶段 ──
-        .addNode('fact_check', async (s) => {
-          if (signal?.aborted) {
-            writer.write({
-              type: 'STEP_FINISHED', stepName: 'fact_check',
-              output: { skipped: true, reason: 'aborted' },
-            });
-            return { factCheckResult: null, currentPhase: 'verifying' };
-          }
-          writer.write({
-            type: 'STEP_STARTED',
-            stepName: 'fact_check',
-            timestamp: Date.now(),
-          });
-          const stepStart = Date.now();
-          let factResult: FactCheckResult | null = null;
-          try {
-            const model = self.chatModelService.createModel({
-              model: modelOptions?.modelName || self.chatModelService.getLightModelName(),
-              apiKey: modelOptions?.apiKey,
-              baseURL: modelOptions?.baseURL,
-              temperature: 0.1,
-              streaming: false,
-              timeout: 15000,
-            });
-
-            const snippets = s.rerankedHits
-              .slice(0, 5)
-              .map((h, i) => `[来源${i + 1}] ${h.content.slice(0, 500)}`)
-              .join('\n---\n');
-
-            const structured = model.withStructuredOutput(
-              FactCheckResultSchema,
-              { method: 'jsonMode' },
-            );
-            const result = await structured.invoke([
-              new SystemMessage(
-                `${FACT_CHECK_SYSTEM_PROMPT}\n\n请以 JSON 格式回复。`,
-              ),
-              new HumanMessage(
-                `用户问题: ${s.originalQuery}\n\n检索上下文:\n${snippets}\n\n待审核回答:\n${s.draftAnswer}`,
-              ),
-            ]);
-            factResult = result as FactCheckResult;
-          } catch (error) {
-            self.logger.warn(
-              `[Orchestrator] Fact Check 失败，跳过: ${
-                getErrorMessage(error)
-              }`,
-            );
-            factResult = null;
-          }
-          writer.write({
-            type: 'STEP_FINISHED',
-            stepName: 'fact_check',
-            output: factResult
-              ? {
-                  overallRisk: factResult.overallRisk,
-                  needRevise: factResult.needRevise,
-                  itemCount: factResult.items.length,
-                }
-              : { skipped: true },
-            durationMs: Date.now() - stepStart,
-          });
-          return {
-            factCheckResult: factResult,
-            factCheckRounds: (s.factCheckRounds ?? 0) + 1,
-            currentPhase: 'verifying',
-          };
-        })
-        // @deprecated writer_correct — 离线化预留
-        // .addNode('writer_correct', async (s) => { ... })
-        .addNode('completeness_check', async (s) => {
-          if (signal?.aborted) {
-            writer.write({
-              type: 'STEP_FINISHED', stepName: 'completeness_check',
-              output: { skipped: true, reason: 'aborted' },
-            });
-            return { completenessResult: null, currentPhase: 'verifying' };
-          }
-          writer.write({
-            type: 'STEP_STARTED',
-            stepName: 'completeness_check',
-            timestamp: Date.now(),
-          });
-          const stepStart = Date.now();
-          let compResult: CompletenessCheckResult | null = null;
-          try {
-            const model = self.chatModelService.createModel({
-              model: modelOptions?.modelName || self.chatModelService.getLightModelName(),
-              apiKey: modelOptions?.apiKey,
-              baseURL: modelOptions?.baseURL,
-              temperature: 0.1,
-              streaming: false,
-              timeout: 15000,
-            });
-
-            const structured = model.withStructuredOutput(
-              CompletenessCheckResultSchema,
-              { method: 'jsonMode' },
-            );
-            const result = await structured.invoke([
-              new SystemMessage(
-                `${COMPLETENESS_CHECK_SYSTEM_PROMPT}\n\n请以 JSON 格式回复。`,
-              ),
-              new HumanMessage(
-                `用户问题: ${s.originalQuery}\n子问题列表: ${(s.decomposedQueries ?? []).join('; ') || '（未拆解）'}\n当前回答: ${s.draftAnswer}`,
-              ),
-            ]);
-            compResult = result as CompletenessCheckResult;
-          } catch (error) {
-            self.logger.warn(
-              `[Orchestrator] Completeness Check 失败，跳过: ${
-                getErrorMessage(error)
-              }`,
-            );
-            compResult = null;
-          }
-          writer.write({
-            type: 'STEP_FINISHED',
-            stepName: 'completeness_check',
-            output: compResult
-              ? {
-                  coverage: compResult.overallCoverage,
-                  missingCount: compResult.missingAspects.length,
-                  needSupplement: compResult.needSupplement,
-                }
-              : { skipped: true },
-            durationMs: Date.now() - stepStart,
-          });
-          return {
-            completenessResult: compResult,
-            currentPhase: 'verifying',
-          };
-        })
-        .addNode('supplement_retrieve', async (s) => {
-          checkAborted();
-          writer.write({
-            type: 'STEP_STARTED',
-            stepName: 'supplement_retrieve',
-            timestamp: Date.now(),
-          });
-          const stepStart = Date.now();
-
-          // 用缺失维度构造补充查询
-          const missingQueries = (s.completenessResult?.missingAspects ?? [])
-            .filter((a) => a.retrievable)
-            .map((a) => a.aspect);
-
-          if (missingQueries.length > 0) {
-            const tcId = `tc_supp_${Date.now()}`;
-            writer.write({
-              type: 'TOOL_CALL_START',
-              toolCallId: tcId,
-              toolCallName: 'search_knowledge_base',
-              input: { queries: missingQueries, kbIds: s.resolvedKbIds },
-            });
-            const toolStart = Date.now();
-            const result = await searchTool.invoke({
-              queries: missingQueries,
-              kbIds: s.resolvedKbIds,
-              questionType: s.routedPlan?.questionType,
-            });
-            const startIndex = s.rerankedHits.length;
-            // 查询知识库名称
-            const suppKbIds = [...new Set(result.hits.map((h) => h.kbId))];
-            let suppKbNameMap = new Map<string, string>();
-            try {
-              const suppKbList = await self.prisma.b_knowledge_bases.findMany({
-                where: { id: { in: suppKbIds.map((id) => parseBigInt(id)) } },
-                select: { id: true, name: true },
-              });
-              suppKbNameMap = new Map(
-                suppKbList.map((kb) => [String(kb.id), kb.name]),
-              );
-            } catch {
-              // 查询失败不影响检索流程
-            }
-
-            writer.write({
-              type: 'TOOL_CALL_RESULT',
-              toolCallId: tcId,
-              toolCallName: 'search_knowledge_base',
-              output: {
-                hitCount: result.hitCount,
-                documents: result.hits.map((hit, i) => ({
-                  index: startIndex + i + 1,
-                  kbId: hit.kbId,
-                  kbName: suppKbNameMap.get(hit.kbId) || '',
-                  docId: hit.docId,
-                  docTitle:
-                    (hit.payload['title'] as string) ||
-                    hit.title ||
-                    `文档 ${hit.docId}`,
-                  chunkId: hit.chunkId,
-                  quote: hit.content
-                    .replace(/^\[文档段落路径:.*?\]\n?/, '')
-                    .slice(0, 200),
-                  score: hit.rerankScore,
-                })),
-                append: true,
-              },
-              durationMs: Date.now() - toolStart,
-            });
-
-            // 合并到已有结果（避免重复）
-            const existingIds = new Set(s.rerankedHits.map((h) => h.chunkId));
-            const newHits = result.hits.filter(
-              (h) => !existingIds.has(h.chunkId),
-            );
-
-            writer.write({
-              type: 'STEP_FINISHED',
-              stepName: 'supplement_retrieve',
-              output: { existingHits: s.rerankedHits.length, newHits: newHits.length },
-              durationMs: Date.now() - stepStart,
-            });
-
-            return {
-              rerankedHits: [...s.rerankedHits, ...newHits],
-              currentPhase: 'verifying',
-            };
-          }
-
-          writer.write({
-            type: 'STEP_FINISHED',
-            stepName: 'supplement_retrieve',
-            output: { skipped: true },
-            durationMs: Date.now() - stepStart,
-          });
-          return { currentPhase: 'verifying' };
-        })
-        .addNode('writer_supplement', async (s) => {
-          checkAborted();
-          writer.write({
-            type: 'STEP_STARTED',
-            stepName: 'writer_supplement',
-            timestamp: Date.now(),
-          });
-          const stepStart = Date.now();
-
-          const missingAspects =
-            s.completenessResult?.missingAspects
-              .filter((a) => a.retrievable)
-              .map((a) => a.aspect)
-              .join('、') ?? '';
-
-          const context = buildContextText(
-            s.rerankedHits,
-            s.webSearchResults,
-          );
-          const supplementPrompt = `你是 Linsor AI 的智能助手。请基于知识库内容，补充回答以下缺失的维度：${missingAspects}\n\n原始问题: ${s.originalQuery}\n已有回答: ${s.draftAnswer}\n\n请只输出补充内容，不需要重复已有回答。\n\n知识库内容：\n${context}`;
-
-          const suppModel = self.chatModelService.createModel({
-            model: modelOptions?.modelName,
-            apiKey: modelOptions?.apiKey,
-            baseURL: modelOptions?.baseURL,
-            temperature: 0.5,
-            streaming: true,
-          });
-
-          const lcStream = await suppModel.stream([
-            new SystemMessage(supplementPrompt),
-            new HumanMessage(`请补充以下维度的信息：${missingAspects}`),
-          ]);
-
-          const msgId = `msg_${Date.now()}`;
-          writer.write({ type: 'TEXT_MESSAGE_START', messageId: msgId });
-
-          let supplement = '';
-          for await (const chunk of lcStream) {
-            if (signal?.aborted) break;
-            const text = extractMessageContent(chunk);
-            if (text) {
-              supplement += text;
-              writer.write({
-                type: 'TEXT_MESSAGE_CONTENT',
-                messageId: msgId,
-                delta: text,
-              });
-            }
-          }
-
-          writer.write({ type: 'TEXT_MESSAGE_END', messageId: msgId });
-          writer.write({
-            type: 'STEP_FINISHED',
-            stepName: 'writer_supplement',
-            output: { supplementLength: supplement.length },
-            durationMs: Date.now() - stepStart,
-          });
-
-          return {
-            supplementAnswer: supplement,
-            currentPhase: 'writing',
-          };
         })
 
         // ══════ 边 ══════
@@ -1307,21 +971,7 @@ export class MultiAgentOrchestratorService {
         )
         .addEdge('web_search', 'writer')
         .addEdge('rewrite_fallback', 'tools')
-        .addEdge('writer', 'fact_check')
-        .addEdge('fact_check', 'completeness_check')
-        /* @deprecated writer_correct 修正环 — 离线化预留
-        .addConditionalEdges('fact_check', factCheckEdge, {
-          completeness_check: 'completeness_check',
-          writer_correct: 'writer_correct',
-        })
-        .addEdge('writer_correct', 'fact_check')
-        */
-        .addConditionalEdges('completeness_check', completenessEdge, {
-          supplement_retrieve: 'supplement_retrieve',
-          __end__: '__end__',
-        })
-        .addEdge('supplement_retrieve', 'writer_supplement')
-        .addEdge('writer_supplement', '__end__')
+        .addEdge('writer', '__end__')
         .compile();
 
       // ══════ 执行 ══════
@@ -1343,26 +993,14 @@ export class MultiAgentOrchestratorService {
         auditVerdict: null,
         relevanceVerdict: null,
         retrievalRetryCount: 0,
-        factCheckResult: null,
-        factCheckRounds: 0,
-        completenessResult: null,
-        supplementAnswer: '',
       } satisfies AgentState);
 
-      writer.write({
-        type: 'VALIDATION_COMPLETED',
-        factCheckRisk: (finalState as unknown as AgentState).factCheckResult?.overallRisk,
-        completenessCoverage: (finalState as unknown as AgentState).completenessResult?.overallCoverage,
-        supplementAdded: !!((finalState as unknown as AgentState).supplementAnswer),
-      });
-
-      // 持久化评估数据到 b_agent_runs.metadata_json（供离线评估队列使用）
+      // 持久化核心评估数据到 b_agent_runs.metadata_json（eval 流水线依赖 originalQuery/draftAnswer/rerankedHits）
       const evalState = finalState as unknown as AgentState;
       self.agentTraceService
         .saveEvaluationData(runId, {
           originalQuery: evalState.originalQuery,
           draftAnswer: evalState.draftAnswer,
-          supplementAnswer: evalState.supplementAnswer,
           rewrittenQueries: evalState.rewrittenQueries,
           rewrittenKeywords: evalState.rewrittenKeywords ?? [],
           decomposedQueries: evalState.decomposedQueries,
@@ -1375,12 +1013,9 @@ export class MultiAgentOrchestratorService {
             fusionScore: h.fusionScore,
             rerankScore: h.rerankScore,
           })),
-          factCheckResult: evalState.factCheckResult,
-          completenessResult: evalState.completenessResult,
           auditVerdict: evalState.auditVerdict,
           relevanceVerdict: evalState.relevanceVerdict,
           retrievalRetryCount: evalState.retrievalRetryCount ?? 0,
-          factCheckRounds: evalState.factCheckRounds ?? 0,
         })
         .catch((err: unknown) =>
           self.logger.warn('[Orchestrator] 评估数据持久化失败', {
@@ -1403,24 +1038,18 @@ export class MultiAgentOrchestratorService {
       if (onFinish) {
         try {
           const state = finalState as unknown as AgentState;
-          const fullContent =
-            (state.draftAnswer ?? '') +
-            (state.supplementAnswer
-              ? '\n\n---\n**补充内容：**\n' + state.supplementAnswer
-              : '');
+          const fullContent = state.draftAnswer ?? '';
           const finishResult = await onFinish({
             content: fullContent,
             citations: state.rerankedHits ?? [],
           });
 
-          // 在 onFinish 之后发送 RUN_FINISHED，携带 DB 解析后的引用数据
           writer.write({
             type: 'RUN_FINISHED',
             runId,
             citations: finishResult?.citations,
           });
 
-          // 离线评估入队
           self.evalQueueService
             .enqueueEvaluation(runId)
             .catch((err: unknown) =>
@@ -1428,6 +1057,19 @@ export class MultiAgentOrchestratorService {
                 error: err instanceof Error ? err.message : String(err),
               }),
             );
+
+          // 异步校验：fact_check + completeness_check（不阻塞主流程，追加写入 metadata_json）
+          self.runAsyncValidation({
+            runId,
+            originalQuery: state.originalQuery,
+            draftAnswer: state.draftAnswer,
+            rerankedHits: state.rerankedHits ?? [],
+            modelOptions,
+          }).catch((err) =>
+            self.logger.warn('[Orchestrator] 异步校验失败', {
+              error: err instanceof Error ? err.message : String(err),
+            }),
+          );
         } catch (finishError) {
           self.logger.error('[Orchestrator] onFinish 回调失败', {
             error:
@@ -1435,11 +1077,9 @@ export class MultiAgentOrchestratorService {
                 ? finishError.message
                 : String(finishError),
           });
-          // onFinish 失败也要发送 RUN_FINISHED，避免前端挂起
           writer.write({ type: 'RUN_FINISHED', runId });
         }
       } else {
-        // 非 RAG 模式或无 onFinish 回调：直接发送 RUN_FINISHED
         writer.write({ type: 'RUN_FINISHED', runId });
       }
     } catch (error: unknown) {
@@ -1457,6 +1097,54 @@ export class MultiAgentOrchestratorService {
       if (onError) await onError();
     } finally {
       writer.end();
+    }
+  }
+
+  /** 离线异步执行事实核查和完整性检查，完成后追加写入 metadata_json */
+  private async runAsyncValidation(params: {
+    runId: string;
+    originalQuery: string;
+    draftAnswer: string;
+    rerankedHits: RerankedHit[];
+    modelOptions?: ResolvedModelParams;
+  }): Promise<void> {
+    try {
+      const model = this.chatModelService.createModel({
+        model: params.modelOptions?.modelName || this.chatModelService.getLightModelName(),
+        temperature: 0.1,
+        streaming: false,
+        timeout: 15000,
+      });
+
+      const snippets = params.rerankedHits
+        .slice(0, 5)
+        .map((h, i) => `[来源${i + 1}] ${h.content.slice(0, 500)}`)
+        .join('\n---\n');
+
+      const factModel = model.withStructuredOutput(FactCheckResultSchema, { method: 'jsonMode' });
+      const factResult = await factModel.invoke([
+        new SystemMessage(FACT_CHECK_SYSTEM_PROMPT),
+        new HumanMessage(
+          `用户问题: ${params.originalQuery}\n\n检索上下文:\n${snippets}\n\n待审核回答:\n${params.draftAnswer}`,
+        ),
+      ]);
+
+      const compModel = model.withStructuredOutput(CompletenessCheckResultSchema, { method: 'jsonMode' });
+      const compResult = await compModel.invoke([
+        new SystemMessage(COMPLETENESS_CHECK_SYSTEM_PROMPT),
+        new HumanMessage(
+          `用户问题: ${params.originalQuery}\n\n回答:\n${params.draftAnswer}`,
+        ),
+      ]);
+
+      await this.agentTraceService.mergeEvaluationData(params.runId, {
+        factCheckResult: factResult as FactCheckResult,
+        completenessResult: compResult as CompletenessCheckResult,
+      });
+    } catch (err) {
+      this.logger.warn('[Orchestrator] 异步校验失败', {
+        error: err instanceof Error ? err.message : String(err),
+      });
     }
   }
 }

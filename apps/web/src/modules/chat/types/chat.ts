@@ -68,8 +68,6 @@ export interface ChatMessageItem {
 export type MessageStatus =
   | 'pending'
   | 'streaming'
-  | 'validating'     // 回答生成完毕，正在校验
-  | 'supplementing'  // 正在补充内容
   | 'completed'
   | 'aborted'
   | 'error';

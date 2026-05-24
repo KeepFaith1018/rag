@@ -195,8 +195,8 @@ export function useAgentChat(options?: UseAgentChatOptions) {
                     chatStore.setCitations(event.citations);
                     msg.citations = [...chatStore.citations];
                   }
-                  // 兜底：非 RAG 模式无 VALIDATION_COMPLETED，在此完成消息
-                  if (msg.messageStatus === 'streaming' || msg.messageStatus === 'validating' || msg.messageStatus === 'supplementing') {
+                  // 完成消息（writer 流式输出后直接结束）
+                  if (msg.messageStatus === 'streaming') {
                     chatStore.setMessageStatus(assistantMsgId, 'completed')
                   }
                 }
@@ -208,9 +208,6 @@ export function useAgentChat(options?: UseAgentChatOptions) {
               break;
 
             case 'STEP_STARTED':
-              if (event.stepName === 'supplement_retrieve' || event.stepName === 'writer_supplement') {
-                chatStore.setMessageStatus(assistantMsgId, 'supplementing')
-              }
               chatStore.upsertStep({
                 stepName: event.stepName as StepName,
                 status: 'running',
@@ -273,13 +270,6 @@ export function useAgentChat(options?: UseAgentChatOptions) {
               flush();
               break;
 
-            case 'VALIDATION_STARTED':
-              chatStore.setMessageStatus(assistantMsgId, 'validating')
-              break
-
-            case 'VALIDATION_COMPLETED':
-              chatStore.setMessageStatus(assistantMsgId, 'completed')
-              break
           }
         }
       }

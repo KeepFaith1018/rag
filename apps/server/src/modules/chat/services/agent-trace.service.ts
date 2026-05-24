@@ -240,6 +240,27 @@ export class AgentTraceService {
   }
 
   /**
+   * 合并写入评估数据（追加字段，不覆盖已有数据）。
+   * 用于异步校验完成后追加 factCheckResult / completenessResult。
+   */
+  async mergeEvaluationData(
+    runId: string,
+    partial: Record<string, unknown>,
+  ): Promise<void> {
+    const run = await this.prisma.b_agent_runs.findUnique({
+      where: { id: runId },
+      select: { metadata_json: true },
+    });
+    const existing = (run?.metadata_json as Record<string, unknown>) ?? {};
+    await this.prisma.b_agent_runs.update({
+      where: { id: runId },
+      data: {
+        metadata_json: { ...existing, ...partial } as Prisma.InputJsonValue,
+      },
+    });
+  }
+
+  /**
    * 获取用户的使用统计摘要。
    */
   async getMetricsSummary(userId: number): Promise<{

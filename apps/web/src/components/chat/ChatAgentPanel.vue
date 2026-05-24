@@ -61,11 +61,6 @@ const stepMeta = (stepName: string): { icon: string; label: string } => {
     relevance_check: { icon: 'preview', label: '相关性校验' },
     audit: { icon: 'grading', label: '检索审计' },
     writer: { icon: 'edit_note', label: '生成回答' },
-    writer_correct: { icon: 'edit_note', label: '修正回答' },
-    writer_supplement: { icon: 'note_add', label: '补充回答' },
-    fact_check: { icon: 'fact_check', label: '事实审核' },
-    completeness_check: { icon: 'checklist', label: '完整性校验' },
-    supplement_retrieve: { icon: 'search', label: '补充检索' },
   }
   return map[stepName] ?? { icon: 'circle', label: stepName }
 }
@@ -89,7 +84,7 @@ function toolOutputSummary(tc: AguiToolCallRecord): string {
   return ''
 }
 
-function stepOutputSummary(step: AguiStepRecord): string {
+function stepOutputSummary(step: { stepName: string; output?: Record<string, unknown> }): string {
   if (!step.output) return ''
   if (step.stepName === 'route') return `意图: ${step.output.intent ?? 'unknown'}`
   if (step.stepName === 'rewrite') {

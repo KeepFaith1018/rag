@@ -11,7 +11,6 @@ export const ROUTER_SYSTEM_PROMPT = `你是一个查询路由专家。你的任�
   "intent": "greeting | fact_lookup | compare_analysis | research_or_open_world",
   "needDecomposition": true/false,
   "needWebSearch": true/false,
-  "reasoning": "简要推理过程",
   "questionType": "fact_lookup | compare_analysis | research_or_open_world"
 }
 

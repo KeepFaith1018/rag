@@ -631,7 +631,7 @@ async function auditNode(
 
     const audit = result as AuditResult;
     console.log(
-      `[Node:audit] verdict=${audit.verdict}, reason=${audit.reason}`,
+      `[Node:audit] verdict=${audit.verdict}`,
     );
     return { auditVerdict: audit.verdict };
   } catch (error) {

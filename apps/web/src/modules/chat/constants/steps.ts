@@ -9,11 +9,6 @@ export const STEP_META: Record<string, { icon: string; label: string }> = {
   relevance_check: { icon: 'preview', label: '相关性校验' },
   audit: { icon: 'grading', label: '检索审计' },
   writer: { icon: 'edit_note', label: '生成回答' },
-  writer_correct: { icon: 'edit_note', label: '修正回答' },
-  writer_supplement: { icon: 'note_add', label: '补充回答' },
-  fact_check: { icon: 'fact_check', label: '事实审核' },
-  completeness_check: { icon: 'checklist', label: '完整性校验' },
-  supplement_retrieve: { icon: 'search', label: '补充检索' },
 };
 
 export const DEFAULT_STEP_META = { icon: 'circle', label: '' };
@@ -29,7 +24,7 @@ export function stepMeta(stepName: string): { icon: string; label: string } {
 }
 
 /** 步骤输出摘要 */
-export function stepOutputSummary(step: AguiStepRecord): string {
+export function stepOutputSummary(step: { stepName: string; output?: Record<string, unknown> }): string {
   if (!step.output) return '';
   switch (step.stepName) {
     case 'route':

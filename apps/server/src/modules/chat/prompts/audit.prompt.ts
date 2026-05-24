@@ -16,6 +16,6 @@ export const AUDIT_SYSTEM_PROMPT = `你是一个检索质量审计专家。你�
 - 开放研究类问题（如"XX的原理"），需多条覆盖不同角度的内容
 
 请严格按照以下 JSON 格式返回，字段名必须精确匹配：
-{ "verdict": "sufficient" 或 "insufficient", "reason": "一句话说明判断依据" }
+{ "verdict": "sufficient" 或 "insufficient" }
 
-注意：字段名必须是 verdict 和 reason，不要使用 assessment、judgment、reasoning 等其他名称。`;
+注意：字段名必须是 verdict，不要使用 assessment、judgment、reasoning 等其他名称。`;

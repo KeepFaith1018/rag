@@ -83,11 +83,6 @@ export const useChatAgentStore = defineStore('chat-agent', () => {
       relevance_check: '相关性校验',
       audit: '检索审计',
       writer: '生成回答',
-      writer_correct: '修正回答',
-      writer_supplement: '补充回答',
-      fact_check: '事实审核',
-      completeness_check: '完整性校验',
-      supplement_retrieve: '补充检索',
     };
     return map[stepName] ?? stepName;
   }

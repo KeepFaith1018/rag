@@ -15,13 +15,10 @@ export const RELEVANCE_CHECK_SYSTEM_PROMPT = `你是一个检索质量审核专�
 {
   "verdict": "relevant",
   "relevantCount": 3,
-  "totalCount": 5,
-  "reason": "简要评估理由",
-  "suggestion": "建议继续后续流程"
+  "totalCount": 5
 }
 
 注意：
-- 字段名必须是 verdict、relevantCount、totalCount、reason、suggestion
+- 字段名必须是 verdict、relevantCount、totalCount
 - verdict 取值：relevant、partial、not_relevant
-- relevantCount 和 totalCount 必须是数字
-- 如果是 not_relevant，suggestion 中建议重新改写查询`;
+- relevantCount 和 totalCount 必须是数字`;

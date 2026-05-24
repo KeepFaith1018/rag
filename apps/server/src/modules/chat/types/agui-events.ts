@@ -43,12 +43,7 @@ export type StepName =
   | 'rewrite_fallback'
   | 'relevance_check'
   | 'audit'
-  | 'writer'
-  | 'writer_correct'
-  | 'writer_supplement'
-  | 'fact_check'
-  | 'completeness_check'
-  | 'supplement_retrieve';
+  | 'writer';
 
 export interface StepStartedEvent extends BaseEvent {
   type: 'STEP_STARTED';

@@ -13,12 +13,7 @@ export type StepName =
   | 'rewrite_fallback'
   | 'relevance_check'
   | 'audit'
-  | 'writer'
-  | 'writer_correct'
-  | 'writer_supplement'
-  | 'fact_check'
-  | 'completeness_check'
-  | 'supplement_retrieve';
+  | 'writer';
 
 /** Tool 名称 */
 export type ToolCallName = 'search_knowledge_base' | 'web_search';
@@ -108,19 +103,7 @@ export type AguiEvent =
   | ToolCallResultEvent
   | TextMessageStartEvent
   | TextMessageContentEvent
-  | TextMessageEndEvent
-  | ValidationStartedEvent
-  | ValidationCompletedEvent;
-
-/** 校验事件类型定义 */
-
-export interface ValidationStartedEvent {
-  type: 'VALIDATION_STARTED';
-}
-
-export interface ValidationCompletedEvent {
-  type: 'VALIDATION_COMPLETED';
-}
+  | TextMessageEndEvent;
 
 /** 聚合到消息上的步骤记录（STEP_FINISHED 的快照） */
 export interface AguiStepRecord {
