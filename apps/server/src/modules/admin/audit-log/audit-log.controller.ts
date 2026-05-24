@@ -4,7 +4,7 @@ import { ListAuditLogDto } from './dto/list-audit-log.dto';
 import { AdminAuthGuard } from '../guards/admin-auth.guard';
 import { AdminAuth } from '../decorators/admin-auth.decorator';
 
-@Controller('audit-log')
+@Controller('admin/audit-log')
 @UseGuards(AdminAuthGuard)
 @AdminAuth()
 export class AuditLogController {

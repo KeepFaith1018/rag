@@ -1,5 +1,5 @@
 import { apiRequest } from "@/api/api";
-import type { ApiResponse, PageResult } from "@/types/api";
+import type { PageResult } from "@/types/api";
 
 export interface User {
   id: string;
@@ -27,15 +27,11 @@ export async function listUsers(
   if (params.isActive !== undefined)
     query.set("isActive", String(params.isActive));
 
-  const res = await apiRequest<ApiResponse<PageResult<User>>>(
-    `/admin/user?${query}`
-  );
-  return (res as any)?.data || { list: [], total: 0, page: 1, pageSize: 20 };
+  return apiRequest<PageResult<User>>(`/admin/user?${query}`);
 }
 
 export async function getUser(id: string): Promise<User> {
-  const res = await apiRequest<ApiResponse<User>>(`/admin/user/${id}`);
-  return (res as any)?.data;
+  return apiRequest<User>(`/admin/user/${id}`);
 }
 
 export async function disableUser(id: string): Promise<void> {

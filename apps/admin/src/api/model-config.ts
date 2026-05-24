@@ -1,5 +1,5 @@
 import { apiRequest } from "@/api/api";
-import type { ApiResponse, PageResult } from "@/types/api";
+import type { PageResult } from "@/types/api";
 
 export interface ModelConfig {
   id: string;
@@ -44,17 +44,11 @@ export async function listModelConfigs(
   if (params.isActive !== undefined)
     query.set("isActive", String(params.isActive));
 
-  const res = await apiRequest<ApiResponse<PageResult<ModelConfig>>>(
-    `/admin/model-config?${query}`
-  );
-  return (res as any)?.data || { list: [], total: 0, page: 1, pageSize: 20 };
+  return apiRequest<PageResult<ModelConfig>>(`/admin/model-config?${query}`);
 }
 
 export async function getModelConfig(id: string): Promise<ModelConfig> {
-  const res = await apiRequest<ApiResponse<ModelConfig>>(
-    `/admin/model-config/${id}`
-  );
-  return (res as any)?.data;
+  return apiRequest<ModelConfig>(`/admin/model-config/${id}`);
 }
 
 export async function createModelConfig(

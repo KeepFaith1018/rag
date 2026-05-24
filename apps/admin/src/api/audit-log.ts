@@ -1,5 +1,5 @@
 import { apiRequest } from "@/api/api";
-import type { ApiResponse, PageResult } from "@/types/api";
+import type { PageResult } from "@/types/api";
 
 export interface AuditLog {
   id: string;
@@ -23,7 +23,7 @@ export interface ListParams {
 }
 
 export async function listAuditLogs(
-  params: ListParams = {}
+  params: ListParams = {},
 ): Promise<PageResult<AuditLog>> {
   const query = new URLSearchParams();
   if (params.page) query.set("page", String(params.page));
@@ -32,13 +32,9 @@ export async function listAuditLogs(
   if (params.module) query.set("module", params.module);
   if (params.adminUsername) query.set("adminUsername", params.adminUsername);
 
-  const res = await apiRequest<ApiResponse<PageResult<AuditLog>>>(
-    `/admin/audit-log?${query}`
-  );
-  return (res as any)?.data || { list: [], total: 0, page: 1, pageSize: 20 };
+  return apiRequest<PageResult<AuditLog>>(`/admin/audit-log?${query}`);
 }
 
 export async function getAuditLog(id: string): Promise<AuditLog> {
-  const res = await apiRequest<ApiResponse<AuditLog>>(`/admin/audit-log/${id}`);
-  return (res as any)?.data;
+  return apiRequest<AuditLog>(`/admin/audit-log/${id}`);
 }

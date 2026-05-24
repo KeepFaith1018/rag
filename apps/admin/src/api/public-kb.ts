@@ -1,5 +1,5 @@
 import { apiRequest } from "@/api/api";
-import type { ApiResponse, PageResult } from "@/types/api";
+import type { PageResult } from "@/types/api";
 
 export interface PublicKb {
   id: string;
@@ -39,15 +39,11 @@ export async function listPublicKbs(
   if (params.isPublic !== undefined)
     query.set("isPublic", String(params.isPublic));
 
-  const res = await apiRequest<ApiResponse<PageResult<PublicKb>>>(
-    `/admin/public-kb?${query}`
-  );
-  return (res as any)?.data || { list: [], total: 0, page: 1, pageSize: 20 };
+  return apiRequest<PageResult<PublicKb>>(`/admin/public-kb?${query}`);
 }
 
 export async function getPublicKb(id: string): Promise<PublicKb> {
-  const res = await apiRequest<ApiResponse<PublicKb>>(`/admin/public-kb/${id}`);
-  return (res as any)?.data;
+  return apiRequest<PublicKb>(`/admin/public-kb/${id}`);
 }
 
 export async function updatePublicKbStatus(

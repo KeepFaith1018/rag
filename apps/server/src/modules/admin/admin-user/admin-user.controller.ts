@@ -9,7 +9,7 @@ import { AdminAuthGuard } from '../guards/admin-auth.guard';
 import { AdminAuth, RequireRole } from '../decorators/admin-auth.decorator';
 import { CurrentAdmin } from '../decorators/admin-user.decorator';
 
-@Controller('admin')
+@Controller('admin/admin')
 @UseGuards(AdminAuthGuard)
 @AdminAuth()
 @RequireRole('super_admin')

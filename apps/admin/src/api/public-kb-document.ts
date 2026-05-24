@@ -1,5 +1,4 @@
 import { apiRequest } from "@/api/api";
-import type { ApiResponse, PageResult } from "@/types/api";
 
 export interface PublicKbDocument {
   id: string;
@@ -38,14 +37,5 @@ export async function listPublicKbDocuments(
   if (params.title) query.set("title", params.title);
   if (params.status) query.set("status", params.status);
 
-  const res = await apiRequest<ApiResponse<any>>(
-    `/admin/public-kb/${kbId}/documents?${query}`
-  );
-  return (res as any)?.data || {
-    kbInfo: null,
-    list: [],
-    total: 0,
-    page: 1,
-    pageSize: 20,
-  };
+  return apiRequest(`/admin/public-kb/${kbId}/documents?${query}`);
 }

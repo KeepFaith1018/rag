@@ -7,7 +7,7 @@ import { UpdateDictItemDto } from './dto/update-dict-item.dto';
 import { AdminAuthGuard } from '../guards/admin-auth.guard';
 import { AdminAuth } from '../decorators/admin-auth.decorator';
 
-@Controller('dict')
+@Controller('admin/dict')
 @UseGuards(AdminAuthGuard)
 @AdminAuth()
 export class DictController {

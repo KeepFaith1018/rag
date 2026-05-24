@@ -4,7 +4,7 @@ import { ListPublicKbDocumentsDto } from './dto/list-public-kb-documents.dto';
 import { AdminAuthGuard } from '../guards/admin-auth.guard';
 import { AdminAuth } from '../decorators/admin-auth.decorator';
 
-@Controller('public-kb/:kbId/documents')
+@Controller('admin/public-kb/:kbId/documents')
 @UseGuards(AdminAuthGuard)
 @AdminAuth()
 export class PublicKbDocumentController {

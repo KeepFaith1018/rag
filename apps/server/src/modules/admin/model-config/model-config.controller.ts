@@ -9,7 +9,7 @@ import { UpdateModelConfigDto } from './dto/update-model-config.dto';
 import { AdminAuthGuard } from '../guards/admin-auth.guard';
 import { AdminAuth } from '../decorators/admin-auth.decorator';
 
-@Controller('model-config')
+@Controller('admin/model-config')
 @UseGuards(AdminAuthGuard)
 @AdminAuth()
 export class ModelConfigController {

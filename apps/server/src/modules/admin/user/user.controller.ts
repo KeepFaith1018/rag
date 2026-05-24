@@ -4,7 +4,7 @@ import { ListUserDto } from './dto/list-user.dto';
 import { AdminAuthGuard } from '../guards/admin-auth.guard';
 import { AdminAuth } from '../decorators/admin-auth.decorator';
 
-@Controller('user')
+@Controller('admin/user')
 @UseGuards(AdminAuthGuard)
 @AdminAuth()
 export class UserController {

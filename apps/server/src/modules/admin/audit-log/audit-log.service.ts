@@ -55,8 +55,8 @@ export class AuditLogService {
                 id: (log.sys_admins as any).id.toString() as string,
                 username: (log.sys_admins as any).username,
               }
-              /* eslint-enable */
-            : null,
+            : /* eslint-enable */
+              null,
           createdAt: log.created_at.toISOString(),
         })),
         total,
@@ -100,8 +100,8 @@ export class AuditLogService {
               id: String((log.sys_admins as any).id),
               username: String((log.sys_admins as any).username),
             }
-            /* eslint-enable */
-          : null,
+          : /* eslint-enable */
+            null,
         createdAt: log.created_at.toISOString(),
       };
     } catch (error) {

@@ -5,7 +5,7 @@ import { UpdatePublicKbStatusDto } from './dto/update-public-kb-status.dto';
 import { AdminAuthGuard } from '../guards/admin-auth.guard';
 import { AdminAuth } from '../decorators/admin-auth.decorator';
 
-@Controller('public-kb')
+@Controller('admin/public-kb')
 @UseGuards(AdminAuthGuard)
 @AdminAuth()
 export class PublicKbController {

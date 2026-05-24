@@ -1,5 +1,4 @@
 import { apiRequest } from "@/api/api";
-import type { ApiResponse } from "@/types/api";
 
 export interface DictType {
   id: string;
@@ -24,17 +23,13 @@ export interface DictItem {
 }
 
 export async function listDictTypes(): Promise<DictType[]> {
-  const res = await apiRequest<ApiResponse<DictType[]>>(`/admin/dict/type`);
-  return (res as any)?.data || [];
+  return apiRequest<DictType[]>(`/admin/dict/type`);
 }
 
 export async function getDictType(
   code: string
 ): Promise<DictTypeDetail> {
-  const res = await apiRequest<ApiResponse<DictTypeDetail>>(
-    `/admin/dict/type/${code}`
-  );
-  return (res as any)?.data;
+  return apiRequest<DictTypeDetail>(`/admin/dict/type/${code}`);
 }
 
 export async function createDictType(data: {
@@ -42,25 +37,20 @@ export async function createDictType(data: {
   name: string;
   remark?: string;
 }): Promise<DictType> {
-  const res = await apiRequest<ApiResponse<DictType>>(`/admin/dict/type`, {
+  return apiRequest<DictType>(`/admin/dict/type`, {
     method: "POST",
     body: JSON.stringify(data),
   });
-  return (res as any)?.data;
 }
 
 export async function updateDictType(
   code: string,
   data: { name?: string; remark?: string }
 ): Promise<DictType> {
-  const res = await apiRequest<ApiResponse<DictType>>(
-    `/admin/dict/type/${code}`,
-    {
-      method: "PUT",
-      body: JSON.stringify(data),
-    }
-  );
-  return (res as any)?.data;
+  return apiRequest<DictType>(`/admin/dict/type/${code}`, {
+    method: "PUT",
+    body: JSON.stringify(data),
+  });
 }
 
 export async function deleteDictType(code: string): Promise<void> {
@@ -74,22 +64,20 @@ export async function createDictItem(data: {
   sort?: number;
   status?: boolean;
 }): Promise<DictItem> {
-  const res = await apiRequest<ApiResponse<DictItem>>(`/admin/dict/item`, {
+  return apiRequest<DictItem>(`/admin/dict/item`, {
     method: "POST",
     body: JSON.stringify(data),
   });
-  return (res as any)?.data;
 }
 
 export async function updateDictItem(
   id: string,
   data: { label?: string; sort?: number; status?: boolean }
 ): Promise<DictItem> {
-  const res = await apiRequest<ApiResponse<DictItem>>(`/admin/dict/item/${id}`, {
+  return apiRequest<DictItem>(`/admin/dict/item/${id}`, {
     method: "PUT",
     body: JSON.stringify(data),
   });
-  return (res as any)?.data;
 }
 
 export async function deleteDictItem(id: string): Promise<void> {

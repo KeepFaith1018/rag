@@ -1,5 +1,5 @@
 import { apiRequest } from "@/api/api";
-import type { ApiResponse, PageResult } from "@/types/api";
+import type { PageResult } from "@/types/api";
 
 export interface AdminUser {
   id: string;
@@ -28,15 +28,11 @@ export async function listAdmins(
   if (params.page) query.set("page", String(params.page));
   if (params.pageSize) query.set("pageSize", String(params.pageSize));
 
-  const res = await apiRequest<ApiResponse<PageResult<AdminUser>>>(
-    `/admin/admin?${query}`
-  );
-  return (res as any)?.data || { list: [], total: 0, page: 1, pageSize: 20 };
+  return apiRequest<PageResult<AdminUser>>(`/admin/admin?${query}`);
 }
 
 export async function getAdmin(id: string): Promise<AdminUser> {
-  const res = await apiRequest<ApiResponse<AdminUser>>(`/admin/admin/${id}`);
-  return (res as any)?.data;
+  return apiRequest<AdminUser>(`/admin/admin/${id}`);
 }
 
 export async function createAdmin(dto: CreateAdminDto): Promise<AdminUser> {
