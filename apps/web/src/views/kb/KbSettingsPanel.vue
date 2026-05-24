@@ -67,3 +67,56 @@ defineProps<{
     </div>
   </div>
 </template>
+
+<style scoped>
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-family: var(--font-headline);
+  font-weight: 500;
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  filter: brightness(1.1);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-family: var(--font-headline);
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+  color: var(--color-on-surface);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background: var(--color-surface-container-high);
+}
+.btn-outline:active {
+  transform: scale(0.98);
+}
+</style>

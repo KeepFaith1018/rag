@@ -21,7 +21,7 @@ export class Result<T = any> {
 
   /** 成功 */
   static success<T>(data: T): Result<T> {
-    return new Result(true, 0, 'success', data);
+    return new Result(true, 0, '成功', data);
   }
 
   /** 失败 */
@@ -29,7 +29,7 @@ export class Result<T = any> {
     return new Result(
       false,
       code,
-      message ?? ErrorMessageMap[code] ?? 'error',
+      message ?? ErrorMessageMap[code] ?? '错误',
     );
   }
 }

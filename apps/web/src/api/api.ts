@@ -218,11 +218,16 @@ export async function apiRequestStream(
   const requestBody = normalizeRequestBody(body);
   const requestHeaders = createHeaders(options, requestBody);
 
-  const fetchResponse = await fetch(buildRequestUrl(url, params), {
-    ...rest,
-    body: requestBody,
-    headers: requestHeaders,
-  });
+  let fetchResponse: Response;
+  try {
+    fetchResponse = await fetch(buildRequestUrl(url, params), {
+      ...rest,
+      body: requestBody,
+      headers: requestHeaders,
+    });
+  } catch (error) {
+    throw createNetworkError(error);
+  }
 
   // 401 且未禁用刷新重试 → 刷新 token 后重试
   if (
@@ -495,11 +500,38 @@ function createApiError(status: number, result: ApiResult<unknown> | null) {
   );
 }
 
+/** 浏览器原生 fetch 英文错误 → 中文翻译 */
+const NETWORK_ERROR_ZH: Record<string, string> = {
+  'Failed to fetch': '无法连接到服务器，请检查网络或后端服务是否启动',
+  'NetworkError when attempting to fetch resource.': '网络错误，无法获取资源',
+  'Load failed': '加载失败',
+  'The Internet connection appears to be offline.': '网络连接已断开',
+  'Request timed out.': '请求超时',
+  'cancelled': '请求已取消',
+};
+
 /**
- * 统一构造网络错误对象。
+ * 统一构造网络错误对象，将浏览器原生英文错误翻译为中文。
  */
 function createNetworkError(error: unknown) {
-  const message = error instanceof Error ? error.message : "网络请求失败";
+  let message = "网络请求失败";
+
+  if (error instanceof Error) {
+    const raw = error.message || '';
+    // 精确匹配
+    if (NETWORK_ERROR_ZH[raw]) {
+      message = NETWORK_ERROR_ZH[raw];
+    } else {
+      // 模糊匹配（如 "cancelled" 可能是 "The operation was cancelled." 的一部分）
+      for (const [key, zh] of Object.entries(NETWORK_ERROR_ZH)) {
+        if (raw.toLowerCase().includes(key.toLowerCase())) {
+          message = zh;
+          break;
+        }
+      }
+    }
+  }
+
   return new ApiError(message, -1, 0, error);
 }
 

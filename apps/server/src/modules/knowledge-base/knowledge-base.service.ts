@@ -36,6 +36,21 @@ type KnowledgeBaseWithRelations = Prisma.b_knowledge_basesGetPayload<{
 type ListOwnership = 'owned' | 'joined' | 'all';
 type KnowledgeBaseVisibility = 'private' | 'shared';
 type PublicSortBy = 'latest' | 'hot';
+type MineSortBy = 'updated_desc' | 'updated_asc' | 'documents_desc' | 'name_asc';
+
+/** 我的知识库排序 → Prisma orderBy 映射 */
+const MINE_SORT_ORDER_MAP: Record<
+  MineSortBy,
+  Prisma.b_knowledge_basesOrderByWithRelationInput[]
+> = {
+  updated_desc: [{ updated_at: 'desc' }, { id: 'desc' }],
+  updated_asc: [{ updated_at: 'asc' }, { id: 'asc' }],
+  documents_desc: [
+    { documents: { _count: 'desc' } },
+    { updated_at: 'desc' },
+  ],
+  name_asc: [{ name: 'asc' }, { id: 'asc' }],
+};
 
 /**
  * 负责知识库管理相关核心业务逻辑。
@@ -102,6 +117,10 @@ export class KnowledgeBaseService {
       );
       const where = this.buildMineWhere(BigInt(userId), normalized);
 
+      const orderBy =
+        MINE_SORT_ORDER_MAP[normalized.sortBy] ??
+        MINE_SORT_ORDER_MAP['updated_desc'];
+
       const [items, total] = await this.prisma.$transaction([
         this.prisma.b_knowledge_bases.findMany({
           where,
@@ -118,7 +137,7 @@ export class KnowledgeBaseService {
               },
             },
           },
-          orderBy: [{ updated_at: 'desc' }, { id: 'desc' }],
+          orderBy,
           skip: pagination.skip,
           take: pagination.take,
         }),
@@ -431,6 +450,7 @@ export class KnowledgeBaseService {
       keyword: query.keyword?.trim(),
       page: query.page ?? 1,
       pageSize: Math.min(query.pageSize ?? 10, 100),
+      sortBy: (query.sortBy ?? 'updated_desc') as MineSortBy,
     };
   }
 

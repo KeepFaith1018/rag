@@ -590,7 +590,7 @@ export class MultiAgentOrchestratorService {
 
     function checkAborted(): void {
       if (signal?.aborted) {
-        throw new Error('Client disconnected');
+        throw new Error('客户端连接已断开');
       }
     }
 

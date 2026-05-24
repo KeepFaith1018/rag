@@ -9,6 +9,15 @@ export type KnowledgeBaseVisibility = "private" | "shared";
 export type KnowledgeBaseOwnership = "owned" | "joined" | "all";
 
 /**
+ * 我的知识库排序方式。
+ */
+export type MineKnowledgeBaseSortBy =
+  | "updated_desc"
+  | "updated_asc"
+  | "documents_desc"
+  | "name_asc";
+
+/**
  * 公开知识库排序方式。
  */
 export type PublicKnowledgeBaseSortBy = "latest" | "hot";
@@ -79,6 +88,7 @@ export interface ListKnowledgeBasesQuery {
   keyword?: string;
   page?: number;
   pageSize?: number;
+  sortBy?: MineKnowledgeBaseSortBy;
 }
 
 /**

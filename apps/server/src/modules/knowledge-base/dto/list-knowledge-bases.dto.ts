@@ -11,6 +11,12 @@ import { Type } from 'class-transformer';
 const KNOWLEDGE_BASE_OWNERSHIPS = ['owned', 'joined', 'all'] as const;
 const KNOWLEDGE_BASE_VISIBILITIES = ['private', 'shared'] as const;
 const PUBLIC_KNOWLEDGE_BASE_SORTS = ['latest', 'hot'] as const;
+const MINE_KNOWLEDGE_BASE_SORTS = [
+  'updated_desc',
+  'updated_asc',
+  'documents_desc',
+  'name_asc',
+] as const;
 
 /**
  * 我的知识库列表查询参数。
@@ -40,6 +46,10 @@ export class ListKnowledgeBasesDto {
   @IsInt()
   @Min(1)
   pageSize?: number = 10;
+
+  @IsOptional()
+  @IsIn(MINE_KNOWLEDGE_BASE_SORTS)
+  sortBy?: (typeof MINE_KNOWLEDGE_BASE_SORTS)[number] = 'updated_desc';
 }
 
 /**

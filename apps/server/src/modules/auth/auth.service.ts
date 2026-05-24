@@ -83,7 +83,7 @@ export class AuthService {
         password: hashedPassword,
       });
 
-      return { message: 'Register success' };
+      return { message: '注册成功' };
     } catch (error) {
       throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
         context: {

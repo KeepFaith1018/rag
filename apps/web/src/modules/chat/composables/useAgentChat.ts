@@ -149,12 +149,12 @@ export function useAgentChat(options?: UseAgentChatOptions) {
       const response = await fetchChatStream(request, abortController.value.signal)
 
       if (!response.ok) {
-        throw new Error(`HTTP ${response.status}: ${response.statusText}`);
+        throw new Error(`请求失败（状态码 ${response.status}）`);
       }
 
       const reader = response.body?.getReader();
       if (!reader) {
-        throw new Error('Response body is not readable');
+        throw new Error('响应数据不可读');
       }
 
       const decoder = new TextDecoder();

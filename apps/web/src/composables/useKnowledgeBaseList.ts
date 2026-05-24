@@ -14,6 +14,7 @@ import type {
   KnowledgeBaseListItem,
   KnowledgeBaseOwnership,
   KnowledgeBaseVisibility,
+  MineKnowledgeBaseSortBy,
   PublicKnowledgeBaseSortBy,
   UpdateKnowledgeBasePayload,
 } from "@/types/knowledge-base";
@@ -32,14 +33,14 @@ export function useKnowledgeBaseList() {
     keyword: string;
     ownership: KnowledgeBaseOwnership;
     visibility: KnowledgeBaseVisibility | "all";
-    sortBy: PublicKnowledgeBaseSortBy;
+    sortBy: MineKnowledgeBaseSortBy | PublicKnowledgeBaseSortBy;
     page: number;
     pageSize: number;
   }>({
     keyword: "",
     ownership: "all",
     visibility: "all",
-    sortBy: "latest",
+    sortBy: "updated_desc",
     page: 1,
     pageSize: 12,
   });
@@ -66,7 +67,7 @@ export function useKnowledgeBaseList() {
             keyword: query.keyword || undefined,
             page: query.page,
             pageSize: query.pageSize,
-            sortBy: query.sortBy,
+            sortBy: query.sortBy as PublicKnowledgeBaseSortBy,
           })
         : await listMyKnowledgeBases({
             keyword: query.keyword || undefined,
@@ -75,6 +76,7 @@ export function useKnowledgeBaseList() {
               query.visibility === "all" ? undefined : query.visibility,
             page: query.page,
             pageSize: query.pageSize,
+            sortBy: query.sortBy as MineKnowledgeBaseSortBy,
           });
 
       items.value = result.list;
@@ -89,11 +91,12 @@ export function useKnowledgeBaseList() {
   }
 
   /**
-   * 切换列表作用域。
+   * 切换列表作用域，并重置排序为对应场景的默认值。
    */
   function setScope(nextScope: ListScope) {
     scope.value = nextScope;
     query.page = 1;
+    query.sortBy = nextScope === "public" ? "latest" : "updated_desc";
   }
 
   /**
@@ -121,9 +124,9 @@ export function useKnowledgeBaseList() {
   }
 
   /**
-   * 更新公开知识库排序方式。
+   * 更新排序方式。
    */
-  function setSortBy(sortBy: PublicKnowledgeBaseSortBy) {
+  function setSortBy(sortBy: MineKnowledgeBaseSortBy | PublicKnowledgeBaseSortBy) {
     query.sortBy = sortBy;
     query.page = 1;
   }

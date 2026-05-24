@@ -13,6 +13,7 @@ import type {
   KnowledgeBaseListItem,
   KnowledgeBaseOwnership,
   KnowledgeBaseVisibility,
+  MineKnowledgeBaseSortBy,
   PublicKnowledgeBaseSortBy,
   UpdateKnowledgeBasePayload,
 } from "@/types/knowledge-base";
@@ -55,23 +56,22 @@ const publicSortOptions: Array<{
   { label: "热度优先", value: "hot" },
 ];
 
+const mineSortOptions: Array<{
+  label: string;
+  value: MineKnowledgeBaseSortBy;
+}> = [
+  { label: "最近更新", value: "updated_desc" },
+  { label: "最早更新", value: "updated_asc" },
+  { label: "最多文档", value: "documents_desc" },
+  { label: "名称 A-Z", value: "name_asc" },
+];
+
 /**
  * 当前弹窗标题。
  */
 const modalTitle = computed(() =>
   editingKb.value ? "编辑知识库" : "创建知识库",
 );
-
-/**
- * 当前列表排序文案。
- */
-const sortLabel = computed(() => {
-  if (kbList.isPublicScope.value) {
-    return kbList.query.sortBy === "hot" ? "热度优先" : "最新更新";
-  }
-
-  return "修改日期";
-});
 
 /**
  * 列表空态文案。
@@ -166,6 +166,18 @@ function closeJoinModal() {
  */
 async function changeOwnership(ownership: KnowledgeBaseOwnership) {
   kbList.setOwnership(ownership);
+  await loadList();
+}
+
+/**
+ * 切换我的知识库排序（再次点击已选中项回退到默认排序）。
+ */
+async function changeMineSort(sortBy: MineKnowledgeBaseSortBy) {
+  if (kbList.query.sortBy === sortBy) {
+    kbList.setSortBy("updated_desc");
+  } else {
+    kbList.setSortBy(sortBy);
+  }
   await loadList();
 }
 
@@ -460,16 +472,25 @@ onMounted(() => {
           </template>
         </div>
 
-        <!-- 排序指示 -->
-        <div class="flex items-center gap-3">
+        <!-- 排序选项 -->
+        <div class="flex items-center gap-2 flex-wrap">
           <span
-            class="text-xs font-label uppercase tracking-widest text-outline hidden sm:inline-block"
+            class="text-xs font-label uppercase tracking-widest text-outline mr-1"
           >
-            排序方式：{{ sortLabel }}
+            排序：
           </span>
-          <span class="material-symbols-outlined text-outline text-lg">
-            tune
-          </span>
+          <button
+            v-for="option in mineSortOptions"
+            :key="option.value"
+            type="button"
+            class="sort-chip"
+            :class="{
+              'sort-chip-active': kbList.query.sortBy === option.value,
+            }"
+            @click="changeMineSort(option.value)"
+          >
+            {{ option.label }}
+          </button>
         </div>
       </div>
 
@@ -813,6 +834,27 @@ onMounted(() => {
     transparent
   );
   box-shadow: var(--shadow-glass);
+}
+
+.sort-chip {
+  border-radius: 999px;
+  padding: 0.38rem 0.78rem;
+  font-size: 0.74rem;
+  color: var(--color-on-surface-variant);
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 18%, transparent);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.sort-chip:hover {
+  background: color-mix(in srgb, var(--color-surface-container-high) 60%, transparent);
+  border-color: color-mix(in srgb, var(--color-outline-variant) 35%, transparent);
+}
+
+.sort-chip-active {
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 12%, transparent);
 }
 
 .form-label {

@@ -158,7 +158,7 @@ export class EmailService {
                   </div>
                   <div>
                     <div style="font-size: 14px; letter-spacing: 0.12em; text-transform: uppercase; color: #9ca3af;">
-                      RAG Knowledge Base
+                      RAG 知识库
                     </div>
                     <div style="font-size: 12px; color: #6b7280;">
                       私有知识库 · 安全访问校验
@@ -195,7 +195,7 @@ export class EmailService {
                   text-align: center;
                 ">
                   <div style="font-size: 12px; color: #9ca3af; margin-bottom: 4px; letter-spacing: 0.18em; text-transform: uppercase;">
-                    Verification Code
+                    验证码
                   </div>
                   <div style="
                     font-size: 32px;
