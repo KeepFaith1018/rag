@@ -14,6 +14,7 @@ import {
   type AguiEvent,
   type StepName,
   type ToolCallName,
+  type Citation,
 } from '@/modules/chat/types/stream';
 import { useStreamingMarkdown } from './useStreamingMarkdown';
 import { useChatStore } from '@/stores/chat';
@@ -189,6 +190,11 @@ export function useAgentChat(options?: UseAgentChatOptions) {
                 if (msg) {
                   msg.aguiSteps = [...chatStore.aguiSteps];
                   msg.aguiToolCalls = [...chatStore.aguiToolCalls];
+                  // 接收 DB 解析后的最终引用数据
+                  if (event.citations && event.citations.length > 0) {
+                    chatStore.setCitations(event.citations);
+                    msg.citations = [...chatStore.citations];
+                  }
                   // 兜底：非 RAG 模式无 VALIDATION_COMPLETED，在此完成消息
                   if (msg.messageStatus === 'streaming' || msg.messageStatus === 'validating' || msg.messageStatus === 'supplementing') {
                     chatStore.setMessageStatus(assistantMsgId, 'completed')
@@ -238,6 +244,21 @@ export function useAgentChat(options?: UseAgentChatOptions) {
                 durationMs: event.durationMs,
                 status: 'completed',
               });
+              // 处理搜索返回的引用文档列表
+              if (
+                event.toolCallName === 'search_knowledge_base' &&
+                event.output?.documents
+              ) {
+                const docs = event.output.documents as Citation[];
+                if (event.output.append) {
+                  chatStore.appendCitations(docs);
+                } else {
+                  chatStore.setCitations(docs);
+                }
+                // 快照到消息对象
+                const msg = getCurrentAssistantMsg();
+                if (msg) msg.citations = [...chatStore.citations];
+              }
               break;
 
             case 'TEXT_MESSAGE_START':

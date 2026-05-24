@@ -131,20 +131,23 @@ export class ChatStreamService {
         modelOptions: resolvedModel,
         onFinish: async (result) => {
           const tasks: Promise<unknown>[] = [];
+          let citationRecords: import('../../rag/retrieval/citation.service').CitationRecord[] = [];
 
           if (result.citations && result.citations.length > 0) {
-            tasks.push(
-              this.citationService.createCitations({
-                messageId: assistantMessage.id,
-                hits: result.citations,
-              }),
-            );
+            citationRecords = await this.citationService.createCitations({
+              messageId: assistantMessage.id,
+              hits: result.citations,
+            });
           }
 
           tasks.push(
             this.chatMessageService.finalizeAssistantMessage(
               assistantMessage.id,
-              { content: result.content, finishReason: 'stop' },
+              {
+                content: result.content,
+                finishReason: 'stop',
+                references: citationRecords.length > 0 ? citationRecords : undefined,
+              },
             ),
           );
 
@@ -162,6 +165,22 @@ export class ChatStreamService {
           );
 
           await Promise.all(tasks);
+
+          return {
+            citations: citationRecords.map((c) => ({
+              index: (citationRecords.indexOf(c) + 1),
+              citationId: c.citationId,
+              kbId: c.kbId,
+              kbName: c.kbName ?? '',
+              docId: c.docId,
+              docTitle: c.docTitle ?? '',
+              chunkId: c.chunkId,
+              quote: c.quote,
+              score: c.score,
+              fileType: c.fileType,
+              fileName: c.fileName,
+            })),
+          };
         },
         onError: async () => {
           await this.chatMessageService.markAssistantMessageAborted(

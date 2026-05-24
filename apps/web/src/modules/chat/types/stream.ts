@@ -35,6 +35,8 @@ export interface RunFinishedEvent {
   type: 'RUN_FINISHED';
   runId: string;
   timestamp?: number;
+  /** RAG 模式下的引用来源列表（DB 解析后） */
+  citations?: Citation[];
 }
 
 export interface RunErrorEvent {
@@ -162,15 +164,24 @@ export type AgentPhase =
   | 'writing'
   | 'done';
 
-/** 引用项（兼容旧组件） */
+/** 引用项 */
 export interface Citation {
+  /** 1-based 引用编号，对应文中 [来源 N] 的 N */
+  index: number;
   citationId: string;
   kbId: string;
   kbName: string;
   docId: string;
   docTitle: string;
   chunkId: string;
+  /** 分片内容前 200 字摘要 */
   quote: string;
+  /** rerank 分数 */
+  score?: number;
+  /** 文档类型，用于预览渲染 (pdf / md / txt) */
+  fileType?: string;
+  /** 原始文件名 */
+  fileName?: string;
 }
 
 /** Agent 警告（兼容旧组件） */

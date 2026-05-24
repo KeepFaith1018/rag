@@ -22,6 +22,7 @@ export const useChatAgentStore = defineStore('chat-agent', () => {
   const agentPhaseLabel = ref('');
   const agentPhaseDetail = ref('');
   const citations = ref<Citation[]>([]);
+  const highlightedCitationIndex = ref<number | null>(null);
   const agentWarnings = ref<AgentWarningPart[]>([]);
   const retrievalProgresses = ref<RetrievalProgressPart[]>([]);
   const currentRunId = ref<string | null>(null);
@@ -39,6 +40,7 @@ export const useChatAgentStore = defineStore('chat-agent', () => {
     agentPhaseLabel.value = '';
     agentPhaseDetail.value = '';
     citations.value = [];
+    highlightedCitationIndex.value = null;
     agentWarnings.value = [];
     retrievalProgresses.value = [];
     aguiSteps.value = [];
@@ -154,12 +156,22 @@ export const useChatAgentStore = defineStore('chat-agent', () => {
     citations.value = citationsList;
   }
 
+  function appendCitations(newDocs: Citation[]) {
+    const existingChunkIds = new Set(citations.value.map((c) => c.chunkId));
+    const unique = newDocs.filter((d) => !existingChunkIds.has(d.chunkId));
+    citations.value = [...citations.value, ...unique].map((c, i) => ({
+      ...c,
+      index: i + 1,
+    }));
+  }
+
   return {
     // state
     agentPhase,
     agentPhaseLabel,
     agentPhaseDetail,
     citations,
+    highlightedCitationIndex,
     agentWarnings,
     retrievalProgresses,
     currentRunId,
@@ -178,6 +190,7 @@ export const useChatAgentStore = defineStore('chat-agent', () => {
     upsertToolCall,
     addCitation,
     setCitations,
+    appendCitations,
     stepLabel,
     stepOutputSummary,
   };

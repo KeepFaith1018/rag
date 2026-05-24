@@ -10,6 +10,8 @@ import { RetrievalService } from '../../rag/retrieval/retrieval.service';
 import { WebSearchService } from '../../rag/web-search/web-search.service';
 import { AgentTraceService } from './agent-trace.service';
 import { EvalQueueService } from './eval-queue.service';
+import { PrismaService } from '@common/prisma/prisma.service';
+import { parseBigInt } from '@common/utils/bigint.utils';
 import type { AgentRunContext } from './agent-trace.service';
 import type { WebSearchResult } from '../../rag/web-search/web-search.service';
 import type { ResolvedModelParams } from './model-config-resolution.service';
@@ -586,6 +588,7 @@ export class MultiAgentOrchestratorService {
     private readonly agentTraceService: AgentTraceService,
     private readonly webSearchService: WebSearchService,
     private readonly evalQueueService: EvalQueueService,
+    private readonly prisma: PrismaService,
   ) {}
 
   /**
@@ -610,7 +613,7 @@ export class MultiAgentOrchestratorService {
       onFinish?: (result: {
         content: string;
         citations: RerankedHit[];
-      }) => Promise<void>;
+      }) => Promise<{ citations: import('../types/agui-events').CitationData[] } | void>;
       onError?: () => Promise<void>;
     },
   ): Promise<void> {
@@ -735,6 +738,21 @@ export class MultiAgentOrchestratorService {
             kbIds: s.resolvedKbIds,
             questionType: s.routedPlan?.questionType,
           });
+          // 查询知识库名称
+          const kbIds = [...new Set(result.hits.map((h) => h.kbId))];
+          let kbNameMap = new Map<string, string>();
+          try {
+            const kbList = await self.prisma.b_knowledge_bases.findMany({
+              where: { id: { in: kbIds.map((id) => parseBigInt(id)) } },
+              select: { id: true, name: true },
+            });
+            kbNameMap = new Map(
+              kbList.map((kb) => [String(kb.id), kb.name]),
+            );
+          } catch {
+            // 查询失败不影响检索流程
+          }
+
           writer.write({
             type: 'TOOL_CALL_RESULT',
             toolCallId: tcId,
@@ -743,6 +761,23 @@ export class MultiAgentOrchestratorService {
               hitCount: result.hitCount,
               denseCount: result.denseCount,
               sparseCount: result.sparseCount,
+              documents: result.hits.map((hit, i) => ({
+                index: i + 1,
+                citationId: `${tcId}-${i}`,
+                kbId: hit.kbId,
+                kbName: kbNameMap.get(hit.kbId) || '',
+                docId: hit.docId,
+                docTitle:
+                  (hit.payload['title'] as string) ||
+                  hit.title ||
+                  `文档 ${hit.docId}`,
+                chunkId: hit.chunkId,
+                quote: hit.content
+                  .replace(/^\[文档段落路径:.*?\]\n?/, '')
+                  .slice(0, 200),
+                score: hit.rerankScore,
+              })),
+              append: false,
             },
             durationMs: Date.now() - toolStart,
           });
@@ -1112,11 +1147,45 @@ export class MultiAgentOrchestratorService {
               kbIds: s.resolvedKbIds,
               questionType: s.routedPlan?.questionType,
             });
+            const startIndex = s.rerankedHits.length;
+            // 查询知识库名称
+            const suppKbIds = [...new Set(result.hits.map((h) => h.kbId))];
+            let suppKbNameMap = new Map<string, string>();
+            try {
+              const suppKbList = await self.prisma.b_knowledge_bases.findMany({
+                where: { id: { in: suppKbIds.map((id) => parseBigInt(id)) } },
+                select: { id: true, name: true },
+              });
+              suppKbNameMap = new Map(
+                suppKbList.map((kb) => [String(kb.id), kb.name]),
+              );
+            } catch {
+              // 查询失败不影响检索流程
+            }
+
             writer.write({
               type: 'TOOL_CALL_RESULT',
               toolCallId: tcId,
               toolCallName: 'search_knowledge_base',
-              output: { hitCount: result.hitCount },
+              output: {
+                hitCount: result.hitCount,
+                documents: result.hits.map((hit, i) => ({
+                  index: startIndex + i + 1,
+                  kbId: hit.kbId,
+                  kbName: suppKbNameMap.get(hit.kbId) || '',
+                  docId: hit.docId,
+                  docTitle:
+                    (hit.payload['title'] as string) ||
+                    hit.title ||
+                    `文档 ${hit.docId}`,
+                  chunkId: hit.chunkId,
+                  quote: hit.content
+                    .replace(/^\[文档段落路径:.*?\]\n?/, '')
+                    .slice(0, 200),
+                  score: hit.rerankScore,
+                })),
+                append: true,
+              },
               durationMs: Date.now() - toolStart,
             });
 
@@ -1286,7 +1355,6 @@ export class MultiAgentOrchestratorService {
         completenessCoverage: (finalState as unknown as AgentState).completenessResult?.overallCoverage,
         supplementAdded: !!((finalState as unknown as AgentState).supplementAnswer),
       });
-      writer.write({ type: 'RUN_FINISHED', runId });
 
       // 持久化评估数据到 b_agent_runs.metadata_json（供离线评估队列使用）
       const evalState = finalState as unknown as AgentState;
@@ -1335,15 +1403,21 @@ export class MultiAgentOrchestratorService {
       if (onFinish) {
         try {
           const state = finalState as unknown as AgentState;
-          // 合并主回答和补充回答
           const fullContent =
             (state.draftAnswer ?? '') +
             (state.supplementAnswer
               ? '\n\n---\n**补充内容：**\n' + state.supplementAnswer
               : '');
-          await onFinish({
+          const finishResult = await onFinish({
             content: fullContent,
-            citations: state.rerankedHits?.slice(0, 5) ?? [],
+            citations: state.rerankedHits ?? [],
+          });
+
+          // 在 onFinish 之后发送 RUN_FINISHED，携带 DB 解析后的引用数据
+          writer.write({
+            type: 'RUN_FINISHED',
+            runId,
+            citations: finishResult?.citations,
           });
 
           // 离线评估入队
@@ -1361,7 +1435,12 @@ export class MultiAgentOrchestratorService {
                 ? finishError.message
                 : String(finishError),
           });
+          // onFinish 失败也要发送 RUN_FINISHED，避免前端挂起
+          writer.write({ type: 'RUN_FINISHED', runId });
         }
+      } else {
+        // 非 RAG 模式或无 onFinish 回调：直接发送 RUN_FINISHED
+        writer.write({ type: 'RUN_FINISHED', runId });
       }
     } catch (error: unknown) {
       const errMsg =

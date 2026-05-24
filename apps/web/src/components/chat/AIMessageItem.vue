@@ -1,13 +1,25 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
-import { marked } from 'marked'
+import { createIncremarkParser } from '@incremark/core'
+import type { ParsedBlock } from '@incremark/core'
 import type { ChatMessageItem } from '@/modules/chat/types/chat'
 import { useChatStore } from '@/stores/chat'
 import { useMessage } from '@/composables/useMessage'
 import MarkdownRenderer from '@/components/chat/MarkdownRenderer.vue'
 import ChatAgentPanel from '@/components/chat/ChatAgentPanel.vue'
 
-marked.setOptions({ breaks: true, gfm: true })
+/** 模块级 Incremark 解析器单例，用于历史消息一次性 Markdown 解析 */
+const mdParser = createIncremarkParser({ gfm: true })
+
+/** 一次性解析完整 Markdown 文本为 blocks */
+function parseMarkdown(content: string): ParsedBlock[] {
+  try {
+    mdParser.render(content)
+    return mdParser.getCompletedBlocks()
+  } catch {
+    return []
+  }
+}
 
 const props = defineProps<{
   message: ChatMessageItem
@@ -41,15 +53,11 @@ const validationLabel = computed(() => {
   return ''
 })
 
-/** 历史消息回退：无 blocks/htmlContent 时，将 content (Markdown) 转为 HTML */
-const fallbackHtml = computed(() => {
-  if (!props.message.content) return ''
-  if (props.message.htmlContent || props.message.blocks?.length) return ''
-  try {
-    return marked.parse(props.message.content, { async: false }) as string
-  } catch {
-    return props.message.content
-  }
+/** 解析后的 blocks：流式消息直接用 message.blocks，历史消息用 Incremark 一次性解析 */
+const resolvedBlocks = computed(() => {
+  if (props.message.blocks?.length) return props.message.blocks
+  if (!props.message.content) return []
+  return parseMarkdown(props.message.content)
 })
 
 async function handleCopy() {
@@ -104,15 +112,20 @@ function handleRetry() {
       <!-- Markdown 内容 (Incremark AST blocks) -->
       <div v-if="hasContent">
           <MarkdownRenderer
-            v-if="message.blocks?.length"
-            :blocks="message.blocks"
+            v-if="resolvedBlocks.length"
+            :blocks="resolvedBlocks"
           />
-          <!-- 兼容旧消息/历史消息 -->
+          <!-- 远古消息兼容：仅有 htmlContent 无 content/blocks -->
+          <div
+            v-else-if="message.htmlContent"
+            class="markdown-fallback max-w-none text-on-surface-variant text-sm leading-relaxed"
+            v-html="message.htmlContent"
+          />
+          <!-- 纯文本兜底 -->
           <div
             v-else
-            class="max-w-none text-on-surface-variant text-base leading-relaxed"
-            v-html="message.htmlContent || fallbackHtml || message.content"
-          />
+            class="text-on-surface-variant text-sm leading-relaxed whitespace-pre-wrap"
+          >{{ message.content }}</div>
           <!-- 流式打字机光标 -->
           <span
             v-if="isStreaming"

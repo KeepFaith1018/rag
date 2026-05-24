@@ -66,7 +66,7 @@ export const useChatStore = defineStore('chat', () => {
 
   const {
     agentPhase, agentPhaseLabel, agentPhaseDetail,
-    citations, agentWarnings, retrievalProgresses,
+    citations, highlightedCitationIndex, agentWarnings, retrievalProgresses,
     aguiSteps, aguiToolCalls, hasCitations, hasWarnings,
   } = storeToRefs(agentStore);
 
@@ -106,6 +106,21 @@ export const useChatStore = defineStore('chat', () => {
 
   async function selectSession(sessionId: string) {
     await sessionStore.selectSession(sessionId);
+    // 解析历史消息中的引用数据
+    for (const msg of messages.value) {
+      if (msg.references && Array.isArray(msg.references) && !msg.citations) {
+        msg.citations = msg.references as Citation[];
+      }
+    }
+    // 取最后一条有引用的 AI 消息，展示引用面板
+    const lastCitationMsg = [...messages.value]
+      .reverse()
+      .find((m) => m.citations && m.citations.length > 0);
+    if (lastCitationMsg?.citations) {
+      agentStore.setCitations(lastCitationMsg.citations);
+    } else {
+      agentStore.setCitations([]);
+    }
   }
 
   async function removeSession(sessionId: string) {
@@ -221,6 +236,10 @@ export const useChatStore = defineStore('chat', () => {
     agentStore.setCitations(citationsList);
   }
 
+  function appendCitations(newDocs: Citation[]) {
+    agentStore.appendCitations(newDocs);
+  }
+
   return {
     // session state
     sessions,
@@ -242,11 +261,15 @@ export const useChatStore = defineStore('chat', () => {
     availableKbs,
     availableModels,
     enableWebSearch,
+    // citation actions
+    setCitations,
+    appendCitations,
     // agent state
     agentPhase,
     agentPhaseLabel,
     agentPhaseDetail,
     citations,
+    highlightedCitationIndex,
     agentWarnings,
     retrievalProgresses,
     aguiSteps,
@@ -284,6 +307,5 @@ export const useChatStore = defineStore('chat', () => {
     upsertStep,
     upsertToolCall,
     addCitation,
-    setCitations,
   };
 });

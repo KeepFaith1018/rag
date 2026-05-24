@@ -24,6 +24,8 @@ export interface RunStartedEvent extends BaseEvent {
 export interface RunFinishedEvent extends BaseEvent {
   type: 'RUN_FINISHED';
   runId: string;
+  /** RAG 模式下的引用来源列表（DB 解析后） */
+  citations?: CitationData[];
 }
 
 export interface RunErrorEvent extends BaseEvent {
@@ -109,6 +111,21 @@ export interface ValidationCompletedEvent extends BaseEvent {
   factCheckRisk?: 'low' | 'medium' | 'high';
   completenessCoverage?: number;
   supplementAdded: boolean;
+}
+
+// ── 引用数据 ──
+
+export interface CitationData {
+  index: number;
+  kbId: string;
+  kbName: string;
+  docId: string;
+  docTitle: string;
+  chunkId: string;
+  quote: string;
+  score: number;
+  fileType?: string;
+  fileName?: string;
 }
 
 /** 所有 AG-UI 事件联合类型 */

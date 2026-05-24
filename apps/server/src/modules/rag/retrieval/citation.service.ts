@@ -19,6 +19,8 @@ export interface CitationRecord {
   chunkId: string;
   quote: string;
   score: number;
+  fileType?: string;
+  fileName?: string;
 }
 
 /**
@@ -51,7 +53,7 @@ export class CitationService {
         doc_id: parseBigInt(hit.docId),
         chunk_id: parseBigInt(hit.chunkId),
         score: hit.rerankScore,
-        quote: hit.content.slice(0, 200),
+        quote: hit.content.replace(/^\[文档段落路径:.*?\]\n?/, '').slice(0, 200),
         order_no: index,
       }));
 
@@ -70,7 +72,7 @@ export class CitationService {
         }),
         this.prisma.b_documents.findMany({
           where: { id: { in: docIds.map((id) => parseBigInt(id)) } },
-          select: { id: true, title: true },
+          select: { id: true, title: true, file_type: true, original_filename: true },
         }),
       ]);
 
@@ -80,6 +82,12 @@ export class CitationService {
       const docTitleMap = new Map(
         docList.map((doc) => [String(doc.id), doc.title]),
       );
+      const docFileTypeMap = new Map(
+        docList.map((doc) => [String(doc.id), doc.file_type]),
+      );
+      const docFileNameMap = new Map(
+        docList.map((doc) => [String(doc.id), doc.original_filename]),
+      );
 
       return hits.map((hit, index) => ({
         citationId: `${messageId}-${index}`,
@@ -88,8 +96,10 @@ export class CitationService {
         docId: hit.docId,
         docTitle: docTitleMap.get(hit.docId),
         chunkId: hit.chunkId,
-        quote: hit.content.slice(0, 200),
+        quote: hit.content.replace(/^\[文档段落路径:.*?\]\n?/, '').slice(0, 200),
         score: hit.rerankScore,
+        fileType: docFileTypeMap.get(hit.docId) ?? undefined,
+        fileName: docFileNameMap.get(hit.docId) ?? undefined,
       }));
     } catch (error) {
       throw wrapBusinessException(error, ErrorCode.CITATION_BUILD_FAILED, {

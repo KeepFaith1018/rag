@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
+import type { Prisma } from '@prisma-client';
 import {
   wrapBusinessException,
 } from '@common/exception/businessException';
@@ -104,18 +105,23 @@ export class ChatMessageService {
       content: string;
       tokensUsed?: number;
       finishReason?: string;
+      references?: unknown;
     },
   ) {
     try {
+      const updateData: Record<string, unknown> = {
+        content: data.content,
+        tokens_used: data.tokensUsed ?? 0,
+        finish_reason: data.finishReason ?? 'stop',
+        message_status: 'completed',
+        stream_finished_at: new Date(),
+      };
+      if (data.references !== undefined) {
+        updateData.references = data.references;
+      }
       await this.prisma.b_chat_messages.update({
         where: { id: messageId },
-        data: {
-          content: data.content,
-          tokens_used: data.tokensUsed ?? 0,
-          finish_reason: data.finishReason ?? 'stop',
-          message_status: 'completed',
-          stream_finished_at: new Date(),
-        },
+        data: updateData as Prisma.b_chat_messagesUpdateInput,
       });
     } catch (error) {
       throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {

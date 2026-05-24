@@ -3,7 +3,7 @@
  */
 
 import type { ParsedBlock } from '@incremark/core'
-import type { AguiStepRecord, AguiToolCallRecord } from './stream';
+import type { AguiStepRecord, AguiToolCallRecord, Citation } from './stream';
 
 /** 可渲染的块类型（兼容 DisplayBlock 的 displayNode 字段） */
 export interface RenderableBlock {
@@ -58,6 +58,10 @@ export interface ChatMessageItem {
   aguiToolCalls?: AguiToolCallRecord[];
   /** 增量 Markdown 解析块（Incremark AST），支持 ParsedBlock 和 DisplayBlock */
   blocks?: ParsedBlock[] | RenderableBlock[]
+  /** RAG 模式引用来源列表 */
+  citations?: Citation[]
+  /** 后端 b_chat_messages.references JSON 字段 */
+  references?: Citation[]
 }
 
 /** 消息状态 */
