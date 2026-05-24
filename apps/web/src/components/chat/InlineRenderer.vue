@@ -12,19 +12,19 @@ defineProps<{
       {{ (child as { value: string }).value }}
     </template>
 
-    <strong v-else-if="child.type === 'strong'">
+    <strong v-else-if="child.type === 'strong'" class="font-semibold text-on-surface">
       <InlineRenderer :children="(child as { children: RootContent[] }).children" />
     </strong>
 
-    <em v-else-if="child.type === 'emphasis'">
+    <em v-else-if="child.type === 'emphasis'" class="italic">
       <InlineRenderer :children="(child as { children: RootContent[] }).children" />
     </em>
 
-    <del v-else-if="child.type === 'delete'">
+    <del v-else-if="child.type === 'delete'" class="line-through text-on-surface-variant">
       <InlineRenderer :children="(child as { children: RootContent[] }).children" />
     </del>
 
-    <code v-else-if="child.type === 'inlineCode'">
+    <code v-else-if="child.type === 'inlineCode'" class="px-1.5 py-0.5 rounded text-[0.85em] font-mono bg-surface-container-high text-on-surface">
       {{ (child as { value: string }).value }}
     </code>
 
@@ -44,7 +44,7 @@ defineProps<{
       :src="(child as { url: string }).url"
       :alt="(child as { alt?: string }).alt || ''"
       :title="(child as { title?: string }).title"
-      class="rounded max-w-full"
+      class="rounded max-w-full my-2"
     />
 
     <br v-else-if="child.type === 'break'" />

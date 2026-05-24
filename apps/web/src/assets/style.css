@@ -47,6 +47,8 @@
 
 @layer base {
   :root {
+    color-scheme: light;
+
     /* --- Light Mode Variables (Extracted from KnowledgeHub UI) --- */
     --color-surface: #f9f9fa;
     --color-surface-container-lowest: #ffffff;
@@ -84,6 +86,8 @@
   }
 
   .dark {
+    color-scheme: dark;
+
     /* --- Dark Mode Variables (Extracted from UI & Adjusted for Contrast) --- */
     --color-surface: #09090b; /* 主背景 */
     --color-surface-container-lowest: #050505; /* 极其微弱的亮 */
