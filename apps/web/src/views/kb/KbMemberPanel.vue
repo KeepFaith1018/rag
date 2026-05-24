@@ -2,24 +2,109 @@
 /**
  * 成员面板 — 成员列表 + 邀请码管理
  */
-import type { KnowledgeBaseMemberItem, KnowledgeBaseInvitationItem } from "@/types/knowledge-base";
+import { ref } from 'vue'
+import type { KnowledgeBaseMemberItem, KnowledgeBaseInvitationItem, KnowledgeBaseMemberRole } from "@/types/knowledge-base";
 
 defineProps<{
-  /** 成员列表 */
   members: KnowledgeBaseMemberItem[];
-  /** 成员总数 */
   memberCount: number;
-  /** 有效邀请码列表 */
   invitations: KnowledgeBaseInvitationItem[];
-  /** 错误信息 */
   error: string;
-  /** 当前用户是否有管理权限 */
   canManage: boolean;
 }>();
+
+const emit = defineEmits<{
+  reload: [];
+  createInvitation: [role: KnowledgeBaseMemberRole];
+  copyInviteCode: [code: string];
+  cancelInvitation: [inv: KnowledgeBaseInvitationItem];
+  removeMember: [member: KnowledgeBaseMemberItem];
+  updateRole: [member: KnowledgeBaseMemberItem, role: KnowledgeBaseMemberRole];
+}>();
+
+const showInviteModal = ref(false);
+const selectedRole = ref<KnowledgeBaseMemberRole>('member');
+
+const roleOptions: Array<{
+  value: KnowledgeBaseMemberRole;
+  label: string;
+  icon: string;
+  desc: string;
+}> = [
+  { value: 'manager', label: '管理员', icon: 'manage_accounts', desc: '可管理设置与成员' },
+  { value: 'collaborator', label: '协作者', icon: 'edit', desc: '可上传及管理文档' },
+  { value: 'member', label: '成员', icon: 'person', desc: '可查看与提问' },
+];
+
+function openInviteModal() {
+  selectedRole.value = 'member';
+  showInviteModal.value = true;
+}
+
+function confirmCreateInvitation() {
+  emit('createInvitation', selectedRole.value);
+  showInviteModal.value = false;
+}
 </script>
 
 <template>
   <div class="flex flex-col gap-6">
+    <!-- 邀请码创建弹窗 -->
+    <div
+      v-if="showInviteModal"
+      class="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm flex items-center justify-center px-4"
+    >
+      <div
+        class="w-full max-w-lg rounded-[20px] border border-outline-variant/10 bg-surface-container-low shadow-[0_28px_120px_rgba(0,0,0,0.35)]"
+      >
+        <div class="px-6 py-5 border-b border-outline-variant/10">
+          <div class="flex items-center justify-between gap-4">
+            <h3 class="font-headline text-lg font-bold">创建邀请码</h3>
+            <button
+              type="button"
+              class="w-8 h-8 rounded-xl hover:bg-surface-container-high transition-colors flex items-center justify-center text-on-surface-variant"
+              @click="showInviteModal = false"
+            >
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="px-6 py-5 space-y-5">
+          <div>
+            <label class="text-[13px] font-medium text-on-surface-variant mb-3 block">选择成员角色</label>
+            <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <button
+                v-for="role in roleOptions"
+                :key="role.value"
+                type="button"
+                class="flex flex-col items-center gap-2 p-4 rounded-xl border transition-all"
+                :class="selectedRole === role.value
+                  ? 'border-primary bg-primary/10 text-primary'
+                  : 'border-outline-variant/15 text-on-surface-variant hover:border-outline-variant/30'"
+                @click="selectedRole = role.value"
+              >
+                <span class="material-symbols-outlined text-2xl">{{ role.icon }}</span>
+                <span class="text-sm font-medium">{{ role.label }}</span>
+                <span class="text-[10px] text-outline text-center">{{ role.desc }}</span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="px-6 py-5 border-t border-outline-variant/10 flex items-center justify-end gap-3">
+          <button
+            class="px-4 py-2 rounded-lg text-sm text-outline hover:bg-surface-container-high transition-colors"
+            @click="showInviteModal = false"
+          >取消</button>
+          <button
+            class="px-4 py-2 rounded-lg text-sm font-medium bg-primary-container text-on-primary-container hover:brightness-110 transition-all"
+            @click="confirmCreateInvitation"
+          >生成邀请码</button>
+        </div>
+      </div>
+    </div>
+
     <!-- 成员管理区域 -->
     <div v-if="canManage" class="bg-surface-container-low rounded-xl overflow-hidden shadow-lg border border-outline-variant/5">
       <div class="px-6 py-4 flex items-center justify-between border-b border-outline-variant/5 bg-surface-container-high/30">
@@ -42,10 +127,24 @@ defineProps<{
               </div>
               <div>
                 <span class="text-sm font-medium">{{ member.fullName }}</span>
-                <span class="text-xs text-outline ml-2">{{ member.email }} · {{ member.role === 'owner' ? '拥有者' : member.role === 'manager' ? '管理员' : member.role === 'collaborator' ? '协作者' : '成员' }}</span>
+                <span class="text-xs text-outline ml-2">{{ member.email }}</span>
               </div>
             </div>
-            <button v-if="member.role !== 'owner'" class="text-xs text-error hover:underline" @click="$emit('removeMember', member)">移除</button>
+            <div class="flex items-center gap-2">
+              <!-- 角色切换 -->
+              <select
+                v-if="member.role !== 'owner'"
+                :value="member.role"
+                class="text-xs bg-surface-container-highest border border-outline-variant/15 rounded-lg px-2 py-1 text-on-surface focus:outline-none focus:border-primary"
+                @change="$emit('updateRole', member, ($event.target as HTMLSelectElement).value as KnowledgeBaseMemberRole)"
+              >
+                <option value="manager">管理员</option>
+                <option value="collaborator">协作者</option>
+                <option value="member">成员</option>
+              </select>
+              <span v-else class="text-xs text-outline bg-surface-container-high px-2 py-1 rounded-lg">拥有者</span>
+              <button v-if="member.role !== 'owner'" class="text-xs text-error hover:underline" @click="$emit('removeMember', member)">移除</button>
+            </div>
           </div>
         </template>
         <div v-else class="text-sm text-outline py-4">当前没有额外成员。</div>
@@ -55,7 +154,7 @@ defineProps<{
       <div class="px-6 py-4 border-t border-outline-variant/5">
         <div class="flex items-center justify-between mb-4">
           <div class="text-sm font-semibold">有效邀请码</div>
-          <button class="btn-primary-sm" @click="$emit('createInvitation')">创建邀请码</button>
+          <button class="btn-primary-sm" @click="openInviteModal">创建邀请码</button>
         </div>
         <template v-if="invitations.length">
           <div v-for="inv in invitations" :key="inv.id" class="flex items-center justify-between py-2 border-b border-outline-variant/5 last:border-0">

@@ -168,7 +168,7 @@ export class ChatStreamService {
 
           return {
             citations: citationRecords.map((c) => ({
-              index: (citationRecords.indexOf(c) + 1),
+              index: c.index,
               citationId: c.citationId,
               kbId: c.kbId,
               kbName: c.kbName ?? '',

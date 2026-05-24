@@ -1,10 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, watch } from 'vue'
 import { apiRequestBlob } from '@/api/api'
+import { createIncremarkParser } from '@incremark/core'
+import type { ParsedBlock } from '@incremark/core'
 import MarkdownRenderer from '@/components/chat/MarkdownRenderer.vue'
-import { marked } from 'marked'
 
-marked.setOptions({ breaks: true, gfm: true })
+/** 模块级 Incremark 解析器单例 */
+const mdParser = createIncremarkParser({ gfm: true })
 
 const props = defineProps<{
   open: boolean
@@ -19,7 +21,7 @@ const emit = defineEmits<{
 }>()
 
 const textContent = ref<string | null>(null)
-const mdBlocks = ref<any[] | null>(null)
+const blocks = ref<ParsedBlock[] | null>(null)
 const previewBlobUrl = ref<string | null>(null)
 const loading = ref(true)
 const error = ref('')
@@ -45,9 +47,8 @@ function cleanup() {
     previewBlobUrl.value = null
   }
   textContent.value = null
-  mdBlocks.value = null
+  blocks.value = null
   error.value = ''
-  loading.value = true
 }
 
 async function loadContent() {
@@ -62,8 +63,8 @@ async function loadContent() {
     } else if (isText.value) {
       const raw = await blob.text()
       if (isMd.value) {
-        const html = marked.parse(raw, { async: false }) as string
-        mdBlocks.value = [{ id: 'preview-md', node: { type: 'html', value: html } }]
+        mdParser.render(raw)
+        blocks.value = mdParser.getCompletedBlocks()
       } else {
         textContent.value = raw
       }
@@ -85,7 +86,7 @@ watch(() => props.open, async (val) => {
     previewBlobUrl.value = null
   }
   textContent.value = null
-  mdBlocks.value = null
+  blocks.value = null
   loadContent()
 }, { immediate: true })
 
@@ -99,7 +100,7 @@ watch(() => props.documentId, () => {
       previewBlobUrl.value = null
     }
     textContent.value = null
-    mdBlocks.value = null
+    blocks.value = null
     loadContent()
   }
 })
@@ -185,9 +186,9 @@ function handleClose() {
           />
 
           <!-- Markdown 预览 -->
-          <div v-else-if="isMd && mdBlocks" class="h-full overflow-auto">
-            <div class="max-w-3xl mx-auto px-8 py-6">
-              <MarkdownRenderer :blocks="mdBlocks" />
+          <div v-else-if="isMd && blocks" class="h-full overflow-auto">
+            <div class="max-w-5xl mx-auto px-8 py-6">
+              <MarkdownRenderer :blocks="blocks" />
             </div>
           </div>
 

@@ -50,7 +50,7 @@ function handleRetry(messageId: string | number) {
 <template>
   <section
     ref="containerRef"
-    class="message-stream py-4 space-y-4 w-full"
+    class="message-stream flex-1 min-h-0 flex flex-col py-4 space-y-4 w-full"
   >
     <template v-if="messages.length > 0">
       <template
@@ -74,7 +74,7 @@ function handleRetry(messageId: string | number) {
     <!-- 空状态 -->
     <div
       v-else
-      class="flex flex-col items-center justify-center h-64 text-center space-y-4"
+      class="flex-1 flex flex-col items-center justify-center text-center space-y-4"
     >
       <div class="w-16 h-16 rounded-2xl bg-surface-container-low flex items-center justify-center">
         <span class="material-symbols-outlined text-4xl text-primary">chat</span>

@@ -3,10 +3,12 @@ import { computed, ref } from 'vue'
 import { createIncremarkParser } from '@incremark/core'
 import type { ParsedBlock } from '@incremark/core'
 import type { ChatMessageItem } from '@/modules/chat/types/chat'
+import type { Citation } from '@/modules/chat/types/stream'
 import { useChatStore } from '@/stores/chat'
 import { useMessage } from '@/composables/useMessage'
 import MarkdownRenderer from '@/components/chat/MarkdownRenderer.vue'
 import ChatAgentPanel from '@/components/chat/ChatAgentPanel.vue'
+import DocumentPreviewModal from '@/components/document/DocumentPreviewModal.vue'
 
 /** 模块级 Incremark 解析器单例，用于历史消息一次性 Markdown 解析 */
 const mdParser = createIncremarkParser({ gfm: true })
@@ -32,6 +34,77 @@ const emit = defineEmits<{
 const chatStore = useChatStore()
 const messageToast = useMessage()
 const copied = ref(false)
+const citationsExpanded = ref(false)
+const previewOpen = ref(false)
+const previewDoc = ref<{
+  kbId: string
+  documentId: string
+  fileName: string
+  fileType: string
+} | null>(null)
+
+/** 按知识库 → 文档分组 */
+const citationGroups = computed(() => {
+  const map = new Map<string, {
+    kbName: string
+    kbId: string
+    docId: string
+    docTitle: string
+    fileType?: string
+    fileName?: string
+    chunks: Citation[]
+  }>()
+
+  for (const c of chatStore.citations) {
+    const key = `${c.kbId}:${c.docId}`
+    if (!map.has(key)) {
+      map.set(key, {
+        kbName: c.kbName || `知识库 #${c.kbId.slice(0, 8)}`,
+        kbId: c.kbId,
+        docId: c.docId,
+        docTitle: c.docTitle,
+        fileType: c.fileType,
+        fileName: c.fileName,
+        chunks: [],
+      })
+    }
+    // 同文档内按 chunkId 去重，保留首次出现的 index
+    const group = map.get(key)!
+    if (!group.chunks.some((existing) => existing.chunkId === c.chunkId)) {
+      group.chunks.push(c)
+    }
+  }
+  return [...map.values()]
+})
+
+function viewSource(doc: CitationGroup) {
+  previewDoc.value = {
+    kbId: doc.kbId,
+    documentId: doc.docId,
+    fileName: doc.fileName || doc.docTitle || '未知文档',
+    fileType: doc.fileType || '',
+  }
+  previewOpen.value = true
+}
+
+function scrollToCitation(index: number) {
+  chatStore.highlightedCitationIndex = index
+  setTimeout(() => {
+    if (chatStore.highlightedCitationIndex === index) {
+      chatStore.highlightedCitationIndex = null
+    }
+  }, 3000)
+}
+
+type CitationGroup = {
+  kbName: string
+  kbId: string
+  docId: string
+  docTitle: string
+  fileType?: string
+  fileName?: string
+  chunks: Citation[]
+}
 
 const isStreaming = computed(() =>
   props.message.messageStatus === 'streaming',
@@ -130,13 +203,66 @@ function handleRetry() {
       <!-- 错误 -->
       <div v-if="isError" class="text-xs text-error mt-2">生成失败，请重试</div>
 
-      <!-- 完成后的脚注 -->
+      <!-- 完成后的引用脚注（可折叠） -->
       <div
         v-if="!isStreaming && hasContent && isRagMode && chatStore.citations.length > 0"
-        class="flex items-center gap-2 mt-2 text-xs text-outline/50"
+        class="mt-3"
       >
-        <span class="material-symbols-outlined text-[14px]">menu_book</span>
-        <span>参考 {{ chatStore.citations.length }} 条知识库内容</span>
+        <button
+          class="flex items-center gap-2 text-xs text-outline hover:text-on-surface transition-colors group"
+          @click="citationsExpanded = !citationsExpanded"
+        >
+          <span class="material-symbols-outlined text-[14px] transition-transform" :class="citationsExpanded ? 'rotate-90' : ''">chevron_right</span>
+          <span class="material-symbols-outlined text-[14px]">menu_book</span>
+          <span>参考 {{ chatStore.citations.length }} 条知识库内容</span>
+        </button>
+
+        <!-- 引用列表 -->
+        <div v-if="citationsExpanded" class="mt-3 space-y-2">
+          <div
+            v-for="doc in citationGroups"
+            :key="`${doc.kbId}:${doc.docId}`"
+            class="p-3 bg-surface-container-low rounded-lg border border-outline-variant/10"
+          >
+            <div class="flex items-start gap-2 mb-1.5">
+              <span
+                v-if="doc.chunks[0]"
+                class="inline-flex items-center justify-center w-5 h-5 rounded text-[10px] font-bold bg-primary/10 text-primary flex-shrink-0 mt-px"
+              >
+                {{ doc.chunks[0].index }}
+              </span>
+              <div class="min-w-0 flex-1">
+                <div class="flex items-center gap-2">
+                  <span class="text-xs font-medium text-on-surface line-clamp-1">{{ doc.docTitle }}</span>
+                  <span
+                    v-if="doc.fileType"
+                    class="text-[9px] text-outline bg-surface-container-high px-1 py-px rounded uppercase flex-shrink-0"
+                  >
+                    {{ doc.fileType }}
+                  </span>
+                </div>
+                <span class="text-[10px] text-outline">{{ doc.kbName }}</span>
+              </div>
+              <button
+                class="text-[10px] text-primary hover:underline flex-shrink-0 mt-0.5"
+                @click.stop="viewSource(doc)"
+              >
+                查看来源
+              </button>
+            </div>
+
+            <div
+              v-for="chunk in doc.chunks"
+              :key="chunk.citationId"
+              class="ml-7 mt-1.5 text-xs text-outline leading-relaxed cursor-pointer hover:text-on-surface-variant transition-colors truncate"
+              :class="{ 'text-primary': chatStore.highlightedCitationIndex === chunk.index }"
+              @click="scrollToCitation(chunk.index)"
+            >
+              <span class="text-[10px] font-bold text-primary/70 mr-1">[{{ chunk.index }}]</span>
+              {{ chunk.quote }}
+            </div>
+          </div>
+        </div>
       </div>
 
       <!-- 底部操作栏 -->
@@ -163,6 +289,17 @@ function handleRetry() {
       </div>
 
     </div>
+
+    <!-- 文档预览弹窗 -->
+    <DocumentPreviewModal
+      v-if="previewDoc"
+      :open="previewOpen"
+      :kb-id="previewDoc.kbId"
+      :document-id="previewDoc.documentId"
+      :file-name="previewDoc.fileName"
+      :file-type="previewDoc.fileType"
+      @close="previewOpen = false; previewDoc = null"
+    />
   </div>
 </template>
 
@@ -198,5 +335,12 @@ function handleRetry() {
     opacity: 1;
     transform: translateX(0);
   }
+}
+
+.line-clamp-1 {
+  display: -webkit-box;
+  -webkit-line-clamp: 1;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
 }
 </style>

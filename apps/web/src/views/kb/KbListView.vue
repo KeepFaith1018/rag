@@ -576,12 +576,12 @@ onMounted(() => {
             <p
               class="font-headline text-lg font-medium text-outline group-hover:text-on-surface transition-colors"
             >
-              初始化新核心
+              初始化新知识库
             </p>
             <p
               class="text-[10px] font-label text-outline/60 uppercase tracking-widest mt-2"
             >
-              准备部署
+              准备构建
             </p>
           </div>
         </div>

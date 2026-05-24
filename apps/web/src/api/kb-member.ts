@@ -76,3 +76,18 @@ export function removeKnowledgeBaseMember(kbId: string, memberUserId: string) {
     method: "DELETE",
   });
 }
+
+/**
+ * 更新成员角色。
+ */
+export function updateKnowledgeBaseMemberRole(
+  kbId: string,
+  memberUserId: string,
+  role: string,
+) {
+  return apiRequest<{ kbId: string; memberUserId: string; role: string; updated: boolean }>({
+    url: `/knowledge-bases/${kbId}/members/${memberUserId}`,
+    method: "PATCH",
+    body: { role },
+  });
+}

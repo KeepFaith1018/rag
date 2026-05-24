@@ -1,10 +1,9 @@
 <script setup lang="ts">
-import { onMounted, computed } from 'vue';
+import { onMounted } from 'vue';
 import ChatStatusBanner from '@/components/chat/ChatStatusBanner.vue';
 import ChatTopNavBar from '@/components/layout/ChatTopNavBar.vue';
 import ChatStream from '@/components/chat/ChatStream.vue';
 import ChatInputArea from '@/components/chat/ChatInputArea.vue';
-import ChatCitationPanel from '@/components/chat/ChatCitationPanel.vue';
 import { useChatStore } from '@/stores/chat';
 import { useAgentChat } from '@/modules/chat/composables/useAgentChat';
 import { listAvailableKbs, listAvailableModels } from '@/api/chat';
@@ -14,9 +13,6 @@ import { useMessage } from '@/composables/useMessage';
 const chatStore = useChatStore();
 const { sendMessage, abort, isStreaming } = useAgentChat();
 const message = useMessage();
-
-// 是否显示引用面板
-const showCitationPanel = computed(() => chatStore.hasCitations);
 
 // 加载可选知识库和模型
 onMounted(async () => {
@@ -103,33 +99,27 @@ async function handleRetry(messageId: string | number) {
     <!-- 警告横幅 -->
     <ChatStatusBanner v-if="chatStore.hasWarnings" />
 
-    <!-- 主内容区：消息流 + 引用面板（水平排列） -->
-    <div class="flex-1 overflow-hidden flex">
-      <!-- 消息流区域 -->
-      <div class="flex-1 overflow-hidden flex flex-col">
-        <div class="flex-1 overflow-y-auto">
-          <div class="max-w-4xl mx-auto px-4 md:px-6">
-            <ChatStream :messages="chatStore.messages" :is-agent-working="isStreaming" @retry="handleRetry" />
-          </div>
-        </div>
-
-        <!-- 输入区 -->
-        <div class="shrink-0 border-t border-outline-variant/10 bg-surface/80 backdrop-blur-xl">
-          <div class="max-w-4xl mx-auto px-4 md:px-6 py-3">
-            <ChatInputArea
-              :is-streaming="isStreaming"
-              @send="handleSendMessage"
-              @cancel="handleCancel"
-            />
-            <p class="text-center text-[10px] text-outline/50 mt-2">
-              Linsor AI 可能产生不准确答案，请核实关键信息
-            </p>
-          </div>
+    <!-- 主内容区 -->
+    <div class="flex-1 overflow-hidden flex flex-col">
+      <div class="flex-1 overflow-y-auto flex flex-col">
+        <div class="max-w-5xl mx-auto px-4 md:px-6 flex-1 flex flex-col w-full">
+          <ChatStream :messages="chatStore.messages" :is-agent-working="isStreaming" @retry="handleRetry" />
         </div>
       </div>
 
-      <!-- 引用面板（右侧边栏） -->
-      <ChatCitationPanel v-if="showCitationPanel" />
+      <!-- 输入区 -->
+      <div class="shrink-0 border-t border-outline-variant/10 bg-surface/80 backdrop-blur-xl">
+        <div class="max-w-5xl mx-auto px-4 md:px-6 py-3">
+          <ChatInputArea
+            :is-streaming="isStreaming"
+            @send="handleSendMessage"
+            @cancel="handleCancel"
+          />
+          <p class="text-center text-[10px] text-outline/50 mt-2">
+            Linsor AI 可能产生不准确答案，请核实关键信息
+          </p>
+        </div>
+      </div>
     </div>
   </div>
 </template>

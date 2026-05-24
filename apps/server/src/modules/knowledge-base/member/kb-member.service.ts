@@ -11,6 +11,7 @@ import { KbPermissionService } from '../permission/kb-permission.service';
 import { KnowledgeBaseMemberRole } from '../interfaces/knowledge-base-access.interface';
 import { CreateKbInvitationDto } from './dto/create-kb-invitation.dto';
 import { JoinKbDto } from './dto/join-kb.dto';
+import { UpdateKbMemberDto } from './dto/update-kb-member.dto';
 
 type InvitationStatus = 'active' | 'used' | 'expired' | 'cancelled';
 
@@ -552,6 +553,67 @@ export class KbMemberService {
           userId,
           kbId,
           memberUserId,
+        },
+      });
+    }
+  }
+
+  /**
+   * 更新成员角色，仅 owner / manager 可操作，禁止修改 owner 自身。
+   */
+  async updateMember(
+    userId: number,
+    kbId: string,
+    memberUserId: string,
+    dto: UpdateKbMemberDto,
+  ) {
+    try {
+      const targetUserId = this.parseBigIntId(memberUserId, '成员用户 ID');
+      const knowledgeBase =
+        await this.kbPermissionService.getKnowledgeBasePermissionSubject(kbId);
+
+      this.ensureSharedKnowledgeBase(knowledgeBase.visibility);
+
+      if (knowledgeBase.owner_id === targetUserId) {
+        throw new BusinessException(
+          ErrorCode.KNOWLEDGE_MEMBER_REMOVE_OWNER_FORBIDDEN,
+          '不能修改知识库所有者的角色',
+        );
+      }
+
+      const member = await this.prisma.b_kb_members.findUnique({
+        where: {
+          kb_id_user_id: {
+            kb_id: knowledgeBase.id,
+            user_id: targetUserId,
+          },
+        },
+      });
+
+      if (!member) {
+        throw new BusinessException(ErrorCode.KNOWLEDGE_NOT_JOINED);
+      }
+
+      await this.prisma.b_kb_members.update({
+        where: { id: member.id },
+        data: { role: dto.role },
+      });
+
+      return {
+        kbId,
+        memberUserId,
+        role: dto.role,
+        updated: true,
+      };
+    } catch (error) {
+      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+        context: {
+          module: 'KbMemberService',
+          action: 'updateMember',
+          userId,
+          kbId,
+          memberUserId,
+          role: dto.role,
         },
       });
     }

@@ -2,45 +2,95 @@
 /**
  * 文档面板 — 纯展示组件，所有逻辑由父组件 KbDetailView 提供。
  */
+import { ref } from 'vue'
 import type { KnowledgeBaseDocumentItem, KnowledgeBaseDocumentStatus } from "@/types/knowledge-base";
 
+const DOC_STATUS_ZH: Record<string, string> = {
+  pending: '等待中',
+  uploaded: '已上传',
+  queued: '排队中',
+  parsing: '解析中',
+  chunking: '切块中',
+  embedding: '向量化',
+  ready: '已就绪',
+  failed: '失败',
+};
+
+function statusLabel(status: string) {
+  return DOC_STATUS_ZH[status] ?? status;
+}
+
 defineProps<{
-  /** 是否允许上传 */
   canUpload: boolean;
-  /** 文档列表 */
   documents: KnowledgeBaseDocumentItem[];
-  /** 文档总数 */
   totalCount: number;
-  /** 当前筛选状态 */
   activeStatus: KnowledgeBaseDocumentStatus | "all";
-  /** 是否正在上传 */
   isUploading: boolean;
-  /** 上传进度百分比 */
   uploadProgress: number;
-  /** 上传文件名 */
   uploadFileName: string;
-  /** 上传状态文本 */
   uploadStatusText: string;
-  /** 上传会话 ID */
   uploadId: string | null;
-  /** 知识库权限信息 */
   kbPermissions: Record<string, boolean>;
 }>();
+
+const emit = defineEmits<{
+  openFilePicker: [];
+  cancelUpload: [];
+  setStatus: [status: KnowledgeBaseDocumentStatus | 'all'];
+  'update:searchKeyword': [value: string];
+  previewDocument: [doc: KnowledgeBaseDocumentItem];
+  downloadDocument: [doc: KnowledgeBaseDocumentItem];
+  reparseDocument: [doc: KnowledgeBaseDocumentItem];
+  removeDocument: [doc: KnowledgeBaseDocumentItem];
+  dropFile: [files: FileList];
+}>();
+
+const isDragOver = ref(false);
+
+function onDragOver(e: DragEvent) {
+  e.preventDefault();
+  if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+}
+
+function onDragEnter(e: DragEvent) {
+  e.preventDefault();
+  isDragOver.value = true;
+}
+
+function onDragLeave(e: DragEvent) {
+  // 仅当离开容器本身时取消高亮
+  if ((e.currentTarget as HTMLElement)?.contains(e.relatedTarget as Node)) return;
+  isDragOver.value = false;
+}
+
+function onDrop(e: DragEvent) {
+  e.preventDefault();
+  isDragOver.value = false;
+  if (e.dataTransfer?.files?.length) emit('dropFile', e.dataTransfer.files);
+}
 </script>
 
 <template>
   <div class="flex flex-col gap-6">
     <!-- 上传区域 -->
     <div
-      class="bg-surface-container-low p-8 rounded-xl border border-dashed border-outline-variant/20 flex flex-col items-center justify-center group transition-all shadow-md"
-      :class="canUpload ? 'hover:border-primary/40 cursor-pointer' : 'opacity-80 cursor-not-allowed'"
+      class="bg-surface-container-low p-8 rounded-xl border border-dashed border-outline-variant/20 flex flex-col items-center justify-center group transition-all shadow-md relative"
+      :class="{
+        'hover:border-primary/40 cursor-pointer': canUpload,
+        'opacity-80 cursor-not-allowed': !canUpload,
+        '!border-primary !bg-primary/5': isDragOver && canUpload,
+      }"
       @click="$emit('openFilePicker')"
+      @dragover="onDragOver"
+      @dragenter="onDragEnter"
+      @dragleave="onDragLeave"
+      @drop="onDrop"
     >
       <div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4 transition-transform shadow-inner" :class="canUpload ? 'group-hover:scale-110' : ''">
         <span class="material-symbols-outlined text-3xl text-primary drop-shadow-[0_0_8px_rgba(195,192,255,0.5)]">cloud_upload</span>
       </div>
       <h3 class="font-headline text-lg font-bold mb-1">{{ canUpload ? "上传知识资产" : "当前角色无上传权限" }}</h3>
-      <p class="text-on-surface-variant text-sm mb-6 text-center">{{ canUpload ? uploadStatusText : "你可以浏览文档列表，但上传入口仅对有权限的角色开放。" }}</p>
+      <p class="text-on-surface-variant text-sm mb-6 text-center">{{ canUpload ? uploadStatusText : "" }}</p>
       <div v-if="isUploading || uploadProgress > 0" class="w-full max-w-xl mb-6">
         <div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden shadow-inner">
           <div class="bg-primary h-full rounded-full transition-all duration-300" :style="{ width: `${uploadProgress}%` }" />
@@ -80,7 +130,7 @@ defineProps<{
             <div class="flex-1 min-w-0">
               <div class="flex flex-wrap items-center gap-2 mb-2">
                 <span class="font-semibold text-sm truncate">{{ doc.title }}</span>
-                <span class="status-badge" :class="doc.status === 'ready' ? 'status-badge-ready' : doc.status === 'failed' ? 'status-badge-error' : ''">{{ doc.status }}</span>
+                <span class="status-badge" :class="doc.status === 'ready' ? 'status-badge-ready' : doc.status === 'failed' ? 'status-badge-error' : ''">{{ statusLabel(doc.status) }}</span>
               </div>
               <p class="text-xs text-on-surface-variant truncate">原文件：{{ doc.originalFilename }}</p>
               <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-on-surface-variant">

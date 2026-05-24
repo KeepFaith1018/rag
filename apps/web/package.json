@@ -13,7 +13,6 @@
     "@shikijs/langs": "^4.0.2",
     "@shikijs/themes": "^4.0.2",
     "@vueuse/core": "^14.2.1",
-    "marked": "^18.0.2",
     "material-symbols": "^0.44.4",
     "pinia": "^3.0.4",
     "shiki": "^4.0.2",

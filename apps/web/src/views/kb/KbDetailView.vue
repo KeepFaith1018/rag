@@ -37,7 +37,7 @@ const previewDoc = ref<KnowledgeBaseDocumentItem | null>(null);
 
 const documentView = useKnowledgeBaseDetail();
 const memberView = useKbMembers();
-const { state, isUploading, startUpload, cancel } = useChunkUpload();
+const { state, isUploading, startUpload, cancel, resetState } = useChunkUpload();
 
 const settingsForm = reactive({
   name: "",
@@ -115,6 +115,36 @@ function goBack() { router.back(); }
 
 // ── 文档操作 ──
 
+const SUPPORTED_EXTENSIONS = ['.pdf', '.doc', '.docx', '.txt', '.md'] as const;
+
+function validateFileType(file: File): boolean {
+  const ext = '.' + (file.name.split('.').pop() || '').toLowerCase();
+  if (!(SUPPORTED_EXTENSIONS as readonly string[]).includes(ext)) {
+    message.warning(`不支持的文件类型（${ext}），仅支持 PDF、Word、TXT、Markdown`);
+    return false;
+  }
+  return true;
+}
+
+async function uploadFiles(files: File[]) {
+  if (!kbId.value) return;
+  const valid = files.filter((f) => validateFileType(f));
+  if (!valid.length) return;
+
+  let successCount = 0;
+  for (const file of valid) {
+    try {
+      await startUpload({ file, kbId: kbId.value });
+      successCount++;
+      resetState();
+    } catch { /* handled by store */ }
+  }
+  if (successCount > 0) {
+    message.success(`${successCount} 个文档上传成功，已进入处理流水线`);
+    void reloadDocuments();
+  }
+}
+
 function openFilePicker() {
   if (!canUpload.value) return;
   fileInputRef.value?.click();
@@ -122,14 +152,15 @@ function openFilePicker() {
 
 async function handleFileChange(event: Event) {
   const input = event.target as HTMLInputElement;
-  const file = input.files?.[0];
-  if (!file || !kbId.value) return;
-  try {
-    await startUpload({ file, kbId: kbId.value });
-    message.success("文档上传成功，已进入处理流水线");
-    void reloadDocuments();
-  } catch { /* handled by store */ }
-  finally { input.value = ""; }
+  const files = input.files ? [...input.files] : [];
+  input.value = '';
+  if (!files.length) return;
+  await uploadFiles(files);
+}
+
+function handleDropFile(files: FileList | File[]) {
+  if (!canUpload.value) return;
+  uploadFiles([...files]);
 }
 
 async function cancelCurrentUpload() {
@@ -197,10 +228,9 @@ async function reloadMembers() {
   }
 }
 
-async function createInvitation() {
+async function createInvitation(role: KnowledgeBaseMemberRole) {
   memberError.value = "";
   try {
-    const role = "member" as KnowledgeBaseMemberRole;
     const invitation = await memberView.createInvitation(kbId.value, { role, expiredInHours: 72 });
     await navigator.clipboard?.writeText(invitation.inviteCode);
     message.success("邀请码已生成并复制到剪贴板");
@@ -235,6 +265,15 @@ async function removeMember(member: KnowledgeBaseMemberItem) {
     message.success("成员已移除");
   } catch (error) {
     memberError.value = resolveErrorMessage(error, "移除成员失败");
+  }
+}
+
+async function updateMemberRole(member: KnowledgeBaseMemberItem, role: KnowledgeBaseMemberRole) {
+  try {
+    await memberView.updateMemberRole(kbId.value, member.userId, role);
+    message.success("成员角色已更新");
+  } catch (error) {
+    memberError.value = resolveErrorMessage(error, "角色更新失败");
   }
 }
 
@@ -345,7 +384,7 @@ const uploadStatusText = computed(() => {
     <div class="flex-1 overflow-y-auto px-6 md:px-8 pb-12 pt-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div class="lg:col-span-8 flex flex-col gap-6">
-          <input ref="fileInputRef" type="file" class="hidden" accept=".pdf,.doc,.docx,.txt,.md" @change="handleFileChange" />
+          <input ref="fileInputRef" type="file" class="hidden" accept=".pdf,.doc,.docx,.txt,.md" multiple @change="handleFileChange" />
 
           <KbDocumentPanel
             v-if="activeTab === 'documents'"
@@ -367,6 +406,7 @@ const uploadStatusText = computed(() => {
             @download-document="downloadDocument"
             @reparse-document="reparseDocument"
             @remove-document="removeDocument"
+            @drop-file="handleDropFile"
           />
 
           <KbMemberPanel
@@ -381,6 +421,7 @@ const uploadStatusText = computed(() => {
             @copy-invite-code="copyInviteCode"
             @cancel-invitation="cancelInvitation"
             @remove-member="removeMember"
+            @update-role="updateMemberRole"
           />
 
           <KbSettingsPanel
@@ -421,6 +462,6 @@ const uploadStatusText = computed(() => {
     </div>
 
     <!-- 文档预览模态框 -->
-    <DocumentPreviewModal v-if="previewDoc" v-model:open="previewOpen" :kb-id="kbId" :document-id="previewDoc.id" :file-name="previewDoc.originalFilename || previewDoc.title" :file-type="previewDoc.fileType || ''" />
+    <DocumentPreviewModal v-if="previewDoc" :open="previewOpen" :kb-id="kbId" :document-id="previewDoc.id" :file-name="previewDoc.originalFilename || previewDoc.title" :file-type="previewDoc.fileType || ''" @close="previewOpen = false; previewDoc = null" />
   </div>
 </template>

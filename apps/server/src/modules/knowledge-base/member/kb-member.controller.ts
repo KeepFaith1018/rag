@@ -4,6 +4,7 @@ import {
   Delete,
   Get,
   Param,
+  Patch,
   Post,
   UseGuards,
 } from '@nestjs/common';
@@ -14,6 +15,7 @@ import { KbPermission } from '../permission/kb-permission.decorator';
 import { KbPermissionGuard } from '../permission/kb-permission.guard';
 import { CreateKbInvitationDto } from './dto/create-kb-invitation.dto';
 import { JoinKbDto } from './dto/join-kb.dto';
+import { UpdateKbMemberDto } from './dto/update-kb-member.dto';
 import { KbMemberService } from './kb-member.service';
 
 /**
@@ -92,6 +94,25 @@ export class KbMemberController {
     @Body() joinKbDto: JoinKbDto,
   ) {
     return this.kbMemberService.joinByInvite(Number(userId), joinKbDto);
+  }
+
+  /**
+   * 更新成员角色。
+   */
+  @Patch('knowledge-bases/:kbId/members/:memberUserId')
+  @KbPermission({ action: 'manageMembers' })
+  updateMember(
+    @CurrentUser('sub') userId: string,
+    @Param('kbId') kbId: string,
+    @Param('memberUserId') memberUserId: string,
+    @Body() dto: UpdateKbMemberDto,
+  ) {
+    return this.kbMemberService.updateMember(
+      Number(userId),
+      kbId,
+      memberUserId,
+      dto,
+    );
   }
 
   /**

@@ -18,7 +18,7 @@ const normalizedBlocks = computed(() =>
 </script>
 
 <template>
-  <div class="markdown-body max-w-none text-on-surface-variant text-sm leading-relaxed">
+  <div class="markdown-body max-w-none text-on-surface-variant text-base leading-relaxed">
     <template v-for="block in normalizedBlocks" :key="block.id">
       <!-- Heading -->
       <component

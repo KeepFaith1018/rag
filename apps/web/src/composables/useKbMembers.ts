@@ -5,6 +5,7 @@ import {
   listKnowledgeBaseInvitations,
   listKnowledgeBaseMembers,
   removeKnowledgeBaseMember,
+  updateKnowledgeBaseMemberRole,
 } from "@/api/kb-member";
 import type {
   CreateKnowledgeBaseInvitationPayload,
@@ -106,6 +107,25 @@ export function useKbMembers() {
     }
   }
 
+  /**
+   * 更新成员角色并刷新成员列表。
+   */
+  async function updateMemberRole(
+    kbId: string,
+    memberUserId: string,
+    role: string,
+  ) {
+    isSubmitting.value = true;
+
+    try {
+      const result = await updateKnowledgeBaseMemberRole(kbId, memberUserId, role);
+      await fetchMembers(kbId);
+      return result;
+    } finally {
+      isSubmitting.value = false;
+    }
+  }
+
   return {
     isLoading,
     isSubmitting,
@@ -117,5 +137,6 @@ export function useKbMembers() {
     createInvitation,
     cancelInvitation,
     removeMember,
+    updateMemberRole,
   };
 }

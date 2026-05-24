@@ -109,7 +109,10 @@ export const useChatStore = defineStore('chat', () => {
     // 解析历史消息中的引用数据
     for (const msg of messages.value) {
       if (msg.references && Array.isArray(msg.references) && !msg.citations) {
-        msg.citations = msg.references as Citation[];
+        msg.citations = (msg.references as Citation[]).map((ref, i) => ({
+          ...ref,
+          index: ref.index ?? i + 1,
+        }));
       }
     }
     // 取最后一条有引用的 AI 消息，展示引用面板

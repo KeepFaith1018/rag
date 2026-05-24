@@ -11,6 +11,7 @@ export interface CreateCitationsParams {
 }
 
 export interface CitationRecord {
+  index: number;
   citationId: string;
   kbId: string;
   kbName?: string;
@@ -90,6 +91,7 @@ export class CitationService {
       );
 
       return hits.map((hit, index) => ({
+        index: index + 1,
         citationId: `${messageId}-${index}`,
         kbId: hit.kbId,
         kbName: kbNameMap.get(hit.kbId),
@@ -147,6 +149,7 @@ export class CitationService {
       );
 
       return citations.map((c, index) => ({
+        index: index + 1,
         citationId: `${messageId}-${index}`,
         kbId: String(c.kb_id),
         kbName: kbNameMap.get(String(c.kb_id)),

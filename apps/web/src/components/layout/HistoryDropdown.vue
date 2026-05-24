@@ -85,7 +85,7 @@ function handleDelete(sessionId: string, e: MouseEvent) {
     </div>
 
     <!-- 会话列表 -->
-    <div class="max-h-64 overflow-y-auto">
+    <div class="max-h-64 overflow-y-auto overflow-x-hidden">
       <div v-if="filteredSessions.length === 0" class="p-6 text-center text-xs text-outline">
         暂无会话记录
       </div>
@@ -99,8 +99,8 @@ function handleDelete(sessionId: string, e: MouseEvent) {
       >
         <!-- 普通状态 -->
         <template v-if="editingId !== session.id">
-          <div class="relative min-w-0 flex-1">
-            <span class="truncate text-xs text-on-surface">{{ session.title || '新建会话' }}</span>
+          <div class="relative min-w-0 flex-1 pr-12">
+            <span class="truncate block text-xs text-on-surface">{{ session.title || '新建会话' }}</span>
           </div>
           <!-- 右侧绝对定位区域：时间默认显示，hover 时显示图标，不占用 flex 空间 -->
           <div class="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-0.5">
@@ -124,7 +124,7 @@ function handleDelete(sessionId: string, e: MouseEvent) {
 
         <!-- 编辑状态 -->
         <template v-else>
-          <div class="relative min-w-0 flex-1 pr-16">
+          <div class="min-w-0 flex-1 pr-2">
             <input
               v-model="editingTitle"
               type="text"
