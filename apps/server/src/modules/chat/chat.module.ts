@@ -13,6 +13,8 @@ import { EvalProcessorService } from './services/eval-processor.service';
 import { EvalPipelineService } from './services/eval-pipeline.service';
 import { GetChunkDetailTool } from './services/tools/get-chunk-detail.tool';
 import { ModelConfigResolutionService } from './services/model-config-resolution.service';
+import { ContextManagerService } from './services/context-manager.service';
+import { TokenService } from '@common/utils/token.service';
 
 /**
  * 对话模块。
@@ -35,6 +37,8 @@ import { ModelConfigResolutionService } from './services/model-config-resolution
     EvalPipelineService,
     GetChunkDetailTool,
     ModelConfigResolutionService,
+    ContextManagerService,
+    TokenService,
   ],
   exports: [
     ChatSessionService,
