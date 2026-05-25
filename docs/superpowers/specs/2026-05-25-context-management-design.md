@@ -47,9 +47,6 @@ ChatStreamService.streamRagMode()
       │       └─ 返回 LangChain BaseMessage[]
       │
       ├─ 创建用户消息（现有，不动）
-      │       ├─ 加载最近 N 轮消息（≤10轮，≤4000 token）
-      │       ├─ 过滤不完整/错误消息
-      │       └─ 返回 LangChain BaseMessage[]
       │
       ├─ graph.invoke({ ..., chatHistory })  ← State 新增字段
       │       │
