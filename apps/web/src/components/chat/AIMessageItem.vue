@@ -124,9 +124,32 @@ const resolvedBlocks = computed(() => {
   return parseMarkdown(props.message.content)
 })
 
+/** 递归提取 mdast 节点中的纯文本 */
+function extractText(node: unknown): string {
+  if (!node || typeof node !== 'object') return ''
+  const n = node as Record<string, unknown>
+  if (n.type === 'text' && typeof n.value === 'string') return n.value
+  if (n.type === 'code' && typeof n.value === 'string') return n.value + '\n'
+  if (n.type === 'inlineCode' && typeof n.value === 'string') return n.value
+  if (Array.isArray(n.children)) {
+    return n.children.map((c) => extractText(c)).join('')
+  }
+  return ''
+}
+
+/** 从 blocks 或 content 中提取纯文本用于复制 */
+function getPlainText(): string {
+  if (props.message.content) return props.message.content
+  if (!props.message.blocks?.length) return ''
+  return props.message.blocks
+    .map((b) => extractText((b as Record<string, unknown>).node ?? (b as Record<string, unknown>).displayNode))
+    .filter(Boolean)
+    .join('\n')
+}
+
 async function handleCopy() {
   try {
-    await navigator.clipboard.writeText(props.message.content || '')
+    await navigator.clipboard.writeText(getPlainText())
     copied.value = true
     messageToast.success('已复制')
     setTimeout(() => { copied.value = false }, 2000)

@@ -6,6 +6,8 @@ import {
   register as registerApi,
   resetPassword as resetPasswordApi,
   sendVerificationCode as sendVerificationCodeApi,
+  updateUserProfile,
+  uploadAvatar,
 } from "@/api/auth";
 import type {
   LoginPayload,
@@ -133,6 +135,24 @@ export const useAuthStore = defineStore("auth", () => {
   }
 
   /**
+   * 更新当前用户个人资料。
+   */
+  async function updateProfile(payload: { full_name?: string; avatar_url?: string }) {
+    const profile = await updateUserProfile(payload);
+    user.value = profile;
+    return profile;
+  }
+
+  /**
+   * 上传新头像并同步用户态。
+   */
+  async function updateAvatar(file: File) {
+    const profile = await uploadAvatar(file);
+    user.value = profile;
+    return profile;
+  }
+
+  /**
    * 主动退出登录。
    */
   function logout() {
@@ -154,6 +174,8 @@ export const useAuthStore = defineStore("auth", () => {
     resetPassword,
     fetchCurrentUser,
     bootstrap,
+    updateProfile,
+    updateAvatar,
     logout,
   };
 });

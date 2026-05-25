@@ -85,3 +85,27 @@ export function getCurrentUser() {
     method: "GET",
   });
 }
+
+/**
+ * 更新当前用户个人资料。
+ */
+export function updateUserProfile(data: { full_name?: string; avatar_url?: string }) {
+  return apiRequest<UserProfile>({
+    url: "/users/me",
+    method: "PATCH",
+    body: data,
+  });
+}
+
+/**
+ * 上传用户头像（multipart/form-data）。
+ */
+export function uploadAvatar(file: File) {
+  const formData = new FormData();
+  formData.append("file", file);
+  return apiRequest<UserProfile>({
+    url: "/users/me/avatar",
+    method: "POST",
+    body: formData,
+  });
+}

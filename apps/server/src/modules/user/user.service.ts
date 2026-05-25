@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
+import { FileStorageService } from '@common/storage/file-storage.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
 import { RegisterDto } from '../auth/dto/register.dto';
@@ -20,6 +21,7 @@ export class UserService {
   constructor(
     private prisma: PrismaService,
     private readonly emailService: EmailService,
+    private readonly fileStorage: FileStorageService,
     @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
   ) {}
 
@@ -198,5 +200,65 @@ export class UserService {
         },
       });
     }
+  }
+
+  /**
+   * 上传并更新用户头像，将文件存储到 avatars 目录并更新 avatar_url。
+   */
+  async updateAvatar(
+    userId: number,
+    file: { buffer: Buffer; originalname: string },
+  ) {
+    try {
+      const user = await this.prisma.b_users.findUnique({
+        where: { id: BigInt(userId) },
+      });
+      if (!user) {
+        throw new BusinessException(ErrorCode.AUTH_USER_NOT_FOUND);
+      }
+
+      const ext = this.extractExtension(file.originalname);
+      const relativePath = `avatars/${userId}${ext}`;
+
+      // 如果旧头像存在则删除
+      if (user.avatar_url) {
+        await this.fileStorage.deleteFile(user.avatar_url);
+      }
+
+      await this.fileStorage.saveFile(file.buffer, relativePath);
+
+      const updated = await this.prisma.b_users.update({
+        where: { id: BigInt(userId) },
+        data: { avatar_url: relativePath },
+      });
+
+      this.logger.info('用户更新头像', { userId, path: relativePath });
+
+      return this.buildUserProfile(updated);
+    } catch (error) {
+      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+        context: {
+          module: 'UserService',
+          action: 'updateAvatar',
+          userId,
+        },
+      });
+    }
+  }
+
+  /**
+   * 根据用户 ID 获取头像文件的绝对路径，不存在则返回 null。
+   */
+  async getAvatarPath(userId: number): Promise<string | null> {
+    const user = await this.findById(userId);
+    if (!user?.avatar_url) return null;
+    const absolute = this.fileStorage.resolveAbsolutePath(user.avatar_url);
+    if (this.fileStorage.exists(user.avatar_url)) return absolute;
+    return null;
+  }
+
+  private extractExtension(filename: string): string {
+    const dot = filename.lastIndexOf('.');
+    return dot > 0 ? filename.slice(dot) : '';
   }
 }

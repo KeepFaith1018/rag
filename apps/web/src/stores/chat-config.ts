@@ -53,11 +53,6 @@ export const useChatConfigStore = defineStore('chat-config', () => {
 
   function setAvailableKbs(kbs: AvailableKb[]) {
     availableKbs.value = kbs;
-    // 仅在首次（未选择时）自动全选 owner 权限的知识库
-    if (selectedKbIds.value.length === 0) {
-      const ownerKbIds = kbs.filter((kb) => kb.permission === 'owner').map((kb) => kb.kbId);
-      selectedKbIds.value = ownerKbIds;
-    }
   }
 
   function toggleKb(kbId: string) {

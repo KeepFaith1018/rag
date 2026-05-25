@@ -74,7 +74,9 @@ export function useAgentChat(options?: UseAgentChatOptions) {
       chatMode: chatStore.chatMode,
       message,
       modelSource: chatStore.selectedModel?.source,
-      modelConfigId: chatStore.selectedModel?.configId,
+      modelConfigId: chatStore.selectedModel?.source === 'user'
+        ? chatStore.selectedModel?.configId.replace('user-', '')
+        : chatStore.selectedModel?.configId,
       selectedKbIds: chatStore.chatMode === 'rag' ? chatStore.selectedKbIds : undefined,
       agentMode: 'multi-agent',
       enableWebSearch: chatStore.enableWebSearch,

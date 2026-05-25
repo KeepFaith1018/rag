@@ -3,9 +3,11 @@ import { useAppStore } from "@/stores/app";
 import { useAuthStore } from "@/stores/auth";
 import { useMessage } from "@/composables/useMessage";
 import { storeToRefs } from "pinia";
-import { computed, ref, onMounted, onUnmounted } from "vue";
+import { computed, ref, onMounted, onUnmounted, watch } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
 import ModelConfigDialog from "@/components/settings/ModelConfigDialog.vue";
+import UserSettingsDialog from "@/components/settings/UserSettingsDialog.vue";
+import { API_BASE_URL } from "@/api/api";
 
 const appStore = useAppStore();
 const authStore = useAuthStore();
@@ -18,6 +20,7 @@ const { isSidebarOpen, isDark } = storeToRefs(appStore);
 
 const isUserMenuOpen = ref(false);
 const showModelConfig = ref(false);
+const showUserSettings = ref(false);
 
 const toggleUserMenu = () => {
   isUserMenuOpen.value = !isUserMenuOpen.value;
@@ -80,7 +83,18 @@ const primaryNavItems: PrimaryNavItem[] = [
 const displayName = computed(() => authStore.user?.username || "未登录用户");
 const displayEmail = computed(() => authStore.user?.email || "请先登录");
 const displayRole = computed(() => authStore.user?.roles?.[0] || "guest");
-const displayAvatar = computed(() => authStore.user?.avatar || "");
+
+const avatarTimestamp = ref(Date.now());
+watch(
+  () => authStore.user?.avatar,
+  () => { avatarTimestamp.value = Date.now(); },
+);
+
+const displayAvatar = computed(() => {
+  const avatar = authStore.user?.avatar;
+  if (!avatar) return "";
+  return `${API_BASE_URL}/users/avatar/${authStore.user!.id}?t=${avatarTimestamp.value}`;
+});
 
 /**
  * 判断主导航项是否处于激活状态。
@@ -271,9 +285,10 @@ async function handleLogout() {
             </button>
             <button
               class="w-full flex items-center gap-3 px-3 py-2 text-sm text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-colors"
+              @click="showUserSettings = true"
             >
               <span class="material-symbols-outlined text-[18px]"
-                >settings</span
+                >person</span
               >
               <span>个人设置</span>
             </button>
@@ -345,6 +360,7 @@ async function handleLogout() {
 
   <!-- 模型配置弹窗 -->
   <ModelConfigDialog v-if="showModelConfig" @close="showModelConfig = false" />
+  <UserSettingsDialog v-if="showUserSettings" @close="showUserSettings = false" />
 </template>
 
 <style scoped>

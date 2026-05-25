@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue';
+import { onMounted, watch } from 'vue';
 import ChatStatusBanner from '@/components/chat/ChatStatusBanner.vue';
 import ChatTopNavBar from '@/components/layout/ChatTopNavBar.vue';
 import ChatStream from '@/components/chat/ChatStream.vue';
@@ -8,11 +8,44 @@ import { useChatStore } from '@/stores/chat';
 import { useAgentChat } from '@/modules/chat/composables/useAgentChat';
 import { listAvailableKbs, listAvailableModels } from '@/api/chat';
 import { getUserModels } from '@/api/model-config';
+import { useModelConfigStore } from '@/stores/model-config';
 import { useMessage } from '@/composables/useMessage';
 
 const chatStore = useChatStore();
+const modelConfigStore = useModelConfigStore();
 const { sendMessage, abort, isStreaming } = useAgentChat();
 const message = useMessage();
+
+async function refreshModels() {
+  try {
+    const [sysModels, userModels] = await Promise.all([
+      listAvailableModels(),
+      getUserModels().catch(() => [] as unknown as Awaited<ReturnType<typeof getUserModels>>),
+    ]);
+
+    const merged = [
+      ...sysModels.map((m) => ({
+        configId: m.configId,
+        modelName: m.modelName,
+        provider: m.provider,
+        source: m.source,
+      })),
+      ...(Array.isArray(userModels) ? userModels : []).map((m) => ({
+        configId: `user-${m.id}`,
+        modelName: m.model_name,
+        provider: m.provider,
+        source: 'user' as const,
+      })),
+    ];
+
+    chatStore.setAvailableModels(merged);
+  } catch (e) {
+    // 静默失败，保留已有列表
+  }
+}
+
+// 用户模型变更后自动刷新可用模型列表
+watch(() => modelConfigStore.userModels.length, () => { void refreshModels(); });
 
 // 加载可选知识库和模型
 onMounted(async () => {
@@ -31,38 +64,20 @@ onMounted(async () => {
   } catch (e) {
     message.error('加载知识库失败，请刷新重试');
   }
-  try {
-    const [sysModels, userModels] = await Promise.all([
-      listAvailableModels(),
-      getUserModels().catch(() => [] as unknown as Awaited<ReturnType<typeof getUserModels>>),
-    ]);
-
-    const merged = [
-      ...sysModels.map((m) => ({
-        configId: m.configId,
-        modelName: m.modelName,
-        provider: m.provider,
-        source: m.source,
-      })),
-      ...(Array.isArray(userModels) ? userModels : []).map((m) => ({
-        configId: String(m.id),
-        modelName: m.model_name,
-        provider: m.provider,
-        source: 'user' as const,
-      })),
-    ];
-
-    chatStore.setAvailableModels(merged);
-  } catch (e) {
-    message.error('加载模型配置失败，请刷新重试');
-  }
+  await refreshModels();
 });
 
 // 处理发送消息
-async function handleSendMessage(message: string) {
-  if (!message.trim() || chatStore.isSending) return;
-  chatStore.setLastUserMessage(message);
-  await sendMessage(message);
+async function handleSendMessage(msg: string) {
+  if (!msg.trim() || chatStore.isSending) return;
+
+  if (chatStore.chatMode === 'rag' && chatStore.selectedKbIds.length === 0) {
+    message.warning('RAG 模式下请至少选择一个知识库');
+    return;
+  }
+
+  chatStore.setLastUserMessage(msg);
+  await sendMessage(msg);
 }
 
 // 处理取消请求

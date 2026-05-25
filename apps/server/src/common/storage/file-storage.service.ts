@@ -166,6 +166,20 @@ export class FileStorageService {
   }
 
   /**
+   * 将二进制数据写入指定的相对路径。
+   */
+  async saveFile(
+    buffer: Buffer,
+    relativePath: string,
+  ): Promise<SavedFileDescriptor> {
+    const absolutePath = this.resolveAbsolutePath(relativePath);
+    const dir = resolve(absolutePath, '..');
+    await mkdir(dir, { recursive: true });
+    await writeFile(absolutePath, buffer);
+    return { relativePath, absolutePath };
+  }
+
+  /**
    * 统一根据相对目录生成正式文件保存位置。
    */
   private async writeFileToDirectory(

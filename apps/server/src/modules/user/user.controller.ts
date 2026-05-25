@@ -1,4 +1,17 @@
-import { Body, Controller, Patch, Post, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Patch,
+  Post,
+  Res,
+  UploadedFile,
+  UseGuards,
+  UseInterceptors,
+} from '@nestjs/common';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { Response } from 'express';
 import { UserService } from './user.service';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { ChangePasswordDto } from './dto/change-password.dto';
@@ -6,6 +19,11 @@ import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser } from '../../common/decorators/currentUser.decorator';
 import { Auth } from '../../common/decorators/auth.decorator';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+
+type UploadedAvatarFile = {
+  buffer: Buffer;
+  originalname: string;
+};
 
 @Controller('users')
 export class UserController {
@@ -39,5 +57,34 @@ export class UserController {
     @Body() resetPasswordDto: ResetPasswordDto,
   ): Promise<any> {
     return this.userService.resetPassword(resetPasswordDto);
+  }
+
+  // 上传/更新当前用户头像
+  @Post('me/avatar')
+  @UseGuards(AuthGuard)
+  @Auth()
+  @UseInterceptors(FileInterceptor('file'))
+  async uploadAvatar(
+    @CurrentUser('sub') userId: string,
+    @UploadedFile() file: UploadedAvatarFile | undefined,
+  ): Promise<any> {
+    if (!file) {
+      return { success: false, message: '未上传文件' };
+    }
+    return this.userService.updateAvatar(Number(userId), file);
+  }
+
+  // 获取用户头像（公开访问）
+  @Get('avatar/:userId')
+  async getAvatar(
+    @Param('userId') userId: string,
+    @Res() res: Response,
+  ) {
+    const avatarPath = await this.userService.getAvatarPath(Number(userId));
+    if (!avatarPath) {
+      res.status(404).send();
+      return;
+    }
+    res.sendFile(avatarPath);
   }
 }

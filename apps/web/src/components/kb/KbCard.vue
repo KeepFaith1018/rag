@@ -5,6 +5,7 @@ import type { KnowledgeBaseListItem } from "@/types/knowledge-base";
 
 const props = defineProps<{
   kb: KnowledgeBaseListItem;
+  hideChips?: boolean;
 }>();
 
 const emit = defineEmits<{
@@ -102,21 +103,21 @@ function handleDelete() {
 
 <template>
   <div
-    class="group bg-surface-container-low hover:bg-surface-container-high p-5 rounded-[1.25rem] transition-all duration-300 flex flex-col min-h-[14rem] h-auto justify-between gap-4 cursor-pointer border border-transparent hover:border-outline-variant/10"
+    class="group bg-surface-container-low hover:bg-surface-container-high p-5 rounded-[1.25rem] transition-all duration-300 flex flex-col min-h-[14rem] h-auto justify-between gap-4 cursor-pointer border border-transparent hover:border-outline-variant/10 hover:-translate-y-1 hover:shadow-lg"
     :class="accentClass"
     @click="goDetail"
   >
     <div class="flex items-start justify-between gap-3">
       <div class="flex items-start gap-3 min-w-0 flex-1">
         <div
-          class="w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover:-translate-y-1 duration-300 shadow-md icon-shell shrink-0"
+          class="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:-translate-y-1 duration-300 shadow-sm icon-shell shrink-0"
         >
-          <span class="material-symbols-outlined icon-filled icon-mark text-[1.25rem]">
+          <span class="material-symbols-outlined icon-filled icon-mark text-[1.35rem]">
             {{ iconName }}
           </span>
         </div>
         <div class="min-w-0 flex-1 pt-0.5">
-          <div class="flex flex-wrap items-center gap-2 mb-3">
+          <div v-if="!props.hideChips" class="flex flex-wrap items-center gap-2 mb-3">
             <span class="kb-chip">
               {{ visibilityLabel }}
             </span>
@@ -138,11 +139,11 @@ function handleDelete() {
         </div>
       </div>
 
-      <div class="flex items-center gap-1">
+      <div v-if="!props.hideChips" class="flex items-center gap-1 shrink-0">
         <button
           v-if="props.kb.permissions.canManageKnowledgeBase"
           type="button"
-          class="w-9 h-9 rounded-lg border border-outline-variant/10 hover:bg-surface-container-highest transition-colors"
+          class="w-9 h-9 rounded-lg border border-outline-variant/10 hover:bg-surface-container-highest transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
           @click.stop="handleEdit"
         >
           <span class="material-symbols-outlined text-[18px]">edit</span>
@@ -150,7 +151,7 @@ function handleDelete() {
         <button
           v-if="props.kb.permissions.canDelete"
           type="button"
-          class="w-9 h-9 rounded-lg border border-outline-variant/10 hover:bg-error-container/20 hover:text-error transition-colors"
+          class="w-9 h-9 rounded-lg border border-outline-variant/10 hover:bg-error-container/20 hover:text-error transition-colors flex items-center justify-center opacity-0 group-hover:opacity-100"
           @click.stop="handleDelete"
         >
           <span class="material-symbols-outlined text-[18px]">delete</span>
@@ -164,31 +165,37 @@ function handleDelete() {
         :class="props.kb.visibility === 'private' ? 'grid-cols-1' : 'grid-cols-2'"
       >
         <div class="metric-card">
-          <span class="metric-label">文档数</span>
-          <span class="metric-value">{{ props.kb.documentCount }}</span>
+          <span class="material-symbols-outlined text-[14px] text-outline">description</span>
+          <div>
+            <span class="metric-value">{{ props.kb.documentCount }}</span>
+            <span class="metric-label">文档</span>
+          </div>
         </div>
         <div v-if="props.kb.visibility !== 'private'" class="metric-card">
-          <span class="metric-label">成员数</span>
-          <span class="metric-value">{{ props.kb.memberCount }}</span>
+          <span class="material-symbols-outlined text-[14px] text-outline">group</span>
+          <div>
+            <span class="metric-value">{{ props.kb.memberCount }}</span>
+            <span class="metric-label">成员</span>
+          </div>
         </div>
       </div>
 
       <div class="flex items-center gap-3 text-xs text-outline">
         <span class="inline-flex items-center gap-1.5">
-          <span class="material-symbols-outlined text-[16px]">schedule</span>
+          <span class="material-symbols-outlined text-[15px]">schedule</span>
           更新于 {{ formatDate(props.kb.updatedAt) }}
         </span>
         <span
           v-if="props.kb.allowPublicDownload"
           class="inline-flex items-center gap-1.5"
         >
-          <span class="material-symbols-outlined text-[16px]">download</span>
+          <span class="material-symbols-outlined text-[15px]">download</span>
           可公开下载
         </span>
       </div>
 
       <div
-        class="flex items-center justify-between pt-5 border-t border-outline-variant/10"
+        class="flex items-center justify-between pt-4 border-t border-outline-variant/10"
       >
         <span class="text-[10px] font-label text-outline/80 uppercase tracking-wider">
           创建于 {{ formatDate(props.kb.createdAt) }}
@@ -197,7 +204,7 @@ function handleDelete() {
           class="inline-flex items-center gap-1 text-xs text-primary group-hover:translate-x-0.5 transition-transform"
         >
           查看详情
-          <span class="material-symbols-outlined text-[16px]">arrow_forward</span>
+          <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
         </span>
       </div>
     </div>
@@ -260,22 +267,23 @@ function handleDelete() {
 
 .metric-card {
   display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
+  align-items: center;
+  gap: 0.75rem;
   border-radius: 0.9rem;
   border: 1px solid color-mix(in srgb, var(--color-outline-variant) 14%, transparent);
   background: color-mix(in srgb, var(--color-surface-container-high) 72%, transparent);
-  padding: 0.9rem 1rem;
+  padding: 0.75rem 1rem;
 }
 
 .metric-label {
+  display: block;
   color: var(--color-outline);
-  font-size: 0.72rem;
+  font-size: 0.68rem;
 }
 
 .metric-value {
   font-family: var(--font-headline);
-  font-size: 1.1rem;
+  font-size: 1.05rem;
   font-weight: 700;
 }
 </style>

@@ -1,8 +1,10 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { ChatOpenAI } from '@langchain/openai';
 import { BusinessException } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
+import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
+import { Logger } from 'winston';
 
 /** 模型能力开关 */
 export interface ModelCapabilities {
@@ -38,7 +40,10 @@ export interface ChatModelOptions {
  */
 @Injectable()
 export class ChatModelService {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    @Inject(WINSTON_MODULE_PROVIDER) private readonly logger: Logger,
+  ) {}
 
   /**
    * 根据运行时选项创建对话模型实例。
@@ -137,6 +142,13 @@ export class ChatModelService {
       );
     }
 
+    this.logger.debug('开始模型连通性测试', {
+      provider: dto.provider,
+      modelName: dto.modelName,
+      baseUrl: base,
+      apiKeyPrefix: dto.apiKey.slice(0, 8) + '***',
+    });
+
     const headers: Record<string, string> = {
       Authorization: `Bearer ${dto.apiKey}`,
       'Content-Type': 'application/json',
@@ -145,25 +157,39 @@ export class ChatModelService {
     const startedAt = Date.now();
 
     // Step 1: 验证网络 + API Key（GET /models，零 token 消耗）
+    const modelsUrl = `${base}/models`;
+    this.logger.debug('Step 1: GET /models', { url: modelsUrl });
+
     try {
-      const modelsResp = await this.safeFetch(`${base}/models`, {
+      const modelsResp = await this.safeFetch(modelsUrl, {
         method: 'GET',
         headers,
         signal: AbortSignal.timeout(8000),
       });
+
       if (modelsResp === 'timeout') {
+        this.logger.warn('Step 1 失败: 超时', { url: modelsUrl });
         throw new BusinessException(
           ErrorCode.MODEL_CONNECTION_FAILED,
           '网络连接超时，请检查 Base URL 是否可达',
         );
       }
       if (modelsResp === 'network-error') {
+        this.logger.warn('Step 1 失败: 网络错误', { url: modelsUrl });
         throw new BusinessException(
           ErrorCode.MODEL_CONNECTION_FAILED,
           `无法连接到 ${base}，请检查 Base URL 是否正确、网络是否可达`,
         );
       }
+
+      this.logger.debug('Step 1: GET /models 响应', {
+        url: modelsUrl,
+        status: modelsResp.status,
+        ok: modelsResp.ok,
+      });
+
       if (modelsResp.status === 401 || modelsResp.status === 403) {
+        this.logger.warn('Step 1 失败: API Key 无效', { status: modelsResp.status });
         throw new BusinessException(
           ErrorCode.MODEL_CONNECTION_FAILED,
           'API Key 无效（401），请检查密钥是否正确',
@@ -172,44 +198,59 @@ export class ChatModelService {
       // 部分厂商不实现 /models 端点，返回 404 不代表不可用，继续 Step 2
     } catch (error) {
       if (error instanceof BusinessException) throw error;
+      this.logger.warn('Step 1 异常，继续 Step 2', { error: String(error) });
       // 其他未知错误也继续尝试 Step 2
     }
 
     // Step 2: 验证模型名（POST /chat/completions，max_tokens=1）
+    const chatUrl = `${base}/chat/completions`;
+    const chatBody = {
+      model: dto.modelName,
+      messages: [{ role: 'user', content: 'ping' }],
+      max_tokens: 1,
+    };
+    this.logger.debug('Step 2: POST /chat/completions', { url: chatUrl, body: chatBody });
+
     try {
-      const chatResp = await this.safeFetch(`${base}/chat/completions`, {
+      const chatResp = await this.safeFetch(chatUrl, {
         method: 'POST',
         headers,
-        body: JSON.stringify({
-          model: dto.modelName,
-          messages: [{ role: 'user', content: 'ping' }],
-          max_tokens: 1,
-        }),
+        body: JSON.stringify(chatBody),
         signal: AbortSignal.timeout(15000),
       });
 
       if (chatResp === 'timeout') {
+        this.logger.warn('Step 2 失败: 超时', { url: chatUrl });
         throw new BusinessException(
           ErrorCode.MODEL_CONNECTION_FAILED,
           '模型响应超时，请检查模型名是否正确或稍后重试',
         );
       }
       if (chatResp === 'network-error') {
+        this.logger.warn('Step 2 失败: 网络错误', { url: chatUrl });
         throw new BusinessException(
           ErrorCode.MODEL_CONNECTION_FAILED,
-          `无法连接到 ${base}/chat/completions，请检查 Base URL`,
+          `无法连接到 ${chatUrl}，请检查 Base URL`,
         );
       }
 
-      // 注意：某些网关模型名无效时也会返回 401，
-      // 如果 Step 1 的 /models 已通过，则此处 401 实际是模型名不对
+      const latencyMs = Date.now() - startedAt;
+      this.logger.debug('Step 2: POST /chat/completions 响应', {
+        url: chatUrl,
+        status: chatResp.status,
+        ok: chatResp.ok,
+        latencyMs,
+      });
+
       if (chatResp.status === 401 || chatResp.status === 403) {
+        this.logger.warn('Step 2 失败: 认证/模型名无效', { status: chatResp.status });
         throw new BusinessException(
           ErrorCode.MODEL_CONNECTION_FAILED,
           '认证失败或模型不存在（模型名无效时某些网关也会返回 401），请检查模型名和 API Key',
         );
       }
       if (chatResp.status === 404) {
+        this.logger.warn('Step 2 失败: 模型不存在', { modelName: dto.modelName });
         throw new BusinessException(
           ErrorCode.MODEL_CONNECTION_FAILED,
           `模型 "${dto.modelName}" 不存在（404），请检查模型名是否正确`,
@@ -217,13 +258,24 @@ export class ChatModelService {
       }
       if (!chatResp.ok) {
         const body = await chatResp.text().catch(() => '');
+        this.logger.warn('Step 2 失败: 异常响应', {
+          status: chatResp.status,
+          body: body.slice(0, 200),
+        });
         throw new BusinessException(
           ErrorCode.MODEL_CONNECTION_FAILED,
           `模型返回异常 HTTP ${chatResp.status}：${body.slice(0, 200)}`,
         );
       }
 
-      return { success: true, latencyMs: Date.now() - startedAt };
+      this.logger.info('模型连通性测试通过', {
+        provider: dto.provider,
+        modelName: dto.modelName,
+        baseUrl: base,
+        latencyMs,
+      });
+
+      return { success: true, latencyMs };
     } catch (error) {
       if (error instanceof BusinessException) throw error;
       throw new BusinessException(
