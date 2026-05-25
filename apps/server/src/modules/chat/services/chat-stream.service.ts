@@ -5,6 +5,7 @@ import { tool } from '@langchain/core/tools';
 import { ChatModelService } from '../../rag/ai/chat-model.service';
 import { ChatSessionService } from './chat-session.service';
 import { ChatMessageService } from './chat-message.service';
+import { ContextManagerService } from './context-manager.service';
 import { KbPermissionService } from '../../knowledge-base/permission/kb-permission.service';
 import { CitationService } from '../../rag/retrieval/citation.service';
 import { MultiAgentOrchestratorService } from './multi-agent-orchestrator.service';
@@ -35,6 +36,7 @@ export class ChatStreamService {
     private readonly orchestrator: MultiAgentOrchestratorService,
     private readonly webSearchService: WebSearchService,
     private readonly modelResolutionService: ModelConfigResolutionService,
+    private readonly contextManager: ContextManagerService,
   ) {}
 
   /**
@@ -96,6 +98,8 @@ export class ChatStreamService {
     );
     const resolvedKbIds = permContexts.map((c) => c.kbId);
 
+    const chatHistory = await this.contextManager.buildContext(dto.sessionId);
+
     const userMsg = await this.chatMessageService.createUserMessage({
       sessionId: dto.sessionId,
       content: dto.message,
@@ -123,6 +127,7 @@ export class ChatStreamService {
         selectedKbIds: dto.selectedKbIds!,
         resolvedKbIds,
         originalQuery: dto.message,
+        chatHistory,
       },
       writer,
       {
@@ -230,8 +235,11 @@ export class ChatStreamService {
         modelName,
       });
 
+    const chatHistory = await this.contextManager.buildContext(dto.sessionId);
+
     const messages: BaseMessage[] = [
       new SystemMessage(SYSTEM_PROMPT),
+      ...chatHistory,
       new HumanMessage(dto.message),
     ];
 
