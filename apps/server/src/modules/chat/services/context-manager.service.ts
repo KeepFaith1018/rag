@@ -7,6 +7,16 @@ const CONTEXT_MAX_ROUNDS = 10;
 const CONTEXT_MAX_HISTORY_TOKENS = 4000;
 
 /**
+ * 提取 BaseMessage 的文本内容，避免 TypeScript 联合类型推断问题。
+ */
+function getMessageText(msg: BaseMessage): string {
+  if (typeof msg.content === 'string') {
+    return msg.content;
+  }
+  return JSON.stringify(msg.content);
+}
+
+/**
  * 将 BaseMessage[] 格式化为纯文本，供 rewrite prompt 使用。
  * 作为独立导出函数，方便各节点零依赖调用。
  */
@@ -15,8 +25,7 @@ export function formatChatHistoryAsText(messages: BaseMessage[]): string {
   return messages
     .map((m) => {
       const role = m._getType() === 'human' ? '用户' : '助手';
-      const content =
-        typeof m.content === 'string' ? m.content : JSON.stringify(m.content);
+      const content = getMessageText(m);
       return `${role}: ${content}`;
     })
     .join('\n');
@@ -92,6 +101,13 @@ export class ContextManagerService {
    * 从最新消息开始累计 token 数，超出 CONTEXT_MAX_HISTORY_TOKENS 时截断。
    * 至少保留最后一轮对话。
    */
+  private getMessageText(msg: BaseMessage): string {
+    if (typeof msg.content === 'string') {
+      return msg.content;
+    }
+    return JSON.stringify(msg.content);
+  }
+
   private truncateByTokens(messages: BaseMessage[]): BaseMessage[] {
     if (messages.length === 0) return [];
 
@@ -99,9 +115,7 @@ export class ContextManagerService {
     const result: BaseMessage[] = [];
     // 从最新到最旧累计，再反转
     for (let i = messages.length - 1; i >= 0; i--) {
-      const content = typeof messages[i].content === 'string'
-        ? messages[i].content
-        : JSON.stringify(messages[i].content);
+      const content = getMessageText(messages[i]);
       const tokens = this.tokenService.tokenCount(content);
       if (total + tokens > CONTEXT_MAX_HISTORY_TOKENS && result.length >= 2) {
         break; // 至少保留最后一轮
