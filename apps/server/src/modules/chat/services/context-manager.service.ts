@@ -101,13 +101,6 @@ export class ContextManagerService {
    * 从最新消息开始累计 token 数，超出 CONTEXT_MAX_HISTORY_TOKENS 时截断。
    * 至少保留最后一轮对话。
    */
-  private getMessageText(msg: BaseMessage): string {
-    if (typeof msg.content === 'string') {
-      return msg.content;
-    }
-    return JSON.stringify(msg.content);
-  }
-
   private truncateByTokens(messages: BaseMessage[]): BaseMessage[] {
     if (messages.length === 0) return [];
 
