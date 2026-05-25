@@ -57,6 +57,8 @@ export class ContextManagerService {
       return this.truncateByTokens(baseMessages);
     } catch (error) {
       this.logger.warn('[ContextManager] 加载历史失败，降级为空上下文', {
+        module: 'ContextManagerService',
+        action: 'buildContext',
         error: error instanceof Error ? error.message : String(error),
         sessionId,
       });
