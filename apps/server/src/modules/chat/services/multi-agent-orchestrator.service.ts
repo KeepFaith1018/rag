@@ -925,10 +925,12 @@ export class MultiAgentOrchestratorService {
             streaming: true,
           });
 
-          const lcStream = await draftModel.stream([
+          const messages: BaseMessage[] = [
             new SystemMessage(finalPrompt),
+            ...(s.chatHistory ?? []),
             new HumanMessage(s.originalQuery),
-          ]);
+          ];
+          const lcStream = await draftModel.stream(messages);
 
           const msgId = `msg_${Date.now()}`;
           writer.write({ type: 'TEXT_MESSAGE_START', messageId: msgId });
