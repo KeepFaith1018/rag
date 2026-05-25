@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from '@common/prisma/prisma.service';
 import { Prisma } from '@prisma-client';
 import { randomUUID } from 'crypto';
+import type { BaseMessage } from '@langchain/core/messages';
 
 export interface AgentRunContext {
   sessionId: string;
@@ -12,6 +13,7 @@ export interface AgentRunContext {
   selectedKbIds: string[];
   resolvedKbIds: string[];
   originalQuery: string;
+  chatHistory?: BaseMessage[];
 }
 
 export interface AgentStepRecord {

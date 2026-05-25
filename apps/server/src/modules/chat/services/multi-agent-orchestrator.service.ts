@@ -2,7 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { StateGraph, Annotation } from '@langchain/langgraph';
 import { tool } from '@langchain/core/tools';
 import { z } from 'zod';
-import { HumanMessage, SystemMessage } from '@langchain/core/messages';
+import { HumanMessage, SystemMessage, type BaseMessage } from '@langchain/core/messages';
 import { ChatModelService } from '../../rag/ai/chat-model.service';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
@@ -67,6 +67,11 @@ const AgentStateAnnotation = Annotation.Root({
   relevanceVerdict: Annotation<string | null>(),
   /** 检索重试计数，最大 1 */
   retrievalRetryCount: Annotation<number>(),
+  /** 对话历史消息（由 ContextManagerService 在 invoke 前构建，每轮覆盖） */
+  chatHistory: Annotation<BaseMessage[]>({
+    default: () => [],
+    reducer: (_, next) => next,
+  }),
 });
 
 type AgentState = typeof AgentStateAnnotation.State;
@@ -993,6 +998,7 @@ export class MultiAgentOrchestratorService {
         auditVerdict: null,
         relevanceVerdict: null,
         retrievalRetryCount: 0,
+        chatHistory: runCtx.chatHistory ?? [],
       } satisfies AgentState);
 
       // 持久化核心评估数据到 b_agent_runs.metadata_json（eval 流水线依赖 originalQuery/draftAnswer/rerankedHits）
