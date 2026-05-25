@@ -411,6 +411,69 @@ export class KbMemberService {
   }
 
   /**
+   * 直接加入公开知识库，无需邀请码。
+   */
+  async joinPublic(userId: number, kbId: string) {
+    try {
+      const currentUserId = BigInt(userId);
+      const parsedKbId = this.kbPermissionService.parseKnowledgeBaseId(kbId);
+
+      const knowledgeBase = await this.prisma.b_knowledge_bases.findUnique({
+        where: { id: parsedKbId },
+        include: {
+          kb_members: {
+            where: { user_id: currentUserId },
+          },
+        },
+      });
+
+      if (!knowledgeBase) {
+        throw new BusinessException(ErrorCode.KNOWLEDGE_NOT_FOUND);
+      }
+
+      this.ensureSharedKnowledgeBase(knowledgeBase.visibility);
+
+      if (!knowledgeBase.is_public) {
+        throw new BusinessException(
+          ErrorCode.PARAM_ERROR,
+          '仅公开知识库支持直接加入',
+        );
+      }
+
+      if (knowledgeBase.owner_id === currentUserId) {
+        throw new BusinessException(ErrorCode.KNOWLEDGE_HAS_OWNED);
+      }
+
+      if (knowledgeBase.kb_members.length > 0) {
+        throw new BusinessException(ErrorCode.KNOWLEDGE_HAS_JOINED);
+      }
+
+      await this.prisma.b_kb_members.create({
+        data: {
+          kb_id: knowledgeBase.id,
+          user_id: currentUserId,
+          role: 'member',
+        },
+      });
+
+      return {
+        kbId: knowledgeBase.id.toString(),
+        joined: true,
+        role: 'member' as KnowledgeBaseMemberRole,
+      };
+    } catch (error) {
+      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+        context: {
+          module: 'KbMemberService',
+          action: 'joinPublic',
+          userId,
+          kbId,
+        },
+      });
+    }
+  }
+
+  /**
    * 获取当前用户可用的知识库列表（用于 RAG 问答模式选择）。
    * 返回用户拥有 canAsk 权限的知识库：owner / manager / collaborator / member / publicVisitor。
    */
@@ -553,6 +616,58 @@ export class KbMemberService {
           userId,
           kbId,
           memberUserId,
+        },
+      });
+    }
+  }
+
+  /**
+   * 退出知识库，成员自行移除自己的成员身份。owner 不能退出。
+   */
+  async leaveKnowledgeBase(userId: number, kbId: string) {
+    try {
+      const currentUserId = BigInt(userId);
+      const knowledgeBase =
+        await this.kbPermissionService.getKnowledgeBasePermissionSubject(kbId);
+
+      this.ensureSharedKnowledgeBase(knowledgeBase.visibility);
+
+      if (knowledgeBase.owner_id === currentUserId) {
+        throw new BusinessException(
+          ErrorCode.KNOWLEDGE_MEMBER_REMOVE_OWNER_FORBIDDEN,
+          '拥有者不能退出知识库，请删除知识库或转移所有权',
+        );
+      }
+
+      const member = await this.prisma.b_kb_members.findUnique({
+        where: {
+          kb_id_user_id: {
+            kb_id: knowledgeBase.id,
+            user_id: currentUserId,
+          },
+        },
+      });
+
+      if (!member) {
+        throw new BusinessException(ErrorCode.KNOWLEDGE_NOT_JOINED);
+      }
+
+      await this.prisma.b_kb_members.delete({
+        where: { id: member.id },
+      });
+
+      return {
+        kbId,
+        userId,
+        left: true,
+      };
+    } catch (error) {
+      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
+        context: {
+          module: 'KbMemberService',
+          action: 'leaveKnowledgeBase',
+          userId,
+          kbId,
         },
       });
     }

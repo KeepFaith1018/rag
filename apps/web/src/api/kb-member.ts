@@ -68,6 +68,26 @@ export function joinKnowledgeBaseByInvite(payload: JoinKnowledgeBasePayload) {
 }
 
 /**
+ * 直接加入公开知识库（无需邀请码）。
+ */
+export function joinPublicKnowledgeBase(kbId: string) {
+  return apiRequest<JoinKnowledgeBaseResponse>({
+    url: `/knowledge-bases/${kbId}/join`,
+    method: "POST",
+  });
+}
+
+/**
+ * 退出知识库。
+ */
+export function leaveKnowledgeBase(kbId: string) {
+  return apiRequest<{ kbId: string; userId: string; left: boolean }>({
+    url: `/knowledge-bases/${kbId}/leave`,
+    method: "POST",
+  });
+}
+
+/**
  * 移除知识库成员。
  */
 export function removeKnowledgeBaseMember(kbId: string, memberUserId: string) {

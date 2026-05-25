@@ -97,6 +97,28 @@ export class KbMemberController {
   }
 
   /**
+   * 直接加入公开知识库（无需邀请码）。
+   */
+  @Post('knowledge-bases/:kbId/join')
+  joinPublic(
+    @CurrentUser('sub') userId: string,
+    @Param('kbId') kbId: string,
+  ) {
+    return this.kbMemberService.joinPublic(Number(userId), kbId);
+  }
+
+  /**
+   * 退出知识库（成员自行退出）。
+   */
+  @Post('knowledge-bases/:kbId/leave')
+  leaveKnowledgeBase(
+    @CurrentUser('sub') userId: string,
+    @Param('kbId') kbId: string,
+  ) {
+    return this.kbMemberService.leaveKnowledgeBase(Number(userId), kbId);
+  }
+
+  /**
    * 更新成员角色。
    */
   @Patch('knowledge-bases/:kbId/members/:memberUserId')

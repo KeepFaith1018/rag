@@ -10,6 +10,7 @@ import { useKbMembers } from "@/composables/useKbMembers";
 import { useMessage } from "@/composables/useMessage";
 import { useGlobalConfirmDialog } from "@/composables/useGlobalConfirmDialog";
 import { useChunkUpload } from "@/modules/document-upload/composables/useChunkUpload";
+import { joinKnowledgeBaseByInvite, joinPublicKnowledgeBase, leaveKnowledgeBase } from "@/api/kb-member";
 import DocumentPreviewModal from "@/components/document/DocumentPreviewModal.vue";
 import KbDocumentPanel from "./KbDocumentPanel.vue";
 import KbMemberPanel from "./KbMemberPanel.vue";
@@ -48,12 +49,21 @@ const settingsForm = reactive({
 });
 const settingsError = ref("");
 const memberError = ref("");
+const showJoinDialog = ref(false);
+const joinInviteCode = ref("");
+const joinError = ref("");
+const joinLoading = ref(false);
 
 const kbId = computed(() => String(route.params.id || ""));
 const kb = computed(() => documentView.kb.value);
 
 const canUpload = computed(() => kb.value?.permissions.canUpload === true);
 const canManageMembers = computed(() => kb.value?.permissions.canManageMembers === true);
+const isPublicVisitor = computed(() => kb.value?.accessRole === "publicVisitor");
+const canLeave = computed(() => {
+  const role = kb.value?.accessRole;
+  return role === "manager" || role === "collaborator" || role === "member";
+});
 
 const roleLabel = computed(() => {
   const map: Record<string, string> = { owner: "拥有者", manager: "管理员", collaborator: "协作者", member: "成员", publicVisitor: "公开访问" };
@@ -62,7 +72,7 @@ const roleLabel = computed(() => {
 
 const tabs = computed(() => {
   const result: Array<{ key: "documents" | "members" | "settings"; label: string }> = [{ key: "documents", label: "文档" }];
-  if (kb.value?.visibility === "shared") result.push({ key: "members", label: "成员" });
+  if (canManageMembers.value) result.push({ key: "members", label: "成员" });
   if (kb.value && (kb.value.accessRole === "owner" || kb.value.accessRole === "manager")) result.push({ key: "settings", label: "设置" });
   return result;
 });
@@ -74,7 +84,7 @@ async function loadPage() {
   try {
     await documentView.reload(kbId.value);
     syncSettingsForm(documentView.kb.value);
-    if (kb.value?.visibility === "shared") {
+    if (canManageMembers.value) {
       await memberView.reload(kbId.value);
     }
   } catch (error) {
@@ -277,7 +287,59 @@ async function updateMemberRole(member: KnowledgeBaseMemberItem, role: Knowledge
   }
 }
 
-// ── 设置操作 ──
+// ── 加入操作 ──
+
+async function joinPublic() {
+  joinLoading.value = true;
+  try {
+    await joinPublicKnowledgeBase(kbId.value);
+    message.success("已成功加入知识库");
+    await loadPage();
+  } catch (error) {
+    message.error(resolveErrorMessage(error, "加入知识库失败"));
+  } finally {
+    joinLoading.value = false;
+  }
+}
+
+async function leaveKb() {
+  const confirmed = await confirm({
+    title: "退出知识库",
+    message: `确认退出知识库"${kb.value?.name}"吗？退出后你将失去访问权限。`,
+  });
+  if (!confirmed) return;
+  joinLoading.value = true;
+  try {
+    await leaveKnowledgeBase(kbId.value);
+    message.success("已退出知识库");
+    router.push("/kb");
+  } catch (error) {
+    message.error(resolveErrorMessage(error, "退出知识库失败"));
+  } finally {
+    joinLoading.value = false;
+  }
+}
+
+async function handleJoinByInvite() {
+  joinError.value = "";
+  const code = joinInviteCode.value.trim();
+  if (!code) {
+    joinError.value = "请输入邀请码";
+    return;
+  }
+  joinLoading.value = true;
+  try {
+    await joinKnowledgeBaseByInvite({ inviteCode: code });
+    message.success("已成功加入知识库");
+    showJoinDialog.value = false;
+    joinInviteCode.value = "";
+    await loadPage();
+  } catch (error) {
+    joinError.value = resolveErrorMessage(error, "加入知识库失败");
+  } finally {
+    joinLoading.value = false;
+  }
+}
 
 function validateSettingsForm() {
   const name = settingsForm.name.trim();
@@ -363,6 +425,12 @@ const uploadStatusText = computed(() => {
             </div>
           </div>
           <div class="flex flex-wrap items-center gap-3">
+            <BaseButton v-if="isPublicVisitor && kb?.isPublic" variant="primary" :disabled="joinLoading" @click="joinPublic">
+              <span class="material-symbols-outlined text-[18px]">person_add</span> {{ joinLoading ? '加入中...' : '加入' }}
+            </BaseButton>
+            <BaseButton v-if="canLeave" variant="outline" class="hover:!text-error" @click="leaveKb">
+              <span class="material-symbols-outlined text-[18px]">logout</span> 退出
+            </BaseButton>
             <BaseButton v-if="kb?.permissions.canReparse" variant="outline" @click="reloadDocuments">
               <span class="material-symbols-outlined text-[18px]">sync</span> 刷新文档
             </BaseButton>
@@ -463,5 +531,51 @@ const uploadStatusText = computed(() => {
 
     <!-- 文档预览模态框 -->
     <DocumentPreviewModal v-if="previewDoc" :open="previewOpen" :kb-id="kbId" :document-id="previewDoc.id" :file-name="previewDoc.originalFilename || previewDoc.title" :file-type="previewDoc.fileType || ''" @close="previewOpen = false; previewDoc = null" />
+
+    <!-- 加入知识库弹窗 -->
+    <div
+      v-if="showJoinDialog"
+      class="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm flex items-center justify-center px-4"
+      @click.self="showJoinDialog = false"
+    >
+      <div class="w-full max-w-md rounded-[20px] border border-outline-variant/10 bg-surface-container-low shadow-[0_28px_120px_rgba(0,0,0,0.35)]">
+        <div class="px-6 py-5 border-b border-outline-variant/10">
+          <div class="flex items-center justify-between gap-4">
+            <h3 class="font-headline text-lg font-bold">加入知识库</h3>
+            <button
+              type="button"
+              class="w-8 h-8 rounded-xl hover:bg-surface-container-high transition-colors flex items-center justify-center text-on-surface-variant"
+              @click="showJoinDialog = false; joinInviteCode = ''; joinError = ''"
+            >
+              <span class="material-symbols-outlined text-[18px]">close</span>
+            </button>
+          </div>
+        </div>
+        <div class="px-6 py-5 space-y-4">
+          <p class="text-sm text-on-surface-variant">输入邀请码以加入此知识库，获取更多权限。</p>
+          <div>
+            <input
+              v-model="joinInviteCode"
+              type="text"
+              placeholder="请输入邀请码"
+              class="w-full bg-surface-container-highest border border-outline-variant/15 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-1 focus:ring-primary"
+              @keyup.enter="handleJoinByInvite"
+            />
+            <p v-if="joinError" class="text-sm text-error mt-2">{{ joinError }}</p>
+          </div>
+        </div>
+        <div class="px-6 py-5 border-t border-outline-variant/10 flex items-center justify-end gap-3">
+          <button
+            class="px-4 py-2 rounded-lg text-sm text-outline hover:bg-surface-container-high transition-colors"
+            @click="showJoinDialog = false; joinInviteCode = ''; joinError = ''"
+          >取消</button>
+          <button
+            class="px-4 py-2 rounded-lg text-sm font-medium bg-primary-container text-on-primary-container hover:brightness-110 transition-all disabled:opacity-50"
+            :disabled="joinLoading"
+            @click="handleJoinByInvite"
+          >{{ joinLoading ? "加入中..." : "加入" }}</button>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
