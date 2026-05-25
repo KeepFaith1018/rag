@@ -40,7 +40,7 @@ export class ContextManagerService {
   async buildContext(sessionId: string): Promise<BaseMessage[]> {
     try {
       const result = await this.chatMessageService.listMessages(sessionId, {
-        pageSize: 20,
+        pageSize: 500,
       });
 
       const completed = result.list
