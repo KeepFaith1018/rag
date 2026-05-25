@@ -25,6 +25,7 @@ import { RewriteOutputSchema } from '../schemas/rewritten-query.schema';
 import type { RewriteOutput } from '../schemas/rewritten-query.schema';
 import { ROUTER_SYSTEM_PROMPT } from '../prompts/router.prompt';
 import { REWRITE_SYSTEM_PROMPT } from '../prompts/rewrite.prompt';
+import { formatChatHistoryAsText } from './context-manager.service';
 import { WRITER_SYSTEM_PROMPT } from '../prompts/writer.prompt';
 import { AUDIT_SYSTEM_PROMPT } from '../prompts/audit.prompt';
 import { DECOMPOSE_SYSTEM_PROMPT } from '../prompts/decompose.prompt';
@@ -218,8 +219,15 @@ async function rewriteQueryNode(
     const structured = model.withStructuredOutput(RewriteOutputSchema, {
       method: 'jsonMode',
     });
+    const historyText = formatChatHistoryAsText(state.chatHistory ?? []);
+
+    let systemPrompt = REWRITE_SYSTEM_PROMPT;
+    if (historyText) {
+      systemPrompt = `${REWRITE_SYSTEM_PROMPT}\n\n当前对话历史：\n${historyText}\n---`;
+    }
+
     const result = await structured.invoke([
-      new SystemMessage(`${REWRITE_SYSTEM_PROMPT}\n\n请以 JSON 格式回复。`),
+      new SystemMessage(`${systemPrompt}\n\n请以 JSON 格式回复。`),
       new HumanMessage(
         `原始查询: ${state.originalQuery}\n意图类型: ${state.routedPlan?.questionType ?? 'fact_lookup'}`,
       ),
