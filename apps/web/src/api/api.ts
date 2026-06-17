@@ -11,6 +11,7 @@ import {
   getAccessToken,
   getRefreshToken,
   setAccessToken,
+  setRefreshToken,
 } from "@/utils/token";
 
 export const API_BASE_URL =
@@ -448,6 +449,11 @@ async function refreshAccessToken(): Promise<string> {
   }
 
   setAccessToken(result.data.accessToken);
+
+  // 保存轮换后的新 refreshToken
+  if (result.data.refreshToken) {
+    setRefreshToken(result.data.refreshToken);
+  }
 
   return result.data.accessToken;
 }

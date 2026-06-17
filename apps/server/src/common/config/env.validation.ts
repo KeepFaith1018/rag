@@ -6,12 +6,18 @@ export const configValidationSchema = Joi.object({
     .valid('development', 'production', 'test')
     .default('development'),
 
-  DATABASE_URL: Joi.string().required(),
+  DATABASE_HOST: Joi.string().required(),
+  DATABASE_PORT: Joi.number().default(3306),
+  DATABASE_USER: Joi.string().required(),
+  DATABASE_PASSWORD: Joi.string().required(),
+  DATABASE_NAME: Joi.string().required(),
   QDRANT_URL: Joi.string().required(),
   QDRANT_SERVICE_API_KEY: Joi.string().optional(),
 
-  JWT_SECRET: Joi.string().required(),
+  JWT_SECRET: Joi.string().min(32).required(),
   JWT_EXPIRES_IN: Joi.string().default('7d'),
+  ENCRYPTION_KEY: Joi.string().min(16).required(),
+  TRANSMISSION_SECRET: Joi.string().min(16).required(),
   REDIS_URL: Joi.string().required(),
   REDIS_PASSWORD: Joi.string().required(),
   BAILIAN_API_KEY: Joi.string().optional(),
@@ -47,4 +53,14 @@ export const configValidationSchema = Joi.object({
 
   // Tavily Web Search
   TAVILY_API_KEY: Joi.string().optional(),
+
+  // CORS
+  CORS_ORIGINS: Joi.string().default('http://localhost:5173,http://localhost:5174'),
+
+  // Email
+  EMAIL_HOST: Joi.string().required(),
+  EMAIL_PORT: Joi.number().required(),
+  EMAIL_USER: Joi.string().required(),
+  EMAIL_PASS: Joi.string().required(),
+  EMAIL_FROM: Joi.string().email().required(),
 });

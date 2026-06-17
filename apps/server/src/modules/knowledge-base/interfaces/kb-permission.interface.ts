@@ -25,6 +25,8 @@ export type KbPermissionAction =
 export interface KbPermissionRequirement {
   action: KbPermissionAction;
   kbIdParam?: string;
+  fallback?: KbPermissionAction;
+  documentIdParam?: string;
 }
 
 /**

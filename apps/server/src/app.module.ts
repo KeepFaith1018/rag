@@ -18,7 +18,9 @@ import { ChatModule } from './modules/chat/chat.module';
 import { RagModule } from './modules/rag/rag.module';
 import { EmailModule } from './modules/email/email.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { HealthModule } from './modules/health/health.module';
 import { CryptoModule } from '@common/utils/crypto.module';
+import { SecurityModule } from '@common/security/security.module';
 import { ScheduleModule } from '@nestjs/schedule';
 
 import { JwtModule } from '@nestjs/jwt';
@@ -38,9 +40,9 @@ import { JwtModule } from '@nestjs/jwt';
       global: true,
       imports: [ConfigModule],
       useFactory: (configService: ConfigService) => ({
-        secret: configService.get<string>('JWT_EXPIRES_IN'),
+        secret: configService.get<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: '7d',
+          expiresIn: configService.get<string>('JWT_EXPIRES_IN', '7d'),
         },
       }),
       inject: [ConfigService],
@@ -61,7 +63,9 @@ import { JwtModule } from '@nestjs/jwt';
     ChatModule,
     RagModule,
     AdminModule,
+    HealthModule,
     CryptoModule,
+    SecurityModule,
   ],
   controllers: [AppController],
   providers: [

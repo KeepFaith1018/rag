@@ -54,6 +54,11 @@ export class RedisCacheService implements OnModuleDestroy {
     }
   }
 
+  /** 暴露底层 ioredis 客户端，供限流等需要原子操作的场景使用。 */
+  getClient(): Redis {
+    return this.client;
+  }
+
   async onModuleDestroy() {
     await this.client.quit();
   }

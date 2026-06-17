@@ -6,43 +6,59 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { Request } from 'express';
+import { randomUUID } from 'crypto';
 import { JwtUser } from '@app/modules/auth/interface/jwtUser';
+import { RedisCacheService } from '@common/cache/redis-cache.service';
+
 /**
- * 简单内存限流实现。
+ * 基于 Redis 滑动窗口的限流 Guard。
  *
- * 生产环境建议使用 Redis + Lua 脚本实现分布式限流。
- * 这里采用滑动窗口算法，限制每个用户每分钟的最大请求数。
+ * 使用 Redis sorted set 实现：
+ * - ZREMRANGEBYSCORE 清理过期时间戳
+ * - ZCARD 计算窗口内请求数
+ * - ZADD 添加当前请求
+ * 通过 MULTI 事务保证原子性。
  */
 @Injectable()
 export class RateLimitGuard implements CanActivate {
   private readonly windowMs: number;
   private readonly maxRequests: number;
-  private readonly requests = new Map<string, number[]>();
 
-  constructor(windowMs = 60_000, maxRequests = 30) {
+  constructor(
+    private readonly redis: RedisCacheService,
+    windowMs = 60_000,
+    maxRequests = 30,
+  ) {
     this.windowMs = windowMs;
     this.maxRequests = maxRequests;
   }
 
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<Request & { user?: JwtUser }>();
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context
+      .switchToHttp()
+      .getRequest<Request & { user?: JwtUser }>();
     const userId = request.user?.sub;
 
     if (!userId) {
       return true;
     }
 
-    const key = `rate:${userId}`;
+    const key = `rate:user:${userId}`;
     const now = Date.now();
     const windowStart = now - this.windowMs;
+    const ttlSeconds = Math.ceil(this.windowMs / 1000) + 1;
 
-    // 获取该用户的请求时间戳列表
-    const timestamps = this.requests.get(key) || [];
+    const client = this.redis.getClient();
+    const multi = client.multi();
+    multi.zremrangebyscore(key, 0, windowStart);
+    multi.zcard(key);
+    multi.zadd(key, now, `${now}:${randomUUID()}`);
+    multi.expire(key, ttlSeconds);
 
-    // 清理过期的 timestamps
-    const validTimestamps = timestamps.filter((ts) => ts > windowStart);
+    const results = await multi.exec();
+    const count = (results?.[1]?.[1] as number) ?? 0;
 
-    if (validTimestamps.length >= this.maxRequests) {
+    if (count >= this.maxRequests) {
       throw new HttpException(
         {
           success: false,
@@ -52,10 +68,6 @@ export class RateLimitGuard implements CanActivate {
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }
-
-    // 添加当前请求时间戳
-    validTimestamps.push(now);
-    this.requests.set(key, validTimestamps);
 
     return true;
   }
@@ -71,24 +83,35 @@ export class RateLimitGuard implements CanActivate {
 export class StreamRateLimitGuard implements CanActivate {
   private readonly windowMs = 60_000;
   private readonly maxRequests = 10;
-  private readonly requests = new Map<string, number[]>();
 
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest<Request & { user?: JwtUser }>();
+  constructor(private readonly redis: RedisCacheService) {}
+
+  async canActivate(context: ExecutionContext): Promise<boolean> {
+    const request = context
+      .switchToHttp()
+      .getRequest<Request & { user?: JwtUser }>();
     const userId = request.user?.sub;
 
     if (!userId) {
       return true;
     }
 
-    const key = `stream:${userId}`;
+    const key = `rate:stream:${userId}`;
     const now = Date.now();
     const windowStart = now - this.windowMs;
+    const ttlSeconds = Math.ceil(this.windowMs / 1000) + 1;
 
-    const timestamps = this.requests.get(key) || [];
-    const validTimestamps = timestamps.filter((ts) => ts > windowStart);
+    const client = this.redis.getClient();
+    const multi = client.multi();
+    multi.zremrangebyscore(key, 0, windowStart);
+    multi.zcard(key);
+    multi.zadd(key, now, `${now}:${randomUUID()}`);
+    multi.expire(key, ttlSeconds);
 
-    if (validTimestamps.length >= this.maxRequests) {
+    const results = await multi.exec();
+    const count = (results?.[1]?.[1] as number) ?? 0;
+
+    if (count >= this.maxRequests) {
       throw new HttpException(
         {
           success: false,
@@ -98,9 +121,6 @@ export class StreamRateLimitGuard implements CanActivate {
         HttpStatus.TOO_MANY_REQUESTS,
       );
     }
-
-    validTimestamps.push(now);
-    this.requests.set(key, validTimestamps);
 
     return true;
   }

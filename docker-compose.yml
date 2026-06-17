@@ -47,7 +47,7 @@ services:
       - rag_network
 
   es:
-    build: ./elasticsearch
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     container_name: rag_es
     ports:
       - "9200:9200"

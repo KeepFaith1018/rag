@@ -8,17 +8,14 @@ import {
   scryptSync,
 } from 'node:crypto';
 
-/** 前后端共享的传输加密口令（SHA-256 派生 32 字节 AES 密钥） */
-const TRANSMISSION_PASSPHRASE = 'linsor-model-key-v1';
-
 /**
  * AES-256-GCM 加密/解密服务。
  *
  * 两套密钥：
- * - DB 存储密钥：scrypt(JWT_SECRET) → 用于 b_user_model_configs.api_key_encrypted 加密
- * - 传输密钥：SHA-256(共享口令) → 用于前端加密传输、后端解密使用
- *   前后端使用相同口令，前端 Web Crypto API 加密后通过 HTTP Header 传密文，
- *   后端 Node.js crypto 解密后注入 ChatModelService
+ * - DB 存储密钥：scrypt(ENCRYPTION_KEY) → 用于 b_user_model_configs.api_key_encrypted 加密
+ * - 传输密钥：SHA-256(TRANSMISSION_SECRET) → 用于前端加密传输、后端解密使用
+ *   注意：TRANSMISSION_SECRET 会被打包到前端产物中，不属于真正的机密。
+ *   传输安全应依赖 HTTPS，此密钥仅用于应用层混淆。
  */
 @Injectable()
 export class CryptoService {
@@ -27,13 +24,12 @@ export class CryptoService {
   private readonly ALGORITHM = 'aes-256-gcm';
 
   constructor(private readonly configService: ConfigService) {
-    const secret =
-      this.configService.get<string>('ENCRYPTION_KEY') ||
-      this.configService.get<string>('JWT_SECRET') ||
-      'linsor-default-encryption-key';
+    const secret = this.configService.get<string>('ENCRYPTION_KEY')!;
     this.dbKey = scryptSync(secret, 'linsor-salt-2026', 32);
+
+    const transmissionSecret = this.configService.get<string>('TRANSMISSION_SECRET')!;
     this.transmissionKey = createHash('sha256')
-      .update(TRANSMISSION_PASSPHRASE)
+      .update(transmissionSecret)
       .digest();
   }
 

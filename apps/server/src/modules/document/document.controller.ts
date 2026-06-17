@@ -157,7 +157,7 @@ export class DocumentController {
    * 删除知识库文档。
    */
   @Delete('knowledge-bases/:kbId/documents/:documentId')
-  @KbPermission({ action: 'read' })
+  @KbPermission({ action: 'deleteAnyDocument', fallback: 'deleteOwnDocument' })
   remove(
     @CurrentUser('sub') userId: string,
     @Param('kbId') kbId: string,
@@ -170,7 +170,7 @@ export class DocumentController {
    * 手动触发文档重解析。
    */
   @Post('knowledge-bases/:kbId/documents/:documentId/reparse')
-  @KbPermission({ action: 'read' })
+  @KbPermission({ action: 'reparseAnyDocument', fallback: 'reparseOwnDocument' })
   reparse(
     @CurrentUser('sub') userId: string,
     @Param('kbId') kbId: string,

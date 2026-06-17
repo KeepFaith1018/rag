@@ -1,5 +1,5 @@
 import { NestFactory } from '@nestjs/core';
-import { ValidationError, ValidationPipe, Logger } from '@nestjs/common';
+import { ValidationError, ValidationPipe } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { WINSTON_MODULE_NEST_PROVIDER } from 'nest-winston';
 import { AppModule } from './app.module';
@@ -14,6 +14,7 @@ import { NextFunction } from 'express';
 import { Request, Response } from 'express';
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  const configService = app.get(ConfigService);
 
   // 为每个请求绑定 requestId，用于串联拦截器、过滤器和业务日志。
   app.use((request: Request, response: Response, next: NextFunction) => {
@@ -22,8 +23,13 @@ async function bootstrap() {
   });
 
   // 跨域
+  const corsOrigins = configService
+    .get<string>('CORS_ORIGINS', 'http://localhost:5173')
+    .split(',')
+    .map((s) => s.trim());
+
   app.enableCors({
-    origin: true,
+    origin: corsOrigins,
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE,OPTIONS',
   });
@@ -41,6 +47,7 @@ async function bootstrap() {
     new ValidationPipe({
       transform: true,
       whitelist: true,
+
       exceptionFactory: (errors: ValidationError[]) => {
         // 将 class-validator 的原始错误统一转换为业务异常，避免前端收到杂乱结构。
         return new BusinessException(
@@ -53,8 +60,6 @@ async function bootstrap() {
   // 全局前缀
   app.setGlobalPrefix('api');
 
-  // 获取配置服务
-  const configService = app.get(ConfigService);
   const port = configService.get<number>('PORT') || 3000;
 
   await app.listen(port);

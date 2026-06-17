@@ -83,59 +83,91 @@ export class AdminAuthService {
   }
 
   async refreshToken(dto: RefreshTokenDto) {
-    try {
-      const hash = this.hashToken(dto.refreshToken);
-      const now = new Date();
+    const hash = this.hashToken(dto.refreshToken);
+    const now = new Date();
 
-      const session = await this.prisma.sys_admin_sessions.findFirst({
-        where: {
-          refresh_token_hash: hash,
-          revoked: false,
-          expired_at: { gt: now },
-        },
+    // 1. 查找 session（包含已吊销的，用于重放检测）
+    const session = await this.prisma.sys_admin_sessions.findFirst({
+      where: {
+        refresh_token_hash: hash,
+      },
+    });
+
+    if (!session) {
+      throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
+    }
+
+    // 2. 重放检测
+    if (session.revoked) {
+      await this.prisma.sys_admin_sessions.updateMany({
+        where: { admin_id: session.admin_id, revoked: false },
+        data: { revoked: true },
+      });
+      throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
+    }
+
+    // 3. 过期检查
+    if (session.expired_at <= now) {
+      throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
+    }
+
+    try {
+      const payload: AdminJwtUser = await this.jwtService.verifyAsync(
+        dto.refreshToken,
+      );
+
+      if (!payload.isAdmin) {
+        throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
+      }
+
+      const admin = await this.prisma.sys_admins.findUnique({
+        where: { id: session.admin_id },
       });
 
-      if (!session) {
-        throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
+      if (!admin || !admin.is_active) {
+        throw new BusinessException(ErrorCode.ADMIN_NOT_FOUND);
       }
 
-      try {
-        const payload: AdminJwtUser = await this.jwtService.verifyAsync(
-          dto.refreshToken,
-        );
+      // 4. 生成新 token 对
+      const newPayload: AdminJwtUser = {
+        sub: admin.id.toString(),
+        username: admin.username,
+        role: admin.role as 'super_admin' | 'operator',
+        isAdmin: true,
+      };
 
-        if (!payload.isAdmin) {
-          throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
-        }
+      const accessToken = await this.jwtService.signAsync(newPayload, {
+        expiresIn: '30m',
+      });
+      const refreshToken = await this.jwtService.signAsync(newPayload, {
+        expiresIn: '7d',
+      });
 
-        const admin = await this.prisma.sys_admins.findUnique({
-          where: { id: session.admin_id },
-        });
+      const newRefreshHash = this.hashToken(refreshToken);
+      const newSessionId = this.generateSessionId();
 
-        if (!admin || !admin.is_active) {
-          throw new BusinessException(ErrorCode.ADMIN_NOT_FOUND);
-        }
+      // 5. 事务：吊销旧 session + 创建新 session
+      await this.prisma.$transaction([
+        this.prisma.sys_admin_sessions.update({
+          where: { session_id: session.session_id },
+          data: { revoked: true },
+        }),
+        this.prisma.sys_admin_sessions.create({
+          data: {
+            session_id: newSessionId,
+            admin_id: admin.id,
+            refresh_token_hash: newRefreshHash,
+            user_agent: null,
+            revoked: false,
+            expired_at: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
+          },
+        }),
+      ]);
 
-        const newPayload: AdminJwtUser = {
-          sub: admin.id.toString(),
-          username: admin.username,
-          role: admin.role as 'super_admin' | 'operator',
-          isAdmin: true,
-        };
-
-        const accessToken = await this.jwtService.signAsync(newPayload, {
-          expiresIn: '30m',
-        });
-
-        return { accessToken };
-      } catch {
-        throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
-      }
+      return { accessToken, refreshToken };
     } catch (error) {
       if (error instanceof BusinessException) throw error;
-      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
-        context: { module: 'AdminAuthService', action: 'refreshToken' },
-      });
+      throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
     }
   }
 

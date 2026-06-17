@@ -17,6 +17,7 @@ import {
 } from '@common/exception/businessException';
 import { ErrorCode } from '@common/utils/errorCodeMap';
 import { PrismaService } from '@common/prisma/prisma.service';
+import { SecurityAuditService } from '@common/security/security-audit.service';
 import { JwtUser } from './interface/jwtUser';
 
 @Injectable()
@@ -26,6 +27,7 @@ export class AuthService {
     private jwtService: JwtService,
     private emailService: EmailService,
     private prisma: PrismaService,
+    private securityAudit: SecurityAuditService,
   ) {}
 
   async sendVerificationCode(dto: SendVerificationCodeDto) {
@@ -99,11 +101,13 @@ export class AuthService {
     try {
       const user = await this.userService.findByEmail(loginDto.email);
       if (!user) {
+        this.securityAudit.logLoginFailure(loginDto.email, 'user_not_found');
         throw new BusinessException(ErrorCode.AUTH_INVALID_CREDENTIALS);
       }
 
       const isMatch = await bcrypt.compare(loginDto.password, user.password_hash);
       if (!isMatch) {
+        this.securityAudit.logLoginFailure(loginDto.email, 'invalid_password');
         throw new BusinessException(ErrorCode.AUTH_INVALID_CREDENTIALS);
       }
       const payload = {
@@ -148,65 +152,98 @@ export class AuthService {
   }
 
   async refreshToken(refreshTokenDto: RefreshTokenDto) {
+    const hash = this.hashToken(refreshTokenDto.refreshToken);
+    const now = new Date();
+
+    // 1. 查找 session（包含已吊销的，用于重放检测）
+    const session = await this.prisma.b_user_sessions.findFirst({
+      where: {
+        refresh_token_hash: hash,
+      },
+    });
+
+    if (!session) {
+      throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
+    }
+
+    // 2. 重放检测：已吊销的 token 被再次使用，视为可疑行为
+    if (session.revoked) {
+      this.securityAudit.logTokenReplay(
+        session.user_id.toString(),
+        session.session_id,
+      );
+      // 吊销该用户所有活跃 session
+      await this.prisma.b_user_sessions.updateMany({
+        where: { user_id: session.user_id, revoked: false },
+        data: { revoked: true },
+      });
+      throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
+    }
+
+    // 3. 过期检查
+    if (session.expired_at <= now) {
+      throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
+    }
+
     try {
-      const hash = this.hashToken(refreshTokenDto.refreshToken);
-      const now = new Date();
+      // 4. 验证 JWT 签名
+      const payload: JwtUser = await this.jwtService.verifyAsync(
+        refreshTokenDto.refreshToken,
+      );
 
-      const session = await this.prisma.b_user_sessions.findFirst({
-        where: {
-          refresh_token_hash: hash,
-          revoked: false,
-          expired_at: { gt: now },
-        },
-      });
-
-      if (!session) {
-        throw new BusinessException(ErrorCode.AUTH_INVALID_REFRESH_TOKEN);
+      const user = await this.userService.findById(session.user_id);
+      if (!user || user.id.toString() !== String(payload.sub)) {
+        throw new BusinessException(ErrorCode.AUTH_USER_NOT_FOUND);
       }
 
-      try {
-        const payload: JwtUser = await this.jwtService.verifyAsync(
-          refreshTokenDto.refreshToken,
-        );
+      // 5. 生成新 token 对
+      const newPayload = {
+        sub: user.id.toString(),
+        email: user.email,
+        username: user.full_name ?? user.email,
+        isAdmin: false,
+      };
 
-        const user = await this.userService.findById(session.user_id);
-        if (!user || user.id.toString() !== String(payload.sub)) {
-          throw new BusinessException(ErrorCode.AUTH_USER_NOT_FOUND);
-        }
+      const accessToken = await this.jwtService.signAsync(newPayload);
+      const refreshToken = await this.jwtService.signAsync(newPayload, {
+        expiresIn: '7d',
+      });
 
-        const newPayload = {
-          sub: user.id.toString(),
-          email: user.email,
-          username: user.full_name ?? user.email,
-          isAdmin: false,
-        };
+      const newRefreshHash = this.hashToken(refreshToken);
+      const newSessionId = this.generateSessionId();
 
-        const accessToken = await this.jwtService.signAsync(newPayload);
-
-        return {
-          accessToken,
-        };
-      } catch (error) {
-        throw wrapBusinessException(
-          error,
-          ErrorCode.AUTH_INVALID_REFRESH_TOKEN,
-          {
-            context: {
-              module: 'AuthService',
-              action: 'refreshToken.verify',
-              userId: session.user_id.toString(),
-            },
-            logLevel: 'warn',
+      // 6. 事务：吊销旧 session + 创建新 session
+      await this.prisma.$transaction([
+        this.prisma.b_user_sessions.update({
+          where: { session_id: session.session_id },
+          data: { revoked: true },
+        }),
+        this.prisma.b_user_sessions.create({
+          data: {
+            session_id: newSessionId,
+            user_id: user.id,
+            refresh_token_hash: newRefreshHash,
+            user_agent: null,
+            revoked: false,
+            expired_at: new Date(now.getTime() + 7 * 24 * 60 * 60 * 1000),
           },
-        );
-      }
+        }),
+      ]);
+
+      return { accessToken, refreshToken };
     } catch (error) {
-      throw wrapBusinessException(error, ErrorCode.INTERNAL_ERROR, {
-        context: {
-          module: 'AuthService',
-          action: 'refreshToken',
+      throw wrapBusinessException(
+        error,
+        ErrorCode.AUTH_INVALID_REFRESH_TOKEN,
+        {
+          context: {
+            module: 'AuthService',
+            action: 'refreshToken.verify',
+            userId: session.user_id.toString(),
+          },
+          logLevel: 'warn',
         },
-      });
+      );
     }
   }
 
