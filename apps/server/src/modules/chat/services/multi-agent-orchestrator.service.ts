@@ -15,7 +15,7 @@ import { parseBigInt } from '@common/utils/bigint.utils';
 import type { AgentRunContext } from './agent-trace.service';
 import type { WebSearchResult } from '../../rag/web-search/web-search.service';
 import type { ResolvedModelParams } from './model-config-resolution.service';
-import { SseWriter } from '../types/agui-events';
+import { SseWriter, type ModelFallbackInfo } from '../types/agui-events';
 import { extractMessageContent, getErrorMessage } from '@common/utils/message.utils';
 
 import type { RerankedHit } from '../../rag/retrieval/interfaces/reranked-hit.interface';
@@ -398,9 +398,9 @@ async function relevanceCheckNode(
     const output = result as z.infer<typeof RelevanceCheckSchema>;
     return { relevanceVerdict: output.verdict };
   } catch {
-    // 降级：有结果就认为相关
+    // 降级：有结果只能视为部分相关，避免把未经校验的召回直接判为充分。
     return {
-      relevanceVerdict: state.rerankedHits.length > 0 ? 'relevant' : 'not_relevant',
+      relevanceVerdict: state.rerankedHits.length > 0 ? 'partial' : 'not_relevant',
     };
   }
 }
@@ -495,7 +495,7 @@ function buildRetrieveQueries(state: AgentState): string[] {
   return [...new Set(queries)].slice(0, 10);
 }
 
-function buildContextText(
+export function buildContextText(
   hits: RerankedHit[],
   webResults: WebSearchResult[],
 ): string {
@@ -541,7 +541,7 @@ function buildContextText(
     parts.push('');
   }
 
-  if (parts.length === 1) return '（未检索到相关上下文）';
+  if (parts.length === 0) return '（知识库中未检索到相关上下文）';
   return parts.join('\n---\n');
 }
 
@@ -584,6 +584,7 @@ export class MultiAgentOrchestratorService {
       enableWebSearch?: boolean;
       signal?: AbortSignal;
       modelOptions?: ResolvedModelParams;
+      modelFallback?: ModelFallbackInfo;
       onFinish?: (result: {
         content: string;
         citations: RerankedHit[];
@@ -595,6 +596,7 @@ export class MultiAgentOrchestratorService {
       enableWebSearch = false,
       signal,
       modelOptions,
+      modelFallback,
       onFinish,
       onError,
     } = options ?? {};
@@ -616,7 +618,12 @@ export class MultiAgentOrchestratorService {
       runId,
     );
 
-    writer.write({ type: 'RUN_STARTED', runId, timestamp: Date.now() });
+    writer.write({
+      type: 'RUN_STARTED',
+      runId,
+      timestamp: Date.now(),
+      modelFallback,
+    });
 
     try {
       // ══════ 构建图 ══════
@@ -801,7 +808,7 @@ export class MultiAgentOrchestratorService {
             );
             relevanceResult = {
               relevanceVerdict:
-                s.rerankedHits.length > 0 ? 'relevant' : 'not_relevant',
+                s.rerankedHits.length > 0 ? 'partial' : 'not_relevant',
             };
           }
           writer.write({
@@ -829,9 +836,7 @@ export class MultiAgentOrchestratorService {
                 getErrorMessage(error)
               }`,
             );
-            const verdict =
-              s.rerankedHits.length > 0 ? 'sufficient' : 'insufficient';
-            auditResult = { auditVerdict: verdict };
+            auditResult = { auditVerdict: 'insufficient' };
           }
           writer.write({
             type: 'STEP_FINISHED',
@@ -1032,6 +1037,7 @@ export class MultiAgentOrchestratorService {
           auditVerdict: evalState.auditVerdict,
           relevanceVerdict: evalState.relevanceVerdict,
           retrievalRetryCount: evalState.retrievalRetryCount ?? 0,
+          modelFallback,
         })
         .catch((err: unknown) =>
           self.logger.warn('[Orchestrator] 评估数据持久化失败', {
@@ -1127,6 +1133,8 @@ export class MultiAgentOrchestratorService {
     try {
       const model = this.chatModelService.createModel({
         model: params.modelOptions?.modelName || this.chatModelService.getLightModelName(),
+        apiKey: params.modelOptions?.apiKey,
+        baseURL: params.modelOptions?.baseURL,
         temperature: 0.1,
         streaming: false,
         timeout: 15000,

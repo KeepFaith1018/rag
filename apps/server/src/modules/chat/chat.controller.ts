@@ -22,7 +22,7 @@ import { ChatMessageService } from './services/chat-message.service';
 import { ChatStreamService } from './services/chat-stream.service';
 import { ModelConfigResolutionService, type ResolvedModelParams } from './services/model-config-resolution.service';
 import { CryptoService } from '@common/utils/crypto.service';
-import { SseWriter } from './types/agui-events';
+import { SseWriter, type ModelFallbackInfo } from './types/agui-events';
 import { CreateChatSessionDto } from './dto/create-chat-session.dto';
 import { ListChatSessionsDto } from './dto/list-chat-sessions.dto';
 import { StreamChatDto } from './dto/stream-chat.dto';
@@ -152,6 +152,7 @@ export class ChatController {
     // 解析模型配置：优先从 body 的 modelConfigId + modelSource 查库/解密
     // 回退到 headers 透传（过渡期兼容旧前端）
     let resolvedModel: ResolvedModelParams | undefined;
+    let modelFallback: ModelFallbackInfo | undefined;
     if (dto.modelConfigId && dto.modelSource) {
       try {
         resolvedModel = await this.modelResolutionService.resolve(
@@ -160,7 +161,13 @@ export class ChatController {
           dto.modelSource as 'system' | 'user',
         );
       } catch {
-        // 解析失败，回退到 headers / env 默认值
+        modelFallback = {
+          used: true,
+          reason: 'MODEL_CONFIG_RESOLVE_FAILED',
+          requestedModelConfigId: dto.modelConfigId,
+          requestedModelSource: dto.modelSource,
+          message: '所选模型配置不可用，已切换为系统默认模型。',
+        };
       }
     } else if (userModel) {
       // 旧路径：headers 透传
@@ -181,7 +188,14 @@ export class ChatController {
     }
 
     void this.chatStreamService
-      .streamChat(Number(userId), dto, writer, abortController.signal, resolvedModel)
+      .streamChat(
+        Number(userId),
+        dto,
+        writer,
+        abortController.signal,
+        resolvedModel,
+        modelFallback,
+      )
       .catch((err) => {
         writer.write({
           type: 'RUN_ERROR',

@@ -14,11 +14,22 @@ interface BaseEvent {
   timestamp?: number;
 }
 
+export interface ModelFallbackInfo {
+  used: true;
+  reason: 'MODEL_CONFIG_RESOLVE_FAILED';
+  requestedModelConfigId?: string;
+  requestedModelSource?: string;
+  fallbackModelName?: string;
+  message: string;
+}
+
 // ── 运行生命周期 ──
 
 export interface RunStartedEvent extends BaseEvent {
   type: 'RUN_STARTED';
   runId: string;
+  /** 用户选择的模型配置不可用时，后端已回退到系统默认模型 */
+  modelFallback?: ModelFallbackInfo;
 }
 
 export interface RunFinishedEvent extends BaseEvent {

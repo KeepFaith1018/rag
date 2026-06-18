@@ -11,7 +11,7 @@ import { CitationService } from '../../rag/retrieval/citation.service';
 import { MultiAgentOrchestratorService } from './multi-agent-orchestrator.service';
 import { WebSearchService } from '../../rag/web-search/web-search.service';
 import { ModelConfigResolutionService, type ResolvedModelParams } from './model-config-resolution.service';
-import { SseWriter, type ToolCallName } from '../types/agui-events';
+import { SseWriter, type ModelFallbackInfo, type ToolCallName } from '../types/agui-events';
 import { extractMessageContent } from '@common/utils/message.utils';
 import { z } from 'zod';
 import type { StreamChatDto } from '../dto/stream-chat.dto';
@@ -53,11 +53,12 @@ export class ChatStreamService {
     writer: SseWriter,
     signal?: AbortSignal,
     resolvedModel?: ResolvedModelParams,
+    modelFallback?: ModelFallbackInfo,
   ): Promise<void> {
     await this.chatSessionService.assertSessionOwnership(userId, dto.sessionId);
 
     // 若前端传了 modelConfigId 但上方未预解析，在此自行解析
-    if (!resolvedModel && dto.modelConfigId && dto.modelSource) {
+    if (!resolvedModel && dto.modelConfigId && dto.modelSource && !modelFallback) {
       try {
         resolvedModel = await this.modelResolutionService.resolve(
           userId,
@@ -65,18 +66,45 @@ export class ChatStreamService {
           dto.modelSource as 'system' | 'user',
         );
       } catch (err) {
-        // 解析失败不中断请求，回退到 env 默认值
+        modelFallback = {
+          used: true,
+          reason: 'MODEL_CONFIG_RESOLVE_FAILED',
+          requestedModelConfigId: dto.modelConfigId,
+          requestedModelSource: dto.modelSource,
+          message: '所选模型配置不可用，已切换为系统默认模型。',
+        };
       }
     }
 
     const modelName = resolvedModel?.modelName || this.chatModelService.getDefaultModelName();
+    if (modelFallback && !modelFallback.fallbackModelName) {
+      modelFallback = { ...modelFallback, fallbackModelName: modelName };
+    }
     const traceId = randomUUID();
 
     if (dto.chatMode === 'rag' && dto.selectedKbIds?.length) {
-      return this.streamRagMode(userId, dto, modelName, traceId, writer, signal, resolvedModel);
+      return this.streamRagMode(
+        userId,
+        dto,
+        modelName,
+        traceId,
+        writer,
+        signal,
+        resolvedModel,
+        modelFallback,
+      );
     }
 
-    return this.streamChatMode(userId, dto, modelName, traceId, writer, signal, resolvedModel);
+    return this.streamChatMode(
+      userId,
+      dto,
+      modelName,
+      traceId,
+      writer,
+      signal,
+      resolvedModel,
+      modelFallback,
+    );
   }
 
   /**
@@ -90,6 +118,7 @@ export class ChatStreamService {
     writer: SseWriter,
     signal?: AbortSignal,
     resolvedModel?: ResolvedModelParams,
+    modelFallback?: ModelFallbackInfo,
   ): Promise<void> {
     const permContexts = await this.kbPermissionService.authorizeMany(
       userId,
@@ -134,6 +163,7 @@ export class ChatStreamService {
         enableWebSearch: dto.enableWebSearch ?? false,
         signal,
         modelOptions: resolvedModel,
+        modelFallback,
         onFinish: async (result) => {
           const tasks: Promise<unknown>[] = [];
           let citationRecords: import('../../rag/retrieval/citation.service').CitationRecord[] = [];
@@ -211,6 +241,7 @@ export class ChatStreamService {
     writer: SseWriter,
     signal?: AbortSignal,
     resolvedModel?: ResolvedModelParams,
+    modelFallback?: ModelFallbackInfo,
   ): Promise<void> {
     const model = this.chatModelService.createModel({
       model: resolvedModel?.modelName,
@@ -243,7 +274,12 @@ export class ChatStreamService {
       new HumanMessage(dto.message),
     ];
 
-    writer.write({ type: 'RUN_STARTED', runId: traceId, timestamp: Date.now() });
+    writer.write({
+      type: 'RUN_STARTED',
+      runId: traceId,
+      timestamp: Date.now(),
+      modelFallback,
+    });
 
     const enableToolCalling = dto.enableWebSearch && this.webSearchService.isAvailable();
     let fullContent = '';
