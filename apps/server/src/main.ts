@@ -12,6 +12,12 @@ import { ResponseInterceptor } from '@common/interceptors/response.interceptor';
 import { AllExceptionsFilter } from './common/filter/all-exceptions.filter';
 import { NextFunction } from 'express';
 import { Request, Response } from 'express';
+// BigInt JSON 序列化 polyfill，避免 API 返回 BigInt 字段时抛出 TypeError
+// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+(BigInt.prototype as any).toJSON = function (this: bigint) {
+  return this.toString();
+};
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);

@@ -159,7 +159,8 @@ exports.Prisma.B_user_sessionsScalarFieldEnum = {
   user_agent: 'user_agent',
   revoked: 'revoked',
   expired_at: 'expired_at',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.Sys_admin_sessionsScalarFieldEnum = {
@@ -170,7 +171,8 @@ exports.Prisma.Sys_admin_sessionsScalarFieldEnum = {
   user_agent: 'user_agent',
   revoked: 'revoked',
   expired_at: 'expired_at',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.Sys_model_configsScalarFieldEnum = {
@@ -322,17 +324,6 @@ exports.Prisma.B_document_chunksScalarFieldEnum = {
   chunk_level: 'chunk_level',
   is_root: 'is_root',
   embedding_status: 'embedding_status',
-  created_at: 'created_at'
-};
-
-exports.Prisma.B_document_chunk_search_indexScalarFieldEnum = {
-  chunk_id: 'chunk_id',
-  doc_id: 'doc_id',
-  kb_id: 'kb_id',
-  title: 'title',
-  title_path: 'title_path',
-  content_plain: 'content_plain',
-  keyword_text: 'keyword_text',
   created_at: 'created_at'
 };
 
@@ -584,13 +575,6 @@ exports.Prisma.b_document_chunksOrderByRelevanceFieldEnum = {
   embedding_status: 'embedding_status'
 };
 
-exports.Prisma.b_document_chunk_search_indexOrderByRelevanceFieldEnum = {
-  title: 'title',
-  title_path: 'title_path',
-  content_plain: 'content_plain',
-  keyword_text: 'keyword_text'
-};
-
 exports.Prisma.b_document_processing_tasksOrderByRelevanceFieldEnum = {
   job_id: 'job_id',
   stage: 'stage',
@@ -672,7 +656,6 @@ exports.Prisma.ModelName = {
   b_upload_sessions: 'b_upload_sessions',
   b_upload_chunks: 'b_upload_chunks',
   b_document_chunks: 'b_document_chunks',
-  b_document_chunk_search_index: 'b_document_chunk_search_index',
   b_document_processing_tasks: 'b_document_processing_tasks',
   b_chat_sessions: 'b_chat_sessions',
   b_chat_messages: 'b_chat_messages',

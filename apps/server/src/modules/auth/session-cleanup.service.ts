@@ -46,7 +46,7 @@ export class SessionCleanupService {
             { revoked: true, updated_at: { lt: thirtyDaysAgo } },
           ],
         },
-        take: this.BATCH_SIZE,
+        limit: this.BATCH_SIZE,
       });
       total += result.count;
       if (result.count < this.BATCH_SIZE) break;
@@ -66,7 +66,7 @@ export class SessionCleanupService {
             { revoked: true, updated_at: { lt: thirtyDaysAgo } },
           ],
         },
-        take: this.BATCH_SIZE,
+        limit: this.BATCH_SIZE,
       });
       total += result.count;
       if (result.count < this.BATCH_SIZE) break;

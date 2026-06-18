@@ -1,10 +1,8 @@
-version: '3.8'
-
 services:
   db:
     image: mysql:8.0
     container_name: rag_mysql
-    command: --default-authentication-plugin=mysql_native_password
+    command: --default-authentication-plugin=mysql_native_password --character-set-server=utf8mb4 --collation-server=utf8mb4_unicode_ci
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: rag-mysql
@@ -16,9 +14,20 @@ services:
       - mysql_data:/var/lib/mysql
     networks:
       - rag_network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   qdrant:
-    image: dockerproxy.net/qdrant/qdrant:latest
+    image: qdrant/qdrant:latest
     container_name: rag_qdrant
     restart: always
     ports:
@@ -31,12 +40,23 @@ services:
       - qdrant_data:/qdrant/storage
     networks:
       - rag_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:6333/healthz || exit 1"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   redis:
     image: redis:7-alpine
     container_name: rag_redis
     restart: always
-    command: redis-server --requirepass rag-redis
+    command: redis-server --requirepass rag-redis --appendonly yes
     environment:
       TZ: Asia/Shanghai
     ports:
@@ -45,28 +65,52 @@ services:
       - redis_data:/data
     networks:
       - rag_network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "rag-redis", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 5s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
   es:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.11.0
     container_name: rag_es
+    restart: always
+    environment:
+      discovery.type: single-node
+      xpack.security.enabled: "false"
+      xpack.security.http.ssl.enabled: "false"
+      xpack.security.transport.ssl.enabled: "false"
+      ES_JAVA_OPTS: "-Xms512m -Xmx512m"
+      TZ: Asia/Shanghai
     ports:
       - "9200:9200"
-    environment:
-      - discovery.type=single-node
-      - xpack.security.enabled=false
-      - xpack.security.http.ssl.enabled=false
-      - xpack.security.transport.ssl.enabled=false
-      - ES_JAVA_OPTS=-Xms512m -Xmx512m
     volumes:
-      - ${DOCKER_VOLUME_DIRECTORY:-.}/volumes/es:/usr/share/elasticsearch/data
-    restart: always
+      - es_data:/usr/share/elasticsearch/data
     networks:
       - rag_network
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9200/_cluster/health || exit 1"]
+      interval: 15s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
 
 volumes:
   mysql_data:
   qdrant_data:
   redis_data:
+  es_data:
 
 networks:
   rag_network:

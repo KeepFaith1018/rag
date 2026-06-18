@@ -89,11 +89,6 @@ export type b_upload_chunks = $Result.DefaultSelection<Prisma.$b_upload_chunksPa
  */
 export type b_document_chunks = $Result.DefaultSelection<Prisma.$b_document_chunksPayload>
 /**
- * Model b_document_chunk_search_index
- * 
- */
-export type b_document_chunk_search_index = $Result.DefaultSelection<Prisma.$b_document_chunk_search_indexPayload>
-/**
  * Model b_document_processing_tasks
  * 
  */
@@ -405,16 +400,6 @@ export class PrismaClient<
     * ```
     */
   get b_document_chunks(): Prisma.b_document_chunksDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.b_document_chunk_search_index`: Exposes CRUD operations for the **b_document_chunk_search_index** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more B_document_chunk_search_indices
-    * const b_document_chunk_search_indices = await prisma.b_document_chunk_search_index.findMany()
-    * ```
-    */
-  get b_document_chunk_search_index(): Prisma.b_document_chunk_search_indexDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.b_document_processing_tasks`: Exposes CRUD operations for the **b_document_processing_tasks** model.
@@ -954,7 +939,6 @@ export namespace Prisma {
     b_upload_sessions: 'b_upload_sessions',
     b_upload_chunks: 'b_upload_chunks',
     b_document_chunks: 'b_document_chunks',
-    b_document_chunk_search_index: 'b_document_chunk_search_index',
     b_document_processing_tasks: 'b_document_processing_tasks',
     b_chat_sessions: 'b_chat_sessions',
     b_chat_messages: 'b_chat_messages',
@@ -979,7 +963,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "b_users" | "sys_admins" | "sys_email_codes" | "b_user_sessions" | "sys_admin_sessions" | "sys_model_configs" | "b_user_model_configs" | "b_user_daily_quotas" | "b_knowledge_bases" | "b_kb_members" | "b_kb_invitations" | "b_documents" | "b_upload_sessions" | "b_upload_chunks" | "b_document_chunks" | "b_document_chunk_search_index" | "b_document_processing_tasks" | "b_chat_sessions" | "b_chat_messages" | "b_chat_message_citations" | "b_agent_runs" | "b_agent_steps" | "sys_audit_logs" | "sys_dict_type" | "sys_dict_item"
+      modelProps: "b_users" | "sys_admins" | "sys_email_codes" | "b_user_sessions" | "sys_admin_sessions" | "sys_model_configs" | "b_user_model_configs" | "b_user_daily_quotas" | "b_knowledge_bases" | "b_kb_members" | "b_kb_invitations" | "b_documents" | "b_upload_sessions" | "b_upload_chunks" | "b_document_chunks" | "b_document_processing_tasks" | "b_chat_sessions" | "b_chat_messages" | "b_chat_message_citations" | "b_agent_runs" | "b_agent_steps" | "sys_audit_logs" | "sys_dict_type" | "sys_dict_item"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1973,72 +1957,6 @@ export namespace Prisma {
           }
         }
       }
-      b_document_chunk_search_index: {
-        payload: Prisma.$b_document_chunk_search_indexPayload<ExtArgs>
-        fields: Prisma.b_document_chunk_search_indexFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.b_document_chunk_search_indexFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.b_document_chunk_search_indexFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
-          }
-          findFirst: {
-            args: Prisma.b_document_chunk_search_indexFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.b_document_chunk_search_indexFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
-          }
-          findMany: {
-            args: Prisma.b_document_chunk_search_indexFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>[]
-          }
-          create: {
-            args: Prisma.b_document_chunk_search_indexCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
-          }
-          createMany: {
-            args: Prisma.b_document_chunk_search_indexCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          delete: {
-            args: Prisma.b_document_chunk_search_indexDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
-          }
-          update: {
-            args: Prisma.b_document_chunk_search_indexUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
-          }
-          deleteMany: {
-            args: Prisma.b_document_chunk_search_indexDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.b_document_chunk_search_indexUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          upsert: {
-            args: Prisma.b_document_chunk_search_indexUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$b_document_chunk_search_indexPayload>
-          }
-          aggregate: {
-            args: Prisma.B_document_chunk_search_indexAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateB_document_chunk_search_index>
-          }
-          groupBy: {
-            args: Prisma.b_document_chunk_search_indexGroupByArgs<ExtArgs>
-            result: $Utils.Optional<B_document_chunk_search_indexGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.b_document_chunk_search_indexCountArgs<ExtArgs>
-            result: $Utils.Optional<B_document_chunk_search_indexCountAggregateOutputType> | number
-          }
-        }
-      }
       b_document_processing_tasks: {
         payload: Prisma.$b_document_processing_tasksPayload<ExtArgs>
         fields: Prisma.b_document_processing_tasksFieldRefs
@@ -2756,7 +2674,6 @@ export namespace Prisma {
     b_upload_sessions?: b_upload_sessionsOmit
     b_upload_chunks?: b_upload_chunksOmit
     b_document_chunks?: b_document_chunksOmit
-    b_document_chunk_search_index?: b_document_chunk_search_indexOmit
     b_document_processing_tasks?: b_document_processing_tasksOmit
     b_chat_sessions?: b_chat_sessionsOmit
     b_chat_messages?: b_chat_messagesOmit
@@ -3257,6 +3174,37 @@ export namespace Prisma {
    */
   export type B_chat_messagesCountOutputTypeCountMessage_citationsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     where?: b_chat_message_citationsWhereInput
+  }
+
+
+  /**
+   * Count Type B_agent_runsCountOutputType
+   */
+
+  export type B_agent_runsCountOutputType = {
+    agent_steps: number
+  }
+
+  export type B_agent_runsCountOutputTypeSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    agent_steps?: boolean | B_agent_runsCountOutputTypeCountAgent_stepsArgs
+  }
+
+  // Custom InputTypes
+  /**
+   * B_agent_runsCountOutputType without action
+   */
+  export type B_agent_runsCountOutputTypeDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the B_agent_runsCountOutputType
+     */
+    select?: B_agent_runsCountOutputTypeSelect<ExtArgs> | null
+  }
+
+  /**
+   * B_agent_runsCountOutputType without action
+   */
+  export type B_agent_runsCountOutputTypeCountAgent_stepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: b_agent_stepsWhereInput
   }
 
 
@@ -6581,6 +6529,7 @@ export namespace Prisma {
     revoked: boolean | null
     expired_at: Date | null
     created_at: Date | null
+    updated_at: Date | null
   }
 
   export type B_user_sessionsMaxAggregateOutputType = {
@@ -6592,6 +6541,7 @@ export namespace Prisma {
     revoked: boolean | null
     expired_at: Date | null
     created_at: Date | null
+    updated_at: Date | null
   }
 
   export type B_user_sessionsCountAggregateOutputType = {
@@ -6603,6 +6553,7 @@ export namespace Prisma {
     revoked: number
     expired_at: number
     created_at: number
+    updated_at: number
     _all: number
   }
 
@@ -6626,6 +6577,7 @@ export namespace Prisma {
     revoked?: true
     expired_at?: true
     created_at?: true
+    updated_at?: true
   }
 
   export type B_user_sessionsMaxAggregateInputType = {
@@ -6637,6 +6589,7 @@ export namespace Prisma {
     revoked?: true
     expired_at?: true
     created_at?: true
+    updated_at?: true
   }
 
   export type B_user_sessionsCountAggregateInputType = {
@@ -6648,6 +6601,7 @@ export namespace Prisma {
     revoked?: true
     expired_at?: true
     created_at?: true
+    updated_at?: true
     _all?: true
   }
 
@@ -6746,6 +6700,7 @@ export namespace Prisma {
     revoked: boolean
     expired_at: Date
     created_at: Date
+    updated_at: Date
     _count: B_user_sessionsCountAggregateOutputType | null
     _avg: B_user_sessionsAvgAggregateOutputType | null
     _sum: B_user_sessionsSumAggregateOutputType | null
@@ -6776,6 +6731,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at?: boolean
     created_at?: boolean
+    updated_at?: boolean
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_user_sessions"]>
 
@@ -6790,9 +6746,10 @@ export namespace Prisma {
     revoked?: boolean
     expired_at?: boolean
     created_at?: boolean
+    updated_at?: boolean
   }
 
-  export type b_user_sessionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "session_id" | "user_id" | "refresh_token_hash" | "user_agent" | "revoked" | "expired_at" | "created_at", ExtArgs["result"]["b_user_sessions"]>
+  export type b_user_sessionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "session_id" | "user_id" | "refresh_token_hash" | "user_agent" | "revoked" | "expired_at" | "created_at" | "updated_at", ExtArgs["result"]["b_user_sessions"]>
   export type b_user_sessionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
   }
@@ -6811,6 +6768,7 @@ export namespace Prisma {
       revoked: boolean
       expired_at: Date
       created_at: Date
+      updated_at: Date
     }, ExtArgs["result"]["b_user_sessions"]>
     composites: {}
   }
@@ -7189,6 +7147,7 @@ export namespace Prisma {
     readonly revoked: FieldRef<"b_user_sessions", 'Boolean'>
     readonly expired_at: FieldRef<"b_user_sessions", 'DateTime'>
     readonly created_at: FieldRef<"b_user_sessions", 'DateTime'>
+    readonly updated_at: FieldRef<"b_user_sessions", 'DateTime'>
   }
     
 
@@ -7581,6 +7540,7 @@ export namespace Prisma {
     revoked: boolean | null
     expired_at: Date | null
     created_at: Date | null
+    updated_at: Date | null
   }
 
   export type Sys_admin_sessionsMaxAggregateOutputType = {
@@ -7592,6 +7552,7 @@ export namespace Prisma {
     revoked: boolean | null
     expired_at: Date | null
     created_at: Date | null
+    updated_at: Date | null
   }
 
   export type Sys_admin_sessionsCountAggregateOutputType = {
@@ -7603,6 +7564,7 @@ export namespace Prisma {
     revoked: number
     expired_at: number
     created_at: number
+    updated_at: number
     _all: number
   }
 
@@ -7626,6 +7588,7 @@ export namespace Prisma {
     revoked?: true
     expired_at?: true
     created_at?: true
+    updated_at?: true
   }
 
   export type Sys_admin_sessionsMaxAggregateInputType = {
@@ -7637,6 +7600,7 @@ export namespace Prisma {
     revoked?: true
     expired_at?: true
     created_at?: true
+    updated_at?: true
   }
 
   export type Sys_admin_sessionsCountAggregateInputType = {
@@ -7648,6 +7612,7 @@ export namespace Prisma {
     revoked?: true
     expired_at?: true
     created_at?: true
+    updated_at?: true
     _all?: true
   }
 
@@ -7746,6 +7711,7 @@ export namespace Prisma {
     revoked: boolean
     expired_at: Date
     created_at: Date
+    updated_at: Date
     _count: Sys_admin_sessionsCountAggregateOutputType | null
     _avg: Sys_admin_sessionsAvgAggregateOutputType | null
     _sum: Sys_admin_sessionsSumAggregateOutputType | null
@@ -7776,6 +7742,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at?: boolean
     created_at?: boolean
+    updated_at?: boolean
     sys_admins?: boolean | sys_adminsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["sys_admin_sessions"]>
 
@@ -7790,9 +7757,10 @@ export namespace Prisma {
     revoked?: boolean
     expired_at?: boolean
     created_at?: boolean
+    updated_at?: boolean
   }
 
-  export type sys_admin_sessionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "session_id" | "admin_id" | "refresh_token_hash" | "user_agent" | "revoked" | "expired_at" | "created_at", ExtArgs["result"]["sys_admin_sessions"]>
+  export type sys_admin_sessionsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "session_id" | "admin_id" | "refresh_token_hash" | "user_agent" | "revoked" | "expired_at" | "created_at" | "updated_at", ExtArgs["result"]["sys_admin_sessions"]>
   export type sys_admin_sessionsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     sys_admins?: boolean | sys_adminsDefaultArgs<ExtArgs>
   }
@@ -7811,6 +7779,7 @@ export namespace Prisma {
       revoked: boolean
       expired_at: Date
       created_at: Date
+      updated_at: Date
     }, ExtArgs["result"]["sys_admin_sessions"]>
     composites: {}
   }
@@ -8189,6 +8158,7 @@ export namespace Prisma {
     readonly revoked: FieldRef<"sys_admin_sessions", 'Boolean'>
     readonly expired_at: FieldRef<"sys_admin_sessions", 'DateTime'>
     readonly created_at: FieldRef<"sys_admin_sessions", 'DateTime'>
+    readonly updated_at: FieldRef<"sys_admin_sessions", 'DateTime'>
   }
     
 
@@ -19491,963 +19461,6 @@ export namespace Prisma {
 
 
   /**
-   * Model b_document_chunk_search_index
-   */
-
-  export type AggregateB_document_chunk_search_index = {
-    _count: B_document_chunk_search_indexCountAggregateOutputType | null
-    _avg: B_document_chunk_search_indexAvgAggregateOutputType | null
-    _sum: B_document_chunk_search_indexSumAggregateOutputType | null
-    _min: B_document_chunk_search_indexMinAggregateOutputType | null
-    _max: B_document_chunk_search_indexMaxAggregateOutputType | null
-  }
-
-  export type B_document_chunk_search_indexAvgAggregateOutputType = {
-    chunk_id: number | null
-    doc_id: number | null
-    kb_id: number | null
-  }
-
-  export type B_document_chunk_search_indexSumAggregateOutputType = {
-    chunk_id: bigint | null
-    doc_id: bigint | null
-    kb_id: bigint | null
-  }
-
-  export type B_document_chunk_search_indexMinAggregateOutputType = {
-    chunk_id: bigint | null
-    doc_id: bigint | null
-    kb_id: bigint | null
-    title: string | null
-    title_path: string | null
-    content_plain: string | null
-    keyword_text: string | null
-    created_at: Date | null
-  }
-
-  export type B_document_chunk_search_indexMaxAggregateOutputType = {
-    chunk_id: bigint | null
-    doc_id: bigint | null
-    kb_id: bigint | null
-    title: string | null
-    title_path: string | null
-    content_plain: string | null
-    keyword_text: string | null
-    created_at: Date | null
-  }
-
-  export type B_document_chunk_search_indexCountAggregateOutputType = {
-    chunk_id: number
-    doc_id: number
-    kb_id: number
-    title: number
-    title_path: number
-    content_plain: number
-    keyword_text: number
-    created_at: number
-    _all: number
-  }
-
-
-  export type B_document_chunk_search_indexAvgAggregateInputType = {
-    chunk_id?: true
-    doc_id?: true
-    kb_id?: true
-  }
-
-  export type B_document_chunk_search_indexSumAggregateInputType = {
-    chunk_id?: true
-    doc_id?: true
-    kb_id?: true
-  }
-
-  export type B_document_chunk_search_indexMinAggregateInputType = {
-    chunk_id?: true
-    doc_id?: true
-    kb_id?: true
-    title?: true
-    title_path?: true
-    content_plain?: true
-    keyword_text?: true
-    created_at?: true
-  }
-
-  export type B_document_chunk_search_indexMaxAggregateInputType = {
-    chunk_id?: true
-    doc_id?: true
-    kb_id?: true
-    title?: true
-    title_path?: true
-    content_plain?: true
-    keyword_text?: true
-    created_at?: true
-  }
-
-  export type B_document_chunk_search_indexCountAggregateInputType = {
-    chunk_id?: true
-    doc_id?: true
-    kb_id?: true
-    title?: true
-    title_path?: true
-    content_plain?: true
-    keyword_text?: true
-    created_at?: true
-    _all?: true
-  }
-
-  export type B_document_chunk_search_indexAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which b_document_chunk_search_index to aggregate.
-     */
-    where?: b_document_chunk_search_indexWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of b_document_chunk_search_indices to fetch.
-     */
-    orderBy?: b_document_chunk_search_indexOrderByWithRelationInput | b_document_chunk_search_indexOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the start position
-     */
-    cursor?: b_document_chunk_search_indexWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` b_document_chunk_search_indices from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` b_document_chunk_search_indices.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Count returned b_document_chunk_search_indices
-    **/
-    _count?: true | B_document_chunk_search_indexCountAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to average
-    **/
-    _avg?: B_document_chunk_search_indexAvgAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to sum
-    **/
-    _sum?: B_document_chunk_search_indexSumAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the minimum value
-    **/
-    _min?: B_document_chunk_search_indexMinAggregateInputType
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-     * 
-     * Select which fields to find the maximum value
-    **/
-    _max?: B_document_chunk_search_indexMaxAggregateInputType
-  }
-
-  export type GetB_document_chunk_search_indexAggregateType<T extends B_document_chunk_search_indexAggregateArgs> = {
-        [P in keyof T & keyof AggregateB_document_chunk_search_index]: P extends '_count' | 'count'
-      ? T[P] extends true
-        ? number
-        : GetScalarType<T[P], AggregateB_document_chunk_search_index[P]>
-      : GetScalarType<T[P], AggregateB_document_chunk_search_index[P]>
-  }
-
-
-
-
-  export type b_document_chunk_search_indexGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    where?: b_document_chunk_search_indexWhereInput
-    orderBy?: b_document_chunk_search_indexOrderByWithAggregationInput | b_document_chunk_search_indexOrderByWithAggregationInput[]
-    by: B_document_chunk_search_indexScalarFieldEnum[] | B_document_chunk_search_indexScalarFieldEnum
-    having?: b_document_chunk_search_indexScalarWhereWithAggregatesInput
-    take?: number
-    skip?: number
-    _count?: B_document_chunk_search_indexCountAggregateInputType | true
-    _avg?: B_document_chunk_search_indexAvgAggregateInputType
-    _sum?: B_document_chunk_search_indexSumAggregateInputType
-    _min?: B_document_chunk_search_indexMinAggregateInputType
-    _max?: B_document_chunk_search_indexMaxAggregateInputType
-  }
-
-  export type B_document_chunk_search_indexGroupByOutputType = {
-    chunk_id: bigint
-    doc_id: bigint
-    kb_id: bigint
-    title: string | null
-    title_path: string | null
-    content_plain: string
-    keyword_text: string | null
-    created_at: Date
-    _count: B_document_chunk_search_indexCountAggregateOutputType | null
-    _avg: B_document_chunk_search_indexAvgAggregateOutputType | null
-    _sum: B_document_chunk_search_indexSumAggregateOutputType | null
-    _min: B_document_chunk_search_indexMinAggregateOutputType | null
-    _max: B_document_chunk_search_indexMaxAggregateOutputType | null
-  }
-
-  type GetB_document_chunk_search_indexGroupByPayload<T extends b_document_chunk_search_indexGroupByArgs> = Prisma.PrismaPromise<
-    Array<
-      PickEnumerable<B_document_chunk_search_indexGroupByOutputType, T['by']> &
-        {
-          [P in ((keyof T) & (keyof B_document_chunk_search_indexGroupByOutputType))]: P extends '_count'
-            ? T[P] extends boolean
-              ? number
-              : GetScalarType<T[P], B_document_chunk_search_indexGroupByOutputType[P]>
-            : GetScalarType<T[P], B_document_chunk_search_indexGroupByOutputType[P]>
-        }
-      >
-    >
-
-
-  export type b_document_chunk_search_indexSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
-    chunk_id?: boolean
-    doc_id?: boolean
-    kb_id?: boolean
-    title?: boolean
-    title_path?: boolean
-    content_plain?: boolean
-    keyword_text?: boolean
-    created_at?: boolean
-  }, ExtArgs["result"]["b_document_chunk_search_index"]>
-
-
-
-  export type b_document_chunk_search_indexSelectScalar = {
-    chunk_id?: boolean
-    doc_id?: boolean
-    kb_id?: boolean
-    title?: boolean
-    title_path?: boolean
-    content_plain?: boolean
-    keyword_text?: boolean
-    created_at?: boolean
-  }
-
-  export type b_document_chunk_search_indexOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"chunk_id" | "doc_id" | "kb_id" | "title" | "title_path" | "content_plain" | "keyword_text" | "created_at", ExtArgs["result"]["b_document_chunk_search_index"]>
-
-  export type $b_document_chunk_search_indexPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    name: "b_document_chunk_search_index"
-    objects: {}
-    scalars: $Extensions.GetPayloadResult<{
-      chunk_id: bigint
-      doc_id: bigint
-      kb_id: bigint
-      title: string | null
-      title_path: string | null
-      content_plain: string
-      keyword_text: string | null
-      created_at: Date
-    }, ExtArgs["result"]["b_document_chunk_search_index"]>
-    composites: {}
-  }
-
-  type b_document_chunk_search_indexGetPayload<S extends boolean | null | undefined | b_document_chunk_search_indexDefaultArgs> = $Result.GetResult<Prisma.$b_document_chunk_search_indexPayload, S>
-
-  type b_document_chunk_search_indexCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
-    Omit<b_document_chunk_search_indexFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
-      select?: B_document_chunk_search_indexCountAggregateInputType | true
-    }
-
-  export interface b_document_chunk_search_indexDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
-    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['b_document_chunk_search_index'], meta: { name: 'b_document_chunk_search_index' } }
-    /**
-     * Find zero or one B_document_chunk_search_index that matches the filter.
-     * @param {b_document_chunk_search_indexFindUniqueArgs} args - Arguments to find a B_document_chunk_search_index
-     * @example
-     * // Get one B_document_chunk_search_index
-     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.findUnique({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUnique<T extends b_document_chunk_search_indexFindUniqueArgs>(args: SelectSubset<T, b_document_chunk_search_indexFindUniqueArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find one B_document_chunk_search_index that matches the filter or throw an error with `error.code='P2025'`
-     * if no matches were found.
-     * @param {b_document_chunk_search_indexFindUniqueOrThrowArgs} args - Arguments to find a B_document_chunk_search_index
-     * @example
-     * // Get one B_document_chunk_search_index
-     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.findUniqueOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findUniqueOrThrow<T extends b_document_chunk_search_indexFindUniqueOrThrowArgs>(args: SelectSubset<T, b_document_chunk_search_indexFindUniqueOrThrowArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first B_document_chunk_search_index that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {b_document_chunk_search_indexFindFirstArgs} args - Arguments to find a B_document_chunk_search_index
-     * @example
-     * // Get one B_document_chunk_search_index
-     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.findFirst({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirst<T extends b_document_chunk_search_indexFindFirstArgs>(args?: SelectSubset<T, b_document_chunk_search_indexFindFirstArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find the first B_document_chunk_search_index that matches the filter or
-     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {b_document_chunk_search_indexFindFirstOrThrowArgs} args - Arguments to find a B_document_chunk_search_index
-     * @example
-     * // Get one B_document_chunk_search_index
-     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.findFirstOrThrow({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     */
-    findFirstOrThrow<T extends b_document_chunk_search_indexFindFirstOrThrowArgs>(args?: SelectSubset<T, b_document_chunk_search_indexFindFirstOrThrowArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Find zero or more B_document_chunk_search_indices that matches the filter.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {b_document_chunk_search_indexFindManyArgs} args - Arguments to filter and select certain fields only.
-     * @example
-     * // Get all B_document_chunk_search_indices
-     * const b_document_chunk_search_indices = await prisma.b_document_chunk_search_index.findMany()
-     * 
-     * // Get first 10 B_document_chunk_search_indices
-     * const b_document_chunk_search_indices = await prisma.b_document_chunk_search_index.findMany({ take: 10 })
-     * 
-     * // Only select the `chunk_id`
-     * const b_document_chunk_search_indexWithChunk_idOnly = await prisma.b_document_chunk_search_index.findMany({ select: { chunk_id: true } })
-     * 
-     */
-    findMany<T extends b_document_chunk_search_indexFindManyArgs>(args?: SelectSubset<T, b_document_chunk_search_indexFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
-
-    /**
-     * Create a B_document_chunk_search_index.
-     * @param {b_document_chunk_search_indexCreateArgs} args - Arguments to create a B_document_chunk_search_index.
-     * @example
-     * // Create one B_document_chunk_search_index
-     * const B_document_chunk_search_index = await prisma.b_document_chunk_search_index.create({
-     *   data: {
-     *     // ... data to create a B_document_chunk_search_index
-     *   }
-     * })
-     * 
-     */
-    create<T extends b_document_chunk_search_indexCreateArgs>(args: SelectSubset<T, b_document_chunk_search_indexCreateArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Create many B_document_chunk_search_indices.
-     * @param {b_document_chunk_search_indexCreateManyArgs} args - Arguments to create many B_document_chunk_search_indices.
-     * @example
-     * // Create many B_document_chunk_search_indices
-     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.createMany({
-     *   data: [
-     *     // ... provide data here
-     *   ]
-     * })
-     *     
-     */
-    createMany<T extends b_document_chunk_search_indexCreateManyArgs>(args?: SelectSubset<T, b_document_chunk_search_indexCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Delete a B_document_chunk_search_index.
-     * @param {b_document_chunk_search_indexDeleteArgs} args - Arguments to delete one B_document_chunk_search_index.
-     * @example
-     * // Delete one B_document_chunk_search_index
-     * const B_document_chunk_search_index = await prisma.b_document_chunk_search_index.delete({
-     *   where: {
-     *     // ... filter to delete one B_document_chunk_search_index
-     *   }
-     * })
-     * 
-     */
-    delete<T extends b_document_chunk_search_indexDeleteArgs>(args: SelectSubset<T, b_document_chunk_search_indexDeleteArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Update one B_document_chunk_search_index.
-     * @param {b_document_chunk_search_indexUpdateArgs} args - Arguments to update one B_document_chunk_search_index.
-     * @example
-     * // Update one B_document_chunk_search_index
-     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.update({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    update<T extends b_document_chunk_search_indexUpdateArgs>(args: SelectSubset<T, b_document_chunk_search_indexUpdateArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-    /**
-     * Delete zero or more B_document_chunk_search_indices.
-     * @param {b_document_chunk_search_indexDeleteManyArgs} args - Arguments to filter B_document_chunk_search_indices to delete.
-     * @example
-     * // Delete a few B_document_chunk_search_indices
-     * const { count } = await prisma.b_document_chunk_search_index.deleteMany({
-     *   where: {
-     *     // ... provide filter here
-     *   }
-     * })
-     * 
-     */
-    deleteMany<T extends b_document_chunk_search_indexDeleteManyArgs>(args?: SelectSubset<T, b_document_chunk_search_indexDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Update zero or more B_document_chunk_search_indices.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {b_document_chunk_search_indexUpdateManyArgs} args - Arguments to update one or more rows.
-     * @example
-     * // Update many B_document_chunk_search_indices
-     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.updateMany({
-     *   where: {
-     *     // ... provide filter here
-     *   },
-     *   data: {
-     *     // ... provide data here
-     *   }
-     * })
-     * 
-     */
-    updateMany<T extends b_document_chunk_search_indexUpdateManyArgs>(args: SelectSubset<T, b_document_chunk_search_indexUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
-
-    /**
-     * Create or update one B_document_chunk_search_index.
-     * @param {b_document_chunk_search_indexUpsertArgs} args - Arguments to update or create a B_document_chunk_search_index.
-     * @example
-     * // Update or create a B_document_chunk_search_index
-     * const b_document_chunk_search_index = await prisma.b_document_chunk_search_index.upsert({
-     *   create: {
-     *     // ... data to create a B_document_chunk_search_index
-     *   },
-     *   update: {
-     *     // ... in case it already exists, update
-     *   },
-     *   where: {
-     *     // ... the filter for the B_document_chunk_search_index we want to update
-     *   }
-     * })
-     */
-    upsert<T extends b_document_chunk_search_indexUpsertArgs>(args: SelectSubset<T, b_document_chunk_search_indexUpsertArgs<ExtArgs>>): Prisma__b_document_chunk_search_indexClient<$Result.GetResult<Prisma.$b_document_chunk_search_indexPayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
-
-
-    /**
-     * Count the number of B_document_chunk_search_indices.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {b_document_chunk_search_indexCountArgs} args - Arguments to filter B_document_chunk_search_indices to count.
-     * @example
-     * // Count the number of B_document_chunk_search_indices
-     * const count = await prisma.b_document_chunk_search_index.count({
-     *   where: {
-     *     // ... the filter for the B_document_chunk_search_indices we want to count
-     *   }
-     * })
-    **/
-    count<T extends b_document_chunk_search_indexCountArgs>(
-      args?: Subset<T, b_document_chunk_search_indexCountArgs>,
-    ): Prisma.PrismaPromise<
-      T extends $Utils.Record<'select', any>
-        ? T['select'] extends true
-          ? number
-          : GetScalarType<T['select'], B_document_chunk_search_indexCountAggregateOutputType>
-        : number
-    >
-
-    /**
-     * Allows you to perform aggregations operations on a B_document_chunk_search_index.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {B_document_chunk_search_indexAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
-     * @example
-     * // Ordered by age ascending
-     * // Where email contains prisma.io
-     * // Limited to the 10 users
-     * const aggregations = await prisma.user.aggregate({
-     *   _avg: {
-     *     age: true,
-     *   },
-     *   where: {
-     *     email: {
-     *       contains: "prisma.io",
-     *     },
-     *   },
-     *   orderBy: {
-     *     age: "asc",
-     *   },
-     *   take: 10,
-     * })
-    **/
-    aggregate<T extends B_document_chunk_search_indexAggregateArgs>(args: Subset<T, B_document_chunk_search_indexAggregateArgs>): Prisma.PrismaPromise<GetB_document_chunk_search_indexAggregateType<T>>
-
-    /**
-     * Group by B_document_chunk_search_index.
-     * Note, that providing `undefined` is treated as the value not being there.
-     * Read more here: https://pris.ly/d/null-undefined
-     * @param {b_document_chunk_search_indexGroupByArgs} args - Group by arguments.
-     * @example
-     * // Group by city, order by createdAt, get count
-     * const result = await prisma.user.groupBy({
-     *   by: ['city', 'createdAt'],
-     *   orderBy: {
-     *     createdAt: true
-     *   },
-     *   _count: {
-     *     _all: true
-     *   },
-     * })
-     * 
-    **/
-    groupBy<
-      T extends b_document_chunk_search_indexGroupByArgs,
-      HasSelectOrTake extends Or<
-        Extends<'skip', Keys<T>>,
-        Extends<'take', Keys<T>>
-      >,
-      OrderByArg extends True extends HasSelectOrTake
-        ? { orderBy: b_document_chunk_search_indexGroupByArgs['orderBy'] }
-        : { orderBy?: b_document_chunk_search_indexGroupByArgs['orderBy'] },
-      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
-      ByFields extends MaybeTupleToUnion<T['by']>,
-      ByValid extends Has<ByFields, OrderFields>,
-      HavingFields extends GetHavingFields<T['having']>,
-      HavingValid extends Has<ByFields, HavingFields>,
-      ByEmpty extends T['by'] extends never[] ? True : False,
-      InputErrors extends ByEmpty extends True
-      ? `Error: "by" must not be empty.`
-      : HavingValid extends False
-      ? {
-          [P in HavingFields]: P extends ByFields
-            ? never
-            : P extends string
-            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
-            : [
-                Error,
-                'Field ',
-                P,
-                ` in "having" needs to be provided in "by"`,
-              ]
-        }[HavingFields]
-      : 'take' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "take", you also need to provide "orderBy"'
-      : 'skip' extends Keys<T>
-      ? 'orderBy' extends Keys<T>
-        ? ByValid extends True
-          ? {}
-          : {
-              [P in OrderFields]: P extends ByFields
-                ? never
-                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-            }[OrderFields]
-        : 'Error: If you provide "skip", you also need to provide "orderBy"'
-      : ByValid extends True
-      ? {}
-      : {
-          [P in OrderFields]: P extends ByFields
-            ? never
-            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
-        }[OrderFields]
-    >(args: SubsetIntersection<T, b_document_chunk_search_indexGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetB_document_chunk_search_indexGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
-  /**
-   * Fields of the b_document_chunk_search_index model
-   */
-  readonly fields: b_document_chunk_search_indexFieldRefs;
-  }
-
-  /**
-   * The delegate class that acts as a "Promise-like" for b_document_chunk_search_index.
-   * Why is this prefixed with `Prisma__`?
-   * Because we want to prevent naming conflicts as mentioned in
-   * https://github.com/prisma/prisma-client-js/issues/707
-   */
-  export interface Prisma__b_document_chunk_search_indexClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
-    readonly [Symbol.toStringTag]: "PrismaPromise"
-    /**
-     * Attaches callbacks for the resolution and/or rejection of the Promise.
-     * @param onfulfilled The callback to execute when the Promise is resolved.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of which ever callback is executed.
-     */
-    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
-    /**
-     * Attaches a callback for only the rejection of the Promise.
-     * @param onrejected The callback to execute when the Promise is rejected.
-     * @returns A Promise for the completion of the callback.
-     */
-    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
-    /**
-     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
-     * resolved value cannot be modified from the callback.
-     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
-     * @returns A Promise for the completion of the callback.
-     */
-    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
-  }
-
-
-
-
-  /**
-   * Fields of the b_document_chunk_search_index model
-   */
-  interface b_document_chunk_search_indexFieldRefs {
-    readonly chunk_id: FieldRef<"b_document_chunk_search_index", 'BigInt'>
-    readonly doc_id: FieldRef<"b_document_chunk_search_index", 'BigInt'>
-    readonly kb_id: FieldRef<"b_document_chunk_search_index", 'BigInt'>
-    readonly title: FieldRef<"b_document_chunk_search_index", 'String'>
-    readonly title_path: FieldRef<"b_document_chunk_search_index", 'String'>
-    readonly content_plain: FieldRef<"b_document_chunk_search_index", 'String'>
-    readonly keyword_text: FieldRef<"b_document_chunk_search_index", 'String'>
-    readonly created_at: FieldRef<"b_document_chunk_search_index", 'DateTime'>
-  }
-    
-
-  // Custom InputTypes
-  /**
-   * b_document_chunk_search_index findUnique
-   */
-  export type b_document_chunk_search_indexFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-    /**
-     * Filter, which b_document_chunk_search_index to fetch.
-     */
-    where: b_document_chunk_search_indexWhereUniqueInput
-  }
-
-  /**
-   * b_document_chunk_search_index findUniqueOrThrow
-   */
-  export type b_document_chunk_search_indexFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-    /**
-     * Filter, which b_document_chunk_search_index to fetch.
-     */
-    where: b_document_chunk_search_indexWhereUniqueInput
-  }
-
-  /**
-   * b_document_chunk_search_index findFirst
-   */
-  export type b_document_chunk_search_indexFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-    /**
-     * Filter, which b_document_chunk_search_index to fetch.
-     */
-    where?: b_document_chunk_search_indexWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of b_document_chunk_search_indices to fetch.
-     */
-    orderBy?: b_document_chunk_search_indexOrderByWithRelationInput | b_document_chunk_search_indexOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for b_document_chunk_search_indices.
-     */
-    cursor?: b_document_chunk_search_indexWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` b_document_chunk_search_indices from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` b_document_chunk_search_indices.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of b_document_chunk_search_indices.
-     */
-    distinct?: B_document_chunk_search_indexScalarFieldEnum | B_document_chunk_search_indexScalarFieldEnum[]
-  }
-
-  /**
-   * b_document_chunk_search_index findFirstOrThrow
-   */
-  export type b_document_chunk_search_indexFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-    /**
-     * Filter, which b_document_chunk_search_index to fetch.
-     */
-    where?: b_document_chunk_search_indexWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of b_document_chunk_search_indices to fetch.
-     */
-    orderBy?: b_document_chunk_search_indexOrderByWithRelationInput | b_document_chunk_search_indexOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for searching for b_document_chunk_search_indices.
-     */
-    cursor?: b_document_chunk_search_indexWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` b_document_chunk_search_indices from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` b_document_chunk_search_indices.
-     */
-    skip?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
-     * 
-     * Filter by unique combinations of b_document_chunk_search_indices.
-     */
-    distinct?: B_document_chunk_search_indexScalarFieldEnum | B_document_chunk_search_indexScalarFieldEnum[]
-  }
-
-  /**
-   * b_document_chunk_search_index findMany
-   */
-  export type b_document_chunk_search_indexFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-    /**
-     * Filter, which b_document_chunk_search_indices to fetch.
-     */
-    where?: b_document_chunk_search_indexWhereInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
-     * 
-     * Determine the order of b_document_chunk_search_indices to fetch.
-     */
-    orderBy?: b_document_chunk_search_indexOrderByWithRelationInput | b_document_chunk_search_indexOrderByWithRelationInput[]
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
-     * 
-     * Sets the position for listing b_document_chunk_search_indices.
-     */
-    cursor?: b_document_chunk_search_indexWhereUniqueInput
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Take `±n` b_document_chunk_search_indices from the position of the cursor.
-     */
-    take?: number
-    /**
-     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
-     * 
-     * Skip the first `n` b_document_chunk_search_indices.
-     */
-    skip?: number
-    distinct?: B_document_chunk_search_indexScalarFieldEnum | B_document_chunk_search_indexScalarFieldEnum[]
-  }
-
-  /**
-   * b_document_chunk_search_index create
-   */
-  export type b_document_chunk_search_indexCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-    /**
-     * The data needed to create a b_document_chunk_search_index.
-     */
-    data: XOR<b_document_chunk_search_indexCreateInput, b_document_chunk_search_indexUncheckedCreateInput>
-  }
-
-  /**
-   * b_document_chunk_search_index createMany
-   */
-  export type b_document_chunk_search_indexCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to create many b_document_chunk_search_indices.
-     */
-    data: b_document_chunk_search_indexCreateManyInput | b_document_chunk_search_indexCreateManyInput[]
-    skipDuplicates?: boolean
-  }
-
-  /**
-   * b_document_chunk_search_index update
-   */
-  export type b_document_chunk_search_indexUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-    /**
-     * The data needed to update a b_document_chunk_search_index.
-     */
-    data: XOR<b_document_chunk_search_indexUpdateInput, b_document_chunk_search_indexUncheckedUpdateInput>
-    /**
-     * Choose, which b_document_chunk_search_index to update.
-     */
-    where: b_document_chunk_search_indexWhereUniqueInput
-  }
-
-  /**
-   * b_document_chunk_search_index updateMany
-   */
-  export type b_document_chunk_search_indexUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * The data used to update b_document_chunk_search_indices.
-     */
-    data: XOR<b_document_chunk_search_indexUpdateManyMutationInput, b_document_chunk_search_indexUncheckedUpdateManyInput>
-    /**
-     * Filter which b_document_chunk_search_indices to update
-     */
-    where?: b_document_chunk_search_indexWhereInput
-    /**
-     * Limit how many b_document_chunk_search_indices to update.
-     */
-    limit?: number
-  }
-
-  /**
-   * b_document_chunk_search_index upsert
-   */
-  export type b_document_chunk_search_indexUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-    /**
-     * The filter to search for the b_document_chunk_search_index to update in case it exists.
-     */
-    where: b_document_chunk_search_indexWhereUniqueInput
-    /**
-     * In case the b_document_chunk_search_index found by the `where` argument doesn't exist, create a new b_document_chunk_search_index with this data.
-     */
-    create: XOR<b_document_chunk_search_indexCreateInput, b_document_chunk_search_indexUncheckedCreateInput>
-    /**
-     * In case the b_document_chunk_search_index was found with the provided `where` argument, update it with this data.
-     */
-    update: XOR<b_document_chunk_search_indexUpdateInput, b_document_chunk_search_indexUncheckedUpdateInput>
-  }
-
-  /**
-   * b_document_chunk_search_index delete
-   */
-  export type b_document_chunk_search_indexDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-    /**
-     * Filter which b_document_chunk_search_index to delete.
-     */
-    where: b_document_chunk_search_indexWhereUniqueInput
-  }
-
-  /**
-   * b_document_chunk_search_index deleteMany
-   */
-  export type b_document_chunk_search_indexDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Filter which b_document_chunk_search_indices to delete
-     */
-    where?: b_document_chunk_search_indexWhereInput
-    /**
-     * Limit how many b_document_chunk_search_indices to delete.
-     */
-    limit?: number
-  }
-
-  /**
-   * b_document_chunk_search_index without action
-   */
-  export type b_document_chunk_search_indexDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    /**
-     * Select specific fields to fetch from the b_document_chunk_search_index
-     */
-    select?: b_document_chunk_search_indexSelect<ExtArgs> | null
-    /**
-     * Omit specific fields from the b_document_chunk_search_index
-     */
-    omit?: b_document_chunk_search_indexOmit<ExtArgs> | null
-  }
-
-
-  /**
    * Model b_document_processing_tasks
    */
 
@@ -25077,6 +24090,8 @@ export namespace Prisma {
     finished_at?: boolean
     b_chat_sessions?: boolean | b_chat_sessionsDefaultArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
+    agent_steps?: boolean | b_agent_runs$agent_stepsArgs<ExtArgs>
+    _count?: boolean | B_agent_runsCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_agent_runs"]>
 
 
@@ -25103,6 +24118,8 @@ export namespace Prisma {
   export type b_agent_runsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     b_chat_sessions?: boolean | b_chat_sessionsDefaultArgs<ExtArgs>
     b_users?: boolean | b_usersDefaultArgs<ExtArgs>
+    agent_steps?: boolean | b_agent_runs$agent_stepsArgs<ExtArgs>
+    _count?: boolean | B_agent_runsCountOutputTypeDefaultArgs<ExtArgs>
   }
 
   export type $b_agent_runsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -25110,6 +24127,7 @@ export namespace Prisma {
     objects: {
       b_chat_sessions: Prisma.$b_chat_sessionsPayload<ExtArgs>
       b_users: Prisma.$b_usersPayload<ExtArgs>
+      agent_steps: Prisma.$b_agent_stepsPayload<ExtArgs>[]
     }
     scalars: $Extensions.GetPayloadResult<{
       id: string
@@ -25469,6 +24487,7 @@ export namespace Prisma {
     readonly [Symbol.toStringTag]: "PrismaPromise"
     b_chat_sessions<T extends b_chat_sessionsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_chat_sessionsDefaultArgs<ExtArgs>>): Prisma__b_chat_sessionsClient<$Result.GetResult<Prisma.$b_chat_sessionsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     b_users<T extends b_usersDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_usersDefaultArgs<ExtArgs>>): Prisma__b_usersClient<$Result.GetResult<Prisma.$b_usersPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    agent_steps<T extends b_agent_runs$agent_stepsArgs<ExtArgs> = {}>(args?: Subset<T, b_agent_runs$agent_stepsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$b_agent_stepsPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -25856,6 +24875,30 @@ export namespace Prisma {
   }
 
   /**
+   * b_agent_runs.agent_steps
+   */
+  export type b_agent_runs$agent_stepsArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the b_agent_steps
+     */
+    select?: b_agent_stepsSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the b_agent_steps
+     */
+    omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
+    where?: b_agent_stepsWhereInput
+    orderBy?: b_agent_stepsOrderByWithRelationInput | b_agent_stepsOrderByWithRelationInput[]
+    cursor?: b_agent_stepsWhereUniqueInput
+    take?: number
+    skip?: number
+    distinct?: B_agent_stepsScalarFieldEnum | B_agent_stepsScalarFieldEnum[]
+  }
+
+  /**
    * b_agent_runs without action
    */
   export type b_agent_runsDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -26108,6 +25151,7 @@ export namespace Prisma {
     duration_ms?: boolean
     started_at?: boolean
     finished_at?: boolean
+    b_agent_runs?: boolean | b_agent_runsDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["b_agent_steps"]>
 
 
@@ -26126,10 +25170,15 @@ export namespace Prisma {
   }
 
   export type b_agent_stepsOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "run_id" | "agent_name" | "step_type" | "status" | "input_json" | "output_json" | "duration_ms" | "started_at" | "finished_at", ExtArgs["result"]["b_agent_steps"]>
+  export type b_agent_stepsInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    b_agent_runs?: boolean | b_agent_runsDefaultArgs<ExtArgs>
+  }
 
   export type $b_agent_stepsPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "b_agent_steps"
-    objects: {}
+    objects: {
+      b_agent_runs: Prisma.$b_agent_runsPayload<ExtArgs>
+    }
     scalars: $Extensions.GetPayloadResult<{
       id: bigint
       run_id: string
@@ -26481,6 +25530,7 @@ export namespace Prisma {
    */
   export interface Prisma__b_agent_stepsClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
+    b_agent_runs<T extends b_agent_runsDefaultArgs<ExtArgs> = {}>(args?: Subset<T, b_agent_runsDefaultArgs<ExtArgs>>): Prisma__b_agent_runsClient<$Result.GetResult<Prisma.$b_agent_runsPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -26537,6 +25587,10 @@ export namespace Prisma {
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
+    /**
      * Filter, which b_agent_steps to fetch.
      */
     where: b_agent_stepsWhereUniqueInput
@@ -26555,6 +25609,10 @@ export namespace Prisma {
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
+    /**
      * Filter, which b_agent_steps to fetch.
      */
     where: b_agent_stepsWhereUniqueInput
@@ -26572,6 +25630,10 @@ export namespace Prisma {
      * Omit specific fields from the b_agent_steps
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
     /**
      * Filter, which b_agent_steps to fetch.
      */
@@ -26621,6 +25683,10 @@ export namespace Prisma {
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
+    /**
      * Filter, which b_agent_steps to fetch.
      */
     where?: b_agent_stepsWhereInput
@@ -26669,6 +25735,10 @@ export namespace Prisma {
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
+    /**
      * Filter, which b_agent_steps to fetch.
      */
     where?: b_agent_stepsWhereInput
@@ -26712,6 +25782,10 @@ export namespace Prisma {
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
+    /**
      * The data needed to create a b_agent_steps.
      */
     data: XOR<b_agent_stepsCreateInput, b_agent_stepsUncheckedCreateInput>
@@ -26740,6 +25814,10 @@ export namespace Prisma {
      * Omit specific fields from the b_agent_steps
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
     /**
      * The data needed to update a b_agent_steps.
      */
@@ -26781,6 +25859,10 @@ export namespace Prisma {
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
     /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
+    /**
      * The filter to search for the b_agent_steps to update in case it exists.
      */
     where: b_agent_stepsWhereUniqueInput
@@ -26806,6 +25888,10 @@ export namespace Prisma {
      * Omit specific fields from the b_agent_steps
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
     /**
      * Filter which b_agent_steps to delete.
      */
@@ -26838,6 +25924,10 @@ export namespace Prisma {
      * Omit specific fields from the b_agent_steps
      */
     omit?: b_agent_stepsOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: b_agent_stepsInclude<ExtArgs> | null
   }
 
 
@@ -29904,7 +28994,8 @@ export namespace Prisma {
     user_agent: 'user_agent',
     revoked: 'revoked',
     expired_at: 'expired_at',
-    created_at: 'created_at'
+    created_at: 'created_at',
+    updated_at: 'updated_at'
   };
 
   export type B_user_sessionsScalarFieldEnum = (typeof B_user_sessionsScalarFieldEnum)[keyof typeof B_user_sessionsScalarFieldEnum]
@@ -29918,7 +29009,8 @@ export namespace Prisma {
     user_agent: 'user_agent',
     revoked: 'revoked',
     expired_at: 'expired_at',
-    created_at: 'created_at'
+    created_at: 'created_at',
+    updated_at: 'updated_at'
   };
 
   export type Sys_admin_sessionsScalarFieldEnum = (typeof Sys_admin_sessionsScalarFieldEnum)[keyof typeof Sys_admin_sessionsScalarFieldEnum]
@@ -30104,20 +29196,6 @@ export namespace Prisma {
   };
 
   export type B_document_chunksScalarFieldEnum = (typeof B_document_chunksScalarFieldEnum)[keyof typeof B_document_chunksScalarFieldEnum]
-
-
-  export const B_document_chunk_search_indexScalarFieldEnum: {
-    chunk_id: 'chunk_id',
-    doc_id: 'doc_id',
-    kb_id: 'kb_id',
-    title: 'title',
-    title_path: 'title_path',
-    content_plain: 'content_plain',
-    keyword_text: 'keyword_text',
-    created_at: 'created_at'
-  };
-
-  export type B_document_chunk_search_indexScalarFieldEnum = (typeof B_document_chunk_search_indexScalarFieldEnum)[keyof typeof B_document_chunk_search_indexScalarFieldEnum]
 
 
   export const B_document_processing_tasksScalarFieldEnum: {
@@ -30450,16 +29528,6 @@ export namespace Prisma {
   };
 
   export type b_document_chunksOrderByRelevanceFieldEnum = (typeof b_document_chunksOrderByRelevanceFieldEnum)[keyof typeof b_document_chunksOrderByRelevanceFieldEnum]
-
-
-  export const b_document_chunk_search_indexOrderByRelevanceFieldEnum: {
-    title: 'title',
-    title_path: 'title_path',
-    content_plain: 'content_plain',
-    keyword_text: 'keyword_text'
-  };
-
-  export type b_document_chunk_search_indexOrderByRelevanceFieldEnum = (typeof b_document_chunk_search_indexOrderByRelevanceFieldEnum)[keyof typeof b_document_chunk_search_indexOrderByRelevanceFieldEnum]
 
 
   export const b_document_processing_tasksOrderByRelevanceFieldEnum: {
@@ -30865,6 +29933,7 @@ export namespace Prisma {
     revoked?: BoolFilter<"b_user_sessions"> | boolean
     expired_at?: DateTimeFilter<"b_user_sessions"> | Date | string
     created_at?: DateTimeFilter<"b_user_sessions"> | Date | string
+    updated_at?: DateTimeFilter<"b_user_sessions"> | Date | string
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
   }
 
@@ -30877,6 +29946,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
     b_users?: b_usersOrderByWithRelationInput
     _relevance?: b_user_sessionsOrderByRelevanceInput
   }
@@ -30893,6 +29963,7 @@ export namespace Prisma {
     revoked?: BoolFilter<"b_user_sessions"> | boolean
     expired_at?: DateTimeFilter<"b_user_sessions"> | Date | string
     created_at?: DateTimeFilter<"b_user_sessions"> | Date | string
+    updated_at?: DateTimeFilter<"b_user_sessions"> | Date | string
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
   }, "id" | "session_id" | "refresh_token_hash">
 
@@ -30905,6 +29976,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
     _count?: b_user_sessionsCountOrderByAggregateInput
     _avg?: b_user_sessionsAvgOrderByAggregateInput
     _max?: b_user_sessionsMaxOrderByAggregateInput
@@ -30924,6 +29996,7 @@ export namespace Prisma {
     revoked?: BoolWithAggregatesFilter<"b_user_sessions"> | boolean
     expired_at?: DateTimeWithAggregatesFilter<"b_user_sessions"> | Date | string
     created_at?: DateTimeWithAggregatesFilter<"b_user_sessions"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"b_user_sessions"> | Date | string
   }
 
   export type sys_admin_sessionsWhereInput = {
@@ -30938,6 +30011,7 @@ export namespace Prisma {
     revoked?: BoolFilter<"sys_admin_sessions"> | boolean
     expired_at?: DateTimeFilter<"sys_admin_sessions"> | Date | string
     created_at?: DateTimeFilter<"sys_admin_sessions"> | Date | string
+    updated_at?: DateTimeFilter<"sys_admin_sessions"> | Date | string
     sys_admins?: XOR<Sys_adminsScalarRelationFilter, sys_adminsWhereInput>
   }
 
@@ -30950,6 +30024,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
     sys_admins?: sys_adminsOrderByWithRelationInput
     _relevance?: sys_admin_sessionsOrderByRelevanceInput
   }
@@ -30966,6 +30041,7 @@ export namespace Prisma {
     revoked?: BoolFilter<"sys_admin_sessions"> | boolean
     expired_at?: DateTimeFilter<"sys_admin_sessions"> | Date | string
     created_at?: DateTimeFilter<"sys_admin_sessions"> | Date | string
+    updated_at?: DateTimeFilter<"sys_admin_sessions"> | Date | string
     sys_admins?: XOR<Sys_adminsScalarRelationFilter, sys_adminsWhereInput>
   }, "id" | "session_id" | "refresh_token_hash">
 
@@ -30978,6 +30054,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
     _count?: sys_admin_sessionsCountOrderByAggregateInput
     _avg?: sys_admin_sessionsAvgOrderByAggregateInput
     _max?: sys_admin_sessionsMaxOrderByAggregateInput
@@ -30997,6 +30074,7 @@ export namespace Prisma {
     revoked?: BoolWithAggregatesFilter<"sys_admin_sessions"> | boolean
     expired_at?: DateTimeWithAggregatesFilter<"sys_admin_sessions"> | Date | string
     created_at?: DateTimeWithAggregatesFilter<"sys_admin_sessions"> | Date | string
+    updated_at?: DateTimeWithAggregatesFilter<"sys_admin_sessions"> | Date | string
   }
 
   export type sys_model_configsWhereInput = {
@@ -31992,76 +31070,6 @@ export namespace Prisma {
     created_at?: DateTimeWithAggregatesFilter<"b_document_chunks"> | Date | string
   }
 
-  export type b_document_chunk_search_indexWhereInput = {
-    AND?: b_document_chunk_search_indexWhereInput | b_document_chunk_search_indexWhereInput[]
-    OR?: b_document_chunk_search_indexWhereInput[]
-    NOT?: b_document_chunk_search_indexWhereInput | b_document_chunk_search_indexWhereInput[]
-    chunk_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
-    doc_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
-    kb_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
-    title?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
-    title_path?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
-    content_plain?: StringFilter<"b_document_chunk_search_index"> | string
-    keyword_text?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
-    created_at?: DateTimeFilter<"b_document_chunk_search_index"> | Date | string
-  }
-
-  export type b_document_chunk_search_indexOrderByWithRelationInput = {
-    chunk_id?: SortOrder
-    doc_id?: SortOrder
-    kb_id?: SortOrder
-    title?: SortOrderInput | SortOrder
-    title_path?: SortOrderInput | SortOrder
-    content_plain?: SortOrder
-    keyword_text?: SortOrderInput | SortOrder
-    created_at?: SortOrder
-    _relevance?: b_document_chunk_search_indexOrderByRelevanceInput
-  }
-
-  export type b_document_chunk_search_indexWhereUniqueInput = Prisma.AtLeast<{
-    chunk_id?: bigint | number
-    AND?: b_document_chunk_search_indexWhereInput | b_document_chunk_search_indexWhereInput[]
-    OR?: b_document_chunk_search_indexWhereInput[]
-    NOT?: b_document_chunk_search_indexWhereInput | b_document_chunk_search_indexWhereInput[]
-    doc_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
-    kb_id?: BigIntFilter<"b_document_chunk_search_index"> | bigint | number
-    title?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
-    title_path?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
-    content_plain?: StringFilter<"b_document_chunk_search_index"> | string
-    keyword_text?: StringNullableFilter<"b_document_chunk_search_index"> | string | null
-    created_at?: DateTimeFilter<"b_document_chunk_search_index"> | Date | string
-  }, "chunk_id">
-
-  export type b_document_chunk_search_indexOrderByWithAggregationInput = {
-    chunk_id?: SortOrder
-    doc_id?: SortOrder
-    kb_id?: SortOrder
-    title?: SortOrderInput | SortOrder
-    title_path?: SortOrderInput | SortOrder
-    content_plain?: SortOrder
-    keyword_text?: SortOrderInput | SortOrder
-    created_at?: SortOrder
-    _count?: b_document_chunk_search_indexCountOrderByAggregateInput
-    _avg?: b_document_chunk_search_indexAvgOrderByAggregateInput
-    _max?: b_document_chunk_search_indexMaxOrderByAggregateInput
-    _min?: b_document_chunk_search_indexMinOrderByAggregateInput
-    _sum?: b_document_chunk_search_indexSumOrderByAggregateInput
-  }
-
-  export type b_document_chunk_search_indexScalarWhereWithAggregatesInput = {
-    AND?: b_document_chunk_search_indexScalarWhereWithAggregatesInput | b_document_chunk_search_indexScalarWhereWithAggregatesInput[]
-    OR?: b_document_chunk_search_indexScalarWhereWithAggregatesInput[]
-    NOT?: b_document_chunk_search_indexScalarWhereWithAggregatesInput | b_document_chunk_search_indexScalarWhereWithAggregatesInput[]
-    chunk_id?: BigIntWithAggregatesFilter<"b_document_chunk_search_index"> | bigint | number
-    doc_id?: BigIntWithAggregatesFilter<"b_document_chunk_search_index"> | bigint | number
-    kb_id?: BigIntWithAggregatesFilter<"b_document_chunk_search_index"> | bigint | number
-    title?: StringNullableWithAggregatesFilter<"b_document_chunk_search_index"> | string | null
-    title_path?: StringNullableWithAggregatesFilter<"b_document_chunk_search_index"> | string | null
-    content_plain?: StringWithAggregatesFilter<"b_document_chunk_search_index"> | string
-    keyword_text?: StringNullableWithAggregatesFilter<"b_document_chunk_search_index"> | string | null
-    created_at?: DateTimeWithAggregatesFilter<"b_document_chunk_search_index"> | Date | string
-  }
-
   export type b_document_processing_tasksWhereInput = {
     AND?: b_document_processing_tasksWhereInput | b_document_processing_tasksWhereInput[]
     OR?: b_document_processing_tasksWhereInput[]
@@ -32504,6 +31512,7 @@ export namespace Prisma {
     finished_at?: DateTimeNullableFilter<"b_agent_runs"> | Date | string | null
     b_chat_sessions?: XOR<B_chat_sessionsScalarRelationFilter, b_chat_sessionsWhereInput>
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
+    agent_steps?: B_agent_stepsListRelationFilter
   }
 
   export type b_agent_runsOrderByWithRelationInput = {
@@ -32524,6 +31533,7 @@ export namespace Prisma {
     finished_at?: SortOrderInput | SortOrder
     b_chat_sessions?: b_chat_sessionsOrderByWithRelationInput
     b_users?: b_usersOrderByWithRelationInput
+    agent_steps?: b_agent_stepsOrderByRelationAggregateInput
     _relevance?: b_agent_runsOrderByRelevanceInput
   }
 
@@ -32548,6 +31558,7 @@ export namespace Prisma {
     finished_at?: DateTimeNullableFilter<"b_agent_runs"> | Date | string | null
     b_chat_sessions?: XOR<B_chat_sessionsScalarRelationFilter, b_chat_sessionsWhereInput>
     b_users?: XOR<B_usersScalarRelationFilter, b_usersWhereInput>
+    agent_steps?: B_agent_stepsListRelationFilter
   }, "id">
 
   export type b_agent_runsOrderByWithAggregationInput = {
@@ -32608,6 +31619,7 @@ export namespace Prisma {
     duration_ms?: IntNullableFilter<"b_agent_steps"> | number | null
     started_at?: DateTimeFilter<"b_agent_steps"> | Date | string
     finished_at?: DateTimeNullableFilter<"b_agent_steps"> | Date | string | null
+    b_agent_runs?: XOR<B_agent_runsScalarRelationFilter, b_agent_runsWhereInput>
   }
 
   export type b_agent_stepsOrderByWithRelationInput = {
@@ -32621,6 +31633,7 @@ export namespace Prisma {
     duration_ms?: SortOrderInput | SortOrder
     started_at?: SortOrder
     finished_at?: SortOrderInput | SortOrder
+    b_agent_runs?: b_agent_runsOrderByWithRelationInput
     _relevance?: b_agent_stepsOrderByRelevanceInput
   }
 
@@ -32638,6 +31651,7 @@ export namespace Prisma {
     duration_ms?: IntNullableFilter<"b_agent_steps"> | number | null
     started_at?: DateTimeFilter<"b_agent_steps"> | Date | string
     finished_at?: DateTimeNullableFilter<"b_agent_steps"> | Date | string | null
+    b_agent_runs?: XOR<B_agent_runsScalarRelationFilter, b_agent_runsWhereInput>
   }, "id">
 
   export type b_agent_stepsOrderByWithAggregationInput = {
@@ -33142,6 +32156,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
     b_users: b_usersCreateNestedOneWithoutUser_sessionsInput
   }
 
@@ -33154,6 +32169,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type b_user_sessionsUpdateInput = {
@@ -33164,6 +32180,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     b_users?: b_usersUpdateOneRequiredWithoutUser_sessionsNestedInput
   }
 
@@ -33176,6 +32193,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_user_sessionsCreateManyInput = {
@@ -33187,6 +32205,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type b_user_sessionsUpdateManyMutationInput = {
@@ -33197,6 +32216,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_user_sessionsUncheckedUpdateManyInput = {
@@ -33208,6 +32228,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type sys_admin_sessionsCreateInput = {
@@ -33218,6 +32239,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
     sys_admins: sys_adminsCreateNestedOneWithoutAdmin_sessionsInput
   }
 
@@ -33230,6 +32252,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type sys_admin_sessionsUpdateInput = {
@@ -33240,6 +32263,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
     sys_admins?: sys_adminsUpdateOneRequiredWithoutAdmin_sessionsNestedInput
   }
 
@@ -33252,6 +32276,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type sys_admin_sessionsCreateManyInput = {
@@ -33263,6 +32288,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type sys_admin_sessionsUpdateManyMutationInput = {
@@ -33273,6 +32299,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type sys_admin_sessionsUncheckedUpdateManyInput = {
@@ -33284,6 +32311,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type sys_model_configsCreateInput = {
@@ -34383,83 +33411,6 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
-  export type b_document_chunk_search_indexCreateInput = {
-    chunk_id: bigint | number
-    doc_id: bigint | number
-    kb_id: bigint | number
-    title?: string | null
-    title_path?: string | null
-    content_plain: string
-    keyword_text?: string | null
-    created_at?: Date | string
-  }
-
-  export type b_document_chunk_search_indexUncheckedCreateInput = {
-    chunk_id: bigint | number
-    doc_id: bigint | number
-    kb_id: bigint | number
-    title?: string | null
-    title_path?: string | null
-    content_plain: string
-    keyword_text?: string | null
-    created_at?: Date | string
-  }
-
-  export type b_document_chunk_search_indexUpdateInput = {
-    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    title_path?: NullableStringFieldUpdateOperationsInput | string | null
-    content_plain?: StringFieldUpdateOperationsInput | string
-    keyword_text?: NullableStringFieldUpdateOperationsInput | string | null
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type b_document_chunk_search_indexUncheckedUpdateInput = {
-    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    title_path?: NullableStringFieldUpdateOperationsInput | string | null
-    content_plain?: StringFieldUpdateOperationsInput | string
-    keyword_text?: NullableStringFieldUpdateOperationsInput | string | null
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type b_document_chunk_search_indexCreateManyInput = {
-    chunk_id: bigint | number
-    doc_id: bigint | number
-    kb_id: bigint | number
-    title?: string | null
-    title_path?: string | null
-    content_plain: string
-    keyword_text?: string | null
-    created_at?: Date | string
-  }
-
-  export type b_document_chunk_search_indexUpdateManyMutationInput = {
-    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    title_path?: NullableStringFieldUpdateOperationsInput | string | null
-    content_plain?: StringFieldUpdateOperationsInput | string
-    keyword_text?: NullableStringFieldUpdateOperationsInput | string | null
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type b_document_chunk_search_indexUncheckedUpdateManyInput = {
-    chunk_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    doc_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    kb_id?: BigIntFieldUpdateOperationsInput | bigint | number
-    title?: NullableStringFieldUpdateOperationsInput | string | null
-    title_path?: NullableStringFieldUpdateOperationsInput | string | null
-    content_plain?: StringFieldUpdateOperationsInput | string
-    keyword_text?: NullableStringFieldUpdateOperationsInput | string | null
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
   export type b_document_processing_tasksCreateInput = {
     id?: bigint | number
     processing_version: number
@@ -34943,6 +33894,7 @@ export namespace Prisma {
     finished_at?: Date | string | null
     b_chat_sessions: b_chat_sessionsCreateNestedOneWithoutAgent_runsInput
     b_users: b_usersCreateNestedOneWithoutAgent_runsInput
+    agent_steps?: b_agent_stepsCreateNestedManyWithoutB_agent_runsInput
   }
 
   export type b_agent_runsUncheckedCreateInput = {
@@ -34961,6 +33913,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
     finished_at?: Date | string | null
+    agent_steps?: b_agent_stepsUncheckedCreateNestedManyWithoutB_agent_runsInput
   }
 
   export type b_agent_runsUpdateInput = {
@@ -34979,6 +33932,7 @@ export namespace Prisma {
     finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     b_chat_sessions?: b_chat_sessionsUpdateOneRequiredWithoutAgent_runsNestedInput
     b_users?: b_usersUpdateOneRequiredWithoutAgent_runsNestedInput
+    agent_steps?: b_agent_stepsUpdateManyWithoutB_agent_runsNestedInput
   }
 
   export type b_agent_runsUncheckedUpdateInput = {
@@ -34997,6 +33951,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agent_steps?: b_agent_stepsUncheckedUpdateManyWithoutB_agent_runsNestedInput
   }
 
   export type b_agent_runsCreateManyInput = {
@@ -35053,7 +34008,6 @@ export namespace Prisma {
 
   export type b_agent_stepsCreateInput = {
     id?: bigint | number
-    run_id: string
     agent_name: string
     step_type: string
     status: string
@@ -35062,6 +34016,7 @@ export namespace Prisma {
     duration_ms?: number | null
     started_at?: Date | string
     finished_at?: Date | string | null
+    b_agent_runs: b_agent_runsCreateNestedOneWithoutAgent_stepsInput
   }
 
   export type b_agent_stepsUncheckedCreateInput = {
@@ -35079,7 +34034,6 @@ export namespace Prisma {
 
   export type b_agent_stepsUpdateInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    run_id?: StringFieldUpdateOperationsInput | string
     agent_name?: StringFieldUpdateOperationsInput | string
     step_type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
@@ -35088,6 +34042,7 @@ export namespace Prisma {
     duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
     started_at?: DateTimeFieldUpdateOperationsInput | Date | string
     finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    b_agent_runs?: b_agent_runsUpdateOneRequiredWithoutAgent_stepsNestedInput
   }
 
   export type b_agent_stepsUncheckedUpdateInput = {
@@ -35118,7 +34073,6 @@ export namespace Prisma {
 
   export type b_agent_stepsUpdateManyMutationInput = {
     id?: BigIntFieldUpdateOperationsInput | bigint | number
-    run_id?: StringFieldUpdateOperationsInput | string
     agent_name?: StringFieldUpdateOperationsInput | string
     step_type?: StringFieldUpdateOperationsInput | string
     status?: StringFieldUpdateOperationsInput | string
@@ -35780,6 +34734,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type b_user_sessionsAvgOrderByAggregateInput = {
@@ -35796,6 +34751,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type b_user_sessionsMinOrderByAggregateInput = {
@@ -35807,6 +34763,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type b_user_sessionsSumOrderByAggregateInput = {
@@ -35834,6 +34791,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type sys_admin_sessionsAvgOrderByAggregateInput = {
@@ -35850,6 +34808,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type sys_admin_sessionsMinOrderByAggregateInput = {
@@ -35861,6 +34820,7 @@ export namespace Prisma {
     revoked?: SortOrder
     expired_at?: SortOrder
     created_at?: SortOrder
+    updated_at?: SortOrder
   }
 
   export type sys_admin_sessionsSumOrderByAggregateInput = {
@@ -36741,57 +35701,6 @@ export namespace Prisma {
     chunk_level?: SortOrder
   }
 
-  export type b_document_chunk_search_indexOrderByRelevanceInput = {
-    fields: b_document_chunk_search_indexOrderByRelevanceFieldEnum | b_document_chunk_search_indexOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
-  }
-
-  export type b_document_chunk_search_indexCountOrderByAggregateInput = {
-    chunk_id?: SortOrder
-    doc_id?: SortOrder
-    kb_id?: SortOrder
-    title?: SortOrder
-    title_path?: SortOrder
-    content_plain?: SortOrder
-    keyword_text?: SortOrder
-    created_at?: SortOrder
-  }
-
-  export type b_document_chunk_search_indexAvgOrderByAggregateInput = {
-    chunk_id?: SortOrder
-    doc_id?: SortOrder
-    kb_id?: SortOrder
-  }
-
-  export type b_document_chunk_search_indexMaxOrderByAggregateInput = {
-    chunk_id?: SortOrder
-    doc_id?: SortOrder
-    kb_id?: SortOrder
-    title?: SortOrder
-    title_path?: SortOrder
-    content_plain?: SortOrder
-    keyword_text?: SortOrder
-    created_at?: SortOrder
-  }
-
-  export type b_document_chunk_search_indexMinOrderByAggregateInput = {
-    chunk_id?: SortOrder
-    doc_id?: SortOrder
-    kb_id?: SortOrder
-    title?: SortOrder
-    title_path?: SortOrder
-    content_plain?: SortOrder
-    keyword_text?: SortOrder
-    created_at?: SortOrder
-  }
-
-  export type b_document_chunk_search_indexSumOrderByAggregateInput = {
-    chunk_id?: SortOrder
-    doc_id?: SortOrder
-    kb_id?: SortOrder
-  }
-
   export type b_document_processing_tasksOrderByRelevanceInput = {
     fields: b_document_processing_tasksOrderByRelevanceFieldEnum | b_document_processing_tasksOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -37117,6 +36026,16 @@ export namespace Prisma {
     _max?: NestedFloatNullableFilter<$PrismaModel>
   }
 
+  export type B_agent_stepsListRelationFilter = {
+    every?: b_agent_stepsWhereInput
+    some?: b_agent_stepsWhereInput
+    none?: b_agent_stepsWhereInput
+  }
+
+  export type b_agent_stepsOrderByRelationAggregateInput = {
+    _count?: SortOrder
+  }
+
   export type b_agent_runsOrderByRelevanceInput = {
     fields: b_agent_runsOrderByRelevanceFieldEnum | b_agent_runsOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -37183,6 +36102,11 @@ export namespace Prisma {
     assistant_message_id?: SortOrder
     total_tokens?: SortOrder
     duration_ms?: SortOrder
+  }
+
+  export type B_agent_runsScalarRelationFilter = {
+    is?: b_agent_runsWhereInput
+    isNot?: b_agent_runsWhereInput
   }
 
   export type b_agent_stepsOrderByRelevanceInput = {
@@ -38937,6 +37861,20 @@ export namespace Prisma {
     connect?: b_usersWhereUniqueInput
   }
 
+  export type b_agent_stepsCreateNestedManyWithoutB_agent_runsInput = {
+    create?: XOR<b_agent_stepsCreateWithoutB_agent_runsInput, b_agent_stepsUncheckedCreateWithoutB_agent_runsInput> | b_agent_stepsCreateWithoutB_agent_runsInput[] | b_agent_stepsUncheckedCreateWithoutB_agent_runsInput[]
+    connectOrCreate?: b_agent_stepsCreateOrConnectWithoutB_agent_runsInput | b_agent_stepsCreateOrConnectWithoutB_agent_runsInput[]
+    createMany?: b_agent_stepsCreateManyB_agent_runsInputEnvelope
+    connect?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+  }
+
+  export type b_agent_stepsUncheckedCreateNestedManyWithoutB_agent_runsInput = {
+    create?: XOR<b_agent_stepsCreateWithoutB_agent_runsInput, b_agent_stepsUncheckedCreateWithoutB_agent_runsInput> | b_agent_stepsCreateWithoutB_agent_runsInput[] | b_agent_stepsUncheckedCreateWithoutB_agent_runsInput[]
+    connectOrCreate?: b_agent_stepsCreateOrConnectWithoutB_agent_runsInput | b_agent_stepsCreateOrConnectWithoutB_agent_runsInput[]
+    createMany?: b_agent_stepsCreateManyB_agent_runsInputEnvelope
+    connect?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+  }
+
   export type b_chat_sessionsUpdateOneRequiredWithoutAgent_runsNestedInput = {
     create?: XOR<b_chat_sessionsCreateWithoutAgent_runsInput, b_chat_sessionsUncheckedCreateWithoutAgent_runsInput>
     connectOrCreate?: b_chat_sessionsCreateOrConnectWithoutAgent_runsInput
@@ -38951,6 +37889,48 @@ export namespace Prisma {
     upsert?: b_usersUpsertWithoutAgent_runsInput
     connect?: b_usersWhereUniqueInput
     update?: XOR<XOR<b_usersUpdateToOneWithWhereWithoutAgent_runsInput, b_usersUpdateWithoutAgent_runsInput>, b_usersUncheckedUpdateWithoutAgent_runsInput>
+  }
+
+  export type b_agent_stepsUpdateManyWithoutB_agent_runsNestedInput = {
+    create?: XOR<b_agent_stepsCreateWithoutB_agent_runsInput, b_agent_stepsUncheckedCreateWithoutB_agent_runsInput> | b_agent_stepsCreateWithoutB_agent_runsInput[] | b_agent_stepsUncheckedCreateWithoutB_agent_runsInput[]
+    connectOrCreate?: b_agent_stepsCreateOrConnectWithoutB_agent_runsInput | b_agent_stepsCreateOrConnectWithoutB_agent_runsInput[]
+    upsert?: b_agent_stepsUpsertWithWhereUniqueWithoutB_agent_runsInput | b_agent_stepsUpsertWithWhereUniqueWithoutB_agent_runsInput[]
+    createMany?: b_agent_stepsCreateManyB_agent_runsInputEnvelope
+    set?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+    disconnect?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+    delete?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+    connect?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+    update?: b_agent_stepsUpdateWithWhereUniqueWithoutB_agent_runsInput | b_agent_stepsUpdateWithWhereUniqueWithoutB_agent_runsInput[]
+    updateMany?: b_agent_stepsUpdateManyWithWhereWithoutB_agent_runsInput | b_agent_stepsUpdateManyWithWhereWithoutB_agent_runsInput[]
+    deleteMany?: b_agent_stepsScalarWhereInput | b_agent_stepsScalarWhereInput[]
+  }
+
+  export type b_agent_stepsUncheckedUpdateManyWithoutB_agent_runsNestedInput = {
+    create?: XOR<b_agent_stepsCreateWithoutB_agent_runsInput, b_agent_stepsUncheckedCreateWithoutB_agent_runsInput> | b_agent_stepsCreateWithoutB_agent_runsInput[] | b_agent_stepsUncheckedCreateWithoutB_agent_runsInput[]
+    connectOrCreate?: b_agent_stepsCreateOrConnectWithoutB_agent_runsInput | b_agent_stepsCreateOrConnectWithoutB_agent_runsInput[]
+    upsert?: b_agent_stepsUpsertWithWhereUniqueWithoutB_agent_runsInput | b_agent_stepsUpsertWithWhereUniqueWithoutB_agent_runsInput[]
+    createMany?: b_agent_stepsCreateManyB_agent_runsInputEnvelope
+    set?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+    disconnect?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+    delete?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+    connect?: b_agent_stepsWhereUniqueInput | b_agent_stepsWhereUniqueInput[]
+    update?: b_agent_stepsUpdateWithWhereUniqueWithoutB_agent_runsInput | b_agent_stepsUpdateWithWhereUniqueWithoutB_agent_runsInput[]
+    updateMany?: b_agent_stepsUpdateManyWithWhereWithoutB_agent_runsInput | b_agent_stepsUpdateManyWithWhereWithoutB_agent_runsInput[]
+    deleteMany?: b_agent_stepsScalarWhereInput | b_agent_stepsScalarWhereInput[]
+  }
+
+  export type b_agent_runsCreateNestedOneWithoutAgent_stepsInput = {
+    create?: XOR<b_agent_runsCreateWithoutAgent_stepsInput, b_agent_runsUncheckedCreateWithoutAgent_stepsInput>
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutAgent_stepsInput
+    connect?: b_agent_runsWhereUniqueInput
+  }
+
+  export type b_agent_runsUpdateOneRequiredWithoutAgent_stepsNestedInput = {
+    create?: XOR<b_agent_runsCreateWithoutAgent_stepsInput, b_agent_runsUncheckedCreateWithoutAgent_stepsInput>
+    connectOrCreate?: b_agent_runsCreateOrConnectWithoutAgent_stepsInput
+    upsert?: b_agent_runsUpsertWithoutAgent_stepsInput
+    connect?: b_agent_runsWhereUniqueInput
+    update?: XOR<XOR<b_agent_runsUpdateToOneWithWhereWithoutAgent_stepsInput, b_agent_runsUpdateWithoutAgent_stepsInput>, b_agent_runsUncheckedUpdateWithoutAgent_stepsInput>
   }
 
   export type sys_adminsCreateNestedOneWithoutAudit_logsInput = {
@@ -39663,6 +38643,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type b_user_sessionsUncheckedCreateWithoutB_usersInput = {
@@ -39673,6 +38654,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type b_user_sessionsCreateOrConnectWithoutB_usersInput = {
@@ -39700,6 +38682,7 @@ export namespace Prisma {
     created_at?: Date | string
     finished_at?: Date | string | null
     b_chat_sessions: b_chat_sessionsCreateNestedOneWithoutAgent_runsInput
+    agent_steps?: b_agent_stepsCreateNestedManyWithoutB_agent_runsInput
   }
 
   export type b_agent_runsUncheckedCreateWithoutB_usersInput = {
@@ -39717,6 +38700,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
     finished_at?: Date | string | null
+    agent_steps?: b_agent_stepsUncheckedCreateNestedManyWithoutB_agent_runsInput
   }
 
   export type b_agent_runsCreateOrConnectWithoutB_usersInput = {
@@ -40030,6 +39014,7 @@ export namespace Prisma {
     revoked?: BoolFilter<"b_user_sessions"> | boolean
     expired_at?: DateTimeFilter<"b_user_sessions"> | Date | string
     created_at?: DateTimeFilter<"b_user_sessions"> | Date | string
+    updated_at?: DateTimeFilter<"b_user_sessions"> | Date | string
   }
 
   export type b_agent_runsUpsertWithWhereUniqueWithoutB_usersInput = {
@@ -40105,6 +39090,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type sys_admin_sessionsUncheckedCreateWithoutSys_adminsInput = {
@@ -40115,6 +39101,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type sys_admin_sessionsCreateOrConnectWithoutSys_adminsInput = {
@@ -40184,6 +39171,7 @@ export namespace Prisma {
     revoked?: BoolFilter<"sys_admin_sessions"> | boolean
     expired_at?: DateTimeFilter<"sys_admin_sessions"> | Date | string
     created_at?: DateTimeFilter<"sys_admin_sessions"> | Date | string
+    updated_at?: DateTimeFilter<"sys_admin_sessions"> | Date | string
   }
 
   export type b_usersCreateWithoutUser_sessionsInput = {
@@ -42798,6 +41786,7 @@ export namespace Prisma {
     created_at?: Date | string
     finished_at?: Date | string | null
     b_users: b_usersCreateNestedOneWithoutAgent_runsInput
+    agent_steps?: b_agent_stepsCreateNestedManyWithoutB_agent_runsInput
   }
 
   export type b_agent_runsUncheckedCreateWithoutB_chat_sessionsInput = {
@@ -42815,6 +41804,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     created_at?: Date | string
     finished_at?: Date | string | null
+    agent_steps?: b_agent_stepsUncheckedCreateNestedManyWithoutB_agent_runsInput
   }
 
   export type b_agent_runsCreateOrConnectWithoutB_chat_sessionsInput = {
@@ -43599,6 +42589,40 @@ export namespace Prisma {
     create: XOR<b_usersCreateWithoutAgent_runsInput, b_usersUncheckedCreateWithoutAgent_runsInput>
   }
 
+  export type b_agent_stepsCreateWithoutB_agent_runsInput = {
+    id?: bigint | number
+    agent_name: string
+    step_type: string
+    status: string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: number | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_stepsUncheckedCreateWithoutB_agent_runsInput = {
+    id?: bigint | number
+    agent_name: string
+    step_type: string
+    status: string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: number | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_stepsCreateOrConnectWithoutB_agent_runsInput = {
+    where: b_agent_stepsWhereUniqueInput
+    create: XOR<b_agent_stepsCreateWithoutB_agent_runsInput, b_agent_stepsUncheckedCreateWithoutB_agent_runsInput>
+  }
+
+  export type b_agent_stepsCreateManyB_agent_runsInputEnvelope = {
+    data: b_agent_stepsCreateManyB_agent_runsInput | b_agent_stepsCreateManyB_agent_runsInput[]
+    skipDuplicates?: boolean
+  }
+
   export type b_chat_sessionsUpsertWithoutAgent_runsInput = {
     update: XOR<b_chat_sessionsUpdateWithoutAgent_runsInput, b_chat_sessionsUncheckedUpdateWithoutAgent_runsInput>
     create: XOR<b_chat_sessionsCreateWithoutAgent_runsInput, b_chat_sessionsUncheckedCreateWithoutAgent_runsInput>
@@ -43687,6 +42711,126 @@ export namespace Prisma {
     daily_quotas?: b_user_daily_quotasUncheckedUpdateManyWithoutB_usersNestedInput
     kb_invitations?: b_kb_invitationsUncheckedUpdateManyWithoutB_usersNestedInput
     user_sessions?: b_user_sessionsUncheckedUpdateManyWithoutB_usersNestedInput
+  }
+
+  export type b_agent_stepsUpsertWithWhereUniqueWithoutB_agent_runsInput = {
+    where: b_agent_stepsWhereUniqueInput
+    update: XOR<b_agent_stepsUpdateWithoutB_agent_runsInput, b_agent_stepsUncheckedUpdateWithoutB_agent_runsInput>
+    create: XOR<b_agent_stepsCreateWithoutB_agent_runsInput, b_agent_stepsUncheckedCreateWithoutB_agent_runsInput>
+  }
+
+  export type b_agent_stepsUpdateWithWhereUniqueWithoutB_agent_runsInput = {
+    where: b_agent_stepsWhereUniqueInput
+    data: XOR<b_agent_stepsUpdateWithoutB_agent_runsInput, b_agent_stepsUncheckedUpdateWithoutB_agent_runsInput>
+  }
+
+  export type b_agent_stepsUpdateManyWithWhereWithoutB_agent_runsInput = {
+    where: b_agent_stepsScalarWhereInput
+    data: XOR<b_agent_stepsUpdateManyMutationInput, b_agent_stepsUncheckedUpdateManyWithoutB_agent_runsInput>
+  }
+
+  export type b_agent_stepsScalarWhereInput = {
+    AND?: b_agent_stepsScalarWhereInput | b_agent_stepsScalarWhereInput[]
+    OR?: b_agent_stepsScalarWhereInput[]
+    NOT?: b_agent_stepsScalarWhereInput | b_agent_stepsScalarWhereInput[]
+    id?: BigIntFilter<"b_agent_steps"> | bigint | number
+    run_id?: StringFilter<"b_agent_steps"> | string
+    agent_name?: StringFilter<"b_agent_steps"> | string
+    step_type?: StringFilter<"b_agent_steps"> | string
+    status?: StringFilter<"b_agent_steps"> | string
+    input_json?: JsonNullableFilter<"b_agent_steps">
+    output_json?: JsonNullableFilter<"b_agent_steps">
+    duration_ms?: IntNullableFilter<"b_agent_steps"> | number | null
+    started_at?: DateTimeFilter<"b_agent_steps"> | Date | string
+    finished_at?: DateTimeNullableFilter<"b_agent_steps"> | Date | string | null
+  }
+
+  export type b_agent_runsCreateWithoutAgent_stepsInput = {
+    id: string
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+    b_chat_sessions: b_chat_sessionsCreateNestedOneWithoutAgent_runsInput
+    b_users: b_usersCreateNestedOneWithoutAgent_runsInput
+  }
+
+  export type b_agent_runsUncheckedCreateWithoutAgent_stepsInput = {
+    id: string
+    session_id: string
+    user_id: bigint | number
+    user_message_id: bigint | number
+    assistant_message_id?: bigint | number | null
+    status: string
+    total_tokens?: number | null
+    duration_ms?: number | null
+    chat_mode?: string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_runsCreateOrConnectWithoutAgent_stepsInput = {
+    where: b_agent_runsWhereUniqueInput
+    create: XOR<b_agent_runsCreateWithoutAgent_stepsInput, b_agent_runsUncheckedCreateWithoutAgent_stepsInput>
+  }
+
+  export type b_agent_runsUpsertWithoutAgent_stepsInput = {
+    update: XOR<b_agent_runsUpdateWithoutAgent_stepsInput, b_agent_runsUncheckedUpdateWithoutAgent_stepsInput>
+    create: XOR<b_agent_runsCreateWithoutAgent_stepsInput, b_agent_runsUncheckedCreateWithoutAgent_stepsInput>
+    where?: b_agent_runsWhereInput
+  }
+
+  export type b_agent_runsUpdateToOneWithWhereWithoutAgent_stepsInput = {
+    where?: b_agent_runsWhereInput
+    data: XOR<b_agent_runsUpdateWithoutAgent_stepsInput, b_agent_runsUncheckedUpdateWithoutAgent_stepsInput>
+  }
+
+  export type b_agent_runsUpdateWithoutAgent_stepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    b_chat_sessions?: b_chat_sessionsUpdateOneRequiredWithoutAgent_runsNestedInput
+    b_users?: b_usersUpdateOneRequiredWithoutAgent_runsNestedInput
+  }
+
+  export type b_agent_runsUncheckedUpdateWithoutAgent_stepsInput = {
+    id?: StringFieldUpdateOperationsInput | string
+    session_id?: StringFieldUpdateOperationsInput | string
+    user_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    user_message_id?: BigIntFieldUpdateOperationsInput | bigint | number
+    assistant_message_id?: NullableBigIntFieldUpdateOperationsInput | bigint | number | null
+    status?: StringFieldUpdateOperationsInput | string
+    total_tokens?: NullableIntFieldUpdateOperationsInput | number | null
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    chat_mode?: NullableStringFieldUpdateOperationsInput | string | null
+    selected_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    resolved_kb_ids_json?: NullableJsonNullValueInput | InputJsonValue
+    routed_query_json?: NullableJsonNullValueInput | InputJsonValue
+    metadata_json?: NullableJsonNullValueInput | InputJsonValue
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type sys_adminsCreateWithoutAudit_logsInput = {
@@ -43975,6 +43119,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type b_agent_runsCreateManyB_usersInput = {
@@ -44365,6 +43510,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_user_sessionsUncheckedUpdateWithoutB_usersInput = {
@@ -44375,6 +43521,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_user_sessionsUncheckedUpdateManyWithoutB_usersInput = {
@@ -44385,6 +43532,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_agent_runsUpdateWithoutB_usersInput = {
@@ -44402,6 +43550,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     b_chat_sessions?: b_chat_sessionsUpdateOneRequiredWithoutAgent_runsNestedInput
+    agent_steps?: b_agent_stepsUpdateManyWithoutB_agent_runsNestedInput
   }
 
   export type b_agent_runsUncheckedUpdateWithoutB_usersInput = {
@@ -44419,6 +43568,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agent_steps?: b_agent_stepsUncheckedUpdateManyWithoutB_agent_runsNestedInput
   }
 
   export type b_agent_runsUncheckedUpdateManyWithoutB_usersInput = {
@@ -44455,6 +43605,7 @@ export namespace Prisma {
     revoked?: boolean
     expired_at: Date | string
     created_at?: Date | string
+    updated_at?: Date | string
   }
 
   export type sys_audit_logsUpdateWithoutSys_adminsInput = {
@@ -44492,6 +43643,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type sys_admin_sessionsUncheckedUpdateWithoutSys_adminsInput = {
@@ -44502,6 +43654,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type sys_admin_sessionsUncheckedUpdateManyWithoutSys_adminsInput = {
@@ -44512,6 +43665,7 @@ export namespace Prisma {
     revoked?: BoolFieldUpdateOperationsInput | boolean
     expired_at?: DateTimeFieldUpdateOperationsInput | Date | string
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    updated_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
   export type b_documentsCreateManyB_knowledge_basesInput = {
@@ -45400,6 +44554,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     b_users?: b_usersUpdateOneRequiredWithoutAgent_runsNestedInput
+    agent_steps?: b_agent_stepsUpdateManyWithoutB_agent_runsNestedInput
   }
 
   export type b_agent_runsUncheckedUpdateWithoutB_chat_sessionsInput = {
@@ -45417,6 +44572,7 @@ export namespace Prisma {
     metadata_json?: NullableJsonNullValueInput | InputJsonValue
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    agent_steps?: b_agent_stepsUncheckedUpdateManyWithoutB_agent_runsNestedInput
   }
 
   export type b_agent_runsUncheckedUpdateManyWithoutB_chat_sessionsInput = {
@@ -45478,6 +44634,54 @@ export namespace Prisma {
     quote?: NullableStringFieldUpdateOperationsInput | string | null
     order_no?: IntFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type b_agent_stepsCreateManyB_agent_runsInput = {
+    id?: bigint | number
+    agent_name: string
+    step_type: string
+    status: string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: number | null
+    started_at?: Date | string
+    finished_at?: Date | string | null
+  }
+
+  export type b_agent_stepsUpdateWithoutB_agent_runsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    agent_name?: StringFieldUpdateOperationsInput | string
+    step_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_stepsUncheckedUpdateWithoutB_agent_runsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    agent_name?: StringFieldUpdateOperationsInput | string
+    step_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+  }
+
+  export type b_agent_stepsUncheckedUpdateManyWithoutB_agent_runsInput = {
+    id?: BigIntFieldUpdateOperationsInput | bigint | number
+    agent_name?: StringFieldUpdateOperationsInput | string
+    step_type?: StringFieldUpdateOperationsInput | string
+    status?: StringFieldUpdateOperationsInput | string
+    input_json?: NullableJsonNullValueInput | InputJsonValue
+    output_json?: NullableJsonNullValueInput | InputJsonValue
+    duration_ms?: NullableIntFieldUpdateOperationsInput | number | null
+    started_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    finished_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
   }
 
   export type sys_dict_itemCreateManyTypeInput = {

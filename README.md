@@ -28,8 +28,6 @@ Linsor AI (灵索智能) 是一个面向极致用户体验与高效信息检索�
 | 数据库 | MySQL 8.0 (元数据) |
 | 向量库 | Qdrant (稠密) + Elasticsearch (稀疏) |
 | 任务队列 | BullMQ (Redis-backed) |
-| 后台管理 | Vue 3 + TypeScript (独立应用) |
-| 实验 | TypeScript + LangSmith (RAG 对比评估) |
 
 ## 快速开始
 
@@ -69,9 +67,6 @@ pnpm dev:server
 
 # 前端 (另一个终端)
 pnpm dev:web
-
-# 后台管理 (可选)
-pnpm dev:admin
 ```
 
 ## 项目结构
@@ -79,9 +74,7 @@ pnpm dev:admin
 ```text
 ├── apps
 │   ├── server       # NestJS 后端 (API + RAG + 文档处理)
-│   ├── web          # Vue 3 前端 (主用户界面)
-│   ├── admin        # Vue 3 后台管理
-│   └── experiment   # RAG 对比实验脚本
+│   └── web          # Vue 3 前端 (主用户界面)
 ├── docs             # 设计文档 (6 个分类目录)
 ├── docker-compose.yml
 ├── pnpm-workspace.yaml
