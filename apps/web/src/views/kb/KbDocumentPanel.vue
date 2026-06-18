@@ -1,0 +1,274 @@
+<script setup lang="ts">
+/**
+ * 文档面板 — 纯展示组件，所有逻辑由父组件 KbDetailView 提供。
+ */
+import { ref } from 'vue'
+import type { KnowledgeBaseDocumentItem, KnowledgeBaseDocumentStatus } from "@/types/knowledge-base";
+
+const DOC_STATUS_ZH: Record<string, string> = {
+  pending: '等待中',
+  uploaded: '已上传',
+  queued: '排队中',
+  parsing: '解析中',
+  chunking: '切块中',
+  embedding: '向量化',
+  ready: '已就绪',
+  failed: '失败',
+};
+
+function statusLabel(status: string) {
+  return DOC_STATUS_ZH[status] ?? status;
+}
+
+defineProps<{
+  canUpload: boolean;
+  documents: KnowledgeBaseDocumentItem[];
+  totalCount: number;
+  activeStatus: KnowledgeBaseDocumentStatus | "all";
+  isUploading: boolean;
+  uploadProgress: number;
+  uploadFileName: string;
+  uploadStatusText: string;
+  uploadId: string | null;
+  kbPermissions: Record<string, boolean>;
+}>();
+
+const emit = defineEmits<{
+  openFilePicker: [];
+  cancelUpload: [];
+  setStatus: [status: KnowledgeBaseDocumentStatus | 'all'];
+  'update:searchKeyword': [value: string];
+  previewDocument: [doc: KnowledgeBaseDocumentItem];
+  downloadDocument: [doc: KnowledgeBaseDocumentItem];
+  reparseDocument: [doc: KnowledgeBaseDocumentItem];
+  removeDocument: [doc: KnowledgeBaseDocumentItem];
+  dropFile: [files: FileList];
+}>();
+
+const isDragOver = ref(false);
+
+function onDragOver(e: DragEvent) {
+  e.preventDefault();
+  if (e.dataTransfer) e.dataTransfer.dropEffect = 'copy';
+}
+
+function onDragEnter(e: DragEvent) {
+  e.preventDefault();
+  isDragOver.value = true;
+}
+
+function onDragLeave(e: DragEvent) {
+  // 仅当离开容器本身时取消高亮
+  if ((e.currentTarget as HTMLElement)?.contains(e.relatedTarget as Node)) return;
+  isDragOver.value = false;
+}
+
+function onDrop(e: DragEvent) {
+  e.preventDefault();
+  isDragOver.value = false;
+  if (e.dataTransfer?.files?.length) emit('dropFile', e.dataTransfer.files);
+}
+</script>
+
+<template>
+  <div class="flex flex-col gap-6">
+    <!-- 上传区域 -->
+    <div
+      class="bg-surface-container-low p-8 rounded-xl border border-dashed border-outline-variant/20 flex flex-col items-center justify-center group transition-all shadow-md relative"
+      :class="{
+        'hover:border-primary/40 cursor-pointer': canUpload,
+        'opacity-80 cursor-not-allowed': !canUpload,
+        '!border-primary !bg-primary/5': isDragOver && canUpload,
+      }"
+      @click="$emit('openFilePicker')"
+      @dragover="onDragOver"
+      @dragenter="onDragEnter"
+      @dragleave="onDragLeave"
+      @drop="onDrop"
+    >
+      <div class="w-16 h-16 bg-surface-container-high rounded-full flex items-center justify-center mb-4 transition-transform shadow-inner" :class="canUpload ? 'group-hover:scale-110' : ''">
+        <span class="material-symbols-outlined text-3xl text-primary drop-shadow-[0_0_8px_rgba(195,192,255,0.5)]">cloud_upload</span>
+      </div>
+      <h3 class="font-headline text-lg font-bold mb-1">{{ canUpload ? "上传知识资产" : "当前角色无上传权限" }}</h3>
+      <p class="text-on-surface-variant text-sm mb-6 text-center">{{ canUpload ? uploadStatusText : "" }}</p>
+      <div v-if="isUploading || uploadProgress > 0" class="w-full max-w-xl mb-6">
+        <div class="w-full bg-surface-container-highest h-2 rounded-full overflow-hidden shadow-inner">
+          <div class="bg-primary h-full rounded-full transition-all duration-300" :style="{ width: `${uploadProgress}%` }" />
+        </div>
+        <div class="mt-3 flex items-center justify-between text-xs text-on-surface-variant">
+          <span class="truncate">{{ uploadFileName || "等待选择文件" }}</span>
+          <span>{{ uploadProgress }}%</span>
+        </div>
+      </div>
+      <div class="flex items-center gap-3">
+        <button :disabled="!canUpload" class="btn-primary" @click.stop="$emit('openFilePicker')">上传文件</button>
+        <button v-if="isUploading && uploadId" class="btn-outline" @click.stop="$emit('cancelUpload')">取消上传</button>
+      </div>
+    </div>
+
+    <!-- 文档列表 -->
+    <div class="bg-surface-container-low rounded-xl overflow-hidden shadow-lg border border-outline-variant/5">
+      <div class="px-6 py-4 flex flex-col gap-4 border-b border-outline-variant/5 bg-surface-container-high/30">
+        <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-3">
+          <h4 class="text-sm font-bold uppercase tracking-widest text-on-surface-variant font-label">当前文件 ({{ totalCount }})</h4>
+          <div class="relative w-full md:w-80">
+            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg">search</span>
+            <input type="text" placeholder="搜索文档标题或原文件名" class="w-full bg-surface-container-highest border border-outline-variant/15 rounded-xl pl-12 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary" @input="$emit('update:searchKeyword', ($event.target as HTMLInputElement).value)" />
+          </div>
+        </div>
+        <div class="flex items-center gap-2 flex-wrap">
+          <button v-for="option in (['all','queued','parsing','chunking','embedding','ready','failed'] as const)" :key="option" type="button" class="filter-chip" :class="{ 'filter-chip-active': activeStatus === option }" @click="$emit('setStatus', option)">{{ option === 'all' ? '全部' : option === 'queued' ? '处理中' : option === 'parsing' ? '解析中' : option === 'chunking' ? '切块中' : option === 'embedding' ? '向量化' : option === 'ready' ? '已就绪' : '失败' }}</button>
+        </div>
+      </div>
+
+      <div v-if="documents.length" class="divide-y divide-outline-variant/5">
+        <div v-for="doc in documents" :key="doc.id" class="px-6 py-5 flex flex-col gap-4 hover:bg-surface-container-high/40 transition-colors">
+          <div class="flex flex-col sm:flex-row sm:items-start gap-4">
+            <div class="w-11 h-11 bg-surface-container-high rounded-xl flex items-center justify-center flex-shrink-0">
+              <span class="material-symbols-outlined text-primary">description</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <div class="flex flex-wrap items-center gap-2 mb-2">
+                <span class="font-semibold text-sm truncate">{{ doc.title }}</span>
+                <span class="status-badge" :class="doc.status === 'ready' ? 'status-badge-ready' : doc.status === 'failed' ? 'status-badge-error' : ''">{{ statusLabel(doc.status) }}</span>
+              </div>
+              <p class="text-xs text-on-surface-variant truncate">原文件：{{ doc.originalFilename }}</p>
+              <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2 text-xs text-on-surface-variant">
+                <span>大小：{{ doc.fileSize }}</span>
+                <span>切片：{{ doc.chunkCount }}</span>
+                <span>上传者：{{ doc.uploader?.fullName || "未知" }}</span>
+              </div>
+            </div>
+            <div class="flex items-center gap-2">
+              <button class="btn-outline-sm" @click="$emit('previewDocument', doc)">预览</button>
+              <button v-if="kbPermissions['canDownload']" class="btn-outline-sm" @click="$emit('downloadDocument', doc)">下载</button>
+              <button v-if="kbPermissions['canReparse']" class="btn-outline-sm" @click="$emit('reparseDocument', doc)">重解析</button>
+              <button v-if="kbPermissions['canDeleteAnyDocument'] || kbPermissions['canDeleteOwnDocument']" class="btn-outline-sm !text-error" @click="$emit('removeDocument', doc)">删除</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div v-else class="px-6 py-12 flex flex-col items-center justify-center text-center">
+        <span class="material-symbols-outlined text-4xl text-outline mb-3">folder_open</span>
+        <div class="text-lg font-headline font-semibold">暂无文档</div>
+        <div class="text-sm text-outline mt-1">该知识库当前没有符合筛选条件的文档。</div>
+      </div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.btn-primary {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-family: var(--font-headline);
+  font-weight: 500;
+  background: var(--color-primary-container);
+  color: var(--color-on-primary-container);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-primary:hover {
+  filter: brightness(1.1);
+}
+.btn-primary:active {
+  transform: scale(0.98);
+}
+.btn-primary:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  pointer-events: none;
+}
+
+.btn-outline {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  font-size: 0.875rem;
+  font-family: var(--font-headline);
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+  color: var(--color-on-surface);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-outline:hover {
+  background: var(--color-surface-container-high);
+}
+.btn-outline:active {
+  transform: scale(0.98);
+}
+
+.btn-outline-sm {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.375rem;
+  padding: 0.3rem 0.7rem;
+  border-radius: 0.5rem;
+  font-size: 0.75rem;
+  font-family: var(--font-headline);
+  font-weight: 500;
+  background: transparent;
+  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 30%, transparent);
+  color: var(--color-on-surface);
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+.btn-outline-sm:hover {
+  background: var(--color-surface-container-high);
+}
+.btn-outline-sm:active {
+  transform: scale(0.98);
+}
+
+.filter-chip {
+  border-radius: 999px;
+  padding: 0.4rem 0.8rem;
+  font-size: 0.78rem;
+  color: var(--color-on-surface-variant);
+  background: color-mix(in srgb, var(--color-surface-container-low) 74%, transparent);
+  border: 1px solid transparent;
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.filter-chip-active {
+  color: var(--color-primary);
+  border-color: color-mix(in srgb, var(--color-primary) 30%, transparent);
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+}
+
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  padding: 0.22rem 0.56rem;
+  font-size: 0.65rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  background: color-mix(in srgb, var(--color-primary) 14%, transparent);
+  color: var(--color-primary);
+}
+
+.status-badge-ready {
+  background: color-mix(in srgb, var(--color-secondary) 14%, transparent);
+  color: var(--color-secondary);
+}
+
+.status-badge-error {
+  background: color-mix(in srgb, var(--color-error) 15%, transparent);
+  color: var(--color-error);
+}
+</style>

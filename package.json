@@ -6,23 +6,33 @@
   "main": "index.js",
   "scripts": {
     "install:all": "pnpm install",
-
-    "dev:backend": "pnpm --filter backend run start:dev",
-    "dev:frontend": "pnpm --filter frontend run dev",
-
+    "init:dev": "cp -n apps/server/.env.example apps/server/.env && cp -n apps/web/.env.example apps/web/.env && docker compose up -d && pnpm install && pnpm --filter server prisma generate && pnpm --filter server prisma migrate dev && pnpm db:seed",
+    "dev:server": "pnpm --filter server run start:dev",
+    "dev:web": "pnpm --filter web run dev",
     "build": "pnpm -r run build",
-    "build:backend": "pnpm --filter backend run build",
-    "build:frontend": "pnpm --filter frontend run build",
-
+    "build:server": "pnpm --filter server run build",
+    "build:web": "pnpm --filter web run build",
     "lint": "pnpm -r run lint",
-    "lint:backend": "pnpm --filter backend run lint",
-
+    "lint:server": "pnpm --filter server run lint",
     "typecheck": "pnpm -r run typecheck",
-
-    "clean": "pnpm -r exec rm -rf dist node_modules"
+    "db:generate": "pnpm --filter server prisma generate",
+    "db:migrate": "pnpm --filter server prisma migrate dev",
+    "db:seed": "pnpm --filter server prisma db seed",
+    "db:reset": "pnpm --filter server prisma migrate reset",
+    "db:studio": "pnpm --filter server prisma studio",
+    "clean": "pnpm -r exec rm -rf dist node_modules",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
-  "packageManager": "pnpm@10.18.1"
+  "packageManager": "pnpm@10.18.1",
+  "devDependencies": {
+    "@commitlint/cli": "^20.5.3",
+    "@commitlint/config-conventional": "^20.5.3",
+    "eslint": "^9.39.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.4.0",
+    "typescript": "^6.0.3"
+  }
 }

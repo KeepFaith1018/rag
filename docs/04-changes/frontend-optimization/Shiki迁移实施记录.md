@@ -1,0 +1,282 @@
+# 流式渲染优化 — 实施回写
+
+> 基于 [03-技术选型-流式渲染方案](./03-技术选型-流式渲染方案.md)
+> 实施日期：2026-05-08 | 状态：代码完成，待运行时验证
+
+---
+
+## 一、实施方案调整
+
+原计划 `marked + highlight.js → Incremark + Shiki + shiki-stream`。深入分析 `useStreamingMarkdown.ts` 后发现：
+
+- 当前 `tryFlush()` 采用 buffer 切片策略：每次 flush 后切走已解析部分，后续只解析新增内容。**并非 O(n²)**。
+- Incremark 的组件化渲染模型与当前 HTML 字符串输出模型不兼容，需大改架构。
+- 代码高亮从 200KB+ 的 highlight.js 全量变为按需 Shiki 已是最主要的收益。
+
+**最终方案**：保留 marked 解析 + 替换 highlight.js 为 Shiki。
+
+```
+marked (解析)     → 保留（buffer 切片已高效）
+highlight.js     → Shiki + 动态 import 按需加载
+```
+
+---
+
+## 二、实际变更文件
+
+| 文件 | 操作 | 说明 |
+|------|------|------|
+| `src/modules/chat/utils/shiki.ts` | **新建** | Shiki 高亮器单例，动态 import 语言包 |
+| `src/modules/chat/composables/useStreamingMarkdown.ts` | **重写** | highlightCode() 改用 Shiki，加 flush 锁 |
+| `src/modules/chat/composables/useAgentChat.ts` | **微调** | 2 处 flush() → await flush() |
+| `package.json` | **变更** | -highlight.js +shiki +@shikijs/langs +@shikijs/themes |
+
+### 2.1 shiki.ts — 新建
+
+```typescript
+// src/modules/chat/utils/shiki.ts
+import { createHighlighterCore } from 'shiki/core'
+import { createJavaScriptRegexEngine } from 'shiki/engine/javascript'
+
+let highlighterPromise: Promise<HighlighterCore> | null = null
+
+export function getHighlighter(): Promise<HighlighterCore> {
+  if (!highlighterPromise) {
+    highlighterPromise = createHighlighterCore({
+      // 动态 import，Vite 自动 code-split 每个语言
+      themes: [
+        import('@shikijs/themes/github-dark'),
+        import('@shikijs/themes/github-light'),
+      ],
+      langs: [
+        import('@shikijs/langs/javascript'),
+        import('@shikijs/langs/typescript'),
+        import('@shikijs/langs/python'),
+        import('@shikijs/langs/shellscript'),
+        import('@shikijs/langs/json'),
+        import('@shikijs/langs/markdown'),
+        import('@shikijs/langs/sql'),
+        import('@shikijs/langs/yaml'),
+        import('@shikijs/langs/css'),
+        import('@shikijs/langs/html'),
+        import('@shikijs/langs/xml'),
+      ],
+      engine: createJavaScriptRegexEngine(),  // 浏览器端 JS 引擎，不加载 WASM
+    })
+  }
+  return highlighterPromise
+}
+```
+
+**设计要点**：
+- 使用 `createHighlighterCore`（非 `createHighlighter`），避免打包所有 190+ 语言
+- 动态 `import()` 实现 code-split：语言文件按需加载，首次对话才触发
+- `createJavaScriptRegexEngine` 避免浏览器加载 Oniguruma WASM（~200KB）
+
+### 2.2 useStreamingMarkdown.ts — 核心改造
+
+改造点：
+
+```typescript
+// 1. 替换 import
+- import hljs from 'highlight.js'
++ import { getHighlighter } from '../utils/shiki'
++ import type { HighlighterCore } from 'shiki/core'
+
+// 2. 高亮函数重写
+- function highlightCode(code, lang) {
+-   if (lang && hljs.getLanguage(lang)) {
+-     return hljs.highlight(code, { language: lang }).value
+-   }
+-   return hljs.highlightAuto(code).value
+- }
+
++ async function highlightCode(code, lang) {
++   if (!highlighter) return encodeHTML(code)  // 高亮器未初始化，回退纯文本
++   try {
++     const langName = lang || 'text'
++     // Shiki codeToHtml 已包含 <pre><code> 包裹
++     return highlighter.codeToHtml(code.trimEnd(), {
++       lang: langName,
++       theme: 'github-dark',
++     })
++   } catch {
++     return `<pre><code>${encodeHTML(code)}</code></pre>`
++   }
++ }
+
+// 3. flush 加锁（因 codeToHtml 异步，防并发）
++ let isFlushing = false
++ function tryFlush(force = false): void {
++   if (isFlushing) return
++   isFlushing = true
++   doFlush(force).finally(() => {
++     isFlushing = false
++     if (state.buffer.length > 0) tryFlush()
++   })
++ }
+```
+
+### 2.3 useAgentChat.ts — 异步适配
+
+```diff
+- case 'TEXT_MESSAGE_END': flush(); break;
++ case 'TEXT_MESSAGE_END': await flush(); break;
+
+- flush();
++ await flush();
+```
+
+---
+
+## 三、依赖变更
+
+```diff
+  "dependencies": {
+-   "highlight.js": "^11.11.1",
++   "@shikijs/langs": "^4.0.2",
++   "@shikijs/themes": "^4.0.2",
++   "shiki": "^4.0.2",
++   "shiki-stream": "^0.1.4",
++   "@incremark/core": "^1.0.2",
+    "marked": "^18.0.2",          // 保留
+  }
+```
+
+> `shiki-stream` 和 `@incremark/core` 为后续迭代预装，当前未使用。
+
+---
+
+## 四、构建结果
+
+```
+vite build  ✓ built in 1.46s
+
+主要入口:
+  ChatView.js         256.3 kB  (80.8 kB gzip)   主聊天页
+  KbDetailView.js      39.7 kB  (12.3 kB gzip)   知识库详情
+  KbListView.js        21.0 kB  ( 6.8 kB gzip)   知识库列表
+  LoginView.js         13.1 kB  ( 4.5 kB gzip)   登录页
+
+Shiki 语言 chunk（按需加载，仅使用到的）:
+  typescript          181.1 kB  (16.2 kB gzip)
+  javascript          174.8 kB  (16.6 kB gzip)
+  python               69.9 kB  ( 9.1 kB gzip)
+  markdown             59.3 kB  ( 5.7 kB gzip)
+  html                 57.2 kB  (11.7 kB gzip)
+  css                  49.0 kB  (11.9 kB gzip)
+  shellscript          41.5 kB  ( 6.1 kB gzip)
+  xml                  32.5 kB  ( 5.1 kB gzip)
+  sql                  23.4 kB  ( 7.4 kB gzip)
+  github-dark          11.4 kB  ( 2.5 kB gzip)
+  github-light         11.2 kB  ( 2.5 kB gzip)
+  yaml                 10.5 kB  ( 2.3 kB gzip)
+  json                  2.8 kB  ( 0.8 kB gzip)
+
+对比:
+  之前: highlight.js 全量 ~200KB 打入主包
+  现在: 0KB 打入主包，语言按需动态加载
+```
+
+---
+
+## 五、验收状态
+
+| 检查项 | 状态 | 备注 |
+|--------|------|------|
+| `vue-tsc -b` 类型检查通过 | ✅ | 0 errors |
+| `vite build` 构建成功 | ✅ | 1.46s |
+| highlight.js 从 package.json 移除 | ✅ | |
+| 无 highlight.js 引用残留 | ✅ | 仅函数名 `highlightCode` 语义保留 |
+| 流式对话功能正常 | ⏳ | 需启动后端验证 |
+| 代码块高亮正确（ts/js/python/json/shell） | ⏳ | 需启动后端验证 |
+| 暗色/亮色主题适配 | ⏳ | 当前硬编码 `github-dark`，后续可读取 DOM class |
+| 长消息无卡顿 | ⏳ | 需启动后端验证 |
+| 中止/重发不崩溃 | ⏳ | 需启动后端验证 |
+
+---
+
+## 六、后续优化项
+
+1. **暗色/亮色主题跟随**：当前高亮主题硬编码 `github-dark`。读取 `<html class="dark">` 动态切换 `github-dark` / `github-light`
+2. **shiki-stream 流式高亮**：代码块接收过程中逐 token 高亮（当前等代码块闭合后一次性高亮）
+3. **Incremark 增量解析**：如后续对话场景 AI 输出量明显增大，可进一步替换 marked
+
+---
+
+## 七、第一阶段回退方案
+
+```bash
+# 恢复旧方案
+cd apps/web
+pnpm remove shiki @shikijs/langs @shikijs/themes shiki-stream @incremark/core
+pnpm add highlight.js
+git checkout -- src/modules/chat/composables/useStreamingMarkdown.ts
+git checkout -- src/modules/chat/composables/useAgentChat.ts
+rm src/modules/chat/utils/shiki.ts
+```
+
+---
+
+## 八、第二阶段（2026-05-09）：Incremark + AST → Vue 组件树
+
+> 基于设计文档 [2026-05-09-incremark-ast-vue-streaming-design](../../superpowers/specs/2026-05-09-incremark-ast-vue-streaming-design.md)
+> 基于业界调研 [05-业界调研-流式渲染方案](./05-业界调研-流式渲染方案.md)
+> 基于实现计划 [2026-05-09-incremark-ast-vue-streaming](../../superpowers/plans/2026-05-09-incremark-ast-vue-streaming.md)
+
+### 8.1 实施方案
+
+保留 Shiki 高亮方案不变，将 marked + buffer 切片解析 + v-html 渲染全部替换为 Incremark 增量解析 + AST → Vue 组件树。
+
+### 8.2 变更文件
+
+| 文件 | 操作 | 说明 |
+|------|------|------|
+| `src/modules/chat/composables/useStreamingMarkdown.ts` | **重写** (-356/+37) | 删除 buffer/状态机（~250 行），改用 Incremark |
+| `src/components/chat/MarkdownRenderer.vue` | **新建** | 块级 AST → Vue 组件分发 |
+| `src/components/chat/InlineRenderer.vue` | **新建** | 行内元素递归渲染 |
+| `src/components/chat/CodeBlock.vue` | **新建** | Shiki 代码高亮组件 |
+| `src/stores/chat.ts` | **微调** | 新增 `appendMessageBlocks()` |
+| `src/modules/chat/types/chat.ts` | **微调** | `ChatMessageItem` 新增 `blocks` 字段 |
+| `src/modules/chat/composables/useAgentChat.ts` | **微调** | `onFlush(html)` → `onBlocks(blocks)` |
+| `src/components/chat/AIMessageItem.vue` | **微调** | `v-html` → `<MarkdownRenderer>`（保留旧消息回退） |
+
+### 8.3 数据流
+
+```
+SSE delta
+  → useAgentChat 提取 TEXT_MESSAGE_CONTENT.delta
+  → useStreamingMarkdown.pushDelta(delta)
+      → Incremark parser.append(delta)
+      → IncrementalUpdate { completed, updated, pending }
+  → onBlocks(completed + updated)
+  → chatStore.appendMessageBlocks(messageId, blocks)
+  → AIMessageItem 读取 message.blocks
+  → MarkdownRenderer.vue 渲染 AST → 页面 DOM
+```
+
+### 8.4 验收状态
+
+| 检查项 | 状态 | 备注 |
+|--------|------|------|
+| `vue-tsc -b` 类型检查通过 | ✅ | 0 errors |
+| `vite build` 构建成功 | ✅ | 1.93s |
+| 流式对话正常渲染 | ⏳ | 需启动后端验证 |
+| 代码块高亮正确（ts/js/python/json/shell） | ⏳ | 需启动后端验证 |
+| 内联格式正确（粗体/斜体/链接/行内代码） | ⏳ | 需启动后端验证 |
+| 列表/表格/引用块正确 | ⏳ | 需启动后端验证 |
+| 历史消息兼容 | ✅ | 无 blocks 时回退 `htmlContent` |
+| 中止/重发不崩溃 | ⏳ | 需启动后端验证 |
+
+### 8.5 第二阶段回退
+
+```bash
+git checkout HEAD~6 -- apps/web/src/modules/chat/composables/useStreamingMarkdown.ts
+git checkout HEAD~6 -- apps/web/src/modules/chat/composables/useAgentChat.ts
+git checkout HEAD~6 -- apps/web/src/stores/chat.ts
+git checkout HEAD~6 -- apps/web/src/components/chat/AIMessageItem.vue
+git checkout HEAD~6 -- apps/web/src/modules/chat/types/chat.ts
+rm apps/web/src/components/chat/MarkdownRenderer.vue
+rm apps/web/src/components/chat/InlineRenderer.vue
+rm apps/web/src/components/chat/CodeBlock.vue
+```

@@ -1,0 +1,51 @@
+import { Module } from '@nestjs/common';
+import { RagModule } from '../rag/rag.module';
+import { KnowledgeBaseModule } from '../knowledge-base/knowledge-base.module';
+import { ChatController } from './chat.controller';
+import { AgentTraceController } from './services/agent-trace.controller';
+import { ChatSessionService } from './services/chat-session.service';
+import { ChatMessageService } from './services/chat-message.service';
+import { ChatStreamService } from './services/chat-stream.service';
+import { AgentTraceService } from './services/agent-trace.service';
+import { MultiAgentOrchestratorService } from './services/multi-agent-orchestrator.service';
+import { EvalQueueService } from './services/eval-queue.service';
+import { EvalProcessorService } from './services/eval-processor.service';
+import { EvalPipelineService } from './services/eval-pipeline.service';
+import { GetChunkDetailTool } from './services/tools/get-chunk-detail.tool';
+import { ModelConfigResolutionService } from './services/model-config-resolution.service';
+import { ContextManagerService } from './services/context-manager.service';
+import { TokenService } from '@common/utils/token.service';
+
+/**
+ * 对话模块。
+ *
+ * 整合 Agent 工作流，提供多阶段 Agentic RAG 编排能力：
+ * Router → Rewrite → Decompose → Retrieve → Rerank →
+ * Relevance Check → Draft → Fact Check → Completeness Check → Finalize
+ */
+@Module({
+  imports: [RagModule, KnowledgeBaseModule],
+  controllers: [ChatController, AgentTraceController],
+  providers: [
+    ChatSessionService,
+    ChatMessageService,
+    ChatStreamService,
+    AgentTraceService,
+    MultiAgentOrchestratorService,
+    EvalQueueService,
+    EvalProcessorService,
+    EvalPipelineService,
+    GetChunkDetailTool,
+    ModelConfigResolutionService,
+    ContextManagerService,
+    TokenService,
+  ],
+  exports: [
+    ChatSessionService,
+    ChatMessageService,
+    AgentTraceService,
+    MultiAgentOrchestratorService,
+    GetChunkDetailTool,
+  ],
+})
+export class ChatModule {}

@@ -37,7 +37,13 @@ coverage/
 
 # NestJS
 .nest/
-apps/backend/storage/
+apps/server/storage/
+
+# Playwright MCP
+.playwright-mcp/
+
+# Git worktrees
+.worktrees/
 
 # Editor / OS
 .DS_Store
@@ -48,3 +54,7 @@ Thumbs.db
 *.iml
 **/.vscode/*
 !**/.vscode/extensions.json
+# SSE capture outputs
+sse-capture-*.txt
+sse-capture-*.json
+evaluation-report-*.json

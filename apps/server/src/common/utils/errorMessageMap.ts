@@ -1,0 +1,83 @@
+import { ErrorCode } from "./errorCodeMap";
+
+export const ErrorMessageMap: Record<ErrorCode, string> = {
+  [ErrorCode.SUCCESS]: '成功',
+
+  // 通用
+  [ErrorCode.PARAM_ERROR]: '参数错误',
+  [ErrorCode.UNAUTHORIZED]: '未登录',
+  [ErrorCode.UNAUTHORIZED_EXPIRED]: '登录已过期',
+  [ErrorCode.FORBIDDEN]: '无权限访问',
+  [ErrorCode.NOT_FOUND]: '资源不存在',
+
+  [ErrorCode.INTERNAL_ERROR]: '服务器内部错误',
+  [ErrorCode.SERVICE_UNAVAILABLE]: '服务暂不可用，请稍后重试',
+
+  // 知识库
+  [ErrorCode.KNOWLEDGE_NOT_FOUND]: '知识库不存在',
+  [ErrorCode.KNOWLEDGE_UNAUTHORIZED]: '无权限访问该知识库',
+  [ErrorCode.KNOWLEDGE_NOT_SHARED]: '该知识库未对你共享',
+  [ErrorCode.KNOWLEDGE_HAS_JOINED]: '你已加入该知识库',
+  [ErrorCode.KNOWLEDGE_HAS_OWNED]: '你已拥有该知识库',
+  [ErrorCode.KNOWLEDGE_NOT_JOINED]: '你尚未加入该知识库',
+  [ErrorCode.KNOWLEDGE_INVITATION_EXPIRED]: '邀请码已过期',
+  [ErrorCode.KNOWLEDGE_INVITATION_USED]: '邀请码已被使用',
+  [ErrorCode.KNOWLEDGE_INVITATION_CANCELLED]: '邀请码已被取消',
+  [ErrorCode.KNOWLEDGE_MEMBER_REMOVE_OWNER_FORBIDDEN]:
+    '不能移除知识库所有者',
+
+  // 文件
+  [ErrorCode.FILE_NOT_FOUND]: '文件不存在',
+  [ErrorCode.FILE_UPLOAD_FAILED]: '文件上传失败',
+  [ErrorCode.FILE_TYPE_UNSUPPORTED]: '不支持的文件类型',
+  [ErrorCode.FILE_TOO_LARGE]: '文件大小超出限制',
+  [ErrorCode.FILE_UPLOAD_SESSION_NOT_FOUND]: '上传会话不存在',
+  [ErrorCode.FILE_UPLOAD_SESSION_EXPIRED]: '上传会话已过期',
+  [ErrorCode.FILE_CHUNK_INCOMPLETE]: '文件分片尚未上传完成',
+  [ErrorCode.FILE_HASH_MISMATCH]: '文件哈希校验失败',
+
+  // 会话
+  [ErrorCode.CONVERSATION_NOT_FOUND]: '会话不存在',
+  [ErrorCode.CONVERSATION_UNAUTHORIZED]: '无权限访问该会话',
+  [ErrorCode.CONVERSATION_CLOSED]: '会话已关闭',
+
+  // 消息
+  [ErrorCode.MESSAGE_NOT_FOUND]: '消息不存在',
+  [ErrorCode.MESSAGE_UNAUTHORIZED]: '无权限访问该消息',
+
+  // 向量 / RAG
+  [ErrorCode.VECTOR_FILE_FAILED]: '向量文件处理失败',
+  [ErrorCode.VECTOR_FILE_UNSUPPORTED]: '向量文件类型不支持',
+  [ErrorCode.VECTOR_FILE_IMG_EMPTY]: '图片内容为空，无法向量化',
+  [ErrorCode.VECTOR_INDEX_FAILED]: '向量索引构建失败',
+  [ErrorCode.VECTOR_SEARCH_FAILED]: '向量检索失败',
+  [ErrorCode.SPARSE_RETRIEVAL_FAILED]: '关键词检索失败',
+  [ErrorCode.FUSION_FAILED]: '检索结果融合失败',
+  [ErrorCode.RERANK_FAILED]: '检索结果精排失败',
+  [ErrorCode.CITATION_BUILD_FAILED]: '引用构建失败',
+
+  [ErrorCode.EMAIL_CODE_PROCESS_FAILED]: '验证码处理失败',
+  [ErrorCode.EMAIL_SEND_FAILED]: '验证码邮件发送失败',
+  [ErrorCode.EMAIL_CODE_INVALID]: '验证码错误或已失效',
+  [ErrorCode.EMAIL_CONFIG_INVALID]: '邮件服务配置错误',
+  [ErrorCode.EMAIL_RATE_LIMIT]: '请求过于频繁，请稍后再试',
+
+  // 认证
+  [ErrorCode.AUTH_INVALID_CREDENTIALS]: '账号或密码错误',
+  [ErrorCode.AUTH_USER_EXISTS]: '用户已存在',
+  [ErrorCode.AUTH_USER_NOT_FOUND]: '用户不存在',
+  [ErrorCode.AUTH_INVALID_REFRESH_TOKEN]: '刷新令牌无效',
+
+  // 管理员
+  [ErrorCode.ADMIN_INVALID_CREDENTIALS]: '管理员账号或密码错误',
+  [ErrorCode.ADMIN_NOT_FOUND]: '管理员不存在',
+  [ErrorCode.ADMIN_USERNAME_EXISTS]: '用户名已存在',
+  [ErrorCode.ADMIN_FORBIDDEN]: '权限不足，无法访问该功能',
+  [ErrorCode.ADMIN_CANNOT_DELETE_SELF]: '不能删除自己的账号',
+  [ErrorCode.ADMIN_CANNOT_DISABLE_SELF]: '不能禁用自己的账号',
+
+  [ErrorCode.MODEL_NOT_FOUND]: '模型配置未找到，请检查配置',
+  [ErrorCode.MODEL_CONNECTION_FAILED]: '模型连接失败',
+  [ErrorCode.MODEL_CONFIG_INVALID]: '模型配置参数无效，请检查填写内容',
+  [ErrorCode.MODEL_API_KEY_MISSING]: '请先填写 API Key',
+}

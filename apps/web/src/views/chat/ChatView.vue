@@ -1,0 +1,140 @@
+<script setup lang="ts">
+import { onMounted, watch } from 'vue';
+import ChatStatusBanner from '@/components/chat/ChatStatusBanner.vue';
+import ChatTopNavBar from '@/components/layout/ChatTopNavBar.vue';
+import ChatStream from '@/components/chat/ChatStream.vue';
+import ChatInputArea from '@/components/chat/ChatInputArea.vue';
+import { useChatStore } from '@/stores/chat';
+import { useAgentChat } from '@/modules/chat/composables/useAgentChat';
+import { listAvailableKbs, listAvailableModels } from '@/api/chat';
+import { getUserModels } from '@/api/model-config';
+import { useModelConfigStore } from '@/stores/model-config';
+import { useMessage } from '@/composables/useMessage';
+
+const chatStore = useChatStore();
+const modelConfigStore = useModelConfigStore();
+const { sendMessage, abort, isStreaming } = useAgentChat();
+const message = useMessage();
+
+async function refreshModels() {
+  try {
+    const [sysModels, userModels] = await Promise.all([
+      listAvailableModels(),
+      getUserModels().catch(() => [] as unknown as Awaited<ReturnType<typeof getUserModels>>),
+    ]);
+
+    const merged = [
+      ...sysModels.map((m) => ({
+        configId: m.configId,
+        modelName: m.modelName,
+        provider: m.provider,
+        source: m.source,
+      })),
+      ...(Array.isArray(userModels) ? userModels : []).map((m) => ({
+        configId: `user-${m.id}`,
+        modelName: m.model_name,
+        provider: m.provider,
+        source: 'user' as const,
+      })),
+    ];
+
+    chatStore.setAvailableModels(merged);
+  } catch (e) {
+    // 静默失败，保留已有列表
+  }
+}
+
+// 用户模型变更后自动刷新可用模型列表
+watch(() => modelConfigStore.userModels.length, () => { void refreshModels(); });
+
+// 加载可选知识库和模型
+onMounted(async () => {
+  await chatStore.loadSessions();
+  try {
+    const kbs = await listAvailableKbs();
+    chatStore.setAvailableKbs(
+      kbs.map((kb) => ({
+        kbId: kb.kbId,
+        kbName: kb.kbName,
+        permission: kb.permission as 'owner' | 'manager' | 'collaborator' | 'member' | 'publicVisitor',
+        visibility: kb.visibility || 'private',
+        isPublic: kb.isPublic,
+      })),
+    );
+  } catch (e) {
+    message.error('加载知识库失败，请刷新重试');
+  }
+  await refreshModels();
+});
+
+// 处理发送消息
+async function handleSendMessage(msg: string) {
+  if (!msg.trim() || chatStore.isSending) return;
+
+  if (chatStore.chatMode === 'rag' && chatStore.selectedKbIds.length === 0) {
+    message.warning('RAG 模式下请至少选择一个知识库');
+    return;
+  }
+
+  chatStore.setLastUserMessage(msg);
+  await sendMessage(msg);
+}
+
+// 处理取消请求
+function handleCancel() {
+  abort();
+}
+
+// 处理重试
+async function handleRetry(messageId: string | number) {
+  const msgIndex = chatStore.messages.findIndex((m) => m.id === messageId);
+  if (msgIndex === -1) return;
+
+  // 从失败消息往前找最近一条用户消息
+  let lastUserMsg = '';
+  for (let i = msgIndex - 1; i >= 0; i--) {
+    const msg = chatStore.messages[i];
+    if (msg && msg.role === 'user') {
+      lastUserMsg = msg.content;
+      break;
+    }
+  }
+  if (!lastUserMsg) return;
+
+  // 删除失败消息及之后的所有消息
+  chatStore.messages.splice(msgIndex);
+  await sendMessage(lastUserMsg);
+}
+</script>
+
+<template>
+  <div class="flex flex-col h-full w-full">
+    <ChatTopNavBar />
+
+    <!-- 警告横幅 -->
+    <ChatStatusBanner v-if="chatStore.hasWarnings" />
+
+    <!-- 主内容区 -->
+    <div class="flex-1 overflow-hidden flex flex-col">
+      <div class="flex-1 overflow-y-auto flex flex-col">
+        <div class="max-w-5xl mx-auto px-4 md:px-6 flex-1 flex flex-col w-full">
+          <ChatStream :messages="chatStore.messages" :is-agent-working="isStreaming" @retry="handleRetry" />
+        </div>
+      </div>
+
+      <!-- 输入区 -->
+      <div class="shrink-0 border-t border-outline-variant/10 bg-surface/80 backdrop-blur-xl">
+        <div class="max-w-5xl mx-auto px-4 md:px-6 py-3">
+          <ChatInputArea
+            :is-streaming="isStreaming"
+            @send="handleSendMessage"
+            @cancel="handleCancel"
+          />
+          <p class="text-center text-[10px] text-outline/50 mt-2">
+            Linsor AI 可能产生不准确答案，请核实关键信息
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</template>

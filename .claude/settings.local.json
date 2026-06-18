@@ -1,0 +1,86 @@
+{
+  "hooks": {
+    "Stop": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "shell": "powershell",
+            "command": "Add-Type -AssemblyName System.Windows.Forms; Add-Type -AssemblyName System.Drawing; $notify = New-Object System.Windows.Forms.NotifyIcon; $notify.Icon = [System.Drawing.SystemIcons]::Information; $notify.BalloonTipTitle = 'Claude Code'; $notify.BalloonTipText = 'Claude 已完成响应。下一步: /review 审查代码 | /commit 提交 | 继续对话'; $notify.Visible = $true; $notify.ShowBalloonTip(5000); Start-Sleep -Seconds 1; $notify.Dispose(); @{ systemMessage = 'Claude 已完成。下一步: /review 审查 | /commit 提交 | 继续对话' } | ConvertTo-Json -Compress | Write-Output",
+            "timeout": 15,
+            "statusMessage": "发送通知提醒..."
+          }
+        ]
+      }
+    ]
+  },
+  "permissions": {
+    "allow": [
+      "Bash(pnpm --filter backend build)",
+      "WebFetch(domain:www.npmjs.com)",
+      "WebFetch(domain:github.com)",
+      "Bash(npx prisma *)",
+      "WebFetch(domain:ai-sdk.dev)",
+      "WebSearch",
+      "Bash(pnpm add *)",
+      "Bash(pnpm --filter frontend add @ai-sdk/vue)",
+      "Bash(pnpm --filter frontend vue-tsc --noEmit)",
+      "Bash(pnpm --filter frontend remove @ai-sdk/vue)",
+      "Bash(pnpm --filter frontend build)",
+      "Bash(pnpm --filter backend list --depth 0)",
+      "mcp__plugin_context7_context7__resolve-library-id",
+      "mcp__plugin_context7_context7__query-docs",
+      "Bash(git add *)",
+      "Bash(git commit -m ' *)",
+      "mcp__ide__getDiagnostics",
+      "Bash(node -e \"const n = require\\('@nestjs/common'\\); console.log\\('Sse' in n ? 'Sse found' : 'Sse not found'\\)\")",
+      "mcp__plugin_playwright_playwright__browser_navigate",
+      "mcp__plugin_playwright_playwright__browser_console_messages",
+      "mcp__plugin_playwright_playwright__browser_close",
+      "Bash(git commit *)",
+      "Bash(pnpm --filter web build)",
+      "Bash(pnpm --filter web dev)",
+      "Bash(curl -s http://localhost:5173)",
+      "mcp__plugin_playwright_playwright__browser_snapshot",
+      "Bash(pnpm run *)",
+      "Bash(pnpm build *)",
+      "Bash(npx tsc *)",
+      "WebFetch(domain:deepwiki.com)",
+      "WebFetch(domain:sdk.vercel.ai)",
+      "WebFetch(domain:docs.ag-ui.com)",
+      "Bash(pnpm --filter server remove ai @ai-sdk/langchain)",
+      "Bash(docker compose *)",
+      "Bash(timeout 15 pnpm --filter server start:dev)",
+      "Bash(pnpm --filter server test)",
+      "Bash(npx nest *)",
+      "Bash(cp 'd:/Faith/Project/rag-knowledge-base/node_modules/.pnpm/@fontsource+space-grotesk@5.2.10/node_modules/@fontsource/space-grotesk/files/*.woff2' d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/)",
+      "Bash(cp 'd:/Faith/Project/rag-knowledge-base/node_modules/.pnpm/@fontsource+inter@5.2.8/node_modules/@fontsource/inter/files/*.woff2' d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/)",
+      "Bash(mkdir -p \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts\" && mv \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/outlined.css\" \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/\" && mv \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/material-symbols-\"*.woff2 \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/\" && ls \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/\")",
+      "Bash(mv \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/\"*.woff2 \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/\" && mv \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/outlined.css\" \"d:/Faith/Project/rag-knowledge-base/apps/web/public/fonts/\" && ls \"d:/Faith/Project/rag-knowledge-base/apps/web/src/assets/fonts/\")",
+      "Bash(git checkout *)",
+      "WebFetch(domain:api.npmjs.org)",
+      "Bash(node -e \"const p = require\\('pdfexcavator'\\); console.log\\(Object.keys\\(p\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const m = require\\('mammoth'\\); console.log\\(Object.keys\\(m\\).join\\('\\\\n'\\)\\)\")",
+      "Bash(node -e \"const m = require\\('mammoth'\\); console.log\\(typeof m.convertToMarkdown, typeof m.convertToMarkdown === 'function'\\)\")",
+      "Bash(node -e \"try { require\\('archiver'\\); console.log\\('archiver available'\\) } catch\\(e\\) { console.log\\('no archiver'\\) }; try { require\\('pdf-lib'\\); console.log\\('pdf-lib available'\\) } catch\\(e\\) { console.log\\('no pdf-lib'\\) }\")",
+      "Bash(pnpm --filter server test -- -t \"DocumentParserService\")",
+      "Bash(npx eslint *)"
+    ],
+    "additionalDirectories": [
+      "d:\\Faith\\Project\\rag-knowledge-base\\apps\\web\\public\\fonts",
+      "d:\\Faith\\Project\\rag-knowledge-base\\apps\\web\\src\\assets\\fonts"
+    ]
+  },
+  "enabledPlugins": {
+    "frontend-design@claude-plugins-official": true,
+    "context7@claude-plugins-official": true,
+    "code-review@claude-plugins-official": true,
+    "playwright@claude-plugins-official": true,
+    "feature-dev@claude-plugins-official": true,
+    "claude-md-management@claude-plugins-official": true,
+    "typescript-lsp@claude-plugins-official": true,
+    "superpowers@claude-plugins-official": true,
+    "github@claude-plugins-official": true,
+    "sourcegraph@claude-plugins-official": false
+  }
+}
