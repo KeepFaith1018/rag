@@ -393,7 +393,7 @@ function shouldRefresh(status: number, result: ApiResult<unknown> | null) {
 /**
  * 确保全局只存在一个刷新动作，其余请求进入队列等待。
  */
-async function ensureFreshAccessToken(): Promise<string> {
+export async function ensureFreshAccessToken(): Promise<string> {
   if (isRefreshing && refreshPromise) {
     return enqueuePendingRequest();
   }

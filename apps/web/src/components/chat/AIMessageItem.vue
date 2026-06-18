@@ -10,14 +10,25 @@ import MarkdownRenderer from '@/components/chat/MarkdownRenderer.vue'
 import ChatAgentPanel from '@/components/chat/ChatAgentPanel.vue'
 import DocumentPreviewModal from '@/components/document/DocumentPreviewModal.vue'
 
-/** 模块级 Incremark 解析器单例，用于历史消息一次性 Markdown 解析 */
-const mdParser = createIncremarkParser({ gfm: true })
+const markdownBlockCache = new Map<string, { content: string; blocks: ParsedBlock[] }>()
+const MAX_MARKDOWN_CACHE_SIZE = 100
 
 /** 一次性解析完整 Markdown 文本为 blocks */
-function parseMarkdown(content: string): ParsedBlock[] {
+function parseMarkdown(messageId: string | number, content: string): ParsedBlock[] {
+  const cacheKey = String(messageId)
+  const cached = markdownBlockCache.get(cacheKey)
+  if (cached?.content === content) return cached.blocks
+
   try {
+    const mdParser = createIncremarkParser({ gfm: true })
     mdParser.render(content)
-    return mdParser.getCompletedBlocks()
+    const blocks = mdParser.getCompletedBlocks()
+    markdownBlockCache.set(cacheKey, { content, blocks })
+    if (markdownBlockCache.size > MAX_MARKDOWN_CACHE_SIZE) {
+      const firstKey = markdownBlockCache.keys().next().value
+      if (firstKey) markdownBlockCache.delete(firstKey)
+    }
+    return blocks
   } catch {
     return []
   }
@@ -43,6 +54,18 @@ const previewDoc = ref<{
   fileType: string
 } | null>(null)
 
+const isStreaming = computed(() =>
+  props.message.messageStatus === 'streaming',
+)
+const isError = computed(() => props.message.messageStatus === 'error')
+const isAborted = computed(() => props.message.messageStatus === 'aborted')
+const isRagMode = computed(() => props.message.chatMode === 'rag')
+
+const messageCitations = computed(() => {
+  if (props.message.citations?.length) return props.message.citations
+  return isStreaming.value ? chatStore.citations : []
+})
+
 /** 按知识库 → 文档分组 */
 const citationGroups = computed(() => {
   const map = new Map<string, {
@@ -55,7 +78,7 @@ const citationGroups = computed(() => {
     chunks: Citation[]
   }>()
 
-  for (const c of chatStore.citations) {
+  for (const c of messageCitations.value) {
     const key = `${c.kbId}:${c.docId}`
     if (!map.has(key)) {
       map.set(key, {
@@ -106,13 +129,6 @@ type CitationGroup = {
   chunks: Citation[]
 }
 
-const isStreaming = computed(() =>
-  props.message.messageStatus === 'streaming',
-)
-const isError = computed(() => props.message.messageStatus === 'error')
-const isAborted = computed(() => props.message.messageStatus === 'aborted')
-const isRagMode = computed(() => props.message.chatMode === 'rag')
-
 const hasContent = computed(() =>
   props.message.htmlContent || props.message.content || props.message.blocks?.length,
 )
@@ -121,7 +137,7 @@ const hasContent = computed(() =>
 const resolvedBlocks = computed(() => {
   if (props.message.blocks?.length) return props.message.blocks
   if (!props.message.content) return []
-  return parseMarkdown(props.message.content)
+  return parseMarkdown(props.message.id, props.message.content)
 })
 
 /** 递归提取 mdast 节点中的纯文本 */
@@ -142,7 +158,10 @@ function getPlainText(): string {
   if (props.message.content) return props.message.content
   if (!props.message.blocks?.length) return ''
   return props.message.blocks
-    .map((b) => extractText((b as Record<string, unknown>).node ?? (b as Record<string, unknown>).displayNode))
+    .map((b) => {
+      const block = b as unknown as Record<string, unknown>
+      return extractText(block.node ?? block.displayNode)
+    })
     .filter(Boolean)
     .join('\n')
 }
@@ -228,7 +247,7 @@ function handleRetry() {
 
       <!-- 完成后的引用脚注（可折叠） -->
       <div
-        v-if="!isStreaming && hasContent && isRagMode && chatStore.citations.length > 0"
+        v-if="!isStreaming && hasContent && isRagMode && messageCitations.length > 0"
         class="mt-3"
       >
         <button
@@ -237,7 +256,7 @@ function handleRetry() {
         >
           <span class="material-symbols-outlined text-[14px] transition-transform" :class="citationsExpanded ? 'rotate-90' : ''">chevron_right</span>
           <span class="material-symbols-outlined text-[14px]">menu_book</span>
-          <span>参考 {{ chatStore.citations.length }} 条知识库内容</span>
+          <span>参考 {{ messageCitations.length }} 条知识库内容</span>
         </button>
 
         <!-- 引用列表 -->

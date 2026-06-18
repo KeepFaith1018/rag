@@ -38,7 +38,13 @@ const previewDoc = ref<KnowledgeBaseDocumentItem | null>(null);
 
 const documentView = useKnowledgeBaseDetail();
 const memberView = useKbMembers();
-const { state, isUploading, startUpload, cancel, resetState } = useChunkUpload();
+const {
+  state,
+  isUploading,
+  startUpload,
+  cancelCurrentUpload: cancelUpload,
+  resetState,
+} = useChunkUpload();
 
 const settingsForm = reactive({
   name: "",
@@ -174,7 +180,7 @@ function handleDropFile(files: FileList | File[]) {
 }
 
 async function cancelCurrentUpload() {
-  if (state.uploadId) await cancel(state.uploadId);
+  if (kbId.value && state.uploadId) await cancelUpload(kbId.value);
 }
 
 function setDocumentStatus(status: KnowledgeBaseDocumentStatus | "all") {
@@ -219,10 +225,12 @@ async function downloadDocument(doc: KnowledgeBaseDocumentItem) {
   try {
     const payload = await documentView.downloadDocument(kbId.value, doc.id);
     const anchor = window.document.createElement("a");
-    anchor.href = window.URL.createObjectURL(payload.blob);
+    const objectUrl = window.URL.createObjectURL(payload.blob);
+    anchor.href = objectUrl;
     anchor.download = payload.fileName || doc.title;
     anchor.click();
     anchor.remove();
+    window.URL.revokeObjectURL(objectUrl);
   } catch (error) {
     message.error(resolveErrorMessage(error, "下载文档失败"));
   }

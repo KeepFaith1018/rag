@@ -318,13 +318,15 @@ export function useChunkUpload() {
   /**
    * 取消当前上传会话并重置本地状态。
    */
-  async function cancel(kbId: string) {
+  async function cancelCurrentUpload(kbId: string) {
     if (state.uploadId) {
       await cancelChunkUpload(kbId, state.uploadId);
     }
 
     resetState();
   }
+
+  const cancel = cancelCurrentUpload;
 
   /**
    * 清空当前上传状态。
@@ -515,6 +517,7 @@ export function useChunkUpload() {
     startUpload,
     resumeUpload,
     pause,
+    cancelCurrentUpload,
     cancel,
     resetState,
     loadPersistedTask,
