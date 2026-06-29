@@ -10,14 +10,11 @@
 import { ref, shallowRef, onUnmounted } from 'vue';
 import { fetchChatStream } from '@/api/chat';
 import type { StreamChatRequest } from '@/modules/chat/types/chat';
-import {
-  type AguiEvent,
-  type StepName,
-  type ToolCallName,
-  type Citation,
-} from '@/modules/chat/types/stream';
 import { useStreamingMarkdown } from './useStreamingMarkdown';
+import { useAguiEventReducer } from './useAguiEventReducer';
+import { parseSSELine, splitSSEBuffer } from '@/modules/chat/utils/agui-parser';
 import { useChatStore } from '@/stores/chat';
+import type { AguiEvent } from '@/modules/chat/types/stream';
 import type { ChatMessageItem, RenderableBlock } from '@/modules/chat/types/chat';
 
 interface UseAgentChatOptions {
@@ -31,46 +28,24 @@ export function useAgentChat(options?: UseAgentChatOptions) {
 
   const isStreaming = ref(false);
   const abortController = shallowRef<AbortController | null>(null);
+  const currentAssistantMsgId = ref<number | null>(null);
+  const currentSkipTypewriter = ref<(() => void) | null>(null);
   const chatStore = useChatStore();
+  let activeStreamToken = 0;
 
-  /**
-   * 解析 SSE data 行，返回 AG-UI 事件。
-   */
-  function parseSSELine(line: string): AguiEvent | null {
-    if (!line.startsWith('data: ')) return null;
-
-    const json = line.slice(6);
-    if (json === '[DONE]') return null;
-
-    try {
-      const obj = JSON.parse(json) as Record<string, unknown>;
-      if (obj && typeof obj === 'object' && 'type' in obj) {
-        return obj as unknown as AguiEvent;
-      }
-      return null;
-    } catch {
-      return null;
-    }
-  }
-
-  /**
-   * 发送消息并处理流式响应。
-   */
-  async function sendMessage(message: string): Promise<void> {
-    if (isStreaming.value) {
-      console.warn('[useAgentChat] 已有流正在进行，先中止');
-      abort();
-    }
-
-    const sessionId = chatStore.currentSession?.id;
-    if (!sessionId) {
+  async function ensureTargetSessionId(): Promise<string> {
+    if (!chatStore.currentSession?.id) {
       await chatStore.createSession();
     }
+    return chatStore.currentSession!.id;
+  }
 
-    const targetSessionId = chatStore.currentSession!.id;
-
-    const request: StreamChatRequest = {
-      sessionId: targetSessionId,
+  function buildStreamRequest(
+    sessionId: string,
+    message: string,
+  ): StreamChatRequest {
+    return {
+      sessionId,
       chatMode: chatStore.chatMode,
       message,
       modelSource: chatStore.selectedModel?.source,
@@ -81,8 +56,9 @@ export function useAgentChat(options?: UseAgentChatOptions) {
       agentMode: 'multi-agent',
       enableWebSearch: chatStore.enableWebSearch,
     };
+  }
 
-    // 乐观添加用户消息
+  function addLocalUserMessage(message: string): void {
     const userMsg: ChatMessageItem = {
       id: Date.now(),
       role: 'user',
@@ -95,8 +71,9 @@ export function useAgentChat(options?: UseAgentChatOptions) {
       modelName: chatStore.selectedModel?.modelName,
     };
     chatStore.addUserMessage(userMsg);
+  }
 
-    // 创建助手消息占位
+  function createAssistantPlaceholder(): number {
     const assistantMsgId = Date.now() + 1;
     const assistantMsg: ChatMessageItem = {
       id: assistantMsgId,
@@ -110,19 +87,116 @@ export function useAgentChat(options?: UseAgentChatOptions) {
     chatStore.addAssistantMessage(assistantMsg);
     chatStore.setMessageStatus(assistantMsgId, 'streaming');
     onMessageStart?.(assistantMsgId);
+    return assistantMsgId;
+  }
+
+  function createBlockScheduler(assistantMsgId: number) {
+    let pendingBlocks: RenderableBlock[] | null = null;
+    let pendingBlocksFrame: number | null = null;
+
+    function commit() {
+      if (pendingBlocksFrame !== null) {
+        cancelAnimationFrame(pendingBlocksFrame);
+        pendingBlocksFrame = null;
+      }
+      if (!pendingBlocks) return;
+
+      chatStore.appendMessageBlocks(assistantMsgId, pendingBlocks);
+      pendingBlocks = null;
+    }
+
+    function schedule(blocks: RenderableBlock[]) {
+      pendingBlocks = blocks;
+      if (pendingBlocksFrame !== null) return;
+
+      pendingBlocksFrame = requestAnimationFrame(() => {
+        pendingBlocksFrame = null;
+        if (!pendingBlocks) return;
+
+        chatStore.appendMessageBlocks(assistantMsgId, pendingBlocks);
+        pendingBlocks = null;
+      });
+    }
+
+    return { commit, schedule };
+  }
+
+  async function consumeStream(
+    response: Response,
+    handleEvent: (event: AguiEvent) => void,
+  ): Promise<void> {
+    if (!response.ok) {
+      throw new Error(`请求失败（状态码 ${response.status}）`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('响应数据不可读');
+    }
+
+    const decoder = new TextDecoder();
+    let buffer = '';
+
+    while (true) {
+      const { done, value } = await reader.read();
+
+      if (done) break;
+
+      buffer += decoder.decode(value, { stream: true });
+
+      const { lines, rest } = splitSSEBuffer(buffer);
+      buffer = rest;
+
+      try {
+        for (const line of lines) {
+          const trimmed = line.trim();
+          if (!trimmed) continue;
+
+          const event = parseSSELine(trimmed);
+          if (event) handleEvent(event);
+        }
+      } catch (eventError) {
+        console.error('[useAgentChat] 事件处理异常', eventError);
+        break;
+      }
+    }
+
+    // 处理剩余 buffer
+    try {
+      if (buffer.trim()) {
+        const event = parseSSELine(buffer.trim());
+        if (event) handleEvent(event);
+      }
+    } catch (eventError) {
+      console.error('[useAgentChat] 剩余 buffer 事件处理异常', eventError);
+    }
+  }
+
+  /**
+   * 发送消息并处理流式响应。
+   */
+  async function sendMessage(message: string): Promise<void> {
+    if (isStreaming.value) {
+      console.warn('[useAgentChat] 已有流正在进行，先中止');
+      abort();
+    }
+
+    const targetSessionId = await ensureTargetSessionId();
+    const request = buildStreamRequest(targetSessionId, message);
+
+    addLocalUserMessage(message);
+    const assistantMsgId = createAssistantPlaceholder();
 
     // 重置状态
     chatStore.resetAgentState();
     chatStore.setSending(true);
     isStreaming.value = true;
 
+    const streamToken = ++activeStreamToken;
+    currentAssistantMsgId.value = assistantMsgId;
     abortController.value = new AbortController();
 
-    // 获取当前助手消息引用（用于持久化步骤数据）
-    const getCurrentAssistantMsg = () =>
-      chatStore.messages.find((m: ChatMessageItem) => m.id === assistantMsgId) as
-        | ChatMessageItem
-        | undefined;
+    const blockScheduler = createBlockScheduler(assistantMsgId);
 
     // Markdown 渲染器（带打字机效果）
     const {
@@ -132,7 +206,7 @@ export function useAgentChat(options?: UseAgentChatOptions) {
       reset: resetMarkdown,
     } = useStreamingMarkdown({
       onBlocks: (blocks) => {
-        chatStore.appendMessageBlocks(assistantMsgId, blocks as RenderableBlock[])
+        blockScheduler.schedule(blocks as RenderableBlock[])
       },
       onComplete: () => {
         // 打字机动画播放完毕 ≠ 消息整体完成（后端可能还在校验/补充）
@@ -147,143 +221,15 @@ export function useAgentChat(options?: UseAgentChatOptions) {
 
     currentSkipTypewriter.value = skipTypewriter;
 
+    const { handleEvent } = useAguiEventReducer({
+      assistantMsgId,
+      pushDelta,
+      flush,
+    });
+
     try {
       const response = await fetchChatStream(request, abortController.value.signal)
-
-      if (!response.ok) {
-        throw new Error(`请求失败（状态码 ${response.status}）`);
-      }
-
-      const reader = response.body?.getReader();
-      if (!reader) {
-        throw new Error('响应数据不可读');
-      }
-
-      const decoder = new TextDecoder();
-      let buffer = '';
-
-      while (true) {
-        const { done, value } = await reader.read();
-
-        if (done) break;
-
-        buffer += decoder.decode(value, { stream: true });
-
-        const lines = buffer.split('\n');
-        buffer = lines.pop() || '';
-
-        for (const line of lines) {
-          const trimmed = line.trim();
-          if (!trimmed) continue;
-
-          const event = parseSSELine(trimmed);
-          if (!event) continue;
-
-          switch (event.type) {
-            case 'RUN_STARTED':
-              chatStore.setRunStarted(event.runId);
-              break;
-
-            case 'RUN_FINISHED':
-              chatStore.setRunFinished();
-              // 将步骤数据快照到消息对象
-              {
-                const msg = getCurrentAssistantMsg();
-                if (msg) {
-                  msg.aguiSteps = [...chatStore.aguiSteps];
-                  msg.aguiToolCalls = [...chatStore.aguiToolCalls];
-                  // 接收 DB 解析后的最终引用数据
-                  if (event.citations && event.citations.length > 0) {
-                    chatStore.setCitations(event.citations);
-                    msg.citations = [...chatStore.citations];
-                  }
-                  // 完成消息（writer 流式输出后直接结束）
-                  if (msg.messageStatus === 'streaming') {
-                    chatStore.setMessageStatus(assistantMsgId, 'completed')
-                  }
-                }
-              }
-              break;
-
-            case 'RUN_ERROR':
-              chatStore.setMessageStatus(assistantMsgId, 'error');
-              break;
-
-            case 'STEP_STARTED':
-              chatStore.upsertStep({
-                stepName: event.stepName as StepName,
-                status: 'running',
-              });
-              break;
-
-            case 'STEP_FINISHED':
-              chatStore.upsertStep({
-                stepName: event.stepName as StepName,
-                status: 'completed',
-                input: event.input,
-                output: event.output,
-                durationMs: event.durationMs,
-              });
-              break;
-
-            case 'TOOL_CALL_START':
-              chatStore.upsertToolCall({
-                toolCallId: event.toolCallId,
-                toolCallName: event.toolCallName as ToolCallName,
-                input: event.input,
-                status: 'running',
-              });
-              break;
-
-            case 'TOOL_CALL_RESULT':
-              chatStore.upsertToolCall({
-                toolCallId: event.toolCallId,
-                toolCallName: event.toolCallName as ToolCallName,
-                output: event.output,
-                durationMs: event.durationMs,
-                status: 'completed',
-              });
-              // 处理搜索返回的引用文档列表
-              if (
-                event.toolCallName === 'search_knowledge_base' &&
-                event.output?.documents
-              ) {
-                const docs = event.output.documents as Citation[];
-                if (event.output.append) {
-                  chatStore.appendCitations(docs);
-                } else {
-                  chatStore.setCitations(docs);
-                }
-                // 快照到消息对象
-                const msg = getCurrentAssistantMsg();
-                if (msg) msg.citations = [...chatStore.citations];
-              }
-              break;
-
-            case 'TEXT_MESSAGE_START':
-              // 文本流开始，无需额外处理
-              break;
-
-            case 'TEXT_MESSAGE_CONTENT':
-              pushDelta(event.delta);
-              break;
-
-            case 'TEXT_MESSAGE_END':
-              flush();
-              break;
-
-          }
-        }
-      }
-
-      // 处理剩余 buffer
-      if (buffer.trim()) {
-        const event = parseSSELine(buffer.trim());
-        if (event && event.type === 'TEXT_MESSAGE_CONTENT') {
-          pushDelta(event.delta);
-        }
-      }
-
+      await consumeStream(response, handleEvent);
       flush();
     } catch (err) {
       const error = err instanceof Error ? err : new Error(String(err));
@@ -295,20 +241,34 @@ export function useAgentChat(options?: UseAgentChatOptions) {
         onError?.(error);
       }
     } finally {
-      // 仅重置 parser，不重置 transformer（否则会 emit 空 blocks 导致已显示内容消失）
-      resetMarkdown();
-      chatStore.setSending(false);
-      isStreaming.value = false;
-      abortController.value = null;
+      blockScheduler.commit();
+      if (activeStreamToken === streamToken) {
+        // 仅重置 parser，不重置 transformer（否则会 emit 空 blocks 导致已显示内容消失）
+        resetMarkdown();
+        chatStore.setSending(false);
+        isStreaming.value = false;
+        abortController.value = null;
+        currentAssistantMsgId.value = null;
+        currentSkipTypewriter.value = null;
+      }
     }
   }
 
   /**
    * 中止当前流式请求，并跳过打字机动画。
    */
-  const currentSkipTypewriter = ref<(() => void) | null>(null);
+  function markCurrentMessageAborted(): void {
+    const msgId = currentAssistantMsgId.value;
+    if (msgId === null) return;
+
+    const msg = chatStore.messages.find((item) => item.id === msgId);
+    if (msg?.messageStatus === 'streaming') {
+      chatStore.setMessageStatus(msgId, 'aborted');
+    }
+  }
 
   function abort(): void {
+    markCurrentMessageAborted();
     currentSkipTypewriter.value?.();
     if (abortController.value) {
       abortController.value.abort()
