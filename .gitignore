@@ -45,6 +45,12 @@ apps/server/storage/
 # Git worktrees
 .worktrees/
 
+# AI conversation workspace
+/.ai-workspace/
+
+# Local backups
+/backups/
+
 # Editor / OS
 .DS_Store
 Thumbs.db

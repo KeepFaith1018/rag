@@ -75,7 +75,7 @@ pnpm dev:web
 ├── apps
 │   ├── server       # NestJS 后端 (API + RAG + 文档处理)
 │   └── web          # Vue 3 前端 (主用户界面)
-├── docs             # 设计文档 (6 个分类目录)
+├── docs             # 当前系统的正式文档
 ├── docker-compose.yml
 ├── pnpm-workspace.yaml
 └── CLAUDE.md        # AI 开发指引
@@ -83,13 +83,4 @@ pnpm dev:web
 
 ## 文档索引
 
-完整文档见 [docs/](docs/)：
-
-| 目录 | 内容 |
-|------|------|
-| [01-requirements](docs/01-requirements/) | 需求分析报告 |
-| [02-architecture](docs/02-architecture/) | 可行性分析、后端基础设施、数据库设计 |
-| [03-design](docs/03-design/) | RAG/对话/上传模块详细设计、实施总结 |
-| [04-changes](docs/04-changes/) | RAG 全链路优化 (4 阶段)、前端优化、测试数据 |
-| [05-assets](docs/05-assets/) | Kinetic Blueprint 设计规范、UI Mockups |
-| [06-reference](docs/06-reference/) | LLM/RAG/向量数据库学习笔记、数据流分析 |
+完整文档及推荐阅读顺序见 [Linsor AI 文档索引](docs/00-文档索引.md)。

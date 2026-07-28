@@ -2,6 +2,35 @@
 
 此文件为 Codex 提供本仓库的工作指引。
 
+## AI 临时文档工作区
+
+- 仓库根目录下的 `.ai-workspace/` 是 coding 过程中与 AI 协作产生文档的临时工作区。
+- 除非用户明确指定其他路径，对话过程中新增的 `.md` 文档必须写入 `.ai-workspace/`。
+- `.ai-workspace/` 已被 Git 忽略，其中的内容不得作为项目正式文档提交。
+- 需要长期保留的文档，应在用户明确确认后移动到 `docs/` 或对应模块的 `docs/` 目录。
+- 不要创建或恢复已删除的 `.ai/` 目录。
+
+## 正式文档规范
+
+- `docs/` 只保存描述当前系统的正式文档，不保存 coding 计划、实施步骤、阶段总结、调研过程或临时 TODO。
+- `docs/` 下的文件夹和 Markdown 文件必须以两位数字和连字符作为排序前缀，例如 `10-部署/`、`05-RAG检索设计.md`。
+- `docs/` 中每份 Markdown 必须在文件开头包含 YAML Front Matter，至少包含以下字段：
+
+```yaml
+---
+title: 文档标题
+type: index | requirements | architecture | data-model | engineering-guide | technical-design | design-system
+status: draft | active | deprecated
+maintainer: project-team
+updated: YYYY-MM-DD
+source_of_truth: repository-or-code-path
+---
+```
+
+- 新建、重命名或删除正式文档时，必须同步更新 `docs/00-文档索引.md` 和所有受影响的链接。
+- 正式文档只描述当前事实、稳定约定和关键设计决策；已经完成的计划和实施过程由 Git 历史追溯。
+- 代码、Prisma Schema 与文档冲突时，以代码和数据库迁移为准，并在同一变更中更新文档。
+
 ## 常用命令
 
 ```bash
