@@ -9,7 +9,8 @@ import { useMessage } from "@/composables/useMessage";
 import "@/assets/fonts/fonts.css";
 import "@/assets/fonts/outlined.css";
 
-import "@/assets/style.css";
+import "@/styles/tailwind.css";
+import "@/styles/index.scss";
 
 const app = createApp(App);
 const authStore = useAuthStore(pinia);

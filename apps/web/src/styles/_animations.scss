@@ -1,0 +1,29 @@
+.ai-thinking-glow {
+  animation: ai-pulse 2s var(--ease-emphasized) infinite;
+  box-shadow: 0 0 20px 0 var(--color-primary);
+}
+
+@keyframes ai-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+
+  50% {
+    opacity: 0.7;
+    transform: scale(1.02);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}
+

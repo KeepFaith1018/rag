@@ -1,0 +1,48 @@
+/*
+ * 迁移期兼容层。
+ * 未完成 SFC SCSS 迁移前保留 Tailwind，所有组件迁移完成后删除本文件。
+ */
+@import 'tailwindcss';
+
+@theme {
+  --color-surface: var(--color-surface);
+  --color-surface-container-lowest: var(--color-surface-container-lowest);
+  --color-surface-container-low: var(--color-surface-container-low);
+  --color-surface-container: var(--color-surface-container);
+  --color-surface-container-high: var(--color-surface-container-high);
+  --color-surface-container-highest: var(--color-surface-container-highest);
+  --color-surface-bright: var(--color-surface-bright);
+
+  --color-primary: var(--color-primary);
+  --color-primary-container: var(--color-primary-container);
+  --color-on-primary-container: var(--color-on-primary-container);
+
+  --color-secondary: var(--color-secondary);
+  --color-secondary-container: var(--color-secondary-container);
+  --color-on-secondary-container: var(--color-on-secondary-container);
+  --color-on-secondary-fixed-variant: var(--color-on-secondary-fixed-variant);
+
+  --color-tertiary: var(--color-tertiary);
+  --color-tertiary-container: var(--color-tertiary-container);
+  --color-on-tertiary-container: var(--color-on-tertiary-container);
+
+  --color-error: var(--color-error);
+  --color-error-container: var(--color-error-container);
+  --color-on-error-container: var(--color-on-error-container);
+
+  --color-outline-variant: var(--color-outline-variant);
+  --color-outline: var(--color-outline);
+  --color-on-surface: var(--color-on-surface);
+  --color-on-surface-variant: var(--color-on-surface-variant);
+
+  --font-headline: var(--font-family-headline);
+  --font-body: var(--font-family-body);
+  --font-label: var(--font-family-label);
+
+  --radius-card: var(--radius-card);
+  --radius-button: var(--radius-button);
+
+  --shadow-glass: var(--shadow-glass-value);
+  --shadow-hover: var(--shadow-hover-value);
+}
+

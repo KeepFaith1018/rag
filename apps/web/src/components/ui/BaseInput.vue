@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// 定义输入框组件属性
 interface Props {
   modelValue?: string | number
   type?: string
@@ -17,18 +16,11 @@ const props = withDefaults(defineProps<Props>(), {
   class: ''
 })
 
-// Vue 3.3+ 支持的 defineModel，用于简化双向绑定
 const model = defineModel<string | number>()
 </script>
 
 <template>
-  <div class="relative w-full group">
-    <!-- 
-      输入框主体样式说明：
-      - bg-surface-container-highest: 使用最高层级的背景色，与画布区分
-      - border-outline-variant/20: 默认只提供极微弱的“Ghost Border”辅助线
-      - focus:border-primary: 聚焦时边框点亮为电光靛蓝
-    -->
+  <div class="base-input">
     <input
       :id="id"
       :type="type"
@@ -36,18 +28,65 @@ const model = defineModel<string | number>()
       :placeholder="placeholder"
       :disabled="disabled"
       :class="[
-        'w-full bg-surface-container-highest border border-outline-variant/20 rounded-lg',
-        'px-4 py-3 text-sm text-on-surface placeholder:text-outline/40',
-        'focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50',
-        'transition-all duration-200',
-        disabled ? 'opacity-50 cursor-not-allowed' : '',
+        'base-input__control',
         props.class
       ]"
     />
-    
-    <!-- 提供右侧图标插槽（如：搜索图标、密码可见切换图标） -->
-    <div v-if="$slots.icon" class="absolute inset-y-0 right-3 flex items-center text-outline/60 group-focus-within:text-primary transition-colors">
-      <slot name="icon"></slot>
+
+    <div v-if="$slots.icon" class="base-input__icon">
+      <slot name="icon" />
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+.base-input {
+  position: relative;
+  width: 100%;
+
+  &__control {
+    width: 100%;
+    padding: var(--space-3) var(--space-4);
+    border: 1px solid color-mix(in srgb, var(--color-outline-variant) 20%, transparent);
+    border-radius: var(--radius-md);
+    background-color: var(--color-surface-container-highest);
+    color: var(--color-on-surface);
+    font-size: var(--font-size-sm);
+    transition:
+      border-color var(--duration-normal) var(--ease-standard),
+      box-shadow var(--duration-normal) var(--ease-standard),
+      opacity var(--duration-normal) var(--ease-standard);
+
+    &::placeholder {
+      color: color-mix(in srgb, var(--color-outline) 40%, transparent);
+    }
+
+    &:focus {
+      border-color: var(--color-primary);
+      outline: none;
+      box-shadow: 0 0 0 1px color-mix(in srgb, var(--color-primary) 50%, transparent);
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__icon {
+    position: absolute;
+    top: 0;
+    right: var(--space-3);
+    bottom: 0;
+    display: flex;
+    align-items: center;
+    color: color-mix(in srgb, var(--color-outline) 60%, transparent);
+    transition: color var(--duration-normal) var(--ease-standard);
+    pointer-events: none;
+  }
+
+  &:focus-within &__icon {
+    color: var(--color-primary);
+  }
+}
+</style>

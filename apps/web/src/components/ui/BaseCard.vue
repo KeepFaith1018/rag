@@ -1,5 +1,4 @@
 <script setup lang="ts">
-// 卡片组件的基础属性
 interface Props {
   hoverable?: boolean
   class?: string
@@ -12,31 +11,58 @@ const props = withDefaults(defineProps<Props>(), {
 </script>
 
 <template>
-  <!--
-    卡片样式设计哲学 (Bento 风格)：
-    - bg-surface-container-low: 基础色使用偏暗的容器底色
-    - hover:bg-surface-container-high: 拒绝生硬边框，通过背景色的提亮来表现悬浮状态
-    - hover:border-outline-variant/10: 极其隐约的边框反馈
-  -->
   <div
     :class="[
-      'bg-surface-container-low rounded-xl p-6 border border-transparent',
-      'transition-all duration-300 ease-out',
-      hoverable ? 'cursor-pointer hover:bg-surface-container-high hover:border-outline-variant/10 hover:-translate-y-1 hover:shadow-lg' : '',
+      'base-card',
+      { 'base-card--hoverable': hoverable },
       props.class
     ]"
   >
-    <!-- 提供不同部分的具名插槽，支持复杂卡片布局 -->
-    <div v-if="$slots.header" class="mb-4">
-      <slot name="header"></slot>
-    </div>
-    
-    <div class="flex-1">
-      <slot></slot>
+    <div v-if="$slots.header" class="base-card__header">
+      <slot name="header" />
     </div>
 
-    <div v-if="$slots.footer" class="mt-4 pt-4 border-t border-outline-variant/10">
-      <slot name="footer"></slot>
+    <div class="base-card__body">
+      <slot />
+    </div>
+
+    <div v-if="$slots.footer" class="base-card__footer">
+      <slot name="footer" />
     </div>
   </div>
 </template>
+
+<style scoped lang="scss">
+.base-card {
+  padding: var(--space-6);
+  border: 1px solid transparent;
+  border-radius: var(--radius-lg);
+  background-color: var(--color-surface-container-low);
+  transition:
+    background-color var(--duration-slow) var(--ease-standard),
+    border-color var(--duration-slow) var(--ease-standard),
+    box-shadow var(--duration-slow) var(--ease-standard),
+    transform var(--duration-slow) var(--ease-standard);
+
+  &--hoverable {
+    cursor: pointer;
+
+    &:hover {
+      border-color: color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
+      background-color: var(--color-surface-container-high);
+      box-shadow: var(--shadow-hover-value);
+      transform: translateY(-0.25rem);
+    }
+  }
+
+  &__header {
+    margin-bottom: var(--space-4);
+  }
+
+  &__footer {
+    margin-top: var(--space-4);
+    padding-top: var(--space-4);
+    border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
+  }
+}
+</style>
