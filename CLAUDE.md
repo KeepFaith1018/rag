@@ -34,7 +34,7 @@ source_of_truth: repository-or-code-path
 ## 常用命令
 
 ```bash
-# 基础设施 (MySQL 13306 / Qdrant 6333-6334 / Redis 16379 / ES 9200)
+# 基础设施 (MySQL 13306 / Qdrant 16333-16334 / Redis 16379 / ES 19200 / MinIO 19000-19001)
 docker compose up -d
 
 # 安装与构建
@@ -204,7 +204,8 @@ src/
 
 | 服务 | 端口 | 说明 |
 |------|------|------|
-| MySQL | 13306 | rag_mysql (root:rag-mysql) |
-| Qdrant | 6333/6334 | rag_qdrant (api-key: rag-qdrant) |
-| Redis | 16379 | rag_redis (password: rag-redis) |
-| Elasticsearch | 9200 | rag_es (单节点, 安全已禁用) |
+| MySQL | 13306 | rag_mysql (root:rag_mysql) |
+| Qdrant | 16333/16334 | rag_qdrant (api-key: rag_qdrant) |
+| Redis | 16379 | rag_redis (password: rag_redis) |
+| Elasticsearch | 19200 | rag_es (单节点, 安全已禁用) |
+| MinIO | 19000/19001 | rag_minio (API/控制台, root:rag_minio) |

@@ -43,7 +43,7 @@ Linsor AI (灵索智能) 是一个面向极致用户体验与高效信息检索�
 docker compose up -d
 ```
 
-启动 MySQL (13306)、Qdrant (6333/6334)、Redis (16379)、Elasticsearch (9200)。
+启动 MySQL (13306)、Qdrant (16333/16334)、Redis (16379)、Elasticsearch (19200)、MinIO (19000/19001)。
 
 ### 3. 安装依赖
 
