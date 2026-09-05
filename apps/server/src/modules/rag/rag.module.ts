@@ -5,7 +5,6 @@ import { ElasticsearchModule } from '@common/vector/elasticsearch.module';
 import { AiModule } from './ai/ai.module';
 import { UserModelConfigController } from './ai/user-model-config.controller';
 import { UserModelConfigService } from './ai/user-model-config.service';
-import { WebSearchModule } from './web-search/web-search.module';
 import { DenseRetrievalService } from './retrieval/dense-retrieval.service';
 import { ElasticsearchSparseRetrievalService } from './retrieval/elasticsearch-sparse-retrieval.service';
 import { FusionService } from './retrieval/fusion.service';
@@ -23,7 +22,7 @@ import { CitationService } from './retrieval/citation.service';
  * - 引用构建与检索轨迹
  */
 @Module({
-  imports: [ConfigModule, QdrantModule, ElasticsearchModule, AiModule, WebSearchModule],
+  imports: [ConfigModule, QdrantModule, ElasticsearchModule, AiModule],
   controllers: [UserModelConfigController],
   providers: [
     // 模型配置
@@ -42,7 +41,6 @@ import { CitationService } from './retrieval/citation.service';
     AiModule,
     RetrievalService,
     CitationService,
-    WebSearchModule,
   ],
 })
 export class RagModule {}

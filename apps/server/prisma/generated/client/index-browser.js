@@ -127,28 +127,10 @@ exports.Prisma.B_usersScalarFieldEnum = {
   full_name: 'full_name',
   avatar_url: 'avatar_url',
   is_active: 'is_active',
+  email_verified_at: 'email_verified_at',
+  deleted_at: 'deleted_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
-};
-
-exports.Prisma.Sys_adminsScalarFieldEnum = {
-  id: 'id',
-  username: 'username',
-  password_hash: 'password_hash',
-  role: 'role',
-  is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-};
-
-exports.Prisma.Sys_email_codesScalarFieldEnum = {
-  id: 'id',
-  email: 'email',
-  code: 'code',
-  purpose: 'purpose',
-  used: 'used',
-  expired_at: 'expired_at',
-  created_at: 'created_at'
 };
 
 exports.Prisma.B_user_sessionsScalarFieldEnum = {
@@ -158,7 +140,29 @@ exports.Prisma.B_user_sessionsScalarFieldEnum = {
   refresh_token_hash: 'refresh_token_hash',
   user_agent: 'user_agent',
   revoked: 'revoked',
+  revoked_at: 'revoked_at',
+  last_used_at: 'last_used_at',
   expired_at: 'expired_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.Sys_email_codesScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  code_hash: 'code_hash',
+  purpose: 'purpose',
+  used: 'used',
+  expired_at: 'expired_at',
+  created_at: 'created_at'
+};
+
+exports.Prisma.Sys_adminsScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  password_hash: 'password_hash',
+  role: 'role',
+  is_active: 'is_active',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -178,7 +182,8 @@ exports.Prisma.Sys_admin_sessionsScalarFieldEnum = {
 exports.Prisma.Sys_model_configsScalarFieldEnum = {
   id: 'id',
   provider: 'provider',
-  name: 'name',
+  model_name: 'model_name',
+  display_name: 'display_name',
   type: 'type',
   base_url: 'base_url',
   config_json: 'config_json',
@@ -193,21 +198,10 @@ exports.Prisma.B_user_model_configsScalarFieldEnum = {
   user_id: 'user_id',
   provider: 'provider',
   model_name: 'model_name',
+  display_name: 'display_name',
   base_url: 'base_url',
   api_key_encrypted: 'api_key_encrypted',
   is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-};
-
-exports.Prisma.B_user_daily_quotasScalarFieldEnum = {
-  id: 'id',
-  user_id: 'user_id',
-  quota_date: 'quota_date',
-  daily_chat_limit: 'daily_chat_limit',
-  daily_token_quota: 'daily_token_quota',
-  used_chat_count: 'used_chat_count',
-  used_token_count: 'used_token_count',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -216,13 +210,13 @@ exports.Prisma.B_knowledge_basesScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  cover_url: 'cover_url',
   visibility: 'visibility',
-  status: 'status',
-  is_public: 'is_public',
   allow_public_download: 'allow_public_download',
   owner_id: 'owner_id',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.B_kb_membersScalarFieldEnum = {
@@ -237,14 +231,14 @@ exports.Prisma.B_kb_invitationsScalarFieldEnum = {
   id: 'id',
   kb_id: 'kb_id',
   inviter_id: 'inviter_id',
-  invite_code: 'invite_code',
+  invite_code_hash: 'invite_code_hash',
   role: 'role',
   expired_at: 'expired_at',
-  is_used: 'is_used',
   cancelled_at: 'cancelled_at',
   accepted_by: 'accepted_by',
   accepted_at: 'accepted_at',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.B_documentsScalarFieldEnum = {
@@ -253,94 +247,152 @@ exports.Prisma.B_documentsScalarFieldEnum = {
   uploader_id: 'uploader_id',
   title: 'title',
   original_filename: 'original_filename',
-  file_path: 'file_path',
-  file_hash: 'file_hash',
-  file_size: 'file_size',
-  file_type: 'file_type',
+  file_extension: 'file_extension',
   mime_type: 'mime_type',
+  storage_provider: 'storage_provider',
+  storage_bucket: 'storage_bucket',
+  storage_key: 'storage_key',
+  storage_etag: 'storage_etag',
+  file_size: 'file_size',
+  file_sha256: 'file_sha256',
   status: 'status',
-  processing_version: 'processing_version',
-  current_stage: 'current_stage',
-  last_error_stage: 'last_error_stage',
-  retry_count: 'retry_count',
-  last_error_code: 'last_error_code',
-  error_msg: 'error_msg',
-  token_count: 'token_count',
-  parse_started_at: 'parse_started_at',
-  parse_finished_at: 'parse_finished_at',
-  last_reparse_at: 'last_reparse_at',
+  active_run_id: 'active_run_id',
+  desired_run_id: 'desired_run_id',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.B_upload_sessionsScalarFieldEnum = {
   id: 'id',
+  session_id: 'session_id',
   kb_id: 'kb_id',
   user_id: 'user_id',
   document_id: 'document_id',
+  storage_provider: 'storage_provider',
+  storage_bucket: 'storage_bucket',
+  storage_key: 'storage_key',
+  multipart_upload_id: 'multipart_upload_id',
   file_name: 'file_name',
   title: 'title',
   file_size: 'file_size',
   mime_type: 'mime_type',
-  file_hash: 'file_hash',
+  client_sha256: 'client_sha256',
   file_extension: 'file_extension',
-  chunk_size: 'chunk_size',
-  total_chunks: 'total_chunks',
-  uploaded_count: 'uploaded_count',
+  part_size: 'part_size',
+  total_parts: 'total_parts',
+  uploaded_parts: 'uploaded_parts',
+  uploaded_bytes: 'uploaded_bytes',
   status: 'status',
-  storage_type: 'storage_type',
-  temp_dir: 'temp_dir',
+  expires_at: 'expires_at',
+  last_activity_at: 'last_activity_at',
   completed_at: 'completed_at',
-  expired_at: 'expired_at',
+  aborted_at: 'aborted_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
 
-exports.Prisma.B_upload_chunksScalarFieldEnum = {
+exports.Prisma.B_upload_partsScalarFieldEnum = {
   id: 'id',
-  upload_id: 'upload_id',
-  chunk_index: 'chunk_index',
-  chunk_size: 'chunk_size',
-  chunk_hash: 'chunk_hash',
-  storage_path: 'storage_path',
+  upload_session_id: 'upload_session_id',
+  part_number: 'part_number',
+  expected_size: 'expected_size',
+  actual_size: 'actual_size',
+  etag: 'etag',
+  checksum_sha256: 'checksum_sha256',
   status: 'status',
+  attempt_count: 'attempt_count',
+  last_error: 'last_error',
+  uploaded_at: 'uploaded_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
 
 exports.Prisma.B_document_chunksScalarFieldEnum = {
   id: 'id',
-  doc_id: 'doc_id',
-  chunk_index: 'chunk_index',
+  processing_run_id: 'processing_run_id',
+  chunk_no: 'chunk_no',
   content: 'content',
+  content_hash: 'content_hash',
   token_count: 'token_count',
-  page_no: 'page_no',
+  page_start: 'page_start',
+  page_end: 'page_end',
   char_start: 'char_start',
   char_end: 'char_end',
-  vector_id: 'vector_id',
-  metadata_json: 'metadata_json',
+  chunk_level: 'chunk_level',
   parent_chunk_id: 'parent_chunk_id',
   root_chunk_id: 'root_chunk_id',
-  chunk_level: 'chunk_level',
-  is_root: 'is_root',
+  vector_id: 'vector_id',
   embedding_status: 'embedding_status',
-  created_at: 'created_at'
+  embedding_error: 'embedding_error',
+  embedded_at: 'embedded_at',
+  vector_index_status: 'vector_index_status',
+  vector_index_error: 'vector_index_error',
+  vector_indexed_at: 'vector_indexed_at',
+  search_index_status: 'search_index_status',
+  search_index_error: 'search_index_error',
+  search_indexed_at: 'search_indexed_at',
+  metadata_json: 'metadata_json',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.B_document_processing_runsScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  run_no: 'run_no',
+  trigger_type: 'trigger_type',
+  status: 'status',
+  current_stage: 'current_stage',
+  source_sha256: 'source_sha256',
+  parser_config_json: 'parser_config_json',
+  chunking_config_json: 'chunking_config_json',
+  embedding_model_name: 'embedding_model_name',
+  embedding_dimension: 'embedding_dimension',
+  embedding_config_json: 'embedding_config_json',
+  embedding_config_hash: 'embedding_config_hash',
+  index_targets_json: 'index_targets_json',
+  retrieval_policy_json: 'retrieval_policy_json',
+  total_chunks: 'total_chunks',
+  completed_chunks: 'completed_chunks',
+  total_tokens: 'total_tokens',
+  error_code: 'error_code',
+  error_message: 'error_message',
+  requested_by: 'requested_by',
+  queued_at: 'queued_at',
+  started_at: 'started_at',
+  finished_at: 'finished_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.B_document_processing_tasksScalarFieldEnum = {
   id: 'id',
-  document_id: 'document_id',
-  processing_version: 'processing_version',
-  job_id: 'job_id',
+  processing_run_id: 'processing_run_id',
+  parent_task_id: 'parent_task_id',
   stage: 'stage',
+  task_key: 'task_key',
+  queue_name: 'queue_name',
+  bullmq_job_id: 'bullmq_job_id',
   status: 'status',
-  attempt: 'attempt',
-  error_code: 'error_code',
-  error_message: 'error_message',
+  attempts_allowed: 'attempts_allowed',
+  attempts_made: 'attempts_made',
+  progress: 'progress',
+  batch_no: 'batch_no',
+  scope_json: 'scope_json',
+  payload_json: 'payload_json',
+  result_json: 'result_json',
+  artifact_manifest_json: 'artifact_manifest_json',
+  execution_version: 'execution_version',
+  worker_id: 'worker_id',
+  locked_at: 'locked_at',
+  heartbeat_at: 'heartbeat_at',
+  available_at: 'available_at',
+  last_error_code: 'last_error_code',
+  last_error_message: 'last_error_message',
   started_at: 'started_at',
   finished_at: 'finished_at',
   duration_ms: 'duration_ms',
-  heartbeat_at: 'heartbeat_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -369,6 +421,8 @@ exports.Prisma.B_chat_messagesScalarFieldEnum = {
   message_status: 'message_status',
   metadata_json: 'metadata_json',
   model_name: 'model_name',
+  model_source: 'model_source',
+  model_config_id: 'model_config_id',
   finish_reason: 'finish_reason',
   trace_id: 'trace_id',
   chat_mode: 'chat_mode',
@@ -389,67 +443,28 @@ exports.Prisma.B_chat_message_citationsScalarFieldEnum = {
   chunk_id: 'chunk_id',
   score: 'score',
   quote: 'quote',
+  source_snapshot_json: 'source_snapshot_json',
   order_no: 'order_no',
   created_at: 'created_at'
 };
 
-exports.Prisma.B_agent_runsScalarFieldEnum = {
+exports.Prisma.B_outbox_eventsScalarFieldEnum = {
   id: 'id',
-  session_id: 'session_id',
-  user_id: 'user_id',
-  user_message_id: 'user_message_id',
-  assistant_message_id: 'assistant_message_id',
+  event_key: 'event_key',
+  event_type: 'event_type',
+  aggregate_type: 'aggregate_type',
+  aggregate_id: 'aggregate_id',
+  payload_json: 'payload_json',
   status: 'status',
-  total_tokens: 'total_tokens',
-  duration_ms: 'duration_ms',
-  chat_mode: 'chat_mode',
-  selected_kb_ids_json: 'selected_kb_ids_json',
-  resolved_kb_ids_json: 'resolved_kb_ids_json',
-  routed_query_json: 'routed_query_json',
-  metadata_json: 'metadata_json',
+  attempts_made: 'attempts_made',
+  available_at: 'available_at',
+  lock_token: 'lock_token',
+  locked_until: 'locked_until',
+  dispatched_at: 'dispatched_at',
+  completed_at: 'completed_at',
+  last_error: 'last_error',
   created_at: 'created_at',
-  finished_at: 'finished_at'
-};
-
-exports.Prisma.B_agent_stepsScalarFieldEnum = {
-  id: 'id',
-  run_id: 'run_id',
-  agent_name: 'agent_name',
-  step_type: 'step_type',
-  status: 'status',
-  input_json: 'input_json',
-  output_json: 'output_json',
-  duration_ms: 'duration_ms',
-  started_at: 'started_at',
-  finished_at: 'finished_at'
-};
-
-exports.Prisma.Sys_audit_logsScalarFieldEnum = {
-  id: 'id',
-  admin_id: 'admin_id',
-  action: 'action',
-  module: 'module',
-  ip_address: 'ip_address',
-  details: 'details',
-  created_at: 'created_at'
-};
-
-exports.Prisma.Sys_dict_typeScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  name: 'name',
-  remark: 'remark',
-  created_at: 'created_at'
-};
-
-exports.Prisma.Sys_dict_itemScalarFieldEnum = {
-  id: 'id',
-  type_code: 'type_code',
-  value: 'value',
-  label: 'label',
-  sort: 'sort',
-  status: 'status',
-  created_at: 'created_at'
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.SortOrder = {
@@ -459,6 +474,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -474,21 +493,21 @@ exports.Prisma.b_usersOrderByRelevanceFieldEnum = {
   avatar_url: 'avatar_url'
 };
 
-exports.Prisma.sys_adminsOrderByRelevanceFieldEnum = {
-  username: 'username',
-  password_hash: 'password_hash',
-  role: 'role'
-};
-
-exports.Prisma.sys_email_codesOrderByRelevanceFieldEnum = {
-  email: 'email',
-  code: 'code'
-};
-
 exports.Prisma.b_user_sessionsOrderByRelevanceFieldEnum = {
   session_id: 'session_id',
   refresh_token_hash: 'refresh_token_hash',
   user_agent: 'user_agent'
+};
+
+exports.Prisma.sys_email_codesOrderByRelevanceFieldEnum = {
+  email: 'email',
+  code_hash: 'code_hash'
+};
+
+exports.Prisma.sys_adminsOrderByRelevanceFieldEnum = {
+  username: 'username',
+  password_hash: 'password_hash',
+  role: 'role'
 };
 
 exports.Prisma.sys_admin_sessionsOrderByRelevanceFieldEnum = {
@@ -510,14 +529,15 @@ exports.Prisma.QueryMode = {
 
 exports.Prisma.sys_model_configsOrderByRelevanceFieldEnum = {
   provider: 'provider',
-  name: 'name',
-  type: 'type',
+  model_name: 'model_name',
+  display_name: 'display_name',
   base_url: 'base_url'
 };
 
 exports.Prisma.b_user_model_configsOrderByRelevanceFieldEnum = {
   provider: 'provider',
   model_name: 'model_name',
+  display_name: 'display_name',
   base_url: 'base_url',
   api_key_encrypted: 'api_key_encrypted'
 };
@@ -525,62 +545,69 @@ exports.Prisma.b_user_model_configsOrderByRelevanceFieldEnum = {
 exports.Prisma.b_knowledge_basesOrderByRelevanceFieldEnum = {
   name: 'name',
   description: 'description',
-  visibility: 'visibility',
-  status: 'status'
-};
-
-exports.Prisma.b_kb_membersOrderByRelevanceFieldEnum = {
-  role: 'role'
+  cover_url: 'cover_url'
 };
 
 exports.Prisma.b_kb_invitationsOrderByRelevanceFieldEnum = {
-  invite_code: 'invite_code',
-  role: 'role'
+  invite_code_hash: 'invite_code_hash'
 };
 
 exports.Prisma.b_documentsOrderByRelevanceFieldEnum = {
   title: 'title',
   original_filename: 'original_filename',
-  file_path: 'file_path',
-  file_hash: 'file_hash',
-  file_type: 'file_type',
+  file_extension: 'file_extension',
   mime_type: 'mime_type',
-  status: 'status',
-  current_stage: 'current_stage',
-  last_error_stage: 'last_error_stage',
-  last_error_code: 'last_error_code',
-  error_msg: 'error_msg'
+  storage_provider: 'storage_provider',
+  storage_bucket: 'storage_bucket',
+  storage_key: 'storage_key',
+  storage_etag: 'storage_etag',
+  file_sha256: 'file_sha256'
 };
 
 exports.Prisma.b_upload_sessionsOrderByRelevanceFieldEnum = {
+  session_id: 'session_id',
+  storage_provider: 'storage_provider',
+  storage_bucket: 'storage_bucket',
+  storage_key: 'storage_key',
+  multipart_upload_id: 'multipart_upload_id',
   file_name: 'file_name',
   title: 'title',
   mime_type: 'mime_type',
-  file_hash: 'file_hash',
-  file_extension: 'file_extension',
-  status: 'status',
-  storage_type: 'storage_type',
-  temp_dir: 'temp_dir'
+  client_sha256: 'client_sha256',
+  file_extension: 'file_extension'
 };
 
-exports.Prisma.b_upload_chunksOrderByRelevanceFieldEnum = {
-  chunk_hash: 'chunk_hash',
-  storage_path: 'storage_path',
-  status: 'status'
+exports.Prisma.b_upload_partsOrderByRelevanceFieldEnum = {
+  etag: 'etag',
+  checksum_sha256: 'checksum_sha256',
+  last_error: 'last_error'
 };
 
 exports.Prisma.b_document_chunksOrderByRelevanceFieldEnum = {
   content: 'content',
+  content_hash: 'content_hash',
   vector_id: 'vector_id',
-  embedding_status: 'embedding_status'
+  embedding_error: 'embedding_error',
+  vector_index_error: 'vector_index_error',
+  search_index_error: 'search_index_error'
+};
+
+exports.Prisma.b_document_processing_runsOrderByRelevanceFieldEnum = {
+  trigger_type: 'trigger_type',
+  source_sha256: 'source_sha256',
+  embedding_model_name: 'embedding_model_name',
+  embedding_config_hash: 'embedding_config_hash',
+  error_code: 'error_code',
+  error_message: 'error_message'
 };
 
 exports.Prisma.b_document_processing_tasksOrderByRelevanceFieldEnum = {
-  job_id: 'job_id',
-  stage: 'stage',
-  status: 'status',
-  error_code: 'error_code',
-  error_message: 'error_message'
+  task_key: 'task_key',
+  queue_name: 'queue_name',
+  bullmq_job_id: 'bullmq_job_id',
+  worker_id: 'worker_id',
+  last_error_code: 'last_error_code',
+  last_error_message: 'last_error_message'
 };
 
 exports.Prisma.b_chat_sessionsOrderByRelevanceFieldEnum = {
@@ -596,6 +623,7 @@ exports.Prisma.b_chat_messagesOrderByRelevanceFieldEnum = {
   content: 'content',
   message_status: 'message_status',
   model_name: 'model_name',
+  model_config_id: 'model_config_id',
   finish_reason: 'finish_reason',
   trace_id: 'trace_id',
   chat_mode: 'chat_mode',
@@ -607,64 +635,139 @@ exports.Prisma.b_chat_message_citationsOrderByRelevanceFieldEnum = {
   quote: 'quote'
 };
 
-exports.Prisma.b_agent_runsOrderByRelevanceFieldEnum = {
-  id: 'id',
-  session_id: 'session_id',
-  status: 'status',
-  chat_mode: 'chat_mode'
+exports.Prisma.b_outbox_eventsOrderByRelevanceFieldEnum = {
+  event_key: 'event_key',
+  aggregate_type: 'aggregate_type',
+  aggregate_id: 'aggregate_id',
+  lock_token: 'lock_token',
+  last_error: 'last_error'
+};
+exports.ModelConfigType = exports.$Enums.ModelConfigType = {
+  chat: 'chat',
+  light: 'light',
+  embedding: 'embedding',
+  rerank: 'rerank'
 };
 
-exports.Prisma.b_agent_stepsOrderByRelevanceFieldEnum = {
-  run_id: 'run_id',
-  agent_name: 'agent_name',
-  step_type: 'step_type',
-  status: 'status'
+exports.KnowledgeBaseVisibility = exports.$Enums.KnowledgeBaseVisibility = {
+  private: 'private',
+  collaborative: 'collaborative',
+  public: 'public'
 };
 
-exports.Prisma.sys_audit_logsOrderByRelevanceFieldEnum = {
-  action: 'action',
-  module: 'module',
-  ip_address: 'ip_address'
+exports.KnowledgeBaseMemberRole = exports.$Enums.KnowledgeBaseMemberRole = {
+  manager: 'manager',
+  collaborator: 'collaborator',
+  member: 'member'
 };
 
-exports.Prisma.sys_dict_typeOrderByRelevanceFieldEnum = {
-  code: 'code',
-  name: 'name',
-  remark: 'remark'
+exports.DocumentStatus = exports.$Enums.DocumentStatus = {
+  processing: 'processing',
+  ready: 'ready',
+  failed: 'failed',
+  deleting: 'deleting',
+  deleted: 'deleted'
 };
 
-exports.Prisma.sys_dict_itemOrderByRelevanceFieldEnum = {
-  type_code: 'type_code',
-  value: 'value',
-  label: 'label'
+exports.UploadSessionStatus = exports.$Enums.UploadSessionStatus = {
+  initiated: 'initiated',
+  uploading: 'uploading',
+  completing: 'completing',
+  completed: 'completed',
+  aborted: 'aborted',
+  expired: 'expired',
+  failed: 'failed'
 };
 
+exports.UploadPartStatus = exports.$Enums.UploadPartStatus = {
+  pending: 'pending',
+  uploading: 'uploading',
+  uploaded: 'uploaded',
+  failed: 'failed'
+};
+
+exports.ChunkStepStatus = exports.$Enums.ChunkStepStatus = {
+  pending: 'pending',
+  processing: 'processing',
+  completed: 'completed',
+  failed: 'failed',
+  skipped: 'skipped'
+};
+
+exports.ProcessingRunStatus = exports.$Enums.ProcessingRunStatus = {
+  queued: 'queued',
+  running: 'running',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  cancelled: 'cancelled'
+};
+
+exports.ProcessingRunStage = exports.$Enums.ProcessingRunStage = {
+  parse: 'parse',
+  chunk: 'chunk',
+  embed: 'embed',
+  index: 'index',
+  completed: 'completed'
+};
+
+exports.ProcessingTaskStage = exports.$Enums.ProcessingTaskStage = {
+  parse: 'parse',
+  chunk: 'chunk',
+  embed: 'embed',
+  vector_index: 'vector_index',
+  search_index: 'search_index'
+};
+
+exports.ProcessingTaskStatus = exports.$Enums.ProcessingTaskStatus = {
+  queued: 'queued',
+  running: 'running',
+  retrying: 'retrying',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  cancelled: 'cancelled'
+};
+
+exports.ChatModelSource = exports.$Enums.ChatModelSource = {
+  system: 'system',
+  user: 'user'
+};
+
+exports.OutboxEventType = exports.$Enums.OutboxEventType = {
+  dispatch_processing_task: 'dispatch_processing_task',
+  cleanup_document: 'cleanup_document',
+  cleanup_run: 'cleanup_run',
+  cleanup_knowledge_base: 'cleanup_knowledge_base'
+};
+
+exports.OutboxEventStatus = exports.$Enums.OutboxEventStatus = {
+  pending: 'pending',
+  dispatching: 'dispatching',
+  dispatched: 'dispatched',
+  completed: 'completed',
+  failed: 'failed'
+};
 
 exports.Prisma.ModelName = {
   b_users: 'b_users',
-  sys_admins: 'sys_admins',
-  sys_email_codes: 'sys_email_codes',
   b_user_sessions: 'b_user_sessions',
+  sys_email_codes: 'sys_email_codes',
+  sys_admins: 'sys_admins',
   sys_admin_sessions: 'sys_admin_sessions',
   sys_model_configs: 'sys_model_configs',
   b_user_model_configs: 'b_user_model_configs',
-  b_user_daily_quotas: 'b_user_daily_quotas',
   b_knowledge_bases: 'b_knowledge_bases',
   b_kb_members: 'b_kb_members',
   b_kb_invitations: 'b_kb_invitations',
   b_documents: 'b_documents',
   b_upload_sessions: 'b_upload_sessions',
-  b_upload_chunks: 'b_upload_chunks',
+  b_upload_parts: 'b_upload_parts',
   b_document_chunks: 'b_document_chunks',
+  b_document_processing_runs: 'b_document_processing_runs',
   b_document_processing_tasks: 'b_document_processing_tasks',
   b_chat_sessions: 'b_chat_sessions',
   b_chat_messages: 'b_chat_messages',
   b_chat_message_citations: 'b_chat_message_citations',
-  b_agent_runs: 'b_agent_runs',
-  b_agent_steps: 'b_agent_steps',
-  sys_audit_logs: 'sys_audit_logs',
-  sys_dict_type: 'sys_dict_type',
-  sys_dict_item: 'sys_dict_item'
+  b_outbox_events: 'b_outbox_events'
 };
 
 /**

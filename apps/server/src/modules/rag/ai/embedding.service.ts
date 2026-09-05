@@ -23,7 +23,7 @@ interface EmbeddingRuntimeConfig {
 }
 
 /**
- * 负责统一封装阿里云百炼 Embedding 调用能力。
+ * 负责统一封装 OpenAI 兼容的 Embedding 调用能力。
  */
 @Injectable()
 export class EmbeddingService {
@@ -190,28 +190,28 @@ export class EmbeddingService {
   }
 
   /**
-   * 解析并校验百炼 Embedding 运行配置。
+   * 解析并校验 Embedding 运行配置。
    */
   getEmbeddingConfig(): EmbeddingRuntimeConfig {
-    const apiKey = this.configService.get<string>('BAILIAN_API_KEY');
+    const apiKey = this.configService.get<string>('AI_API_KEY');
     const modelType =
       this.configService.get<'text' | 'vision'>(
-        'BAILIAN_DOCUMENT_EMBEDDING_TYPE',
+        'AI_DOCUMENT_EMBEDDING_TYPE',
       ) || 'text';
     const model =
       modelType === 'vision'
-        ? this.configService.get<string>('BAILIAN_VISION_EMBEDDING_MODEL') ||
-          this.configService.get<string>('BAILIAN_EMBEDDING_MODEL')
-        : this.configService.get<string>('BAILIAN_EMBEDDING_MODEL');
+        ? this.configService.get<string>('AI_VISION_EMBEDDING_MODEL') ||
+          this.configService.get<string>('AI_EMBEDDING_MODEL')
+        : this.configService.get<string>('AI_EMBEDDING_MODEL');
     if (!apiKey || !model) {
       throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
-        message: '百炼 Embedding 配置缺失，请补充标准环境变量后再执行向量化',
+        message: 'Embedding 配置缺失，请补充标准环境变量后再执行向量化',
         context: {
           internalErrorCode: DOCUMENT_EMBEDDING_CONFIG_ERROR_CODE,
           requiredEnv:
             modelType === 'vision'
-              ? ['BAILIAN_API_KEY', 'BAILIAN_VISION_EMBEDDING_MODEL']
-              : ['BAILIAN_API_KEY', 'BAILIAN_EMBEDDING_MODEL'],
+              ? ['AI_API_KEY', 'AI_VISION_EMBEDDING_MODEL']
+              : ['AI_API_KEY', 'AI_EMBEDDING_MODEL'],
         },
       });
     }
@@ -221,13 +221,13 @@ export class EmbeddingService {
       model,
       modelType,
       baseUrl:
-        this.configService.get<string>('BAILIAN_BASE_URL') ||
+        this.configService.get<string>('AI_BASE_URL') ||
         'https://dashscope.aliyuncs.com/compatible-api/v1',
-      dimensions: this.getNumberConfig('BAILIAN_EMBEDDING_DIMENSIONS'),
-      batchSize: this.getNumberConfig('BAILIAN_EMBED_BATCH_SIZE') ?? 50,
-      retryCount: this.getNumberConfig('BAILIAN_EMBED_RETRY_COUNT') ?? 3,
+      dimensions: this.getNumberConfig('AI_EMBEDDING_DIMENSIONS'),
+      batchSize: this.getNumberConfig('AI_EMBED_BATCH_SIZE') ?? 50,
+      retryCount: this.getNumberConfig('AI_EMBED_RETRY_COUNT') ?? 3,
       requestIntervalMs:
-        this.getNumberConfig('BAILIAN_EMBED_REQUEST_INTERVAL_MS') ?? 1000,
+        this.getNumberConfig('AI_EMBED_REQUEST_INTERVAL_MS') ?? 1000,
     };
   }
 
@@ -238,7 +238,7 @@ export class EmbeddingService {
     if (config.modelType !== 'text') {
       throw new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
         message:
-          '当前 LangChain Embedding 编排仅支持文本向量模型，请将 BAILIAN_DOCUMENT_EMBEDDING_TYPE 设置为 text',
+          '当前 LangChain Embedding 编排仅支持文本向量模型，请将 AI_DOCUMENT_EMBEDDING_TYPE 设置为 text',
         context: {
           internalErrorCode: DOCUMENT_EMBEDDING_CONFIG_ERROR_CODE,
           modelType: config.modelType,
@@ -302,7 +302,7 @@ export class EmbeddingService {
 
     const detail = this.extractProviderErrorDetail(error);
     return new BusinessException(ErrorCode.SERVICE_UNAVAILABLE, {
-      message: detail.message || '百炼 Embedding 调用失败',
+      message: detail.message || 'Embedding 调用失败',
       cause: error,
       context: {
         internalErrorCode: DOCUMENT_EMBEDDING_ERROR_CODE,

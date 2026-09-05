@@ -7,13 +7,11 @@ import { ChatModelService } from '../../rag/ai/chat-model.service';
 import { Logger } from 'winston';
 import { WINSTON_MODULE_PROVIDER } from 'nest-winston';
 import { RetrievalService } from '../../rag/retrieval/retrieval.service';
-import { WebSearchService } from '../../rag/web-search/web-search.service';
 import { AgentTraceService } from './agent-trace.service';
 import { EvalQueueService } from './eval-queue.service';
 import { PrismaService } from '@common/prisma/prisma.service';
 import { parseBigInt } from '@common/utils/bigint.utils';
 import type { AgentRunContext } from './agent-trace.service';
-import type { WebSearchResult } from '../../rag/web-search/web-search.service';
 import type { ResolvedModelParams } from './model-config-resolution.service';
 import { SseWriter, type ModelFallbackInfo } from '../types/agui-events';
 import { extractMessageContent, getErrorMessage } from '@common/utils/message.utils';
@@ -60,7 +58,6 @@ const AgentStateAnnotation = Annotation.Root({
   /** rewrite 节点提取的关键词（用于稀疏检索） */
   rewrittenKeywords: Annotation<string[]>(),
   rerankedHits: Annotation<RerankedHit[]>(),
-  webSearchResults: Annotation<WebSearchResult[]>(),
   draftAnswer: Annotation<string>(),
   currentPhase: Annotation<string>(),
   auditVerdict: Annotation<string | null>(),
@@ -460,17 +457,12 @@ function relevanceEdge(state: AgentState): 'audit' | 'rewrite_fallback' {
   return 'audit';
 }
 
-function auditEdge(
-  state: AgentState,
-  enableWebSearch: boolean,
-): 'writer' | 'web_search' | 'rewrite_fallback' {
+function auditEdge(state: AgentState): 'writer' | 'rewrite_fallback' {
   const retryCount = state.retrievalRetryCount ?? 0;
 
   if (state.auditVerdict === 'sufficient') return 'writer';
 
-  // 检索不充分 → 优先网络搜索兜底
-  if (enableWebSearch) return 'web_search';
-  // 无网络搜索能力 → 改写重试
+  // 检索不充分 → 改写重试
   if (retryCount < 1) return 'rewrite_fallback';
   // 重试次数用尽，直接生成（告知用户检索不充分）
   return 'writer';
@@ -497,7 +489,6 @@ function buildRetrieveQueries(state: AgentState): string[] {
 
 export function buildContextText(
   hits: RerankedHit[],
-  webResults: WebSearchResult[],
 ): string {
   const MAX_CONTEXT_CHARS = 12000;
   const parts: string[] = [];
@@ -524,23 +515,6 @@ export function buildContextText(
     parts.push('');
   }
 
-  if (webResults.length > 0 && charBudget > 500) {
-    parts.push('【联网搜索结果】');
-    for (let i = 0; i < webResults.length; i++) {
-      if (charBudget <= 0) break;
-      const r = webResults[i];
-      const header = `[Web-${i + 1}] ${r.title}\nURL: ${r.url}\n`;
-      const maxContentLen = charBudget - header.length;
-      const content =
-        r.content.length > maxContentLen
-          ? r.content.slice(0, maxContentLen) + '...[截断]'
-          : r.content;
-      parts.push(header + content);
-      charBudget -= header.length + content.length;
-    }
-    parts.push('');
-  }
-
   if (parts.length === 0) return '（知识库中未检索到相关上下文）';
   return parts.join('\n---\n');
 }
@@ -560,7 +534,6 @@ export class MultiAgentOrchestratorService {
     private readonly chatModelService: ChatModelService,
     private readonly retrievalService: RetrievalService,
     private readonly agentTraceService: AgentTraceService,
-    private readonly webSearchService: WebSearchService,
     private readonly evalQueueService: EvalQueueService,
     private readonly prisma: PrismaService,
   ) {}
@@ -571,7 +544,7 @@ export class MultiAgentOrchestratorService {
    * 图结构: __start__ → route → [greeting? → writer → __end__]
    *    → decompose → rewrite → retrieve_prep → tools → relevance_check
    *    → [not_relevant? → rewrite] → audit
-   *    → [sufficient? → writer] / [insufficient+web → web_search → writer]
+   *    → [sufficient? → writer]
    *    / [insufficient+retry<1 → rewrite_fallback → tools → audit]
    *    → writer → __end__
    *
@@ -581,7 +554,6 @@ export class MultiAgentOrchestratorService {
     runCtx: AgentRunContext,
     writer: SseWriter,
     options?: {
-      enableWebSearch?: boolean;
       signal?: AbortSignal;
       modelOptions?: ResolvedModelParams;
       modelFallback?: ModelFallbackInfo;
@@ -593,7 +565,6 @@ export class MultiAgentOrchestratorService {
     },
   ): Promise<void> {
     const {
-      enableWebSearch = false,
       signal,
       modelOptions,
       modelFallback,
@@ -870,33 +841,6 @@ export class MultiAgentOrchestratorService {
           });
           return result;
         })
-        .addNode('web_search', async (s) => {
-          checkAborted();
-          const tcId = `tc_web_${Date.now()}`;
-          writer.write({
-            type: 'TOOL_CALL_START',
-            toolCallId: tcId,
-            toolCallName: 'web_search',
-            input: { query: s.originalQuery, maxResults: 5 },
-          });
-          const wsStart = Date.now();
-          const results = await self.webSearchService.search(
-            s.originalQuery,
-            5,
-          );
-          writer.write({
-            type: 'TOOL_CALL_RESULT',
-            toolCallId: tcId,
-            toolCallName: 'web_search',
-            output: { resultCount: results.length },
-            durationMs: Date.now() - wsStart,
-          });
-          return {
-            webSearchResults: results,
-            retrievalRetryCount: (s.retrievalRetryCount ?? 0) + 1,
-            currentPhase: 'retrieving',
-          };
-        })
         // ── 生成阶段 ──
         .addNode('writer', async (s) => {
           checkAborted();
@@ -907,10 +851,7 @@ export class MultiAgentOrchestratorService {
           });
           const stepStart = Date.now();
 
-          const context = buildContextText(
-            s.rerankedHits,
-            s.webSearchResults,
-          );
+          const context = buildContextText(s.rerankedHits);
           const prompt = WRITER_SYSTEM_PROMPT.replace('{context}', context);
 
           // 若检索不充分，提示 LLM 诚实告知
@@ -982,14 +923,12 @@ export class MultiAgentOrchestratorService {
         })
         .addConditionalEdges(
           'audit',
-          (s) => auditEdge(s, enableWebSearch),
+          auditEdge,
           {
             writer: 'writer',
-            web_search: 'web_search',
             rewrite_fallback: 'rewrite_fallback',
           },
         )
-        .addEdge('web_search', 'writer')
         .addEdge('rewrite_fallback', 'tools')
         .addEdge('writer', '__end__')
         .compile();
@@ -1007,7 +946,6 @@ export class MultiAgentOrchestratorService {
         rewrittenQueries: [],
         rewrittenKeywords: [],
         rerankedHits: [],
-        webSearchResults: [],
         draftAnswer: '',
         currentPhase: 'planning',
         auditVerdict: null,

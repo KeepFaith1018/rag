@@ -99,28 +99,10 @@ exports.Prisma.B_usersScalarFieldEnum = {
   full_name: 'full_name',
   avatar_url: 'avatar_url',
   is_active: 'is_active',
+  email_verified_at: 'email_verified_at',
+  deleted_at: 'deleted_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
-};
-
-exports.Prisma.Sys_adminsScalarFieldEnum = {
-  id: 'id',
-  username: 'username',
-  password_hash: 'password_hash',
-  role: 'role',
-  is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-};
-
-exports.Prisma.Sys_email_codesScalarFieldEnum = {
-  id: 'id',
-  email: 'email',
-  code: 'code',
-  purpose: 'purpose',
-  used: 'used',
-  expired_at: 'expired_at',
-  created_at: 'created_at'
 };
 
 exports.Prisma.B_user_sessionsScalarFieldEnum = {
@@ -130,7 +112,29 @@ exports.Prisma.B_user_sessionsScalarFieldEnum = {
   refresh_token_hash: 'refresh_token_hash',
   user_agent: 'user_agent',
   revoked: 'revoked',
+  revoked_at: 'revoked_at',
+  last_used_at: 'last_used_at',
   expired_at: 'expired_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.Sys_email_codesScalarFieldEnum = {
+  id: 'id',
+  email: 'email',
+  code_hash: 'code_hash',
+  purpose: 'purpose',
+  used: 'used',
+  expired_at: 'expired_at',
+  created_at: 'created_at'
+};
+
+exports.Prisma.Sys_adminsScalarFieldEnum = {
+  id: 'id',
+  username: 'username',
+  password_hash: 'password_hash',
+  role: 'role',
+  is_active: 'is_active',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -150,7 +154,8 @@ exports.Prisma.Sys_admin_sessionsScalarFieldEnum = {
 exports.Prisma.Sys_model_configsScalarFieldEnum = {
   id: 'id',
   provider: 'provider',
-  name: 'name',
+  model_name: 'model_name',
+  display_name: 'display_name',
   type: 'type',
   base_url: 'base_url',
   config_json: 'config_json',
@@ -165,21 +170,10 @@ exports.Prisma.B_user_model_configsScalarFieldEnum = {
   user_id: 'user_id',
   provider: 'provider',
   model_name: 'model_name',
+  display_name: 'display_name',
   base_url: 'base_url',
   api_key_encrypted: 'api_key_encrypted',
   is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at'
-};
-
-exports.Prisma.B_user_daily_quotasScalarFieldEnum = {
-  id: 'id',
-  user_id: 'user_id',
-  quota_date: 'quota_date',
-  daily_chat_limit: 'daily_chat_limit',
-  daily_token_quota: 'daily_token_quota',
-  used_chat_count: 'used_chat_count',
-  used_token_count: 'used_token_count',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -188,13 +182,13 @@ exports.Prisma.B_knowledge_basesScalarFieldEnum = {
   id: 'id',
   name: 'name',
   description: 'description',
+  cover_url: 'cover_url',
   visibility: 'visibility',
-  status: 'status',
-  is_public: 'is_public',
   allow_public_download: 'allow_public_download',
   owner_id: 'owner_id',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.B_kb_membersScalarFieldEnum = {
@@ -209,14 +203,14 @@ exports.Prisma.B_kb_invitationsScalarFieldEnum = {
   id: 'id',
   kb_id: 'kb_id',
   inviter_id: 'inviter_id',
-  invite_code: 'invite_code',
+  invite_code_hash: 'invite_code_hash',
   role: 'role',
   expired_at: 'expired_at',
-  is_used: 'is_used',
   cancelled_at: 'cancelled_at',
   accepted_by: 'accepted_by',
   accepted_at: 'accepted_at',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.B_documentsScalarFieldEnum = {
@@ -225,94 +219,152 @@ exports.Prisma.B_documentsScalarFieldEnum = {
   uploader_id: 'uploader_id',
   title: 'title',
   original_filename: 'original_filename',
-  file_path: 'file_path',
-  file_hash: 'file_hash',
-  file_size: 'file_size',
-  file_type: 'file_type',
+  file_extension: 'file_extension',
   mime_type: 'mime_type',
+  storage_provider: 'storage_provider',
+  storage_bucket: 'storage_bucket',
+  storage_key: 'storage_key',
+  storage_etag: 'storage_etag',
+  file_size: 'file_size',
+  file_sha256: 'file_sha256',
   status: 'status',
-  processing_version: 'processing_version',
-  current_stage: 'current_stage',
-  last_error_stage: 'last_error_stage',
-  retry_count: 'retry_count',
-  last_error_code: 'last_error_code',
-  error_msg: 'error_msg',
-  token_count: 'token_count',
-  parse_started_at: 'parse_started_at',
-  parse_finished_at: 'parse_finished_at',
-  last_reparse_at: 'last_reparse_at',
+  active_run_id: 'active_run_id',
+  desired_run_id: 'desired_run_id',
   created_at: 'created_at',
-  updated_at: 'updated_at'
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
 };
 
 exports.Prisma.B_upload_sessionsScalarFieldEnum = {
   id: 'id',
+  session_id: 'session_id',
   kb_id: 'kb_id',
   user_id: 'user_id',
   document_id: 'document_id',
+  storage_provider: 'storage_provider',
+  storage_bucket: 'storage_bucket',
+  storage_key: 'storage_key',
+  multipart_upload_id: 'multipart_upload_id',
   file_name: 'file_name',
   title: 'title',
   file_size: 'file_size',
   mime_type: 'mime_type',
-  file_hash: 'file_hash',
+  client_sha256: 'client_sha256',
   file_extension: 'file_extension',
-  chunk_size: 'chunk_size',
-  total_chunks: 'total_chunks',
-  uploaded_count: 'uploaded_count',
+  part_size: 'part_size',
+  total_parts: 'total_parts',
+  uploaded_parts: 'uploaded_parts',
+  uploaded_bytes: 'uploaded_bytes',
   status: 'status',
-  storage_type: 'storage_type',
-  temp_dir: 'temp_dir',
+  expires_at: 'expires_at',
+  last_activity_at: 'last_activity_at',
   completed_at: 'completed_at',
-  expired_at: 'expired_at',
+  aborted_at: 'aborted_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
 
-exports.Prisma.B_upload_chunksScalarFieldEnum = {
+exports.Prisma.B_upload_partsScalarFieldEnum = {
   id: 'id',
-  upload_id: 'upload_id',
-  chunk_index: 'chunk_index',
-  chunk_size: 'chunk_size',
-  chunk_hash: 'chunk_hash',
-  storage_path: 'storage_path',
+  upload_session_id: 'upload_session_id',
+  part_number: 'part_number',
+  expected_size: 'expected_size',
+  actual_size: 'actual_size',
+  etag: 'etag',
+  checksum_sha256: 'checksum_sha256',
   status: 'status',
+  attempt_count: 'attempt_count',
+  last_error: 'last_error',
+  uploaded_at: 'uploaded_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
 
 exports.Prisma.B_document_chunksScalarFieldEnum = {
   id: 'id',
-  doc_id: 'doc_id',
-  chunk_index: 'chunk_index',
+  processing_run_id: 'processing_run_id',
+  chunk_no: 'chunk_no',
   content: 'content',
+  content_hash: 'content_hash',
   token_count: 'token_count',
-  page_no: 'page_no',
+  page_start: 'page_start',
+  page_end: 'page_end',
   char_start: 'char_start',
   char_end: 'char_end',
-  vector_id: 'vector_id',
-  metadata_json: 'metadata_json',
+  chunk_level: 'chunk_level',
   parent_chunk_id: 'parent_chunk_id',
   root_chunk_id: 'root_chunk_id',
-  chunk_level: 'chunk_level',
-  is_root: 'is_root',
+  vector_id: 'vector_id',
   embedding_status: 'embedding_status',
-  created_at: 'created_at'
+  embedding_error: 'embedding_error',
+  embedded_at: 'embedded_at',
+  vector_index_status: 'vector_index_status',
+  vector_index_error: 'vector_index_error',
+  vector_indexed_at: 'vector_indexed_at',
+  search_index_status: 'search_index_status',
+  search_index_error: 'search_index_error',
+  search_indexed_at: 'search_indexed_at',
+  metadata_json: 'metadata_json',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
+exports.Prisma.B_document_processing_runsScalarFieldEnum = {
+  id: 'id',
+  document_id: 'document_id',
+  run_no: 'run_no',
+  trigger_type: 'trigger_type',
+  status: 'status',
+  current_stage: 'current_stage',
+  source_sha256: 'source_sha256',
+  parser_config_json: 'parser_config_json',
+  chunking_config_json: 'chunking_config_json',
+  embedding_model_name: 'embedding_model_name',
+  embedding_dimension: 'embedding_dimension',
+  embedding_config_json: 'embedding_config_json',
+  embedding_config_hash: 'embedding_config_hash',
+  index_targets_json: 'index_targets_json',
+  retrieval_policy_json: 'retrieval_policy_json',
+  total_chunks: 'total_chunks',
+  completed_chunks: 'completed_chunks',
+  total_tokens: 'total_tokens',
+  error_code: 'error_code',
+  error_message: 'error_message',
+  requested_by: 'requested_by',
+  queued_at: 'queued_at',
+  started_at: 'started_at',
+  finished_at: 'finished_at',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.B_document_processing_tasksScalarFieldEnum = {
   id: 'id',
-  document_id: 'document_id',
-  processing_version: 'processing_version',
-  job_id: 'job_id',
+  processing_run_id: 'processing_run_id',
+  parent_task_id: 'parent_task_id',
   stage: 'stage',
+  task_key: 'task_key',
+  queue_name: 'queue_name',
+  bullmq_job_id: 'bullmq_job_id',
   status: 'status',
-  attempt: 'attempt',
-  error_code: 'error_code',
-  error_message: 'error_message',
+  attempts_allowed: 'attempts_allowed',
+  attempts_made: 'attempts_made',
+  progress: 'progress',
+  batch_no: 'batch_no',
+  scope_json: 'scope_json',
+  payload_json: 'payload_json',
+  result_json: 'result_json',
+  artifact_manifest_json: 'artifact_manifest_json',
+  execution_version: 'execution_version',
+  worker_id: 'worker_id',
+  locked_at: 'locked_at',
+  heartbeat_at: 'heartbeat_at',
+  available_at: 'available_at',
+  last_error_code: 'last_error_code',
+  last_error_message: 'last_error_message',
   started_at: 'started_at',
   finished_at: 'finished_at',
   duration_ms: 'duration_ms',
-  heartbeat_at: 'heartbeat_at',
   created_at: 'created_at',
   updated_at: 'updated_at'
 };
@@ -341,6 +393,8 @@ exports.Prisma.B_chat_messagesScalarFieldEnum = {
   message_status: 'message_status',
   metadata_json: 'metadata_json',
   model_name: 'model_name',
+  model_source: 'model_source',
+  model_config_id: 'model_config_id',
   finish_reason: 'finish_reason',
   trace_id: 'trace_id',
   chat_mode: 'chat_mode',
@@ -361,67 +415,28 @@ exports.Prisma.B_chat_message_citationsScalarFieldEnum = {
   chunk_id: 'chunk_id',
   score: 'score',
   quote: 'quote',
+  source_snapshot_json: 'source_snapshot_json',
   order_no: 'order_no',
   created_at: 'created_at'
 };
 
-exports.Prisma.B_agent_runsScalarFieldEnum = {
+exports.Prisma.B_outbox_eventsScalarFieldEnum = {
   id: 'id',
-  session_id: 'session_id',
-  user_id: 'user_id',
-  user_message_id: 'user_message_id',
-  assistant_message_id: 'assistant_message_id',
+  event_key: 'event_key',
+  event_type: 'event_type',
+  aggregate_type: 'aggregate_type',
+  aggregate_id: 'aggregate_id',
+  payload_json: 'payload_json',
   status: 'status',
-  total_tokens: 'total_tokens',
-  duration_ms: 'duration_ms',
-  chat_mode: 'chat_mode',
-  selected_kb_ids_json: 'selected_kb_ids_json',
-  resolved_kb_ids_json: 'resolved_kb_ids_json',
-  routed_query_json: 'routed_query_json',
-  metadata_json: 'metadata_json',
+  attempts_made: 'attempts_made',
+  available_at: 'available_at',
+  lock_token: 'lock_token',
+  locked_until: 'locked_until',
+  dispatched_at: 'dispatched_at',
+  completed_at: 'completed_at',
+  last_error: 'last_error',
   created_at: 'created_at',
-  finished_at: 'finished_at'
-};
-
-exports.Prisma.B_agent_stepsScalarFieldEnum = {
-  id: 'id',
-  run_id: 'run_id',
-  agent_name: 'agent_name',
-  step_type: 'step_type',
-  status: 'status',
-  input_json: 'input_json',
-  output_json: 'output_json',
-  duration_ms: 'duration_ms',
-  started_at: 'started_at',
-  finished_at: 'finished_at'
-};
-
-exports.Prisma.Sys_audit_logsScalarFieldEnum = {
-  id: 'id',
-  admin_id: 'admin_id',
-  action: 'action',
-  module: 'module',
-  ip_address: 'ip_address',
-  details: 'details',
-  created_at: 'created_at'
-};
-
-exports.Prisma.Sys_dict_typeScalarFieldEnum = {
-  id: 'id',
-  code: 'code',
-  name: 'name',
-  remark: 'remark',
-  created_at: 'created_at'
-};
-
-exports.Prisma.Sys_dict_itemScalarFieldEnum = {
-  id: 'id',
-  type_code: 'type_code',
-  value: 'value',
-  label: 'label',
-  sort: 'sort',
-  status: 'status',
-  created_at: 'created_at'
+  updated_at: 'updated_at'
 };
 
 exports.Prisma.SortOrder = {
@@ -431,6 +446,10 @@ exports.Prisma.SortOrder = {
 
 exports.Prisma.NullableJsonNullValueInput = {
   DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.JsonNullValueInput = {
   JsonNull: Prisma.JsonNull
 };
 
@@ -446,21 +465,21 @@ exports.Prisma.b_usersOrderByRelevanceFieldEnum = {
   avatar_url: 'avatar_url'
 };
 
-exports.Prisma.sys_adminsOrderByRelevanceFieldEnum = {
-  username: 'username',
-  password_hash: 'password_hash',
-  role: 'role'
-};
-
-exports.Prisma.sys_email_codesOrderByRelevanceFieldEnum = {
-  email: 'email',
-  code: 'code'
-};
-
 exports.Prisma.b_user_sessionsOrderByRelevanceFieldEnum = {
   session_id: 'session_id',
   refresh_token_hash: 'refresh_token_hash',
   user_agent: 'user_agent'
+};
+
+exports.Prisma.sys_email_codesOrderByRelevanceFieldEnum = {
+  email: 'email',
+  code_hash: 'code_hash'
+};
+
+exports.Prisma.sys_adminsOrderByRelevanceFieldEnum = {
+  username: 'username',
+  password_hash: 'password_hash',
+  role: 'role'
 };
 
 exports.Prisma.sys_admin_sessionsOrderByRelevanceFieldEnum = {
@@ -482,14 +501,15 @@ exports.Prisma.QueryMode = {
 
 exports.Prisma.sys_model_configsOrderByRelevanceFieldEnum = {
   provider: 'provider',
-  name: 'name',
-  type: 'type',
+  model_name: 'model_name',
+  display_name: 'display_name',
   base_url: 'base_url'
 };
 
 exports.Prisma.b_user_model_configsOrderByRelevanceFieldEnum = {
   provider: 'provider',
   model_name: 'model_name',
+  display_name: 'display_name',
   base_url: 'base_url',
   api_key_encrypted: 'api_key_encrypted'
 };
@@ -497,62 +517,69 @@ exports.Prisma.b_user_model_configsOrderByRelevanceFieldEnum = {
 exports.Prisma.b_knowledge_basesOrderByRelevanceFieldEnum = {
   name: 'name',
   description: 'description',
-  visibility: 'visibility',
-  status: 'status'
-};
-
-exports.Prisma.b_kb_membersOrderByRelevanceFieldEnum = {
-  role: 'role'
+  cover_url: 'cover_url'
 };
 
 exports.Prisma.b_kb_invitationsOrderByRelevanceFieldEnum = {
-  invite_code: 'invite_code',
-  role: 'role'
+  invite_code_hash: 'invite_code_hash'
 };
 
 exports.Prisma.b_documentsOrderByRelevanceFieldEnum = {
   title: 'title',
   original_filename: 'original_filename',
-  file_path: 'file_path',
-  file_hash: 'file_hash',
-  file_type: 'file_type',
+  file_extension: 'file_extension',
   mime_type: 'mime_type',
-  status: 'status',
-  current_stage: 'current_stage',
-  last_error_stage: 'last_error_stage',
-  last_error_code: 'last_error_code',
-  error_msg: 'error_msg'
+  storage_provider: 'storage_provider',
+  storage_bucket: 'storage_bucket',
+  storage_key: 'storage_key',
+  storage_etag: 'storage_etag',
+  file_sha256: 'file_sha256'
 };
 
 exports.Prisma.b_upload_sessionsOrderByRelevanceFieldEnum = {
+  session_id: 'session_id',
+  storage_provider: 'storage_provider',
+  storage_bucket: 'storage_bucket',
+  storage_key: 'storage_key',
+  multipart_upload_id: 'multipart_upload_id',
   file_name: 'file_name',
   title: 'title',
   mime_type: 'mime_type',
-  file_hash: 'file_hash',
-  file_extension: 'file_extension',
-  status: 'status',
-  storage_type: 'storage_type',
-  temp_dir: 'temp_dir'
+  client_sha256: 'client_sha256',
+  file_extension: 'file_extension'
 };
 
-exports.Prisma.b_upload_chunksOrderByRelevanceFieldEnum = {
-  chunk_hash: 'chunk_hash',
-  storage_path: 'storage_path',
-  status: 'status'
+exports.Prisma.b_upload_partsOrderByRelevanceFieldEnum = {
+  etag: 'etag',
+  checksum_sha256: 'checksum_sha256',
+  last_error: 'last_error'
 };
 
 exports.Prisma.b_document_chunksOrderByRelevanceFieldEnum = {
   content: 'content',
+  content_hash: 'content_hash',
   vector_id: 'vector_id',
-  embedding_status: 'embedding_status'
+  embedding_error: 'embedding_error',
+  vector_index_error: 'vector_index_error',
+  search_index_error: 'search_index_error'
+};
+
+exports.Prisma.b_document_processing_runsOrderByRelevanceFieldEnum = {
+  trigger_type: 'trigger_type',
+  source_sha256: 'source_sha256',
+  embedding_model_name: 'embedding_model_name',
+  embedding_config_hash: 'embedding_config_hash',
+  error_code: 'error_code',
+  error_message: 'error_message'
 };
 
 exports.Prisma.b_document_processing_tasksOrderByRelevanceFieldEnum = {
-  job_id: 'job_id',
-  stage: 'stage',
-  status: 'status',
-  error_code: 'error_code',
-  error_message: 'error_message'
+  task_key: 'task_key',
+  queue_name: 'queue_name',
+  bullmq_job_id: 'bullmq_job_id',
+  worker_id: 'worker_id',
+  last_error_code: 'last_error_code',
+  last_error_message: 'last_error_message'
 };
 
 exports.Prisma.b_chat_sessionsOrderByRelevanceFieldEnum = {
@@ -568,6 +595,7 @@ exports.Prisma.b_chat_messagesOrderByRelevanceFieldEnum = {
   content: 'content',
   message_status: 'message_status',
   model_name: 'model_name',
+  model_config_id: 'model_config_id',
   finish_reason: 'finish_reason',
   trace_id: 'trace_id',
   chat_mode: 'chat_mode',
@@ -579,64 +607,139 @@ exports.Prisma.b_chat_message_citationsOrderByRelevanceFieldEnum = {
   quote: 'quote'
 };
 
-exports.Prisma.b_agent_runsOrderByRelevanceFieldEnum = {
-  id: 'id',
-  session_id: 'session_id',
-  status: 'status',
-  chat_mode: 'chat_mode'
+exports.Prisma.b_outbox_eventsOrderByRelevanceFieldEnum = {
+  event_key: 'event_key',
+  aggregate_type: 'aggregate_type',
+  aggregate_id: 'aggregate_id',
+  lock_token: 'lock_token',
+  last_error: 'last_error'
+};
+exports.ModelConfigType = exports.$Enums.ModelConfigType = {
+  chat: 'chat',
+  light: 'light',
+  embedding: 'embedding',
+  rerank: 'rerank'
 };
 
-exports.Prisma.b_agent_stepsOrderByRelevanceFieldEnum = {
-  run_id: 'run_id',
-  agent_name: 'agent_name',
-  step_type: 'step_type',
-  status: 'status'
+exports.ChatModelSource = exports.$Enums.ChatModelSource = {
+  system: 'system',
+  user: 'user'
 };
 
-exports.Prisma.sys_audit_logsOrderByRelevanceFieldEnum = {
-  action: 'action',
-  module: 'module',
-  ip_address: 'ip_address'
+exports.KnowledgeBaseVisibility = exports.$Enums.KnowledgeBaseVisibility = {
+  private: 'private',
+  collaborative: 'collaborative',
+  public: 'public'
 };
 
-exports.Prisma.sys_dict_typeOrderByRelevanceFieldEnum = {
-  code: 'code',
-  name: 'name',
-  remark: 'remark'
+exports.KnowledgeBaseMemberRole = exports.$Enums.KnowledgeBaseMemberRole = {
+  manager: 'manager',
+  collaborator: 'collaborator',
+  member: 'member'
 };
 
-exports.Prisma.sys_dict_itemOrderByRelevanceFieldEnum = {
-  type_code: 'type_code',
-  value: 'value',
-  label: 'label'
+exports.DocumentStatus = exports.$Enums.DocumentStatus = {
+  processing: 'processing',
+  ready: 'ready',
+  failed: 'failed',
+  deleting: 'deleting',
+  deleted: 'deleted'
 };
 
+exports.UploadSessionStatus = exports.$Enums.UploadSessionStatus = {
+  initiated: 'initiated',
+  uploading: 'uploading',
+  completing: 'completing',
+  completed: 'completed',
+  aborted: 'aborted',
+  expired: 'expired',
+  failed: 'failed'
+};
+
+exports.UploadPartStatus = exports.$Enums.UploadPartStatus = {
+  pending: 'pending',
+  uploading: 'uploading',
+  uploaded: 'uploaded',
+  failed: 'failed'
+};
+
+exports.ChunkStepStatus = exports.$Enums.ChunkStepStatus = {
+  pending: 'pending',
+  processing: 'processing',
+  completed: 'completed',
+  failed: 'failed',
+  skipped: 'skipped'
+};
+
+exports.ProcessingRunStatus = exports.$Enums.ProcessingRunStatus = {
+  queued: 'queued',
+  running: 'running',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  cancelled: 'cancelled'
+};
+
+exports.ProcessingRunStage = exports.$Enums.ProcessingRunStage = {
+  parse: 'parse',
+  chunk: 'chunk',
+  embed: 'embed',
+  index: 'index',
+  completed: 'completed'
+};
+
+exports.ProcessingTaskStage = exports.$Enums.ProcessingTaskStage = {
+  parse: 'parse',
+  chunk: 'chunk',
+  embed: 'embed',
+  vector_index: 'vector_index',
+  search_index: 'search_index'
+};
+
+exports.ProcessingTaskStatus = exports.$Enums.ProcessingTaskStatus = {
+  queued: 'queued',
+  running: 'running',
+  retrying: 'retrying',
+  succeeded: 'succeeded',
+  failed: 'failed',
+  cancelled: 'cancelled'
+};
+
+exports.OutboxEventStatus = exports.$Enums.OutboxEventStatus = {
+  pending: 'pending',
+  dispatching: 'dispatching',
+  dispatched: 'dispatched',
+  completed: 'completed',
+  failed: 'failed'
+};
+
+exports.OutboxEventType = exports.$Enums.OutboxEventType = {
+  dispatch_processing_task: 'dispatch_processing_task',
+  cleanup_document: 'cleanup_document',
+  cleanup_run: 'cleanup_run',
+  cleanup_knowledge_base: 'cleanup_knowledge_base'
+};
 
 exports.Prisma.ModelName = {
   b_users: 'b_users',
-  sys_admins: 'sys_admins',
-  sys_email_codes: 'sys_email_codes',
   b_user_sessions: 'b_user_sessions',
+  sys_email_codes: 'sys_email_codes',
+  sys_admins: 'sys_admins',
   sys_admin_sessions: 'sys_admin_sessions',
   sys_model_configs: 'sys_model_configs',
   b_user_model_configs: 'b_user_model_configs',
-  b_user_daily_quotas: 'b_user_daily_quotas',
   b_knowledge_bases: 'b_knowledge_bases',
   b_kb_members: 'b_kb_members',
   b_kb_invitations: 'b_kb_invitations',
   b_documents: 'b_documents',
   b_upload_sessions: 'b_upload_sessions',
-  b_upload_chunks: 'b_upload_chunks',
+  b_upload_parts: 'b_upload_parts',
   b_document_chunks: 'b_document_chunks',
+  b_document_processing_runs: 'b_document_processing_runs',
   b_document_processing_tasks: 'b_document_processing_tasks',
   b_chat_sessions: 'b_chat_sessions',
   b_chat_messages: 'b_chat_messages',
   b_chat_message_citations: 'b_chat_message_citations',
-  b_agent_runs: 'b_agent_runs',
-  b_agent_steps: 'b_agent_steps',
-  sys_audit_logs: 'sys_audit_logs',
-  sys_dict_type: 'sys_dict_type',
-  sys_dict_item: 'sys_dict_item'
+  b_outbox_events: 'b_outbox_events'
 };
 /**
  * Create the Client
@@ -646,10 +749,10 @@ const config = {
   "clientVersion": "7.2.0",
   "engineVersion": "0c8ef2ce45c83248ab3df073180d5eda9e8be7a3",
   "activeProvider": "mysql",
-  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/client\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n}\n\n// ==========================================================\n// 1. 用户与认证模块 (User & Auth)\n// ==========================================================\n\n// 前台业务系统用户（知识库的创建者与使用者）\nmodel b_users {\n  id            BigInt  @id @default(autoincrement())\n  email         String  @unique(map: \"uk_email\") @db.VarChar(255)\n  password_hash String  @db.VarChar(255)\n  full_name     String? @db.VarChar(100)\n  avatar_url    String? @db.VarChar(500)\n  is_active     Boolean @default(true)\n\n  created_at DateTime @default(now()) @db.DateTime(0)\n  updated_at DateTime @default(now()) @db.DateTime(0)\n\n  // 关联\n  chat_sessions      b_chat_sessions[]\n  kb_members         b_kb_members[]\n  knowledge_bases    b_knowledge_bases[]\n  uploaded_documents b_documents[]          @relation(\"document_uploader\")\n  upload_sessions    b_upload_sessions[]    @relation(\"upload_session_user\")\n  model_configs      b_user_model_configs[]\n  daily_quotas       b_user_daily_quotas[]\n  kb_invitations     b_kb_invitations[]\n  user_sessions      b_user_sessions[]\n  agent_runs         b_agent_runs[]\n}\n\n// 后台管理系统用户（系统的超级管理员与运营人员）\nmodel sys_admins {\n  id            BigInt  @id @default(autoincrement())\n  username      String  @unique(map: \"uk_admin_username\") @db.VarChar(100)\n  password_hash String  @db.VarChar(255)\n  role          String  @default(\"admin\") @db.VarChar(50) // super_admin, operator\n  is_active     Boolean @default(true)\n\n  created_at DateTime @default(now()) @db.DateTime(0)\n  updated_at DateTime @default(now()) @db.DateTime(0)\n\n  audit_logs     sys_audit_logs[]\n  admin_sessions sys_admin_sessions[]\n}\n\nmodel sys_email_codes {\n  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt\n  email      String   @db.VarChar(255)\n  code       String   @db.Char(6)\n  purpose    Int      @db.UnsignedTinyInt\n  used       Boolean  @default(false)\n  expired_at DateTime @db.DateTime(0)\n  created_at DateTime @default(now()) @db.DateTime(0)\n\n  @@index([email], map: \"idx_email\")\n  @@index([email, purpose], map: \"idx_email_purpose\")\n}\n\n// 前台用户会话\nmodel b_user_sessions {\n  id                 BigInt   @id @default(autoincrement()) @db.UnsignedBigInt\n  session_id         String   @unique(map: \"uk_session_id\") @db.Char(36)\n  user_id            BigInt\n  refresh_token_hash String   @unique(map: \"uk_refresh_token_hash\") @db.Char(64)\n  user_agent         String?  @db.VarChar(255)\n  revoked            Boolean  @default(false)\n  expired_at         DateTime @db.DateTime(0)\n  created_at         DateTime @default(now()) @db.DateTime(0)\n  updated_at         DateTime @default(now()) @db.DateTime(0)\n\n  b_users b_users @relation(fields: [user_id], references: [id], onDelete: Cascade)\n\n  @@index([user_id], map: \"idx_user_id\")\n}\n\n// 后台管理员会话\nmodel sys_admin_sessions {\n  id                 BigInt   @id @default(autoincrement()) @db.UnsignedBigInt\n  session_id         String   @unique(map: \"uk_admin_session_id\") @db.Char(36)\n  admin_id           BigInt\n  refresh_token_hash String   @unique(map: \"uk_admin_rt_hash\") @db.Char(64)\n  user_agent         String?  @db.VarChar(255)\n  revoked            Boolean  @default(false)\n  expired_at         DateTime @db.DateTime(0)\n  created_at         DateTime @default(now()) @db.DateTime(0)\n  updated_at         DateTime @default(now()) @db.DateTime(0)\n\n  sys_admins sys_admins @relation(fields: [admin_id], references: [id], onDelete: Cascade)\n\n  @@index([admin_id], map: \"idx_admin_id\")\n}\n\n// ==========================================================\n// 2. 大模型配置模块 (LLM Configs)\n// ==========================================================\n\n// 系统提供模型配置，有额度限制\n// 对话和向量化\n/// 系统模型配置（密钥从 .env 读取，不留 DB）\nmodel sys_model_configs {\n  id          BigInt   @id @default(autoincrement())\n  provider    String   @db.VarChar(50) // bailian / openai / deepseek\n  name        String   @db.VarChar(100) // qwen3.6-plus / gpt-4o\n  type        String   @db.VarChar(50) // main / light / embedding / rerank\n  base_url    String?  @db.VarChar(255)\n  config_json Json? // { temperature, maxTokens, topP }\n  is_default  Boolean  @default(false)\n  is_active   Boolean  @default(true)\n  created_at  DateTime @default(now()) @db.DateTime(0)\n  updated_at  DateTime @default(now()) @db.DateTime(0)\n}\n\n/// 用户自定义模型配置（apiKey AES-256-GCM 加密存储）\nmodel b_user_model_configs {\n  id                BigInt   @id @default(autoincrement())\n  user_id           BigInt\n  provider          String   @db.VarChar(50)\n  model_name        String   @db.VarChar(100)\n  base_url          String?  @db.VarChar(255)\n  api_key_encrypted String?  @db.VarChar(500) // AES-256-GCM 加密\n  is_active         Boolean  @default(true)\n  created_at        DateTime @default(now()) @db.DateTime(0)\n  updated_at        DateTime @default(now()) @db.DateTime(0)\n\n  b_users b_users @relation(fields: [user_id], references: [id], onDelete: Cascade)\n\n  @@index([user_id], map: \"idx_user_model\")\n}\n\nmodel b_user_daily_quotas {\n  id                BigInt   @id @default(autoincrement())\n  user_id           BigInt\n  quota_date        DateTime @db.Date\n  daily_chat_limit  Int      @default(50)\n  daily_token_quota BigInt   @default(1000000)\n  used_chat_count   Int      @default(0)\n  used_token_count  BigInt   @default(0)\n  created_at        DateTime @default(now()) @db.DateTime(0)\n  updated_at        DateTime @default(now()) @db.DateTime(0)\n\n  b_users b_users @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_user_daily_quota_user\")\n\n  @@unique([user_id, quota_date], map: \"uk_user_daily_quota\")\n  @@index([user_id], map: \"idx_user_quota\")\n  @@index([quota_date], map: \"idx_daily_quota_date\")\n}\n\n// ==========================================================\n// 3. 知识库与协作模块 (Knowledge Base & Collaboration)\n// ==========================================================\n\nmodel b_knowledge_bases {\n  id          BigInt  @id @default(autoincrement())\n  name        String  @db.VarChar(100)\n  description String? @db.Text\n\n  visibility            String  @default(\"private\") @db.VarChar(50)\n  status                String  @default(\"normal\") @db.VarChar(50)\n  // 仅对共享知识库生效：控制是否开源以及公开用户是否允许下载。\n  is_public             Boolean @default(false)\n  allow_public_download Boolean @default(false)\n\n  owner_id   BigInt\n  created_at DateTime @default(now()) @db.DateTime(0)\n  updated_at DateTime @default(now()) @db.DateTime(0)\n\n  documents         b_documents[]\n  upload_sessions   b_upload_sessions[]\n  kb_members        b_kb_members[]\n  kb_invitations    b_kb_invitations[]\n  message_citations b_chat_message_citations[]\n\n  b_users b_users @relation(fields: [owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_kb_owner\")\n\n  @@index([owner_id], map: \"idx_owner\")\n  @@index([visibility, status], map: \"idx_kb_visibility_status\")\n  @@index([visibility, is_public], map: \"idx_kb_visibility_public\")\n}\n\nmodel b_kb_members {\n  id        BigInt   @id @default(autoincrement())\n  kb_id     BigInt\n  user_id   BigInt\n  // 共享知识库成员角色：manager / collaborator / member\n  role      String   @default(\"member\") @db.VarChar(50)\n  joined_at DateTime @default(now()) @db.DateTime(0)\n\n  b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_member_kb\")\n  b_users           b_users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_member_user\")\n\n  @@unique([kb_id, user_id], map: \"uk_kb_user\")\n  @@index([user_id], map: \"fk_member_user\")\n}\n\nmodel b_kb_invitations {\n  id           BigInt    @id @default(autoincrement())\n  kb_id        BigInt\n  inviter_id   BigInt\n  invite_code  String    @unique @db.VarChar(64)\n  // 邀请加入后的目标角色：manager / collaborator / member\n  role         String    @default(\"member\") @db.VarChar(50)\n  expired_at   DateTime  @db.DateTime(0)\n  is_used      Boolean   @default(false)\n  cancelled_at DateTime?\n  accepted_by  BigInt?\n  accepted_at  DateTime?\n  created_at   DateTime  @default(now()) @db.DateTime(0)\n\n  b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade)\n  b_users           b_users           @relation(fields: [inviter_id], references: [id], onDelete: Cascade)\n\n  @@index([kb_id], map: \"idx_invite_kb\")\n  @@index([kb_id, is_used, expired_at], map: \"idx_invite_status_lookup\")\n}\n\n// ==========================================================\n// 4. 文档与分块解析模块 (Documents & Chunking)\n// ==========================================================\n\nmodel b_documents {\n  id                 BigInt    @id @default(autoincrement())\n  kb_id              BigInt\n  uploader_id        BigInt?\n  title              String    @db.VarChar(255)\n  original_filename  String?   @db.VarChar(255)\n  file_path          String    @db.VarChar(500)\n  file_hash          String?   @db.VarChar(64)\n  file_size          BigInt?   @default(0)\n  file_type          String?   @db.VarChar(20)\n  mime_type          String?   @db.VarChar(100)\n  status             String    @default(\"pending\") @db.VarChar(50)\n  processing_version Int       @default(1)\n  current_stage      String    @default(\"uploaded\") @db.VarChar(50)\n  last_error_stage   String?   @db.VarChar(50)\n  retry_count        Int       @default(0)\n  last_error_code    String?   @db.VarChar(100)\n  error_msg          String?   @db.Text\n  token_count        Int?      @default(0)\n  parse_started_at   DateTime?\n  parse_finished_at  DateTime?\n  last_reparse_at    DateTime?\n  created_at         DateTime  @default(now()) @db.DateTime(0)\n  updated_at         DateTime  @default(now()) @db.DateTime(0)\n\n  document_chunks   b_document_chunks[]\n  processing_tasks  b_document_processing_tasks[]\n  upload_sessions   b_upload_sessions[]\n  message_citations b_chat_message_citations[]\n  b_knowledge_bases b_knowledge_bases             @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_doc_kb\")\n  b_users           b_users?                      @relation(\"document_uploader\", fields: [uploader_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: \"fk_doc_uploader\")\n\n  @@index([kb_id], map: \"idx_kb_id\")\n  @@index([uploader_id], map: \"idx_doc_uploader_id\")\n  @@index([kb_id, uploader_id], map: \"idx_doc_kb_uploader\")\n}\n\nmodel b_upload_sessions {\n  id             BigInt    @id @default(autoincrement())\n  kb_id          BigInt\n  user_id        BigInt\n  document_id    BigInt?\n  file_name      String    @db.VarChar(255)\n  title          String?   @db.VarChar(255)\n  file_size      BigInt\n  mime_type      String?   @db.VarChar(100)\n  file_hash      String    @db.VarChar(64)\n  file_extension String?   @db.VarChar(20)\n  chunk_size     Int\n  total_chunks   Int\n  uploaded_count Int       @default(0)\n  status         String    @default(\"init\") @db.VarChar(50)\n  storage_type   String    @default(\"local\") @db.VarChar(50)\n  temp_dir       String    @db.VarChar(500)\n  completed_at   DateTime?\n  expired_at     DateTime? @db.DateTime(0)\n  created_at     DateTime  @default(now()) @db.DateTime(0)\n  updated_at     DateTime  @default(now()) @db.DateTime(0)\n\n  upload_chunks     b_upload_chunks[]\n  b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_upload_session_kb\")\n  b_users           b_users           @relation(\"upload_session_user\", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_upload_session_user\")\n  b_documents       b_documents?      @relation(fields: [document_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: \"fk_upload_session_document\")\n\n  @@index([kb_id], map: \"idx_upload_session_kb\")\n  @@index([user_id], map: \"idx_upload_session_user\")\n  @@index([kb_id, user_id, file_hash], map: \"idx_upload_session_restore\")\n  @@index([document_id], map: \"idx_upload_session_document\")\n}\n\nmodel b_upload_chunks {\n  id           BigInt   @id @default(autoincrement())\n  upload_id    BigInt\n  chunk_index  Int\n  chunk_size   Int\n  chunk_hash   String?  @db.VarChar(64)\n  storage_path String   @db.VarChar(500)\n  status       String   @default(\"uploaded\") @db.VarChar(50)\n  created_at   DateTime @default(now()) @db.DateTime(0)\n  updated_at   DateTime @default(now()) @db.DateTime(0)\n\n  b_upload_sessions b_upload_sessions @relation(fields: [upload_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_upload_chunk_session\")\n\n  @@unique([upload_id, chunk_index], map: \"uk_upload_chunk\")\n  @@index([upload_id], map: \"idx_upload_chunk_upload\")\n}\n\nmodel b_document_chunks {\n  id            BigInt  @id @default(autoincrement())\n  doc_id        BigInt\n  chunk_index   Int\n  content       String  @db.LongText\n  token_count   Int?    @default(0)\n  page_no       Int?\n  char_start    Int?\n  char_end      Int?\n  vector_id     String? @db.VarChar(100)\n  metadata_json Json?\n\n  // 三层粒度层级字段\n  parent_chunk_id BigInt? // 指向父 chunk（Level3→Level2, Level2→Level1）\n  root_chunk_id   BigInt? // 始终指向 Level 1 根 chunk\n  chunk_level     Int     @default(3) // 1=根 2=父 3=子\n  is_root         Boolean @default(false) // 是否为 Level 1 根 chunk\n\n  embedding_status String   @default(\"pending\") @db.VarChar(20)\n  created_at       DateTime @default(now()) @db.DateTime(0)\n\n  message_citations b_chat_message_citations[]\n  b_documents       b_documents                @relation(fields: [doc_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_chunk_doc\")\n\n  // 自引用层级关系\n  child_chunks b_document_chunks[] @relation(\"ChunkHierarchy\")\n  parent       b_document_chunks?  @relation(\"ChunkHierarchy\", fields: [parent_chunk_id], references: [id], onDelete: SetNull, onUpdate: NoAction)\n\n  @@index([doc_id, chunk_index], map: \"idx_doc_chunk\")\n  @@index([vector_id], map: \"idx_chunk_vector_id\")\n  @@index([parent_chunk_id], map: \"idx_chunk_parent\")\n  @@index([root_chunk_id], map: \"idx_chunk_root\")\n}\n\nmodel b_document_processing_tasks {\n  id                 BigInt    @id @default(autoincrement())\n  document_id        BigInt\n  processing_version Int\n  job_id             String?   @db.VarChar(100)\n  stage              String    @db.VarChar(50)\n  status             String    @default(\"running\") @db.VarChar(30)\n  attempt            Int       @default(1)\n  error_code         String?   @db.VarChar(100)\n  error_message      String?   @db.Text\n  started_at         DateTime  @default(now()) @db.DateTime(0)\n  finished_at        DateTime? @db.DateTime(0)\n  duration_ms        Int?\n  heartbeat_at       DateTime? @db.DateTime(0)\n  created_at         DateTime  @default(now()) @db.DateTime(0)\n  updated_at         DateTime  @default(now()) @db.DateTime(0)\n\n  b_documents b_documents @relation(fields: [document_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_processing_task_document\")\n\n  @@unique([document_id, processing_version, stage, attempt], map: \"uk_doc_processing_stage_attempt\")\n  @@index([document_id, processing_version], map: \"idx_processing_task_document_version\")\n  @@index([status, stage], map: \"idx_processing_task_status_stage\")\n  @@index([started_at], map: \"idx_processing_task_started_at\")\n}\n\n// ==========================================================\n// 5. 聊天与溯源模块 (Chat & Agentic RAG)\n// ==========================================================\n\nmodel b_chat_sessions {\n  id                        String    @id @db.Char(36)\n  user_id                   BigInt\n  kb_id                     BigInt?\n  title                     String    @default(\"新会话\") @db.VarChar(100)\n  summary_text              String?   @db.Text\n  last_selected_kb_ids_json Json?\n  last_chat_mode            String?   @db.VarChar(20)\n  last_message_at           DateTime? @db.DateTime(0)\n  created_at                DateTime  @default(now()) @db.DateTime(0)\n  updated_at                DateTime  @default(now()) @db.DateTime(0)\n\n  chat_messages b_chat_messages[]\n  agent_runs    b_agent_runs[]\n  b_users       b_users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_chat_user\")\n\n  @@index([user_id], map: \"idx_user_chat\")\n  @@index([user_id, updated_at], map: \"idx_chat_user_updated\")\n}\n\nmodel b_chat_messages {\n  id         BigInt @id @default(autoincrement())\n  session_id String @db.Char(36)\n  role       String @db.VarChar(50)\n  content    String @db.Text\n\n  references           Json?\n  tool_calls           Json?\n  tokens_used          Int?      @default(0)\n  message_status       String    @default(\"completed\") @db.VarChar(30)\n  metadata_json        Json?\n  model_name           String?   @db.VarChar(100)\n  finish_reason        String?   @db.VarChar(30)\n  trace_id             String?   @db.Char(36)\n  chat_mode            String?   @db.VarChar(20)\n  selected_kb_ids_json Json?\n  resolved_kb_ids_json Json?\n  stream_started_at    DateTime? @db.DateTime(0)\n  stream_finished_at   DateTime? @db.DateTime(0)\n\n  feedback_type   String? @db.VarChar(20)\n  feedback_reason String? @db.Text\n\n  created_at        DateTime                   @default(now()) @db.DateTime(0)\n  b_chat_sessions   b_chat_sessions            @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_msg_session\")\n  message_citations b_chat_message_citations[]\n\n  @@index([session_id], map: \"idx_session_msg\")\n  @@index([session_id, created_at], map: \"idx_session_msg_created\")\n  @@index([session_id, role], map: \"idx_session_role\")\n  @@index([trace_id], map: \"idx_msg_trace\")\n  @@index([message_status], map: \"idx_msg_status\")\n}\n\nmodel b_chat_message_citations {\n  id         BigInt   @id @default(autoincrement())\n  message_id BigInt\n  kb_id      BigInt\n  doc_id     BigInt\n  chunk_id   BigInt\n  score      Float?\n  quote      String?  @db.Text\n  order_no   Int      @default(0)\n  created_at DateTime @default(now()) @db.DateTime(0)\n\n  b_chat_messages   b_chat_messages   @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_chat_citation_message\")\n  b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_chat_citation_kb\")\n  b_documents       b_documents       @relation(fields: [doc_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_chat_citation_doc\")\n  b_document_chunks b_document_chunks @relation(fields: [chunk_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_chat_citation_chunk\")\n\n  @@index([message_id], map: \"idx_chat_citation_message\")\n  @@index([doc_id], map: \"idx_chat_citation_doc\")\n  @@index([chunk_id], map: \"idx_chat_citation_chunk\")\n  @@index([kb_id], map: \"idx_chat_citation_kb\")\n}\n\nmodel b_agent_runs {\n  id                   String    @id @db.Char(36)\n  session_id           String    @db.Char(36)\n  user_id              BigInt\n  user_message_id      BigInt\n  assistant_message_id BigInt?\n  status               String    @db.VarChar(30)\n  total_tokens         Int?      @default(0)\n  duration_ms          Int?\n  chat_mode            String?   @db.VarChar(20)\n  selected_kb_ids_json Json?\n  resolved_kb_ids_json Json?\n  routed_query_json    Json?\n  metadata_json        Json?\n  created_at           DateTime  @default(now()) @db.DateTime(0)\n  finished_at          DateTime? @db.DateTime(0)\n\n  b_chat_sessions b_chat_sessions @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_agent_run_session\")\n  b_users         b_users         @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_agent_run_user\")\n  agent_steps     b_agent_steps[]\n\n  @@index([session_id], map: \"idx_agent_run_session\")\n  @@index([user_id], map: \"idx_agent_run_user\")\n  @@index([status], map: \"idx_agent_run_status\")\n}\n\nmodel b_agent_steps {\n  id          BigInt    @id @default(autoincrement())\n  run_id      String    @db.Char(36)\n  agent_name  String    @db.VarChar(50)\n  step_type   String    @db.VarChar(50)\n  status      String    @db.VarChar(30)\n  input_json  Json?\n  output_json Json?\n  duration_ms Int?\n  started_at  DateTime  @default(now()) @db.DateTime(0)\n  finished_at DateTime? @db.DateTime(0)\n\n  b_agent_runs b_agent_runs @relation(fields: [run_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_agent_step_run\")\n\n  @@index([run_id], map: \"idx_agent_step_run\")\n  @@index([agent_name], map: \"idx_agent_step_agent\")\n}\n\n// ==========================================================\n// 6. 系统与审计日志模块 (System & Audit)\n// ==========================================================\n\nmodel sys_audit_logs {\n  id         BigInt   @id @default(autoincrement())\n  admin_id   BigInt?\n  action     String   @db.VarChar(100)\n  module     String   @db.VarChar(50)\n  ip_address String?  @db.VarChar(50)\n  details    Json?\n  created_at DateTime @default(now()) @db.DateTime(0)\n\n  sys_admins sys_admins? @relation(fields: [admin_id], references: [id], onDelete: SetNull)\n\n  @@index([admin_id], map: \"idx_audit_admin\")\n  @@index([action], map: \"idx_audit_action\")\n}\n\nmodel sys_dict_type {\n  id         BigInt   @id @default(autoincrement())\n  code       String   @unique(map: \"uk_code\") @db.VarChar(100)\n  name       String   @db.VarChar(100)\n  remark     String?  @db.VarChar(255)\n  created_at DateTime @default(now()) @db.DateTime(0)\n\n  items sys_dict_item[]\n}\n\nmodel sys_dict_item {\n  id         BigInt   @id @default(autoincrement())\n  type_code  String   @db.VarChar(100)\n  value      String   @db.VarChar(100)\n  label      String   @db.VarChar(100)\n  sort       Int      @default(0)\n  status     Boolean  @default(true)\n  created_at DateTime @default(now()) @db.DateTime(0)\n\n  type sys_dict_type? @relation(fields: [type_code], references: [code], map: \"fk_dict_type\")\n\n  @@unique([type_code, value], map: \"uk_type_value\")\n  @@index([type_code], map: \"idx_type_code\")\n}\n"
+  "inlineSchema": "generator client {\n  provider = \"prisma-client-js\"\n  output   = \"./generated/client\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n}\n\n/// 模型配置用途。\n/// chat: 通用对话；light: 轻量判断与问题转换；\n/// embedding: 向量化；rerank: 重排。\nenum ModelConfigType {\n  chat\n  light\n  embedding\n  rerank\n}\n\n/// 聊天消息使用的模型配置来源。\nenum ChatModelSource {\n  system\n  user\n}\n\n/// 知识库访问类型。\nenum KnowledgeBaseVisibility {\n  private\n  collaborative\n  public\n}\n\n/// 知识库成员和邀请的目标角色。\nenum KnowledgeBaseMemberRole {\n  manager\n  collaborator\n  member\n}\n\n/// 文档可用性；已有 active run 时，重建失败仍保持 ready。\n/// deleting 从禁止访问开始，deleted 表示外部资源清理已确认完成。\nenum DocumentStatus {\n  processing\n  ready\n  failed\n  deleting\n  deleted\n}\n\n/// 上传传输状态；completing 必须支持重复调用与对象存储结果核对。\nenum UploadSessionStatus {\n  initiated\n  uploading\n  completing\n  completed\n  aborted\n  expired\n  failed\n}\n\n/// Multipart 分片状态，以对象存储核验结果为准。\nenum UploadPartStatus {\n  pending\n  uploading\n  uploaded\n  failed\n}\n\n/// 分块产物/索引步骤状态；skipped 仅用于批次策略明确不需要的步骤。\nenum ChunkStepStatus {\n  pending\n  processing\n  completed\n  failed\n  skipped\n}\n\n/// succeeded 表示批次产物满足发布要求，不代表已成为 active run。\nenum ProcessingRunStatus {\n  queued\n  running\n  succeeded\n  failed\n  cancelled\n}\n\n/// 批次汇总阶段；index 汇总两路并行索引，不能替代分块的独立索引状态。\nenum ProcessingRunStage {\n  parse\n  chunk\n  embed\n  index\n  completed\n}\n\n/// 任务只使用可执行阶段，不使用 completed 等汇总标记。\nenum ProcessingTaskStage {\n  parse\n  chunk\n  embed\n  vector_index\n  search_index\n}\n\nenum ProcessingTaskStatus {\n  queued\n  running\n  retrying\n  succeeded\n  failed\n  cancelled\n}\n\n/// 业务事件完成状态；dispatched 只代表已入队，completed 需消费者确认效果。\nenum OutboxEventStatus {\n  pending\n  dispatching\n  dispatched\n  completed\n  failed\n}\n\n/// cleanup_* 事件必须携带足够的资源清单，不能依赖已被物理删除的业务行。\nenum OutboxEventType {\n  dispatch_processing_task\n  cleanup_document\n  cleanup_run\n  cleanup_knowledge_base\n}\n\n// ==========================================================\n// 1. 用户与认证模块 (User & Auth)\n// ==========================================================\n\n/// 前台业务系统用户，是知识库、文档上传和聊天会话的归属主体。\nmodel b_users {\n  // 数据库自增主键。\n  id                BigInt    @id @default(autoincrement())\n  // 登录邮箱，作为用户唯一标识。\n  email             String    @unique(map: \"uk_email\") @db.VarChar(255)\n  // 应用层生成的密码哈希，不保存明文密码。\n  password_hash     String    @db.VarChar(255)\n  full_name         String?   @db.VarChar(100)\n  avatar_url        String?   @db.VarChar(500)\n  is_active         Boolean   @default(true)\n  // 邮箱验证完成时间；为空表示尚未验证。\n  email_verified_at DateTime?\n  // 逻辑删除时间；为空表示未删除。\n  deleted_at        DateTime?\n\n  created_at DateTime @default(now()) @db.DateTime(0)\n  updated_at DateTime @updatedAt @db.DateTime(0)\n\n  // 关联\n  chat_sessions           b_chat_sessions[]\n  kb_members              b_kb_members[]\n  knowledge_bases         b_knowledge_bases[]\n  uploaded_documents      b_documents[]          @relation(\"document_uploader\")\n  upload_sessions         b_upload_sessions[]    @relation(\"upload_session_user\")\n  model_configs           b_user_model_configs[]\n  kb_invitations          b_kb_invitations[]     @relation(\"kb_invitation_inviter\")\n  accepted_kb_invitations b_kb_invitations[]     @relation(\"kb_invitation_acceptor\")\n  user_sessions           b_user_sessions[]\n}\n\n/// 前台用户登录会话，用于 Refresh Token 轮换、注销和过期控制。\nmodel b_user_sessions {\n  id                 BigInt    @id @default(autoincrement()) @db.UnsignedBigInt\n  session_id         String    @unique(map: \"uk_session_id\") @db.Char(36)\n  user_id            BigInt\n  refresh_token_hash String    @unique(map: \"uk_refresh_token_hash\") @db.Char(64)\n  user_agent         String?   @db.VarChar(255)\n  revoked            Boolean   @default(false)\n  // 会话被主动撤销的时间。\n  revoked_at         DateTime?\n  // 最近一次使用或刷新会话的时间。\n  last_used_at       DateTime?\n  expired_at         DateTime  @db.DateTime(0)\n  created_at         DateTime  @default(now()) @db.DateTime(0)\n  updated_at         DateTime  @updatedAt @db.DateTime(0)\n\n  b_users b_users @relation(fields: [user_id], references: [id], onDelete: Cascade)\n\n  @@index([user_id], map: \"idx_user_id\")\n}\n\n/// 邮箱验证码，支持注册、密码重置等认证场景。\nmodel sys_email_codes {\n  id         BigInt   @id @default(autoincrement()) @db.UnsignedBigInt\n  email      String   @db.VarChar(255)\n  // 验证码哈希，不保存明文验证码。\n  code_hash  String   @db.Char(64)\n  purpose    Int      @db.UnsignedTinyInt\n  used       Boolean  @default(false)\n  expired_at DateTime @db.DateTime(0)\n  created_at DateTime @default(now()) @db.DateTime(0)\n\n  @@index([email], map: \"idx_email\")\n  @@index([email, purpose], map: \"idx_email_purpose\")\n}\n\n/// 后台管理系统用户，支持超级管理员和运营人员等角色。\nmodel sys_admins {\n  id            BigInt  @id @default(autoincrement())\n  username      String  @unique(map: \"uk_admin_username\") @db.VarChar(100)\n  password_hash String  @db.VarChar(255)\n  role          String  @default(\"admin\") @db.VarChar(50) // super_admin, operator\n  is_active     Boolean @default(true)\n\n  created_at DateTime @default(now()) @db.DateTime(0)\n  updated_at DateTime @updatedAt @db.DateTime(0)\n\n  admin_sessions sys_admin_sessions[]\n}\n\n/// 后台管理员登录会话。\nmodel sys_admin_sessions {\n  id                 BigInt   @id @default(autoincrement()) @db.UnsignedBigInt\n  session_id         String   @unique(map: \"uk_admin_session_id\") @db.Char(36)\n  admin_id           BigInt\n  refresh_token_hash String   @unique(map: \"uk_admin_rt_hash\") @db.Char(64)\n  user_agent         String?  @db.VarChar(255)\n  revoked            Boolean  @default(false)\n  expired_at         DateTime @db.DateTime(0)\n  created_at         DateTime @default(now()) @db.DateTime(0)\n  updated_at         DateTime @updatedAt @db.DateTime(0)\n\n  sys_admins sys_admins @relation(fields: [admin_id], references: [id], onDelete: Cascade)\n\n  @@index([admin_id], map: \"idx_admin_id\")\n}\n\n// ==========================================================\n// 2. 大模型配置模块 (LLM Configs)\n// ==========================================================\n\n/// 系统级模型配置，密钥从环境变量读取，不保存到数据库。\nmodel sys_model_configs {\n  id           BigInt          @id @default(autoincrement())\n  provider     String          @db.VarChar(50) // 模型提供商，例如 bailian / openai / deepseek\n  model_name   String          @db.VarChar(100) // 模型标识，例如 qwen3.6-plus / gpt-4o\n  display_name String          @db.VarChar(100) // 前端展示名称，默认与 model_name 相同\n  type         ModelConfigType // 模型用途\n  base_url     String?         @db.VarChar(500)\n  config_json  Json? // 非敏感模型参数，例如 temperature、maxTokens、topP\n  is_default   Boolean         @default(false) // 当前用途是否为默认模型\n  is_active    Boolean         @default(true)\n  created_at   DateTime        @default(now()) @db.DateTime(0)\n  updated_at   DateTime        @updatedAt @db.DateTime(0)\n\n  @@index([type, is_active, is_default], map: \"idx_model_type_status\")\n}\n\n/// 用户自定义模型配置，API Key 以 AES-256-GCM 密文保存。\nmodel b_user_model_configs {\n  id                BigInt   @id @default(autoincrement())\n  user_id           BigInt\n  provider          String   @db.VarChar(50)\n  model_name        String   @db.VarChar(100)\n  display_name      String   @db.VarChar(100) // 前端展示名称，默认与 model_name 相同\n  base_url          String?  @db.VarChar(500)\n  api_key_encrypted String   @db.VarChar(1024) // AES-256-GCM 加密，不保存明文\n  is_active         Boolean  @default(true)\n  created_at        DateTime @default(now()) @db.DateTime(0)\n  updated_at        DateTime @updatedAt @db.DateTime(0)\n\n  b_users b_users @relation(fields: [user_id], references: [id], onDelete: Cascade)\n\n  @@index([user_id], map: \"idx_user_model\")\n}\n\n// ==========================================================\n// 3. 知识库与协作模块 (Knowledge Base & Collaboration)\n// ==========================================================\n\n/// 知识库主体，关联所有者、成员、邀请、文档和上传会话。\nmodel b_knowledge_bases {\n  id          BigInt  @id @default(autoincrement())\n  name        String  @db.VarChar(100)\n  // 知识库介绍，用于说明业务范围、内容边界和使用方式。\n  description String? @db.Text\n  // 知识库封面图片地址，可指向本地文件、对象存储或 CDN。\n  cover_url   String? @db.VarChar(500)\n\n  visibility            KnowledgeBaseVisibility @default(private)\n  // 公开访问时是否允许下载原始文档。\n  allow_public_download Boolean                 @default(false)\n\n  owner_id   BigInt // 知识库所有者\n  created_at DateTime @default(now()) @db.DateTime(0)\n  updated_at DateTime @updatedAt @db.DateTime(0)\n\n  // 非空即禁止浏览、检索、上传、邀请与下载；外部清理完成后才能硬删除。\n  deleted_at DateTime? @db.DateTime(0)\n\n  documents         b_documents[]\n  upload_sessions   b_upload_sessions[]\n  kb_members        b_kb_members[]\n  kb_invitations    b_kb_invitations[]\n  message_citations b_chat_message_citations[]\n\n  // 硬删除 owner 前必须先完成知识库归属处理及外部清理；外键不会清理 MinIO/Qdrant/ES。\n  b_users b_users @relation(fields: [owner_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_kb_owner\")\n\n  @@index([owner_id], map: \"idx_kb_owner\")\n  @@index([visibility, updated_at], map: \"idx_kb_visibility_updated\")\n}\n\n/// 知识库与用户的多对多成员关系，并保存成员角色。\nmodel b_kb_members {\n  id        BigInt                  @id @default(autoincrement())\n  kb_id     BigInt\n  user_id   BigInt\n  // 成员角色：manager / collaborator / member\n  role      KnowledgeBaseMemberRole @default(member)\n  joined_at DateTime                @default(now()) @db.DateTime(0)\n\n  b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_member_kb\")\n  b_users           b_users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_member_user\")\n\n  @@unique([kb_id, user_id], map: \"uk_kb_user\")\n  @@index([user_id], map: \"fk_member_user\")\n}\n\n/// 知识库邀请记录，邀请码默认只能使用一次。\nmodel b_kb_invitations {\n  id               BigInt                  @id @default(autoincrement())\n  kb_id            BigInt\n  inviter_id       BigInt\n  invite_code_hash String                  @unique @db.Char(64) // 邀请凭证哈希，不保存明文\n  // 接受邀请后赋予的目标角色：manager / collaborator / member\n  role             KnowledgeBaseMemberRole @default(member)\n  expired_at       DateTime                @db.DateTime(0)\n  cancelled_at     DateTime?\n  accepted_by      BigInt?\n  accepted_at      DateTime?\n  created_at       DateTime                @default(now()) @db.DateTime(0)\n  updated_at       DateTime                @updatedAt @db.DateTime(0)\n\n  b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade)\n  b_users           b_users           @relation(\"kb_invitation_inviter\", fields: [inviter_id], references: [id], onDelete: Cascade)\n  accepted_user     b_users?          @relation(\"kb_invitation_acceptor\", fields: [accepted_by], references: [id], onDelete: SetNull)\n\n  @@index([kb_id], map: \"idx_invite_kb\")\n  @@index([kb_id, accepted_at, cancelled_at, expired_at], map: \"idx_invite_status_lookup\")\n}\n\n// ==========================================================\n// 4. 文档与分块解析模块 (Documents & Chunking)\n// ==========================================================\n\n/// 文档元数据，文件内容保存在外部文件存储中。\nmodel b_documents {\n  id                BigInt  @id @default(autoincrement())\n  kb_id             BigInt\n  uploader_id       BigInt?\n  title             String  @db.VarChar(255)\n  // 首次上传时的原始文件名；用户修改展示名称时只更新 title。\n  original_filename String? @db.VarChar(255)\n  file_extension    String? @db.VarChar(20)\n  mime_type         String? @db.VarChar(100)\n\n  // MinIO 对象定位信息。当前系统固定使用 MinIO，但保留实际对象的完整归属信息。\n  storage_provider String  @default(\"minio\") @db.VarChar(30)\n  storage_bucket   String  @db.VarChar(128)\n  storage_key      String  @db.VarChar(1024)\n  // Multipart Complete 返回的 ETag；不等同于文件 SHA256。\n  storage_etag     String? @db.VarChar(255)\n\n  file_size   BigInt\n  // 文件完整性校验、秒传和去重使用的 SHA256。\n  file_sha256 String @db.Char(64)\n\n  // 文档可用性，不等于最新 run 状态；有有效旧批次时重建失败仍为 ready。\n  status         DocumentStatus @default(processing)\n  // 当前实际检索批次。外键不保证 run 属于本文档，发布事务必须校验 document_id。\n  active_run_id  BigInt?\n  // 最后一次发起的重建才有发布资格；创建 run 时在文档行锁保护下更新。\n  // 发布必须条件匹配本字段且 deleted_at 为空；不得回退发布更早完成的 run。\n  desired_run_id BigInt?\n\n  created_at DateTime  @default(now()) @db.DateTime(0)\n  updated_at DateTime  @updatedAt @db.DateTime(0)\n  deleted_at DateTime? @db.DateTime(0)\n\n  upload_sessions   b_upload_sessions[]\n  processing_runs   b_document_processing_runs[] @relation(\"document_processing_runs\")\n  active_run        b_document_processing_runs?  @relation(\"document_active_run\", fields: [active_run_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: \"fk_doc_active_run\")\n  desired_run       b_document_processing_runs?  @relation(\"document_desired_run\", fields: [desired_run_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: \"fk_doc_desired_run\")\n  message_citations b_chat_message_citations[]\n  b_knowledge_bases b_knowledge_bases            @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_doc_kb\")\n  b_users           b_users?                     @relation(\"document_uploader\", fields: [uploader_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: \"fk_doc_uploader\")\n\n  @@unique([active_run_id], map: \"uk_doc_active_run\")\n  @@unique([desired_run_id], map: \"uk_doc_desired_run\")\n  @@index([kb_id], map: \"idx_kb_id\")\n  @@index([uploader_id], map: \"idx_doc_uploader_id\")\n  @@index([kb_id, uploader_id], map: \"idx_doc_kb_uploader\")\n  @@index([kb_id, status, updated_at], map: \"idx_doc_kb_status_updated\")\n  @@index([file_sha256], map: \"idx_doc_file_sha256\")\n}\n\n/// MinIO Multipart Upload 上传会话。该表只记录传输过程，不记录文档处理任务。\nmodel b_upload_sessions {\n  id          BigInt  @id @default(autoincrement())\n  // 对外暴露的上传会话 ID，不直接暴露数据库自增 ID。\n  session_id  String  @unique(map: \"uk_upload_session_id\") @db.Char(36)\n  kb_id       BigInt\n  user_id     BigInt\n  // 上传完成后才关联正式文档，因此允许为空。\n  document_id BigInt?\n\n  storage_provider    String @default(\"minio\") @db.VarChar(30)\n  storage_bucket      String @db.VarChar(128)\n  storage_key         String @db.VarChar(1024)\n  // MinIO 创建 Multipart Upload 后返回的真实上传 ID。\n  multipart_upload_id String @unique(map: \"uk_upload_multipart_id\") @db.VarChar(255)\n\n  file_name      String  @db.VarChar(255)\n  title          String? @db.VarChar(255)\n  file_size      BigInt\n  mime_type      String? @db.VarChar(100)\n  client_sha256  String? @db.Char(64)\n  file_extension String? @db.VarChar(20)\n\n  part_size      Int\n  total_parts    Int\n  uploaded_parts Int    @default(0)\n  uploaded_bytes BigInt @default(0)\n\n  // initiated / uploading / completing / completed / aborted / expired / failed。\n  status           UploadSessionStatus @default(initiated)\n  expires_at       DateTime            @db.DateTime(0)\n  last_activity_at DateTime?           @db.DateTime(0)\n  completed_at     DateTime?           @db.DateTime(0)\n  aborted_at       DateTime?           @db.DateTime(0)\n  created_at       DateTime            @default(now()) @db.DateTime(0)\n  updated_at       DateTime            @updatedAt @db.DateTime(0)\n\n  upload_parts      b_upload_parts[]\n  b_knowledge_bases b_knowledge_bases @relation(fields: [kb_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_upload_session_kb\")\n  b_users           b_users           @relation(\"upload_session_user\", fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_upload_session_user\")\n  b_documents       b_documents?      @relation(fields: [document_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: \"fk_upload_session_document\")\n\n  @@index([kb_id], map: \"idx_upload_session_kb\")\n  @@index([user_id], map: \"idx_upload_session_user\")\n  @@index([kb_id, user_id, client_sha256], map: \"idx_upload_session_restore\")\n  @@index([document_id], map: \"idx_upload_session_document\")\n  @@index([status, expires_at], map: \"idx_upload_session_expire\")\n}\n\n/// MinIO Multipart Upload 中的单个文件分片。\nmodel b_upload_parts {\n  id                BigInt           @id @default(autoincrement())\n  upload_session_id BigInt\n  // 使用 MinIO/S3 的 1 基分片编号。\n  part_number       Int\n  expected_size     Int\n  actual_size       Int?\n  etag              String?          @db.VarChar(255)\n  checksum_sha256   String?          @db.Char(64)\n  // pending / uploading / uploaded / failed。\n  status            UploadPartStatus @default(pending)\n  attempt_count     Int              @default(0)\n  last_error        String?          @db.Text\n  uploaded_at       DateTime?        @db.DateTime(0)\n  created_at        DateTime         @default(now()) @db.DateTime(0)\n  updated_at        DateTime         @updatedAt @db.DateTime(0)\n\n  upload_session b_upload_sessions @relation(fields: [upload_session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_upload_part_session\")\n\n  @@unique([upload_session_id, part_number], map: \"uk_upload_part\")\n  @@index([upload_session_id, status], map: \"idx_upload_part_status\")\n}\n\n/// 文档某次 processing run 生成的文本切片。\n/// 每个批次使用一个不可变 embedding 配置；vector_id 在批次指定的 Qdrant 目标内定位。\nmodel b_document_chunks {\n  id                BigInt  @id @default(autoincrement())\n  processing_run_id BigInt\n  // 在同一个 processing run 内全局递增，所有层级共用编号。\n  chunk_no          Int\n  content           String  @db.LongText\n  content_hash      String? @db.Char(64)\n  token_count       Int?    @default(0)\n  page_start        Int?\n  page_end          Int?\n  char_start        Int?\n  char_end          Int?\n\n  // 三层粒度：1=根，2=父，3=子。\n  chunk_level     Int     @default(3)\n  // 应用层保证 parent/root 同属本 run、层级合法且无环；root 为冗余导航字段。\n  parent_chunk_id BigInt?\n  root_chunk_id   BigInt?\n\n  vector_id           String?         @db.VarChar(255)\n  // completed 仅在向量产物已持久化且清单可恢复时写入；不需要向量的块使用 skipped。\n  embedding_status    ChunkStepStatus @default(pending)\n  embedding_error     String?         @db.Text\n  embedded_at         DateTime?       @db.DateTime(0)\n  // Qdrant 与 ES 独立重试；completed 必须核验目标写入结果，发布前另做可检索性屏障。\n  vector_index_status ChunkStepStatus @default(pending)\n  vector_index_error  String?         @db.Text\n  vector_indexed_at   DateTime?       @db.DateTime(0)\n  search_index_status ChunkStepStatus @default(pending)\n  search_index_error  String?         @db.Text\n  search_indexed_at   DateTime?       @db.DateTime(0)\n\n  metadata_json Json?\n  created_at    DateTime @default(now()) @db.DateTime(0)\n  updated_at    DateTime @updatedAt @db.DateTime(0)\n\n  processing_run    b_document_processing_runs @relation(fields: [processing_run_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_chunk_processing_run\")\n  message_citations b_chat_message_citations[]\n\n  child_chunks b_document_chunks[] @relation(\"ChunkHierarchy\")\n  parent       b_document_chunks?  @relation(\"ChunkHierarchy\", fields: [parent_chunk_id], references: [id], onDelete: SetNull, onUpdate: NoAction)\n\n  @@unique([processing_run_id, chunk_no], map: \"uk_run_chunk_no\")\n  @@index([processing_run_id, embedding_status], map: \"idx_chunk_run_embedding\")\n  @@index([processing_run_id, vector_index_status], map: \"idx_chunk_run_vector_index\")\n  @@index([processing_run_id, search_index_status], map: \"idx_chunk_run_search_index\")\n  @@index([processing_run_id, chunk_level], map: \"idx_chunk_run_level\")\n  @@index([parent_chunk_id], map: \"idx_chunk_parent\")\n  @@index([root_chunk_id], map: \"idx_chunk_root\")\n  @@index([vector_id], map: \"idx_chunk_vector_id\")\n}\n\n/// 一次上传处理或重新向量化处理批次。\n/// 该表不表示用户可见的文件版本。\nmodel b_document_processing_runs {\n  id            BigInt              @id @default(autoincrement())\n  document_id   BigInt\n  run_no        Int\n  // upload / revectorize / manual_retry。\n  trigger_type  String              @db.VarChar(30)\n  // queued / running / succeeded / failed / cancelled。\n  status        ProcessingRunStatus @default(queued)\n  // parse / chunk / embed / index / completed。\n  current_stage ProcessingRunStage  @default(parse)\n\n  source_sha256        String @db.Char(64)\n  parser_config_json   Json?\n  chunking_config_json Json?\n  embedding_model_name String @db.VarChar(150)\n  embedding_dimension  Int?\n\n  // 下列配置在创建 run 时验证并固定，重建不得读取被修改后的默认模型配置。\n  // 含 schemaVersion/provider/model/revision/dimension/normalization 等；禁止密钥。\n  embedding_config_json Json\n  // 规范化配置 JSON 的 SHA256；查询向量按此指纹分组路由，不能只比较维度。\n  embedding_config_hash String @db.Char(64)\n  // 固定 Qdrant collection/vector name/metric 与 ES 物理索引和映射版本。\n  index_targets_json    Json\n  // 固定 requiredTargets 和各层级参与策略；默认双路必需，skipped 必须由此授权。\n  retrieval_policy_json Json\n\n  // total 为本 run 全部层级块数；completed 为已满足各自策略的块数，不是执行次数。\n  // 每块只能计数一次；发布前按块重新核对状态，不能仅相信计数器。\n  total_chunks     Int @default(0)\n  completed_chunks Int @default(0)\n  total_tokens     Int @default(0)\n\n  error_code    String?   @db.VarChar(100)\n  error_message String?   @db.Text\n  requested_by  BigInt?\n  queued_at     DateTime? @db.DateTime(0)\n  started_at    DateTime? @db.DateTime(0)\n  finished_at   DateTime? @db.DateTime(0)\n  created_at    DateTime  @default(now()) @db.DateTime(0)\n  updated_at    DateTime  @updatedAt @db.DateTime(0)\n\n  document         b_documents                   @relation(\"document_processing_runs\", fields: [document_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_processing_run_document\")\n  active_document  b_documents?                  @relation(\"document_active_run\")\n  desired_document b_documents?                  @relation(\"document_desired_run\")\n  processing_tasks b_document_processing_tasks[]\n  document_chunks  b_document_chunks[]\n\n  @@unique([document_id, run_no], map: \"uk_document_run_no\")\n  @@index([document_id, status], map: \"idx_processing_run_document_status\")\n  @@index([status, current_stage], map: \"idx_processing_run_status_stage\")\n}\n\n/// 文档处理批次中的具体任务，同时保存 BullMQ Job 映射。\n/// BullMQ 的队列状态保存在 Redis；本表保存业务状态和长期执行快照。\nmodel b_document_processing_tasks {\n  id                BigInt              @id @default(autoincrement())\n  processing_run_id BigInt\n  parent_task_id    BigInt?\n  stage             ProcessingTaskStage\n  // 稳定业务幂等键，例如 run:1001:embed:batch:001；不能直接用作含冒号的 BullMQ jobId。\n  task_key          String              @unique(map: \"uk_processing_task_key\") @db.VarChar(255)\n  queue_name        String              @db.VarChar(100)\n  bullmq_job_id     String?             @db.VarChar(255)\n\n  // queued / running / retrying / succeeded / failed / cancelled。\n  status                 ProcessingTaskStatus @default(queued)\n  attempts_allowed       Int                  @default(3)\n  attempts_made          Int                  @default(0)\n  progress               Int                  @default(0)\n  batch_no               Int?\n  scope_json             Json?\n  // 只保存小型业务参数，不保存文件内容或全文文本。\n  payload_json           Json?\n  result_json            Json?\n  // 小型清单：schemaVersion、bucket/key、sha256、format、count、配置指纹。\n  // 向量本体存 MinIO；按 run/task/execution_version 隔离不可变对象，禁止保存签名 URL。\n  artifact_manifest_json Json?\n  // 每次领取/接管原子递增；心跳、完成及关联状态回写需在事务内校验版本和执行权。\n  // 此字段不能阻止旧 Worker 写外部系统，外部仍需幂等 ID、不可变产物及清理屏障。\n  execution_version      Int                  @default(0)\n\n  worker_id          String?   @db.VarChar(100)\n  locked_at          DateTime? @db.DateTime(0)\n  heartbeat_at       DateTime? @db.DateTime(0)\n  available_at       DateTime? @db.DateTime(0)\n  last_error_code    String?   @db.VarChar(100)\n  last_error_message String?   @db.Text\n  started_at         DateTime? @db.DateTime(0)\n  finished_at        DateTime? @db.DateTime(0)\n  duration_ms        Int?\n  created_at         DateTime  @default(now()) @db.DateTime(0)\n  updated_at         DateTime  @updatedAt @db.DateTime(0)\n\n  processing_run b_document_processing_runs    @relation(fields: [processing_run_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_processing_task_run\")\n  parent_task    b_document_processing_tasks?  @relation(\"ProcessingTaskHierarchy\", fields: [parent_task_id], references: [id], onDelete: SetNull, onUpdate: NoAction)\n  child_tasks    b_document_processing_tasks[] @relation(\"ProcessingTaskHierarchy\")\n\n  @@unique([queue_name, bullmq_job_id], map: \"uk_processing_task_bullmq_job\")\n  @@index([processing_run_id, stage, status], map: \"idx_processing_task_run_stage\")\n  @@index([status, available_at], map: \"idx_processing_task_status_available\")\n  @@index([parent_task_id], map: \"idx_processing_task_parent\")\n  @@index([status, heartbeat_at], map: \"idx_processing_task_status_heartbeat\")\n}\n\n// ==========================================================\n// 5. 聊天与溯源模块 (Chat & RAG)\n// ==========================================================\n\n/// 用户聊天会话，保存最近使用的知识库和聊天模式。\nmodel b_chat_sessions {\n  id                        String    @id @db.Char(36)\n  user_id                   BigInt\n  kb_id                     BigInt?\n  title                     String    @default(\"新会话\") @db.VarChar(100)\n  summary_text              String?   @db.Text\n  last_selected_kb_ids_json Json?\n  last_chat_mode            String?   @db.VarChar(20)\n  last_message_at           DateTime? @db.DateTime(0)\n  created_at                DateTime  @default(now()) @db.DateTime(0)\n  updated_at                DateTime  @updatedAt @db.DateTime(0)\n\n  chat_messages b_chat_messages[]\n  b_users       b_users           @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_chat_user\")\n\n  @@index([user_id], map: \"idx_user_chat\")\n  @@index([user_id, updated_at], map: \"idx_chat_user_updated\")\n  @@index([user_id, last_message_at, id], map: \"idx_chat_user_last_message\")\n}\n\n/// 聊天消息，保存用户输入、助手回答及流式响应状态。\nmodel b_chat_messages {\n  id         BigInt @id @default(autoincrement())\n  session_id String @db.Char(36)\n  role       String @db.VarChar(50)\n  content    String @db.Text\n\n  references           Json? // 兼容展示缓存，由 message_citations 派生；禁止作为独立权威来源\n  tool_calls           Json? // 工具调用信息\n  tokens_used          Int?             @default(0)\n  message_status       String           @default(\"completed\") @db.VarChar(30)\n  metadata_json        Json?\n  model_name           String?          @db.VarChar(100)\n  // 本次消息使用的模型来源及配置 ID；配置 ID 为字符串以兼容 system-default 等哨兵值。\n  model_source         ChatModelSource?\n  model_config_id      String?          @db.VarChar(50)\n  finish_reason        String?          @db.VarChar(30)\n  trace_id             String?          @db.Char(36)\n  chat_mode            String?          @db.VarChar(20)\n  selected_kb_ids_json Json? // 用户选择的知识库 ID 快照\n  resolved_kb_ids_json Json? // 权限解析后的知识库 ID 快照\n  stream_started_at    DateTime?        @db.DateTime(0)\n  stream_finished_at   DateTime?        @db.DateTime(0)\n\n  feedback_type   String? @db.VarChar(20)\n  feedback_reason String? @db.Text\n\n  created_at        DateTime                   @default(now()) @db.DateTime(0)\n  b_chat_sessions   b_chat_sessions            @relation(fields: [session_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_msg_session\")\n  message_citations b_chat_message_citations[]\n\n  @@index([session_id], map: \"idx_session_msg\")\n  @@index([session_id, created_at], map: \"idx_session_msg_created\")\n  @@index([session_id, role], map: \"idx_session_role\")\n  @@index([trace_id], map: \"idx_msg_trace\")\n  @@index([message_status], map: \"idx_msg_status\")\n}\n\n/// 消息引用记录，将回答与知识库、文档和文本块关联起来。\nmodel b_chat_message_citations {\n  id                   BigInt   @id @default(autoincrement())\n  message_id           BigInt\n  // 活关联仅供导航；源数据清理后置空，原始 ID 与出处保留在快照中。\n  kb_id                BigInt?\n  doc_id               BigInt?\n  chunk_id             BigInt?\n  score                Float?\n  // 新引用必须写入实际摘录；兼容历史缺失数据而保留可空。\n  quote                String?  @db.Text\n  // 必填不可变快照：schemaVersion、原 KB/doc/run/chunk ID（字符串）、标题与页码/位置。\n  // 默认保留历史摘录；彻底擦除请求需同时处理本表及 messages.references 等副本。\n  source_snapshot_json Json\n  // 消息内从 1 开始连续编号；不设默认值，防止多条引用默认为 0。\n  order_no             Int\n  created_at           DateTime @default(now()) @db.DateTime(0)\n\n  b_chat_messages   b_chat_messages    @relation(fields: [message_id], references: [id], onDelete: Cascade, onUpdate: NoAction, map: \"fk_chat_citation_message\")\n  b_knowledge_bases b_knowledge_bases? @relation(fields: [kb_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: \"fk_chat_citation_kb\")\n  b_documents       b_documents?       @relation(fields: [doc_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: \"fk_chat_citation_doc\")\n  b_document_chunks b_document_chunks? @relation(fields: [chunk_id], references: [id], onDelete: SetNull, onUpdate: NoAction, map: \"fk_chat_citation_chunk\")\n\n  @@unique([message_id, order_no], map: \"uk_chat_citation_order\")\n  @@index([doc_id], map: \"idx_chat_citation_doc\")\n  @@index([chunk_id], map: \"idx_chat_citation_chunk\")\n  @@index([kb_id], map: \"idx_chat_citation_kb\")\n}\n\n// ==========================================================\n// 6. 跨存储可靠事件 (Transactional Outbox)\n// ==========================================================\n\n/// 与业务变更在同一 MySQL 事务中创建；投递和消费采用至少一次语义。\n/// 不关联业务外键，确保业务行被删除后清理清单仍可执行；过期归档需独立策略。\nmodel b_outbox_events {\n  id             BigInt            @id @default(autoincrement())\n  // 一次业务事件的稳定唯一键；消费者也必须按该键或业务对象幂等执行。\n  event_key      String            @unique(map: \"uk_outbox_event_key\") @db.VarChar(255)\n  event_type     OutboxEventType\n  aggregate_type String            @db.VarChar(50)\n  // 多态业务标识：BigInt 一律十进制字符串，不建立级联外键。\n  aggregate_id   String            @db.VarChar(64)\n  // 含 schemaVersion、任务 ID 或清理清单/清单地址；不得保存密钥或临时签名 URL。\n  payload_json   Json\n  status         OutboxEventStatus @default(pending)\n  // 投递尝试次数，不是业务处理次数；消费重试由 task 或清理执行协议负责。\n  attempts_made  Int               @default(0)\n  available_at   DateTime          @default(now()) @db.DateTime(3)\n  // 领取时生成新 UUID，回写必须匹配 token，避免过期投递者覆盖新领取者。\n  lock_token     String?           @db.Char(36)\n  locked_until   DateTime?         @db.DateTime(3)\n  dispatched_at  DateTime?         @db.DateTime(3)\n  // 仅消费者确认目标效果后设置；dispatch_processing_task 表示对应任务已成功。\n  completed_at   DateTime?         @db.DateTime(3)\n  last_error     String?           @db.Text\n  created_at     DateTime          @default(now()) @db.DateTime(3)\n  updated_at     DateTime          @updatedAt @db.DateTime(3)\n\n  @@index([status, available_at], map: \"idx_outbox_dispatch\")\n  @@index([status, locked_until], map: \"idx_outbox_lease\")\n  @@index([status, dispatched_at], map: \"idx_outbox_reconcile\")\n  @@index([aggregate_type, aggregate_id], map: \"idx_outbox_aggregate\")\n}\n"
 }
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"b_users\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"full_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"avatar_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"chat_sessions\",\"kind\":\"object\",\"type\":\"b_chat_sessions\",\"relationName\":\"b_chat_sessionsTob_users\"},{\"name\":\"kb_members\",\"kind\":\"object\",\"type\":\"b_kb_members\",\"relationName\":\"b_kb_membersTob_users\"},{\"name\":\"knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_knowledge_basesTob_users\"},{\"name\":\"uploaded_documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"document_uploader\"},{\"name\":\"upload_sessions\",\"kind\":\"object\",\"type\":\"b_upload_sessions\",\"relationName\":\"upload_session_user\"},{\"name\":\"model_configs\",\"kind\":\"object\",\"type\":\"b_user_model_configs\",\"relationName\":\"b_user_model_configsTob_users\"},{\"name\":\"daily_quotas\",\"kind\":\"object\",\"type\":\"b_user_daily_quotas\",\"relationName\":\"b_user_daily_quotasTob_users\"},{\"name\":\"kb_invitations\",\"kind\":\"object\",\"type\":\"b_kb_invitations\",\"relationName\":\"b_kb_invitationsTob_users\"},{\"name\":\"user_sessions\",\"kind\":\"object\",\"type\":\"b_user_sessions\",\"relationName\":\"b_user_sessionsTob_users\"},{\"name\":\"agent_runs\",\"kind\":\"object\",\"type\":\"b_agent_runs\",\"relationName\":\"b_agent_runsTob_users\"}],\"dbName\":null},\"sys_admins\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"audit_logs\",\"kind\":\"object\",\"type\":\"sys_audit_logs\",\"relationName\":\"sys_adminsTosys_audit_logs\"},{\"name\":\"admin_sessions\",\"kind\":\"object\",\"type\":\"sys_admin_sessions\",\"relationName\":\"sys_admin_sessionsTosys_admins\"}],\"dbName\":null},\"sys_email_codes\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"purpose\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"used\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"b_user_sessions\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"session_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"refresh_token_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_agent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"revoked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_user_sessionsTob_users\"}],\"dbName\":null},\"sys_admin_sessions\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"session_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"admin_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"refresh_token_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_agent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"revoked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sys_admins\",\"kind\":\"object\",\"type\":\"sys_admins\",\"relationName\":\"sys_admin_sessionsTosys_admins\"}],\"dbName\":null},\"sys_model_configs\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"base_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"config_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"is_default\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"b_user_model_configs\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"model_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"base_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"api_key_encrypted\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_user_model_configsTob_users\"}],\"dbName\":null},\"b_user_daily_quotas\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"quota_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"daily_chat_limit\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"daily_token_quota\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"used_chat_count\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"used_token_count\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_user_daily_quotasTob_users\"}],\"dbName\":null},\"b_knowledge_bases\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"visibility\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_public\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"allow_public_download\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"owner_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"b_documentsTob_knowledge_bases\"},{\"name\":\"upload_sessions\",\"kind\":\"object\",\"type\":\"b_upload_sessions\",\"relationName\":\"b_knowledge_basesTob_upload_sessions\"},{\"name\":\"kb_members\",\"kind\":\"object\",\"type\":\"b_kb_members\",\"relationName\":\"b_kb_membersTob_knowledge_bases\"},{\"name\":\"kb_invitations\",\"kind\":\"object\",\"type\":\"b_kb_invitations\",\"relationName\":\"b_kb_invitationsTob_knowledge_bases\"},{\"name\":\"message_citations\",\"kind\":\"object\",\"type\":\"b_chat_message_citations\",\"relationName\":\"b_chat_message_citationsTob_knowledge_bases\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_knowledge_basesTob_users\"}],\"dbName\":null},\"b_kb_members\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"joined_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_kb_membersTob_knowledge_bases\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_kb_membersTob_users\"}],\"dbName\":null},\"b_kb_invitations\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"inviter_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"invite_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"is_used\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"cancelled_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"accepted_by\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"accepted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_kb_invitationsTob_knowledge_bases\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_kb_invitationsTob_users\"}],\"dbName\":null},\"b_documents\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"uploader_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"original_filename\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_path\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_size\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"file_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mime_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"processing_version\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"current_stage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_error_stage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"retry_count\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"last_error_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"error_msg\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token_count\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"parse_started_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"parse_finished_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"last_reparse_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"document_chunks\",\"kind\":\"object\",\"type\":\"b_document_chunks\",\"relationName\":\"b_document_chunksTob_documents\"},{\"name\":\"processing_tasks\",\"kind\":\"object\",\"type\":\"b_document_processing_tasks\",\"relationName\":\"b_document_processing_tasksTob_documents\"},{\"name\":\"upload_sessions\",\"kind\":\"object\",\"type\":\"b_upload_sessions\",\"relationName\":\"b_documentsTob_upload_sessions\"},{\"name\":\"message_citations\",\"kind\":\"object\",\"type\":\"b_chat_message_citations\",\"relationName\":\"b_chat_message_citationsTob_documents\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_documentsTob_knowledge_bases\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"document_uploader\"}],\"dbName\":null},\"b_upload_sessions\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"document_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"file_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_size\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"mime_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_extension\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"chunk_size\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"total_chunks\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"uploaded_count\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storage_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"temp_dir\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"completed_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"upload_chunks\",\"kind\":\"object\",\"type\":\"b_upload_chunks\",\"relationName\":\"b_upload_chunksTob_upload_sessions\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_knowledge_basesTob_upload_sessions\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"upload_session_user\"},{\"name\":\"b_documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"b_documentsTob_upload_sessions\"}],\"dbName\":null},\"b_upload_chunks\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"upload_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"chunk_index\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"chunk_size\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"chunk_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storage_path\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_upload_sessions\",\"kind\":\"object\",\"type\":\"b_upload_sessions\",\"relationName\":\"b_upload_chunksTob_upload_sessions\"}],\"dbName\":null},\"b_document_chunks\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"doc_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"chunk_index\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token_count\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"page_no\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"char_start\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"char_end\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"vector_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"parent_chunk_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"root_chunk_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"chunk_level\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"is_root\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"embedding_status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"message_citations\",\"kind\":\"object\",\"type\":\"b_chat_message_citations\",\"relationName\":\"b_chat_message_citationsTob_document_chunks\"},{\"name\":\"b_documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"b_document_chunksTob_documents\"},{\"name\":\"child_chunks\",\"kind\":\"object\",\"type\":\"b_document_chunks\",\"relationName\":\"ChunkHierarchy\"},{\"name\":\"parent\",\"kind\":\"object\",\"type\":\"b_document_chunks\",\"relationName\":\"ChunkHierarchy\"}],\"dbName\":null},\"b_document_processing_tasks\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"document_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"processing_version\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"job_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"stage\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"attempt\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"error_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"error_message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"started_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"finished_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"duration_ms\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"heartbeat_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"b_document_processing_tasksTob_documents\"}],\"dbName\":null},\"b_chat_sessions\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"summary_text\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_selected_kb_ids_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"last_chat_mode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_message_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"chat_messages\",\"kind\":\"object\",\"type\":\"b_chat_messages\",\"relationName\":\"b_chat_messagesTob_chat_sessions\"},{\"name\":\"agent_runs\",\"kind\":\"object\",\"type\":\"b_agent_runs\",\"relationName\":\"b_agent_runsTob_chat_sessions\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_chat_sessionsTob_users\"}],\"dbName\":null},\"b_chat_messages\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"session_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"references\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"tool_calls\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"tokens_used\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"message_status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"model_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"finish_reason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"trace_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"chat_mode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"selected_kb_ids_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"resolved_kb_ids_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"stream_started_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"stream_finished_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"feedback_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"feedback_reason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_chat_sessions\",\"kind\":\"object\",\"type\":\"b_chat_sessions\",\"relationName\":\"b_chat_messagesTob_chat_sessions\"},{\"name\":\"message_citations\",\"kind\":\"object\",\"type\":\"b_chat_message_citations\",\"relationName\":\"b_chat_message_citationsTob_chat_messages\"}],\"dbName\":null},\"b_chat_message_citations\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"message_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"doc_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"chunk_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"score\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"quote\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"order_no\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_chat_messages\",\"kind\":\"object\",\"type\":\"b_chat_messages\",\"relationName\":\"b_chat_message_citationsTob_chat_messages\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_chat_message_citationsTob_knowledge_bases\"},{\"name\":\"b_documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"b_chat_message_citationsTob_documents\"},{\"name\":\"b_document_chunks\",\"kind\":\"object\",\"type\":\"b_document_chunks\",\"relationName\":\"b_chat_message_citationsTob_document_chunks\"}],\"dbName\":null},\"b_agent_runs\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"session_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"user_message_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"assistant_message_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"total_tokens\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"duration_ms\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"chat_mode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"selected_kb_ids_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"resolved_kb_ids_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"routed_query_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"metadata_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"finished_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_chat_sessions\",\"kind\":\"object\",\"type\":\"b_chat_sessions\",\"relationName\":\"b_agent_runsTob_chat_sessions\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_agent_runsTob_users\"},{\"name\":\"agent_steps\",\"kind\":\"object\",\"type\":\"b_agent_steps\",\"relationName\":\"b_agent_runsTob_agent_steps\"}],\"dbName\":null},\"b_agent_steps\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"run_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"agent_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"step_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"input_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"output_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"duration_ms\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"started_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"finished_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_agent_runs\",\"kind\":\"object\",\"type\":\"b_agent_runs\",\"relationName\":\"b_agent_runsTob_agent_steps\"}],\"dbName\":null},\"sys_audit_logs\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"admin_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"module\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"ip_address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"details\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sys_admins\",\"kind\":\"object\",\"type\":\"sys_admins\",\"relationName\":\"sys_adminsTosys_audit_logs\"}],\"dbName\":null},\"sys_dict_type\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"remark\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"items\",\"kind\":\"object\",\"type\":\"sys_dict_item\",\"relationName\":\"sys_dict_itemTosys_dict_type\"}],\"dbName\":null},\"sys_dict_item\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"type_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"value\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"label\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"sort\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"status\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"type\",\"kind\":\"object\",\"type\":\"sys_dict_type\",\"relationName\":\"sys_dict_itemTosys_dict_type\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"b_users\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"full_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"avatar_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"email_verified_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"chat_sessions\",\"kind\":\"object\",\"type\":\"b_chat_sessions\",\"relationName\":\"b_chat_sessionsTob_users\"},{\"name\":\"kb_members\",\"kind\":\"object\",\"type\":\"b_kb_members\",\"relationName\":\"b_kb_membersTob_users\"},{\"name\":\"knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_knowledge_basesTob_users\"},{\"name\":\"uploaded_documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"document_uploader\"},{\"name\":\"upload_sessions\",\"kind\":\"object\",\"type\":\"b_upload_sessions\",\"relationName\":\"upload_session_user\"},{\"name\":\"model_configs\",\"kind\":\"object\",\"type\":\"b_user_model_configs\",\"relationName\":\"b_user_model_configsTob_users\"},{\"name\":\"kb_invitations\",\"kind\":\"object\",\"type\":\"b_kb_invitations\",\"relationName\":\"kb_invitation_inviter\"},{\"name\":\"accepted_kb_invitations\",\"kind\":\"object\",\"type\":\"b_kb_invitations\",\"relationName\":\"kb_invitation_acceptor\"},{\"name\":\"user_sessions\",\"kind\":\"object\",\"type\":\"b_user_sessions\",\"relationName\":\"b_user_sessionsTob_users\"}],\"dbName\":null},\"b_user_sessions\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"session_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"refresh_token_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_agent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"revoked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"revoked_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"last_used_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_user_sessionsTob_users\"}],\"dbName\":null},\"sys_email_codes\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"code_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"purpose\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"used\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"sys_admins\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"username\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"admin_sessions\",\"kind\":\"object\",\"type\":\"sys_admin_sessions\",\"relationName\":\"sys_admin_sessionsTosys_admins\"}],\"dbName\":null},\"sys_admin_sessions\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"session_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"admin_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"refresh_token_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_agent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"revoked\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"sys_admins\",\"kind\":\"object\",\"type\":\"sys_admins\",\"relationName\":\"sys_admin_sessionsTosys_admins\"}],\"dbName\":null},\"sys_model_configs\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"model_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"display_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"type\",\"kind\":\"enum\",\"type\":\"ModelConfigType\"},{\"name\":\"base_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"config_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"is_default\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"b_user_model_configs\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"model_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"display_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"base_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"api_key_encrypted\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_user_model_configsTob_users\"}],\"dbName\":null},\"b_knowledge_bases\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"description\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"cover_url\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"visibility\",\"kind\":\"enum\",\"type\":\"KnowledgeBaseVisibility\"},{\"name\":\"allow_public_download\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"owner_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"b_documentsTob_knowledge_bases\"},{\"name\":\"upload_sessions\",\"kind\":\"object\",\"type\":\"b_upload_sessions\",\"relationName\":\"b_knowledge_basesTob_upload_sessions\"},{\"name\":\"kb_members\",\"kind\":\"object\",\"type\":\"b_kb_members\",\"relationName\":\"b_kb_membersTob_knowledge_bases\"},{\"name\":\"kb_invitations\",\"kind\":\"object\",\"type\":\"b_kb_invitations\",\"relationName\":\"b_kb_invitationsTob_knowledge_bases\"},{\"name\":\"message_citations\",\"kind\":\"object\",\"type\":\"b_chat_message_citations\",\"relationName\":\"b_chat_message_citationsTob_knowledge_bases\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_knowledge_basesTob_users\"}],\"dbName\":null},\"b_kb_members\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"KnowledgeBaseMemberRole\"},{\"name\":\"joined_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_kb_membersTob_knowledge_bases\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_kb_membersTob_users\"}],\"dbName\":null},\"b_kb_invitations\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"inviter_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"invite_code_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"KnowledgeBaseMemberRole\"},{\"name\":\"expired_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"cancelled_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"accepted_by\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"accepted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_kb_invitationsTob_knowledge_bases\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"kb_invitation_inviter\"},{\"name\":\"accepted_user\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"kb_invitation_acceptor\"}],\"dbName\":null},\"b_documents\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"uploader_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"original_filename\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_extension\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"mime_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storage_provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storage_bucket\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storage_key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storage_etag\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_size\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"file_sha256\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"DocumentStatus\"},{\"name\":\"active_run_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"desired_run_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"upload_sessions\",\"kind\":\"object\",\"type\":\"b_upload_sessions\",\"relationName\":\"b_documentsTob_upload_sessions\"},{\"name\":\"processing_runs\",\"kind\":\"object\",\"type\":\"b_document_processing_runs\",\"relationName\":\"document_processing_runs\"},{\"name\":\"active_run\",\"kind\":\"object\",\"type\":\"b_document_processing_runs\",\"relationName\":\"document_active_run\"},{\"name\":\"desired_run\",\"kind\":\"object\",\"type\":\"b_document_processing_runs\",\"relationName\":\"document_desired_run\"},{\"name\":\"message_citations\",\"kind\":\"object\",\"type\":\"b_chat_message_citations\",\"relationName\":\"b_chat_message_citationsTob_documents\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_documentsTob_knowledge_bases\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"document_uploader\"}],\"dbName\":null},\"b_upload_sessions\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"session_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"document_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"storage_provider\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storage_bucket\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"storage_key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"multipart_upload_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_size\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"mime_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"client_sha256\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"file_extension\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"part_size\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"total_parts\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"uploaded_parts\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"uploaded_bytes\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"UploadSessionStatus\"},{\"name\":\"expires_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"last_activity_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"completed_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"aborted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"upload_parts\",\"kind\":\"object\",\"type\":\"b_upload_parts\",\"relationName\":\"b_upload_partsTob_upload_sessions\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_knowledge_basesTob_upload_sessions\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"upload_session_user\"},{\"name\":\"b_documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"b_documentsTob_upload_sessions\"}],\"dbName\":null},\"b_upload_parts\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"upload_session_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"part_number\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"expected_size\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"actual_size\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"etag\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"checksum_sha256\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"UploadPartStatus\"},{\"name\":\"attempt_count\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"last_error\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"uploaded_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"upload_session\",\"kind\":\"object\",\"type\":\"b_upload_sessions\",\"relationName\":\"b_upload_partsTob_upload_sessions\"}],\"dbName\":null},\"b_document_chunks\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"processing_run_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"chunk_no\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"token_count\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"page_start\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"page_end\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"char_start\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"char_end\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"chunk_level\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"parent_chunk_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"root_chunk_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"vector_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"embedding_status\",\"kind\":\"enum\",\"type\":\"ChunkStepStatus\"},{\"name\":\"embedding_error\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"embedded_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"vector_index_status\",\"kind\":\"enum\",\"type\":\"ChunkStepStatus\"},{\"name\":\"vector_index_error\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"vector_indexed_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"search_index_status\",\"kind\":\"enum\",\"type\":\"ChunkStepStatus\"},{\"name\":\"search_index_error\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"search_indexed_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"metadata_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"processing_run\",\"kind\":\"object\",\"type\":\"b_document_processing_runs\",\"relationName\":\"b_document_chunksTob_document_processing_runs\"},{\"name\":\"message_citations\",\"kind\":\"object\",\"type\":\"b_chat_message_citations\",\"relationName\":\"b_chat_message_citationsTob_document_chunks\"},{\"name\":\"child_chunks\",\"kind\":\"object\",\"type\":\"b_document_chunks\",\"relationName\":\"ChunkHierarchy\"},{\"name\":\"parent\",\"kind\":\"object\",\"type\":\"b_document_chunks\",\"relationName\":\"ChunkHierarchy\"}],\"dbName\":null},\"b_document_processing_runs\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"document_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"run_no\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"trigger_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"ProcessingRunStatus\"},{\"name\":\"current_stage\",\"kind\":\"enum\",\"type\":\"ProcessingRunStage\"},{\"name\":\"source_sha256\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"parser_config_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"chunking_config_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"embedding_model_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"embedding_dimension\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"embedding_config_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"embedding_config_hash\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"index_targets_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"retrieval_policy_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"total_chunks\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"completed_chunks\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"total_tokens\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"error_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"error_message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"requested_by\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"queued_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"started_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"finished_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"document\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"document_processing_runs\"},{\"name\":\"active_document\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"document_active_run\"},{\"name\":\"desired_document\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"document_desired_run\"},{\"name\":\"processing_tasks\",\"kind\":\"object\",\"type\":\"b_document_processing_tasks\",\"relationName\":\"b_document_processing_runsTob_document_processing_tasks\"},{\"name\":\"document_chunks\",\"kind\":\"object\",\"type\":\"b_document_chunks\",\"relationName\":\"b_document_chunksTob_document_processing_runs\"}],\"dbName\":null},\"b_document_processing_tasks\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"processing_run_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"parent_task_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"stage\",\"kind\":\"enum\",\"type\":\"ProcessingTaskStage\"},{\"name\":\"task_key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"queue_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"bullmq_job_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"ProcessingTaskStatus\"},{\"name\":\"attempts_allowed\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"attempts_made\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"progress\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"batch_no\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"scope_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"payload_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"result_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"artifact_manifest_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"execution_version\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"worker_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"locked_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"heartbeat_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"available_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"last_error_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_error_message\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"started_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"finished_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"duration_ms\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"processing_run\",\"kind\":\"object\",\"type\":\"b_document_processing_runs\",\"relationName\":\"b_document_processing_runsTob_document_processing_tasks\"},{\"name\":\"parent_task\",\"kind\":\"object\",\"type\":\"b_document_processing_tasks\",\"relationName\":\"ProcessingTaskHierarchy\"},{\"name\":\"child_tasks\",\"kind\":\"object\",\"type\":\"b_document_processing_tasks\",\"relationName\":\"ProcessingTaskHierarchy\"}],\"dbName\":null},\"b_chat_sessions\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"title\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"summary_text\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_selected_kb_ids_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"last_chat_mode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"last_message_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"chat_messages\",\"kind\":\"object\",\"type\":\"b_chat_messages\",\"relationName\":\"b_chat_messagesTob_chat_sessions\"},{\"name\":\"b_users\",\"kind\":\"object\",\"type\":\"b_users\",\"relationName\":\"b_chat_sessionsTob_users\"}],\"dbName\":null},\"b_chat_messages\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"session_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"content\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"references\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"tool_calls\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"tokens_used\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"message_status\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"model_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"model_source\",\"kind\":\"enum\",\"type\":\"ChatModelSource\"},{\"name\":\"model_config_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"finish_reason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"trace_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"chat_mode\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"selected_kb_ids_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"resolved_kb_ids_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"stream_started_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"stream_finished_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"feedback_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"feedback_reason\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_chat_sessions\",\"kind\":\"object\",\"type\":\"b_chat_sessions\",\"relationName\":\"b_chat_messagesTob_chat_sessions\"},{\"name\":\"message_citations\",\"kind\":\"object\",\"type\":\"b_chat_message_citations\",\"relationName\":\"b_chat_message_citationsTob_chat_messages\"}],\"dbName\":null},\"b_chat_message_citations\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"message_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"kb_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"doc_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"chunk_id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"score\",\"kind\":\"scalar\",\"type\":\"Float\"},{\"name\":\"quote\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"source_snapshot_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"order_no\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"b_chat_messages\",\"kind\":\"object\",\"type\":\"b_chat_messages\",\"relationName\":\"b_chat_message_citationsTob_chat_messages\"},{\"name\":\"b_knowledge_bases\",\"kind\":\"object\",\"type\":\"b_knowledge_bases\",\"relationName\":\"b_chat_message_citationsTob_knowledge_bases\"},{\"name\":\"b_documents\",\"kind\":\"object\",\"type\":\"b_documents\",\"relationName\":\"b_chat_message_citationsTob_documents\"},{\"name\":\"b_document_chunks\",\"kind\":\"object\",\"type\":\"b_document_chunks\",\"relationName\":\"b_chat_message_citationsTob_document_chunks\"}],\"dbName\":null},\"b_outbox_events\":{\"fields\":[{\"name\":\"id\",\"kind\":\"scalar\",\"type\":\"BigInt\"},{\"name\":\"event_key\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"event_type\",\"kind\":\"enum\",\"type\":\"OutboxEventType\"},{\"name\":\"aggregate_type\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"aggregate_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"payload_json\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"status\",\"kind\":\"enum\",\"type\":\"OutboxEventStatus\"},{\"name\":\"attempts_made\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"available_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"lock_token\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"locked_until\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"dispatched_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"completed_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"last_error\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.compilerWasm = {
   getRuntime: async () => require('./query_compiler_bg.js'),

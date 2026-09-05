@@ -25,15 +25,15 @@ export interface ResolvedModelParams {
 export class ModelConfigResolutionService {
   /** provider → 环境变量 API Key 映射 */
   private readonly PROVIDER_KEY_MAP: Record<string, string> = {
-    bailian: 'BAILIAN_API_KEY',
+    bailian: 'AI_API_KEY',
     openai: 'OPENAI_API_KEY',
     deepseek: 'DEEPSEEK_API_KEY',
     zhipu: 'ZHIPU_API_KEY',
   };
 
-  /** provider → 环境变量 Base URL 映射（未配置的 provider 回退 BAILIAN_BASE_URL） */
+  /** provider → 环境变量 Base URL 映射（未配置的 provider 回退 AI_BASE_URL） */
   private readonly PROVIDER_URL_MAP: Record<string, string> = {
-    bailian: 'BAILIAN_BASE_URL',
+    bailian: 'AI_BASE_URL',
   };
 
   constructor(
@@ -64,10 +64,11 @@ export class ModelConfigResolutionService {
     // DB 无数据时的兜底哨兵值
     if (configId === 'system-default') {
       return {
-        provider: 'bailian',
-        modelName: this.configService.get<string>('BAILIAN_LLM_MODEL') || 'qwen-turbo',
-        apiKey: this.configService.get<string>('BAILIAN_API_KEY') || '',
-        baseURL: this.configService.get<string>('BAILIAN_BASE_URL') || '',
+        provider: 'openai-compatible',
+        modelName:
+          this.configService.get<string>('AI_LLM_MODEL') || 'qwen-turbo',
+        apiKey: this.configService.get<string>('AI_API_KEY') || '',
+        baseURL: this.configService.get<string>('AI_BASE_URL') || '',
       };
     }
 
@@ -82,18 +83,17 @@ export class ModelConfigResolutionService {
       );
     }
 
-    const envKeyVar =
-      this.PROVIDER_KEY_MAP[row.provider] ?? 'BAILIAN_API_KEY';
-    const envUrlVar = this.PROVIDER_URL_MAP[row.provider] ?? 'BAILIAN_BASE_URL';
+    const envKeyVar = this.PROVIDER_KEY_MAP[row.provider];
+    const envUrlVar = this.PROVIDER_URL_MAP[row.provider] ?? 'AI_BASE_URL';
 
     return {
       provider: row.provider,
-      modelName: row.name,
-      apiKey: this.configService.get<string>(envKeyVar) || '',
-      baseURL:
-        row.base_url ||
-        this.configService.get<string>(envUrlVar) ||
+      modelName: row.model_name,
+      apiKey:
+        (envKeyVar ? this.configService.get<string>(envKeyVar) : undefined) ||
+        this.configService.get<string>('AI_API_KEY') ||
         '',
+      baseURL: row.base_url || this.configService.get<string>(envUrlVar) || '',
     };
   }
 

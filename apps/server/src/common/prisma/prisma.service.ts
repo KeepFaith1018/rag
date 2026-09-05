@@ -8,9 +8,10 @@ export class PrismaService
   implements OnModuleInit, OnModuleDestroy
 {
   constructor() {
-    const port = process.env.DATABASE_PORT
-      ? Number(process.env.DATABASE_PORT)
-      : 3306;
+    const databaseUrl = process.env.DATABASE_URL;
+    if (!databaseUrl) {
+      throw new Error('DATABASE_URL 环境变量未配置');
+    }
 
     super({
       log:
@@ -18,14 +19,7 @@ export class PrismaService
         !process.env.DATABASE_URL_ACCELERATE
           ? [{ emit: 'event', level: 'query' }]
           : [],
-      adapter: new PrismaMariaDb({
-        host: process.env.DATABASE_HOST,
-        port,
-        user: process.env.DATABASE_USER,
-        password: process.env.DATABASE_PASSWORD,
-        database: process.env.DATABASE_NAME,
-        connectionLimit: 5,
-      }),
+      adapter: new PrismaMariaDb(databaseUrl),
     });
   }
 

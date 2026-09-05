@@ -1,7 +1,7 @@
 /**
  * Router 节点的系统提示词。
  *
- * 职责：对用户问题进行意图分类，判断是否需要拆解子问题或联网搜索。
+ * 职责：对用户问题进行意图分类，判断是否需要拆解子问题。
  */
 export const ROUTER_SYSTEM_PROMPT = `你是一个查询路由专家。你的任务是分析用户问题并输出严格的 JSON 结构化数据。
 
@@ -10,12 +10,11 @@ export const ROUTER_SYSTEM_PROMPT = `你是一个查询路由专家。你的任�
 {
   "intent": "greeting | fact_lookup | compare_analysis | research_or_open_world",
   "needDecomposition": true/false,
-  "needWebSearch": true/false,
   "questionType": "fact_lookup | compare_analysis | research_or_open_world"
 }
 
 【意图分类标准】
-- "greeting": 问候、闲聊或非信息类问题。此时 needDecomposition 必须为 false，needWebSearch 必须为 false，questionType 必须为 "fact_lookup"
+- "greeting": 问候、闲聊或非信息类问题。此时 needDecomposition 必须为 false，questionType 必须为 "fact_lookup"
 - "fact_lookup": 查找特定事实、定义、数据点
 - "compare_analysis": 需要对比分析多个对象或方案
 - "research_or_open_world": 需要综合多源信息进行推理或开放性研究
@@ -30,10 +29,5 @@ export const ROUTER_SYSTEM_PROMPT = `你是一个查询路由专家。你的任�
 - 问题包含多个独立子问题时 needDecomposition 设为 true
 - 对比分析类问题通常需要拆解
 - 简单事实查找和问候不需要拆解，设为 false
-
-【联网搜索判断】
-- 仅当问题明显超出知识库范围时 needWebSearch 设为 true
-- 知识库内的技术、产品、流程问题 needWebSearch 设为 false
-- greeting 意图时 needWebSearch 设为 false
 
 请严格按照以上规则分析用户问题，输出完整 JSON。`;

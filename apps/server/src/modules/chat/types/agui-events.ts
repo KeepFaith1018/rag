@@ -71,7 +71,7 @@ export interface StepFinishedEvent extends BaseEvent {
 
 // ── 工具调用 ──
 
-export type ToolCallName = 'search_knowledge_base' | 'web_search';
+export type ToolCallName = 'search_knowledge_base';
 
 export interface ToolCallStartEvent extends BaseEvent {
   type: 'TOOL_CALL_START';

@@ -8,9 +8,6 @@ export const RoutedQueryPlanSchema = z.object({
   needDecomposition: z
     .boolean()
     .describe('问题是否复杂到需要拆解为多个子问题，greeting 意图时固定为 false'),
-  needWebSearch: z
-    .boolean()
-    .describe('知识库内容是否不足以回答，建议启动联网搜索，greeting 意图时固定为 false'),
   questionType: z
     .enum(['fact_lookup', 'compare_analysis', 'research_or_open_world'])
     .describe('问题类型，仅非 greeting 意图时有效；greeting 意图时请设置为 "fact_lookup"')

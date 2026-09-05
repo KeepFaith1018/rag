@@ -2,19 +2,17 @@
  * LangGraph Studio Entry — Multi-Agent Orchestrator
  *
  * 从 MultiAgentOrchestratorService 提取 StateGraph 定义，
- * 提供 Mock 依赖（ChatModel/Retrieval/WebSearch），
+ * 提供 Mock 依赖（ChatModel/Retrieval），
  * 导出编译后的 graph 供 LangGraph Studio 可视化调试。
  *
  * 用法: cd apps/server && npx @langchain/langgraph-cli dev
  *
  * ============================================================
  * @required 环境变量 (在 apps/server/.env 中配置):
- *   BAILIAN_API_KEY          百炼/OpenAI API 密钥 (必需)
- *   BAILIAN_BASE_URL         百炼 API Base URL
- *   BAILIAN_LLM_MODEL        默认模型名 (默认: qwen-turbo)
- *   BAILIAN_LLM_LIGHT_MODEL  轻量模型名 (默认: qwen-turbo)
- *   TAVILY_API_KEY           Tavily 搜索 API 密钥 (可选，用于联网搜索)
- *   OPENAI_API_KEY           OpenAI API 密钥 (可选，若使用 OpenAI 模型)
+ *   AI_API_KEY          模型服务 API 密钥 (必需)
+ *   AI_BASE_URL         OpenAI 兼容接口 Base URL
+ *   AI_LLM_MODEL        默认模型名 (默认: qwen-turbo)
+ *   AI_LLM_LIGHT_MODEL  轻量模型名 (默认: qwen-turbo)
  * ============================================================
  */
 
@@ -51,7 +49,6 @@ import { COMPLETENESS_CHECK_SYSTEM_PROMPT } from './modules/chat/prompts/complet
 
 // ── Types ──
 import type { RerankedHit } from './modules/rag/retrieval/interfaces/reranked-hit.interface';
-import type { WebSearchResult } from './modules/rag/web-search/web-search.service';
 
 /** ═══════════════════════════════════════════
  * AgentState (与 Service 中保持严格一致)
@@ -69,7 +66,6 @@ const AgentStateAnnotation = Annotation.Root({
   rewrittenQueries: Annotation<string[]>(),
   rewrittenKeywords: Annotation<string[]>(),
   rerankedHits: Annotation<RerankedHit[]>(),
-  webSearchResults: Annotation<WebSearchResult[]>(),
   draftAnswer: Annotation<string>(),
   currentPhase: Annotation<string>(),
   auditVerdict: Annotation<string | null>(),
@@ -104,19 +100,15 @@ interface ChatModelOptions {
  * - ChatModelService → 直接从环境变量创建 ChatOpenAI
  * - RetrievalService  → 返回空结果（无法连接 Qdrant/ES/Reranker）
  * - AgentTraceService → 无操作，仅控制台日志
- * - WebSearchService  → 若配了 TAVILY_API_KEY 则调用真实 API
  * - EvalQueueService  → 无操作
  * ═══════════════════════════════════════════ */
 
 class MockChatModelService {
   createModel(options: ChatModelOptions = {}): ChatOpenAI {
     const modelName = options.model || this.getLightModelName();
-    const apiKey =
-      options.apiKey ||
-      process.env.BAILIAN_API_KEY ||
-      process.env.OPENAI_API_KEY;
+    const apiKey = options.apiKey || process.env.AI_API_KEY;
     const baseURL =
-      options.baseURL || process.env.BAILIAN_BASE_URL || undefined;
+      options.baseURL || process.env.AI_BASE_URL || undefined;
 
     return new ChatOpenAI({
       model: modelName,
@@ -130,11 +122,11 @@ class MockChatModelService {
   }
 
   getDefaultModelName(): string {
-    return process.env.BAILIAN_LLM_MODEL || 'qwen-turbo';
+    return process.env.AI_LLM_MODEL || 'qwen-turbo';
   }
 
   getLightModelName(): string {
-    return process.env.BAILIAN_LLM_LIGHT_MODEL || 'qwen-turbo';
+    return process.env.AI_LLM_LIGHT_MODEL || 'qwen-turbo';
   }
 }
 
@@ -191,54 +183,6 @@ class MockAgentTraceService {
     console.log(`[MockTrace] saveEvaluationData: ${runId}`);
   }
 }
-
-class MockWebSearchService {
-  private readonly apiKey: string;
-
-  constructor() {
-    this.apiKey = process.env.TAVILY_API_KEY || '';
-  }
-
-  isAvailable(): boolean {
-    return !!this.apiKey;
-  }
-
-  async search(query: string, maxResults = 5): Promise<WebSearchResult[]> {
-     
-    if (!this.isAvailable()) {
-      console.log(`[MockWebSearch] TAVILY_API_KEY 未配置，返回空结果`);
-      return [];
-    }
-
-    try {
-      const response = await fetch('https://api.tavily.com/search', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          api_key: this.apiKey,
-          query,
-          search_depth: 'basic',
-          max_results: maxResults,
-        }),
-      });
-
-      if (!response.ok) {
-        console.error(`[MockWebSearch] Tavily API 错误: ${response.status}`);
-        return [];
-      }
-
-      const data = (await response.json()) as { results?: WebSearchResult[] };
-      console.log(
-        `[MockWebSearch] 搜索 "${query}" → ${data.results?.length ?? 0} 条结果`,
-      );
-      return data.results ?? [];
-    } catch (error) {
-      console.error(`[MockWebSearch] 异常: ${getErrorMessage(error)}`);
-      return [];
-    }
-  }
-}
-
 
 /** ═══════════════════════════════════════════
  * Zod Schema (本地定义，与 Service 中严格一致)
@@ -642,26 +586,12 @@ async function auditNode(
   }
 }
 
-async function webSearchNode(
-  state: AgentState,
-  webSearchService: MockWebSearchService,
-): Promise<Partial<AgentState>> {
-  console.log(`[Node:web_search] 联网搜索: "${state.originalQuery}"`);
-  const results = await webSearchService.search(state.originalQuery, 5);
-  console.log(`[Node:web_search] 返回 ${results.length} 条结果`);
-  return {
-    webSearchResults: results,
-    retrievalRetryCount: (state.retrievalRetryCount ?? 0) + 1,
-    currentPhase: 'retrieving',
-  };
-}
-
 async function writerNode(
   state: AgentState,
   chatModelService: MockChatModelService,
 ): Promise<Partial<AgentState>> {
   console.log('[Node:writer] 生成回答...');
-  const context = buildContextText(state.rerankedHits, state.webSearchResults);
+  const context = buildContextText(state.rerankedHits);
   const prompt = WRITER_SYSTEM_PROMPT.replace('{context}', context);
 
   const isInsufficient =
@@ -835,10 +765,7 @@ async function writerSupplementNode(
       .map((a) => a.aspect)
       .join('、') ?? '';
 
-  const context = buildContextText(
-    state.rerankedHits,
-    state.webSearchResults,
-  );
+  const context = buildContextText(state.rerankedHits);
   const supplementPrompt = `你是 Linsor AI 的智能助手。请基于知识库内容，补充回答以下缺失的维度：${missingAspects}\n\n原始问题: ${state.originalQuery}\n已有回答: ${state.draftAnswer}\n\n请只输出补充内容，不需要重复已有回答。\n\n知识库内容：\n${context}`;
 
   const suppModel = chatModelService.createModel({
@@ -887,15 +814,11 @@ function relevanceEdge(state: AgentState): 'audit' | 'rewrite_fallback' {
   return 'audit';
 }
 
-function auditEdge(
-  state: AgentState,
-  enableWebSearch: boolean,
-): 'writer' | 'web_search' | 'rewrite_fallback' {
+function auditEdge(state: AgentState): 'writer' | 'rewrite_fallback' {
   const retryCount = state.retrievalRetryCount ?? 0;
 
   if (state.auditVerdict === 'sufficient') return 'writer';
 
-  if (enableWebSearch) return 'web_search';
   if (retryCount < 1) return 'rewrite_fallback';
   return 'writer';
 }
@@ -933,7 +856,6 @@ function buildRetrieveQueries(state: AgentState): string[] {
 
 function buildContextText(
   hits: RerankedHit[],
-  webResults: WebSearchResult[],
 ): string {
   const MAX_CONTEXT_CHARS = 12000;
   const parts: string[] = [];
@@ -958,23 +880,6 @@ function buildContextText(
     parts.push('');
   }
 
-  if (webResults.length > 0 && charBudget > 500) {
-    parts.push('【联网搜索结果】');
-    for (let i = 0; i < webResults.length; i++) {
-      if (charBudget <= 0) break;
-      const r = webResults[i];
-      const header = `[Web-${i + 1}] ${r.title}\nURL: ${r.url}\n`;
-      const maxContentLen = charBudget - header.length;
-      const content =
-        r.content.length > maxContentLen
-          ? r.content.slice(0, maxContentLen) + '...[截断]'
-          : r.content;
-      parts.push(header + content);
-      charBudget -= header.length + content.length;
-    }
-    parts.push('');
-  }
-
   if (parts.length === 1) return '（未检索到相关上下文）';
   return parts.join('\n---\n');
 }
@@ -991,13 +896,7 @@ function buildGraph() {
   const chatModelService = new MockChatModelService();
   const retrievalService = new MockRetrievalService();
   const traceService = new MockAgentTraceService();
-  const webSearchService = new MockWebSearchService();
   const runId = `studio-${Date.now()}`;
-
-  const enableWebSearch = webSearchService.isAvailable();
-  console.log(
-    `[StudioGraph] WebSearch ${enableWebSearch ? '已启用' : '未启用 (TAVILY_API_KEY 未配置)'}`,
-  );
 
   const searchTool = createSearchTool(retrievalService, traceService, runId);
 
@@ -1041,9 +940,6 @@ function buildGraph() {
       rewriteFallbackNode(s, chatModelService, runId, traceService),
     )
 
-    // ── 联网搜索 ──
-    .addNode('web_search', (s) => webSearchNode(s, webSearchService))
-
     // ── 生成阶段 ──
     .addNode('writer', (s) => writerNode(s, chatModelService))
 
@@ -1078,14 +974,12 @@ function buildGraph() {
     })
     .addConditionalEdges(
       'audit',
-      (s) => auditEdge(s, enableWebSearch),
+      auditEdge,
       {
         writer: 'writer',
-        web_search: 'web_search',
         rewrite_fallback: 'rewrite_fallback',
       },
     )
-    .addEdge('web_search', 'writer')
     .addEdge('rewrite_fallback', 'tools')
     .addEdge('writer', 'fact_check')
     .addEdge('fact_check', 'completeness_check')
@@ -1130,7 +1024,6 @@ export async function runWithDefaults(query: string): Promise<AgentState> {
     rewrittenQueries: [],
     rewrittenKeywords: [],
     rerankedHits: [],
-    webSearchResults: [],
     draftAnswer: '',
     currentPhase: 'planning',
     auditVerdict: null,

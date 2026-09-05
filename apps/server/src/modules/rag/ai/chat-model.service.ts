@@ -57,10 +57,10 @@ export class ChatModelService {
       this.getDefaultModelName();
 
     const apiKey =
-      options.apiKey || this.configService.get<string>('BAILIAN_API_KEY');
+      options.apiKey || this.configService.get<string>('AI_API_KEY');
 
     const baseURL =
-      options.baseURL || this.configService.get<string>('BAILIAN_BASE_URL');
+      options.baseURL || this.configService.get<string>('AI_BASE_URL');
 
     return new ChatOpenAI({
       model: modelName,
@@ -77,14 +77,14 @@ export class ChatModelService {
    * 获取系统默认模型名称。
    */
   getDefaultModelName(): string {
-    return this.configService.get<string>('BAILIAN_LLM_MODEL') || 'qwen-turbo';
+    return this.configService.get<string>('AI_LLM_MODEL') || 'qwen-turbo';
   }
 
   /**
    * 获取轻量快速模型名称，用于路由/改写/审计等非生成节点。
    */
   getLightModelName(): string {
-    return this.configService.get<string>('BAILIAN_LLM_LIGHT_MODEL') || 'qwen-turbo';
+    return this.configService.get<string>('AI_LLM_LIGHT_MODEL') || 'qwen-turbo';
   }
 
   /**

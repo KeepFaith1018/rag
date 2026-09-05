@@ -36,7 +36,4 @@ export class StreamChatDto {
   @IsOptional()
   @IsObject()
   metadata?: Record<string, unknown>;
-
-  @IsOptional()
-  enableWebSearch?: boolean;
 }
