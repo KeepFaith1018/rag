@@ -1,6 +1,6 @@
 {
   "apps/server/**/*.ts": [
-    "pnpm exec eslint --fix --config apps/server/eslint.config.mjs"
+    "pnpm exec eslint --fix --no-warn-ignored --config apps/server/eslint.config.mjs"
   ],
   "apps/admin/**/*.ts": [],
   "apps/admin/**/*.vue": [],
