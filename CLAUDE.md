@@ -135,7 +135,7 @@ common/
 
 ```
 用户问题 → 路由 (route) → 分解/重写 (decompose/rewrite)
-  → 稠密检索 (Qdrant) + 稀疏检索 (ES/Tavily)
+  → 稠密检索 (Qdrant) + 稀疏检索 (ES)
   → RRF 融合 (香农熵置信度加权)
   → 重排序 (qwen3-rerank)
   → Small-to-Big 扩展
@@ -144,7 +144,7 @@ common/
   → 完整性检查 (completeness) → 补充回答 [条件]
 ```
 
-共 14 个 LangGraph 节点，由 `MultiAgentOrchestratorService` 编排。
+由 `MultiAgentOrchestratorService` 编排多个 LangGraph 节点。
 
 ### 流式通信协议 (AG-UI)
 
@@ -156,7 +156,6 @@ RUN_STARTED
   STEP_STARTED("route") → STEP_FINISHED
   STEP_STARTED("rewrite") → STEP_FINISHED
   TOOL_CALL_START("search_knowledge_base") → TOOL_CALL_RESULT
-  TOOL_CALL_START("web_search") → TOOL_CALL_RESULT (条件)
   STEP_STARTED("writer") → TEXT_MESSAGE_START → TEXT_MESSAGE_CONTENT × N → TEXT_MESSAGE_END
   VALIDATION_STARTED → VALIDATION_COMPLETED
 RUN_FINISHED

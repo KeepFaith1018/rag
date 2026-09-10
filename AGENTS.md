@@ -2,6 +2,14 @@
 
 此文件为 Codex 提供本仓库的工作指引。
 
+## 语言与注释规范
+
+- 项目文档、代码注释、配置说明及 AI 生成的说明性文本以中文为主。
+- 技术名词、协议名、库名、命令、变量名和代码标识符保留其通用英文写法，避免为中文化而影响准确性与可检索性。
+- 注释应简短、准确，优先说明设计意图、约束条件和不直观的原因，避免逐行复述代码行为或添加无实际信息的注释。
+- 新增或修改配置文件时，应按功能对变量进行分组并保持稳定、易读的顺序；每组使用简短的中文注释说明用途。
+- 同一配置在示例文件、实际配置文件和配置校验代码中应保持一致的分组、顺序与中文组注释。
+
 ## AI 临时文档工作区
 
 - 仓库根目录下的 `.ai-workspace/` 是 coding 过程中与 AI 协作产生文档的临时工作区。
@@ -135,7 +143,7 @@ common/
 
 ```
 用户问题 → 路由 (route) → 分解/重写 (decompose/rewrite)
-  → 稠密检索 (Qdrant) + 稀疏检索 (ES/Tavily)
+  → 稠密检索 (Qdrant) + 稀疏检索 (ES)
   → RRF 融合 (香农熵置信度加权)
   → 重排序 (qwen3-rerank)
   → Small-to-Big 扩展
@@ -144,7 +152,7 @@ common/
   → 完整性检查 (completeness) → 补充回答 [条件]
 ```
 
-共 14 个 LangGraph 节点，由 `MultiAgentOrchestratorService` 编排。
+由 `MultiAgentOrchestratorService` 编排多个 LangGraph 节点。
 
 ### 流式通信协议 (AG-UI)
 
@@ -156,7 +164,6 @@ RUN_STARTED
   STEP_STARTED("route") → STEP_FINISHED
   STEP_STARTED("rewrite") → STEP_FINISHED
   TOOL_CALL_START("search_knowledge_base") → TOOL_CALL_RESULT
-  TOOL_CALL_START("web_search") → TOOL_CALL_RESULT (条件)
   STEP_STARTED("writer") → TEXT_MESSAGE_START → TEXT_MESSAGE_CONTENT × N → TEXT_MESSAGE_END
   VALIDATION_STARTED → VALIDATION_COMPLETED
 RUN_FINISHED

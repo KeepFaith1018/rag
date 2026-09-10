@@ -71,10 +71,9 @@ source_of_truth: apps/server/src/modules/rag
 | Elasticsearch 不可用 | 使用 Qdrant 结果 |
 | Qdrant 不可用 | 使用 Elasticsearch 结果 |
 | Rerank 不可用 | 使用融合排序 |
-| 两种检索都无结果 | 由 Agent 判断重写、联网搜索或直接说明信息不足 |
+| 两种检索都无结果 | 由 Agent 改写重试，仍无结果则说明信息不足 |
 | 引用元数据缺失 | 不生成伪引用，记录告警 |
 
 ## 调优边界
 
 候选数量、融合参数、Rerank Top N、相似度阈值和上下文预算必须通过评估数据调整，不在文档中固化实验性数值。当前默认值以环境变量和源码为准。
-
