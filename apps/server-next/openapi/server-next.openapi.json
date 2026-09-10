@@ -1,0 +1,223 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Linsor AI server-next API",
+    "version": "0.0.1",
+    "description": "server-next 当前身份、用户、健康检查和知识库协作接口契约。"
+  },
+  "servers": [{ "url": "/api" }],
+  "tags": [
+    { "name": "Health", "description": "进程与基础设施健康检查" },
+    { "name": "Identity", "description": "注册、登录、会话和密码" },
+    { "name": "Users", "description": "当前用户资料和头像" },
+    { "name": "Knowledge Bases", "description": "知识库和成员协作" }
+  ],
+  "paths": {
+    "/health/live": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "存活检查",
+        "security": [],
+        "responses": { "200": { "description": "进程可响应" } }
+      }
+    },
+    "/health/ready": {
+      "get": {
+        "tags": ["Health"],
+        "summary": "就绪检查",
+        "security": [],
+        "responses": {
+          "200": { "description": "MySQL 和 Redis 均可用" },
+          "503": { "description": "基础设施不可用" }
+        }
+      }
+    },
+    "/auth/send-code": {
+      "post": {
+        "tags": ["Identity"],
+        "summary": "发送邮箱验证码",
+        "security": [],
+        "responses": { "200": { "description": "验证码发送成功" } }
+      }
+    },
+    "/auth/register": {
+      "post": {
+        "tags": ["Identity"],
+        "summary": "注册已验证邮箱",
+        "security": [],
+        "responses": { "201": { "description": "注册成功" } }
+      }
+    },
+    "/auth/login": {
+      "post": {
+        "tags": ["Identity"],
+        "summary": "登录并创建会话",
+        "security": [],
+        "responses": { "200": { "description": "返回访问和刷新令牌" } }
+      }
+    },
+    "/auth/refresh": {
+      "post": {
+        "tags": ["Identity"],
+        "summary": "轮换刷新令牌",
+        "security": [],
+        "responses": { "200": { "description": "返回新令牌" } }
+      }
+    },
+    "/auth/logout": {
+      "post": {
+        "tags": ["Identity"],
+        "summary": "撤销当前会话",
+        "responses": { "200": { "description": "已退出登录" } }
+      }
+    },
+    "/auth/me": {
+      "get": {
+        "tags": ["Identity"],
+        "summary": "读取当前用户",
+        "responses": { "200": { "description": "当前用户资料" } }
+      }
+    },
+    "/users/me": {
+      "patch": {
+        "tags": ["Users"],
+        "summary": "更新当前用户资料",
+        "responses": { "200": { "description": "资料更新成功" } }
+      }
+    },
+    "/users/me/avatar": {
+      "post": {
+        "tags": ["Users"],
+        "summary": "上传当前用户头像",
+        "responses": { "200": { "description": "头像更新成功" } }
+      }
+    },
+    "/users/avatar/{userId}": {
+      "get": {
+        "tags": ["Users"],
+        "summary": "读取用户头像",
+        "security": [],
+        "responses": { "200": { "description": "头像文件流" } }
+      }
+    },
+    "/users/me/password": {
+      "post": {
+        "tags": ["Identity"],
+        "summary": "修改当前用户密码",
+        "responses": { "200": { "description": "密码修改成功" } }
+      }
+    },
+    "/users/reset-password": {
+      "post": {
+        "tags": ["Identity"],
+        "summary": "通过验证码重置密码",
+        "security": [],
+        "responses": { "200": { "description": "密码重置成功" } }
+      }
+    },
+    "/knowledge-bases": {
+      "get": {
+        "tags": ["Knowledge Bases"],
+        "summary": "查询当前用户知识库",
+        "responses": { "200": { "description": "分页知识库列表" } }
+      },
+      "post": {
+        "tags": ["Knowledge Bases"],
+        "summary": "创建知识库",
+        "responses": { "201": { "description": "知识库创建成功" } }
+      }
+    },
+    "/public/knowledge-bases": {
+      "get": {
+        "tags": ["Knowledge Bases"],
+        "summary": "查询公开知识库",
+        "responses": { "200": { "description": "公开知识库列表" } }
+      }
+    },
+    "/knowledge-bases/{kbId}": {
+      "get": {
+        "tags": ["Knowledge Bases"],
+        "summary": "读取知识库详情",
+        "responses": { "200": { "description": "知识库详情" } }
+      },
+      "patch": {
+        "tags": ["Knowledge Bases"],
+        "summary": "更新知识库",
+        "responses": { "200": { "description": "知识库更新成功" } }
+      },
+      "delete": {
+        "tags": ["Knowledge Bases"],
+        "summary": "删除知识库",
+        "responses": { "200": { "description": "知识库已标记删除" } }
+      }
+    },
+    "/knowledge-bases/{kbId}/members": {
+      "get": {
+        "tags": ["Knowledge Bases"],
+        "summary": "查询成员列表",
+        "responses": { "200": { "description": "成员列表" } }
+      }
+    },
+    "/knowledge-bases/{kbId}/invitations": {
+      "get": {
+        "tags": ["Knowledge Bases"],
+        "summary": "查询有效邀请",
+        "responses": { "200": { "description": "邀请列表" } }
+      },
+      "post": {
+        "tags": ["Knowledge Bases"],
+        "summary": "创建邀请",
+        "responses": { "201": { "description": "邀请创建成功" } }
+      }
+    },
+    "/knowledge-bases/{kbId}/invitations/{invitationId}": {
+      "delete": {
+        "tags": ["Knowledge Bases"],
+        "summary": "取消邀请",
+        "responses": { "200": { "description": "邀请已取消" } }
+      }
+    },
+    "/knowledge-bases/join": {
+      "post": {
+        "tags": ["Knowledge Bases"],
+        "summary": "通过邀请码加入",
+        "responses": { "200": { "description": "加入成功" } }
+      }
+    },
+    "/knowledge-bases/{kbId}/join": {
+      "post": {
+        "tags": ["Knowledge Bases"],
+        "summary": "加入公开知识库",
+        "responses": { "200": { "description": "加入成功" } }
+      }
+    },
+    "/knowledge-bases/{kbId}/leave": {
+      "post": {
+        "tags": ["Knowledge Bases"],
+        "summary": "退出知识库",
+        "responses": { "200": { "description": "退出成功" } }
+      }
+    },
+    "/knowledge-bases/{kbId}/members/{memberUserId}": {
+      "delete": {
+        "tags": ["Knowledge Bases"],
+        "summary": "移除成员",
+        "responses": { "200": { "description": "成员已移除" } }
+      },
+      "patch": {
+        "tags": ["Knowledge Bases"],
+        "summary": "修改成员角色",
+        "responses": { "200": { "description": "角色更新成功" } }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
+      }
+    }
+  }
+}
