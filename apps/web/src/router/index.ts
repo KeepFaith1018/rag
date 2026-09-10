@@ -24,7 +24,7 @@ const router = createRouter({
     {
       path: "/",
       component: () => import("@/layout/MainLayout.vue"),
-      redirect: "/chat",
+      redirect: "/kb",
       meta: {
         requiresAuth: true,
       },
@@ -32,7 +32,7 @@ const router = createRouter({
         {
           path: "chat",
           name: "chat",
-          component: () => import("@/views/chat/ChatView.vue"),
+          redirect: "/kb",
         },
         {
           path: "kb",
@@ -58,7 +58,7 @@ router.beforeEach(async (to) => {
   const authStore = useAuthStore(pinia);
 
   if (to.meta.guestOnly && authStore.isAuthenticated) {
-    return "/chat";
+    return "/kb";
   }
 
   if (to.meta.requiresAuth && !authStore.isAuthenticated) {

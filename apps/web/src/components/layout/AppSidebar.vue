@@ -5,7 +5,6 @@ import { useMessage } from "@/composables/useMessage";
 import { storeToRefs } from "pinia";
 import { computed, ref, onMounted, onUnmounted, watch } from "vue";
 import { RouterLink, useRoute, useRouter } from "vue-router";
-import ModelConfigDialog from "@/components/settings/ModelConfigDialog.vue";
 import UserSettingsDialog from "@/components/settings/UserSettingsDialog.vue";
 import { API_BASE_URL } from "@/api/api";
 
@@ -19,7 +18,6 @@ const router = useRouter();
 const { isSidebarOpen, isDark } = storeToRefs(appStore);
 
 const isUserMenuOpen = ref(false);
-const showModelConfig = ref(false);
 const showUserSettings = ref(false);
 
 const toggleUserMenu = () => {
@@ -69,15 +67,14 @@ const primaryNavItems: PrimaryNavItem[] = [
         icon: "lock",
       },
       {
-        name: "共享知识库",
+        name: "协作知识库",
         path: "/kb",
-        query: { visibility: "shared" },
+        query: { visibility: "collaborative" },
         icon: "folder_shared",
       },
     ],
   },
   { name: "知识库广场", icon: "public", path: "/public-kb" },
-  { name: "聊天历史", icon: "history", path: "/chat" },
 ];
 
 const displayName = computed(() => authStore.user?.username || "未登录用户");
@@ -87,7 +84,9 @@ const displayRole = computed(() => authStore.user?.roles?.[0] || "guest");
 const avatarTimestamp = ref(Date.now());
 watch(
   () => authStore.user?.avatar,
-  () => { avatarTimestamp.value = Date.now(); },
+  () => {
+    avatarTimestamp.value = Date.now();
+  },
 );
 
 const displayAvatar = computed(() => {
@@ -132,9 +131,10 @@ function isChildActive(child: {
  * 退出登录并返回登录页。
  */
 async function handleLogout() {
-  authStore.logout();
+  const revoked = await authStore.logout();
   isUserMenuOpen.value = false;
-  message.success("已退出登录");
+  if (revoked) message.success("已退出登录");
+  else message.warning("已清除本地登录状态，服务端会话未确认撤销");
   await router.replace("/login");
 }
 </script>
@@ -276,20 +276,9 @@ async function handleLogout() {
           <div class="p-2 space-y-1">
             <button
               class="w-full flex items-center gap-3 px-3 py-2 text-sm text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-colors"
-              @click="showModelConfig = true"
-            >
-              <span class="material-symbols-outlined text-[18px]"
-                >settings</span
-              >
-              <span>模型配置</span>
-            </button>
-            <button
-              class="w-full flex items-center gap-3 px-3 py-2 text-sm text-outline hover:text-on-surface hover:bg-surface-container-highest rounded-lg transition-colors"
               @click="showUserSettings = true"
             >
-              <span class="material-symbols-outlined text-[18px]"
-                >person</span
-              >
+              <span class="material-symbols-outlined text-[18px]">person</span>
               <span>个人设置</span>
             </button>
             <button
@@ -358,9 +347,10 @@ async function handleLogout() {
     </div>
   </aside>
 
-  <!-- 模型配置弹窗 -->
-  <ModelConfigDialog v-if="showModelConfig" @close="showModelConfig = false" />
-  <UserSettingsDialog v-if="showUserSettings" @close="showUserSettings = false" />
+  <UserSettingsDialog
+    v-if="showUserSettings"
+    @close="showUserSettings = false"
+  />
 </template>
 
 <style scoped>

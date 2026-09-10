@@ -32,7 +32,6 @@ const manageForm = reactive({
   name: "",
   description: "",
   visibility: "private" as KnowledgeBaseVisibility,
-  isPublic: false,
   allowPublicDownload: false,
 });
 const joinForm = reactive({
@@ -124,9 +123,8 @@ function openCreateModal() {
 
   // 根据当前所在页面动态设置默认可见性
   manageForm.visibility =
-    kbList.query.visibility === "shared" ? "shared" : "private";
+    kbList.query.visibility !== "all" ? kbList.query.visibility : "private";
 
-  manageForm.isPublic = false;
   manageForm.allowPublicDownload = false;
   showManageModal.value = true;
 }
@@ -140,7 +138,6 @@ function openEditModal(kb: KnowledgeBaseListItem) {
   manageForm.name = kb.name;
   manageForm.description = kb.description || "";
   manageForm.visibility = kb.visibility;
-  manageForm.isPublic = kb.isPublic;
   manageForm.allowPublicDownload = kb.allowPublicDownload;
   showManageModal.value = true;
 }
@@ -223,10 +220,10 @@ async function submitManageForm() {
  */
 async function handleDelete(kb: KnowledgeBaseListItem) {
   const confirmed = await confirm({
-    title: '删除知识库',
+    title: "删除知识库",
     message: `确认删除知识库"${kb.name}"吗？该操作不可撤销。`,
-    confirmText: '删除',
-    cancelText: '取消',
+    confirmText: "删除",
+    cancelText: "取消",
     danger: true,
   });
   if (!confirmed) {
@@ -289,14 +286,14 @@ async function goNextPage() {
  * 构造创建或更新参数。
  */
 function buildManagePayload(): CreateKnowledgeBasePayload {
-  const isShared = manageForm.visibility === "shared";
-
   return {
     name: manageForm.name.trim(),
     description: manageForm.description.trim() || undefined,
     visibility: manageForm.visibility,
-    isPublic: isShared ? manageForm.isPublic : false,
-    allowPublicDownload: isShared ? manageForm.allowPublicDownload : false,
+    allowPublicDownload:
+      manageForm.visibility === "public"
+        ? manageForm.allowPublicDownload
+        : false,
   };
 }
 
@@ -310,12 +307,12 @@ function validateKnowledgeBaseForm() {
     return "请输入知识库名称";
   }
 
-  if (name.length > 20) {
-    return "知识库名称不能超过 20 个字符";
+  if (name.length > 100) {
+    return "知识库名称不能超过 100 个字符";
   }
 
-  if (manageForm.description.trim().length > 200) {
-    return "知识库描述不能超过 200 个字符";
+  if (manageForm.description.trim().length > 2000) {
+    return "知识库描述不能超过 2000 个字符";
   }
 
   return "";
@@ -354,8 +351,7 @@ watch(
 watch(
   () => manageForm.visibility,
   (visibility) => {
-    if (visibility === "private") {
-      manageForm.isPublic = false;
+    if (visibility !== "public") {
       manageForm.allowPublicDownload = false;
     }
   },
@@ -406,15 +402,28 @@ onMounted(() => {
       class="relative px-6 md:px-12 pt-12 pb-8"
     >
       <!-- 渐变光球装饰 -->
-      <div class="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary-container/20 blur-[120px] rounded-full pointer-events-none" />
-      <div class="absolute top-[10%] right-[15%] w-[200px] h-[200px] bg-secondary-container/15 blur-[80px] rounded-full pointer-events-none" />
+      <div
+        class="absolute top-[-20%] left-1/2 -translate-x-1/2 w-[600px] h-[400px] bg-primary-container/20 blur-[120px] rounded-full pointer-events-none"
+      />
+      <div
+        class="absolute top-[10%] right-[15%] w-[200px] h-[200px] bg-secondary-container/15 blur-[80px] rounded-full pointer-events-none"
+      />
 
-      <div class="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto">
-        <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-outline-variant/20 bg-surface-container-high/60 backdrop-blur-sm mb-6">
+      <div
+        class="relative z-10 flex flex-col items-center text-center max-w-3xl mx-auto"
+      >
+        <div
+          class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-outline-variant/20 bg-surface-container-high/60 backdrop-blur-sm mb-6"
+        >
           <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-          <span class="text-[11px] font-label uppercase tracking-[0.12em] text-on-surface-variant">发现社区智慧</span>
+          <span
+            class="text-[11px] font-label uppercase tracking-[0.12em] text-on-surface-variant"
+            >发现社区智慧</span
+          >
         </div>
-        <h1 class="font-headline text-4xl md:text-5xl font-bold text-on-surface tracking-tight leading-tight">
+        <h1
+          class="font-headline text-4xl md:text-5xl font-bold text-on-surface tracking-tight leading-tight"
+        >
           探索知识库
         </h1>
         <p class="text-on-surface-variant text-base md:text-lg mt-4 max-w-xl">
@@ -423,7 +432,10 @@ onMounted(() => {
 
         <!-- 搜索栏 -->
         <div class="relative w-full max-w-[560px] mt-8 group">
-          <span class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline text-xl group-focus-within:text-primary transition-colors">search</span>
+          <span
+            class="material-symbols-outlined absolute left-5 top-1/2 -translate-y-1/2 text-outline text-xl group-focus-within:text-primary transition-colors"
+            >search</span
+          >
           <input
             v-model="searchKeyword"
             type="text"
@@ -439,19 +451,38 @@ onMounted(() => {
       v-else
       class="flex flex-col gap-5 w-full px-6 md:px-12 py-6 sticky top-0 z-40 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/5"
     >
-      <div class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4">
+      <div
+        class="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4"
+      >
         <div class="flex flex-col gap-1">
           <h1 class="font-headline text-2xl font-bold text-on-surface">
-            {{ kbList.query.visibility === "shared" ? "共享知识库" : "私有知识库" }}
+            {{
+              kbList.query.visibility === "collaborative"
+                ? "协作知识库"
+                : kbList.query.visibility === "public"
+                  ? "公开知识库"
+                  : kbList.query.visibility === "all"
+                    ? "全部知识库"
+                    : "私有知识库"
+            }}
           </h1>
           <p class="text-sm text-on-surface-variant">
-            {{ kbList.query.visibility === "shared" ? "我与团队共建的知识空间" : "仅自己可见的私有知识资产" }}
+            {{
+              kbList.query.visibility === "collaborative"
+                ? "我与团队共建的知识空间"
+                : kbList.query.visibility === "public"
+                  ? "所有已登录用户可访问的知识空间"
+                  : "当前账号可访问的知识资产"
+            }}
           </p>
         </div>
 
         <div class="flex flex-col md:flex-row md:items-center gap-3">
           <div class="relative group min-w-[18rem]">
-            <span class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg group-focus-within:text-primary transition-colors">search</span>
+            <span
+              class="material-symbols-outlined absolute left-4 top-1/2 -translate-y-1/2 text-outline text-lg group-focus-within:text-primary transition-colors"
+              >search</span
+            >
             <input
               v-model="searchKeyword"
               type="text"
@@ -459,7 +490,11 @@ onMounted(() => {
               class="w-full bg-surface-container-highest border border-outline-variant/15 rounded-xl pl-12 pr-4 py-2.5 text-sm focus:outline-none focus:ring-1 focus:ring-primary transition-all placeholder:text-outline/50"
             />
           </div>
-          <BaseButton v-if="kbList.query.visibility === 'shared'" variant="outline" @click="showJoinModal = true">
+          <BaseButton
+            v-if="kbList.query.visibility === 'collaborative'"
+            variant="outline"
+            @click="showJoinModal = true"
+          >
             <span class="material-symbols-outlined text-[18px]">group_add</span>
             邀请码加入
           </BaseButton>
@@ -471,23 +506,42 @@ onMounted(() => {
       </div>
 
       <!-- 过滤器与排序 -->
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+      <div
+        class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4"
+      >
         <div class="flex items-center gap-2 flex-wrap">
-          <template v-if="kbList.query.visibility === 'shared'">
+          <template v-if="kbList.query.visibility === 'collaborative'">
             <button
-              v-for="option in ownershipOptions" :key="option.value" type="button"
-              class="filter-chip" :class="{ 'filter-chip-active': kbList.query.ownership === option.value }"
+              v-for="option in ownershipOptions"
+              :key="option.value"
+              type="button"
+              class="filter-chip"
+              :class="{
+                'filter-chip-active': kbList.query.ownership === option.value,
+              }"
               @click="changeOwnership(option.value)"
-            >{{ option.label }}</button>
+            >
+              {{ option.label }}
+            </button>
           </template>
         </div>
         <div class="flex items-center gap-2 flex-wrap">
-          <span class="text-xs font-label uppercase tracking-widest text-outline mr-1">排序：</span>
+          <span
+            class="text-xs font-label uppercase tracking-widest text-outline mr-1"
+            >排序：</span
+          >
           <button
-            v-for="option in mineSortOptions" :key="option.value" type="button"
-            class="sort-chip" :class="{ 'sort-chip-active': kbList.query.sortBy === option.value }"
+            v-for="option in mineSortOptions"
+            :key="option.value"
+            type="button"
+            class="sort-chip"
+            :class="{
+              'sort-chip-active': kbList.query.sortBy === option.value,
+            }"
             @click="changeMineSort(option.value)"
-          >{{ option.label }}</button>
+          >
+            {{ option.label }}
+          </button>
         </div>
       </div>
     </header>
@@ -499,19 +553,31 @@ onMounted(() => {
     >
       <div class="flex items-center gap-2 flex-wrap">
         <button
-          v-for="option in publicSortOptions" :key="option.value" type="button"
-          class="sort-chip" :class="{ 'sort-chip-active': kbList.query.sortBy === option.value }"
+          v-for="option in publicSortOptions"
+          :key="option.value"
+          type="button"
+          class="sort-chip"
+          :class="{ 'sort-chip-active': kbList.query.sortBy === option.value }"
           @click="changePublicSort(option.value)"
-        >{{ option.label }}</button>
+        >
+          {{ option.label }}
+        </button>
       </div>
       <div class="text-sm text-on-surface-variant">
-        共 <span class="font-semibold text-on-surface">{{ kbList.pagination.total }}</span> 个公开知识库
+        共
+        <span class="font-semibold text-on-surface">{{
+          kbList.pagination.total
+        }}</span>
+        个公开知识库
       </div>
     </div>
 
     <!-- ===== 主内容区 ===== -->
     <div class="flex-1 overflow-y-auto relative pb-20">
-      <section class="px-6 md:px-12 py-8" :class="{ 'pt-2': kbList.isPublicScope.value }">
+      <section
+        class="px-6 md:px-12 py-8"
+        :class="{ 'pt-2': kbList.isPublicScope.value }"
+      >
         <!-- 骨架屏加载态 -->
         <div
           v-if="kbList.isLoading.value"
@@ -531,7 +597,9 @@ onMounted(() => {
               <div class="h-[52px] rounded-[0.9rem] skeleton-shimmer" />
               <div class="h-[52px] rounded-[0.9rem] skeleton-shimmer" />
             </div>
-            <div class="flex items-center justify-between mt-5 pt-4 border-t border-outline-variant/5">
+            <div
+              class="flex items-center justify-between mt-5 pt-4 border-t border-outline-variant/5"
+            >
               <div class="h-3 w-20 rounded-full skeleton-shimmer" />
               <div class="h-3 w-16 rounded-full skeleton-shimmer" />
             </div>
@@ -544,7 +612,10 @@ onMounted(() => {
           class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6"
         >
           <KbCard
-            v-for="kb in kbList.items.value" :key="kb.id" :kb="kb" :hide-chips="kbList.isPublicScope.value"
+            v-for="kb in kbList.items.value"
+            :key="kb.id"
+            :kb="kb"
+            :hide-chips="kbList.isPublicScope.value"
             @edit="openEditModal"
             @delete="handleDelete"
           />
@@ -555,28 +626,48 @@ onMounted(() => {
             class="new-kb-card group"
             @click="openCreateModal"
           >
-            <div class="w-14 h-14 rounded-2xl bg-surface-container-high flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm">
-              <span class="material-symbols-outlined text-outline text-3xl group-hover:text-primary transition-colors">add</span>
+            <div
+              class="w-14 h-14 rounded-2xl bg-surface-container-high flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm"
+            >
+              <span
+                class="material-symbols-outlined text-outline text-3xl group-hover:text-primary transition-colors"
+                >add</span
+              >
             </div>
-            <p class="font-headline text-lg font-semibold text-outline group-hover:text-on-surface transition-colors mt-4">初始化新知识库</p>
-            <p class="text-[10px] font-label text-outline/60 uppercase tracking-widest mt-2">准备构建</p>
+            <p
+              class="font-headline text-lg font-semibold text-outline group-hover:text-on-surface transition-colors mt-4"
+            >
+              初始化新知识库
+            </p>
+            <p
+              class="text-[10px] font-label text-outline/60 uppercase tracking-widest mt-2"
+            >
+              准备构建
+            </p>
           </div>
         </div>
 
         <!-- 空态 -->
         <div v-else class="empty-state">
-          <div class="w-20 h-20 rounded-3xl bg-surface-container-high flex items-center justify-center mb-6">
+          <div
+            class="w-20 h-20 rounded-3xl bg-surface-container-high flex items-center justify-center mb-6"
+          >
             <span class="material-symbols-outlined text-4xl text-outline">
-              {{ kbList.isPublicScope.value ? 'globe' : 'database' }}
+              {{ kbList.isPublicScope.value ? "globe" : "database" }}
             </span>
           </div>
           <h3 class="font-headline text-xl font-bold text-on-surface mb-3">
-            {{ kbList.isPublicScope.value ? '暂无公开知识库' : '暂无可展示知识库' }}
+            {{
+              kbList.isPublicScope.value ? "暂无公开知识库" : "暂无可展示知识库"
+            }}
           </h3>
           <p class="text-sm text-on-surface-variant max-w-md text-center mb-8">
             {{ emptyText }}
           </p>
-          <BaseButton v-if="!kbList.isPublicScope.value" @click="openCreateModal">
+          <BaseButton
+            v-if="!kbList.isPublicScope.value"
+            @click="openCreateModal"
+          >
             创建第一个知识库
           </BaseButton>
         </div>
@@ -587,35 +678,59 @@ onMounted(() => {
           class="mt-10 flex items-center justify-center gap-3"
         >
           <button
-            class="page-btn" :class="{ 'page-btn-disabled': !canGoPrev }" :disabled="!canGoPrev"
+            class="page-btn"
+            :class="{ 'page-btn-disabled': !canGoPrev }"
+            :disabled="!canGoPrev"
             @click="goPrevPage"
           >
-            <span class="material-symbols-outlined text-[18px]">chevron_left</span>
+            <span class="material-symbols-outlined text-[18px]"
+              >chevron_left</span
+            >
             上一页
           </button>
           <span class="text-sm text-on-surface-variant px-4">
-            {{ kbList.pagination.page }} / {{ Math.max(1, Math.ceil(kbList.pagination.total / kbList.pagination.pageSize)) }}
+            {{ kbList.pagination.page }} /
+            {{
+              Math.max(
+                1,
+                Math.ceil(kbList.pagination.total / kbList.pagination.pageSize),
+              )
+            }}
           </span>
           <button
-            class="page-btn" :class="{ 'page-btn-disabled': !canGoNext }" :disabled="!canGoNext"
+            class="page-btn"
+            :class="{ 'page-btn-disabled': !canGoNext }"
+            :disabled="!canGoNext"
             @click="goNextPage"
           >
             下一页
-            <span class="material-symbols-outlined text-[18px]">chevron_right</span>
+            <span class="material-symbols-outlined text-[18px]"
+              >chevron_right</span
+            >
           </button>
         </div>
       </section>
     </div>
 
     <!-- ===== 创建/编辑弹窗 ===== -->
-    <div v-if="showManageModal" class="modal-overlay" @click.self="closeManageModal">
+    <div
+      v-if="showManageModal"
+      class="modal-overlay"
+      @click.self="closeManageModal"
+    >
       <div class="modal-container modal-xl">
         <div class="modal-header">
           <div>
             <h3 class="font-headline text-xl font-bold">{{ modalTitle }}</h3>
-            <p class="text-sm text-on-surface-variant mt-1">配置知识库基本信息与访问策略</p>
+            <p class="text-sm text-on-surface-variant mt-1">
+              配置知识库基本信息与访问策略
+            </p>
           </div>
-          <button type="button" class="modal-close-btn" @click="closeManageModal">
+          <button
+            type="button"
+            class="modal-close-btn"
+            @click="closeManageModal"
+          >
             <span class="material-symbols-outlined">close</span>
           </button>
         </div>
@@ -623,12 +738,16 @@ onMounted(() => {
         <div class="modal-body space-y-5">
           <div>
             <label class="form-label">知识库名称</label>
-            <BaseInput v-model="manageForm.name" placeholder="例如：后端接口规范库" />
+            <BaseInput
+              v-model="manageForm.name"
+              placeholder="例如：后端接口规范库"
+            />
           </div>
           <div>
             <label class="form-label">知识库描述</label>
             <textarea
-              v-model="manageForm.description" rows="4"
+              v-model="manageForm.description"
+              rows="4"
               class="w-full bg-surface-container-highest border border-outline-variant/20 rounded-xl px-4 py-3 text-sm text-on-surface placeholder:text-outline/40 focus:outline-none focus:border-primary focus:ring-1 focus:ring-primary/50 transition-all resize-none"
               placeholder="描述该知识库面向的业务范围、成员边界和使用方式"
             />
@@ -639,32 +758,56 @@ onMounted(() => {
               <label class="form-label">可见性</label>
               <div class="grid grid-cols-2 gap-3">
                 <button
-                  type="button" class="visibility-card"
-                  :class="{ 'visibility-card-active': manageForm.visibility === 'private' }"
+                  type="button"
+                  class="visibility-card"
+                  :class="{
+                    'visibility-card-active':
+                      manageForm.visibility === 'private',
+                  }"
                   @click="manageForm.visibility = 'private'"
                 >
                   <span class="material-symbols-outlined">lock</span>
                   <span>私有</span>
                 </button>
                 <button
-                  type="button" class="visibility-card"
-                  :class="{ 'visibility-card-active': manageForm.visibility === 'shared' }"
-                  @click="manageForm.visibility = 'shared'"
+                  type="button"
+                  class="visibility-card"
+                  :class="{
+                    'visibility-card-active':
+                      manageForm.visibility === 'collaborative',
+                  }"
+                  @click="manageForm.visibility = 'collaborative'"
                 >
                   <span class="material-symbols-outlined">groups</span>
-                  <span>共享</span>
+                  <span>协作</span>
+                </button>
+                <button
+                  type="button"
+                  class="visibility-card"
+                  :class="{
+                    'visibility-card-active':
+                      manageForm.visibility === 'public',
+                  }"
+                  @click="manageForm.visibility = 'public'"
+                >
+                  <span class="material-symbols-outlined">public</span>
+                  <span>公开</span>
                 </button>
               </div>
             </div>
 
-            <div class="rounded-2xl border border-outline-variant/10 bg-surface-container-high/40 p-4">
-              <div class="font-medium text-sm text-on-surface mb-3">共享策略</div>
+            <div
+              class="rounded-2xl border border-outline-variant/10 bg-surface-container-high/40 p-4"
+            >
+              <div class="font-medium text-sm text-on-surface mb-3">
+                公开策略
+              </div>
               <label class="toggle-row">
-                <input v-model="manageForm.isPublic" type="checkbox" :disabled="manageForm.visibility !== 'shared'" />
-                <span>允许公开访问</span>
-              </label>
-              <label class="toggle-row">
-                <input v-model="manageForm.allowPublicDownload" type="checkbox" :disabled="manageForm.visibility !== 'shared'" />
+                <input
+                  v-model="manageForm.allowPublicDownload"
+                  type="checkbox"
+                  :disabled="manageForm.visibility !== 'public'"
+                />
                 <span>允许公开下载</span>
               </label>
             </div>
@@ -674,8 +817,13 @@ onMounted(() => {
         </div>
 
         <div class="modal-footer">
-          <BaseButton variant="ghost" @click="closeManageModal">取消</BaseButton>
-          <BaseButton :disabled="kbList.isSubmitting.value" @click="submitManageForm">
+          <BaseButton variant="ghost" @click="closeManageModal"
+            >取消</BaseButton
+          >
+          <BaseButton
+            :disabled="kbList.isSubmitting.value"
+            @click="submitManageForm"
+          >
             {{ kbList.isSubmitting.value ? "保存中..." : "确认保存" }}
           </BaseButton>
         </div>
@@ -683,12 +831,18 @@ onMounted(() => {
     </div>
 
     <!-- ===== 邀请码加入弹窗 ===== -->
-    <div v-if="showJoinModal" class="modal-overlay" @click.self="closeJoinModal">
+    <div
+      v-if="showJoinModal"
+      class="modal-overlay"
+      @click.self="closeJoinModal"
+    >
       <div class="modal-container modal-sm">
         <div class="modal-header">
           <div>
             <h3 class="font-headline text-lg font-bold">邀请码加入</h3>
-            <p class="text-sm text-on-surface-variant mt-1">输入共享知识库邀请码</p>
+            <p class="text-sm text-on-surface-variant mt-1">
+              输入共享知识库邀请码
+            </p>
           </div>
           <button type="button" class="modal-close-btn" @click="closeJoinModal">
             <span class="material-symbols-outlined">close</span>
@@ -698,14 +852,20 @@ onMounted(() => {
         <div class="modal-body space-y-4">
           <div>
             <label class="form-label">邀请码</label>
-            <BaseInput v-model="joinForm.inviteCode" placeholder="请输入邀请码" />
+            <BaseInput
+              v-model="joinForm.inviteCode"
+              placeholder="请输入邀请码"
+            />
           </div>
           <p v-if="joinError" class="text-sm text-error">{{ joinError }}</p>
         </div>
 
         <div class="modal-footer">
           <BaseButton variant="ghost" @click="closeJoinModal">取消</BaseButton>
-          <BaseButton :disabled="kbList.isSubmitting.value" @click="submitJoinForm">
+          <BaseButton
+            :disabled="kbList.isSubmitting.value"
+            @click="submitJoinForm"
+          >
             {{ kbList.isSubmitting.value ? "加入中..." : "立即加入" }}
           </BaseButton>
         </div>
@@ -718,7 +878,8 @@ onMounted(() => {
 /* ----- 骨架屏 ----- */
 .skeleton-card {
   background: var(--color-surface-container-low);
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 5%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-outline-variant) 5%, transparent);
   border-radius: 1.25rem;
   padding: 1.25rem;
 }
@@ -727,7 +888,8 @@ onMounted(() => {
   background: linear-gradient(
     90deg,
     color-mix(in srgb, var(--color-surface-container-high) 40%, transparent) 25%,
-    color-mix(in srgb, var(--color-surface-container-highest) 60%, transparent) 50%,
+    color-mix(in srgb, var(--color-surface-container-highest) 60%, transparent)
+      50%,
     color-mix(in srgb, var(--color-surface-container-high) 40%, transparent) 75%
   );
   background-size: 200% 100%;
@@ -735,13 +897,18 @@ onMounted(() => {
 }
 
 @keyframes shimmer {
-  0% { background-position: 200% 0; }
-  100% { background-position: -200% 0; }
+  0% {
+    background-position: 200% 0;
+  }
+  100% {
+    background-position: -200% 0;
+  }
 }
 
 /* ----- 新建入口卡片 ----- */
 .new-kb-card {
-  border: 2px dashed color-mix(in srgb, var(--color-outline-variant) 20%, transparent);
+  border: 2px dashed
+    color-mix(in srgb, var(--color-outline-variant) 20%, transparent);
   border-radius: 1.25rem;
   transition: all 0.3s ease;
   display: flex;
@@ -759,9 +926,14 @@ onMounted(() => {
 
 /* ----- 空态 ----- */
 .empty-state {
-  border: 2px dashed color-mix(in srgb, var(--color-outline-variant) 15%, transparent);
+  border: 2px dashed
+    color-mix(in srgb, var(--color-outline-variant) 15%, transparent);
   border-radius: 1.5rem;
-  background: color-mix(in srgb, var(--color-surface-container-low) 70%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-container-low) 70%,
+    transparent
+  );
   padding: 3rem 1.5rem;
   display: flex;
   flex-direction: column;
@@ -780,7 +952,8 @@ onMounted(() => {
   font-weight: 500;
   font-family: var(--font-headline);
   background: var(--color-surface-container-low);
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 15%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-outline-variant) 15%, transparent);
   color: var(--color-on-surface);
   transition: all 0.2s ease;
   cursor: pointer;
@@ -799,18 +972,34 @@ onMounted(() => {
   padding: 0.45rem 0.85rem;
   font-size: 0.78rem;
   color: var(--color-on-surface-variant);
-  background: color-mix(in srgb, var(--color-surface-container-low) 75%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-container-low) 75%,
+    transparent
+  );
   border: 1px solid transparent;
   transition: all 0.2s ease;
   cursor: pointer;
 }
 .filter-chip:hover {
-  background: color-mix(in srgb, var(--color-surface-container-high) 60%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-container-high) 60%,
+    transparent
+  );
 }
 .filter-chip-active {
   color: var(--color-on-surface);
-  background: color-mix(in srgb, var(--color-surface-container-high) 92%, transparent);
-  border-color: color-mix(in srgb, var(--color-outline-variant) 22%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-container-high) 92%,
+    transparent
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--color-outline-variant) 22%,
+    transparent
+  );
   box-shadow: var(--shadow-glass-value);
 }
 
@@ -821,13 +1010,22 @@ onMounted(() => {
   font-size: 0.74rem;
   color: var(--color-on-surface-variant);
   background: transparent;
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 18%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-outline-variant) 18%, transparent);
   transition: all 0.2s ease;
   cursor: pointer;
 }
 .sort-chip:hover {
-  background: color-mix(in srgb, var(--color-surface-container-high) 60%, transparent);
-  border-color: color-mix(in srgb, var(--color-outline-variant) 35%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-container-high) 60%,
+    transparent
+  );
+  border-color: color-mix(
+    in srgb,
+    var(--color-outline-variant) 35%,
+    transparent
+  );
 }
 .sort-chip-active {
   color: var(--color-primary);
@@ -850,15 +1048,21 @@ onMounted(() => {
 .modal-container {
   width: 100%;
   border-radius: 1.5rem;
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
   background: var(--color-surface-container-low);
   box-shadow: 0 28px 120px rgba(0, 0, 0, 0.35);
 }
-.modal-xl { max-width: 42rem; }
-.modal-sm { max-width: 32rem; }
+.modal-xl {
+  max-width: 42rem;
+}
+.modal-sm {
+  max-width: 32rem;
+}
 .modal-header {
   padding: 1.5rem 1.75rem;
-  border-bottom: 1px solid color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
+  border-bottom: 1px solid
+    color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
@@ -882,7 +1086,8 @@ onMounted(() => {
 }
 .modal-footer {
   padding: 1.25rem 1.75rem;
-  border-top: 1px solid color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
+  border-top: 1px solid
+    color-mix(in srgb, var(--color-outline-variant) 10%, transparent);
   display: flex;
   align-items: center;
   justify-content: flex-end;
@@ -904,14 +1109,23 @@ onMounted(() => {
   justify-content: center;
   gap: 0.5rem;
   border-radius: 1rem;
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 18%, transparent);
-  background: color-mix(in srgb, var(--color-surface-container-high) 65%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-outline-variant) 18%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-container-high) 65%,
+    transparent
+  );
   padding: 1rem;
   transition: all 0.2s ease;
   cursor: pointer;
 }
 .visibility-card:hover {
-  background: color-mix(in srgb, var(--color-surface-container-high) 85%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-container-high) 85%,
+    transparent
+  );
 }
 .visibility-card-active {
   border-color: color-mix(in srgb, var(--color-primary) 35%, transparent);

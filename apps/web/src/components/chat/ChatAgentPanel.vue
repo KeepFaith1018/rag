@@ -68,7 +68,6 @@ const stepMeta = (stepName: string): { icon: string; label: string } => {
 const toolMeta = (toolName: string): { icon: string; label: string } => {
   const map: Record<string, { icon: string; label: string }> = {
     search_knowledge_base: { icon: 'search', label: '知识库检索' },
-    web_search: { icon: 'language', label: '联网搜索' },
   }
   return map[toolName] ?? { icon: 'build', label: toolName }
 }
@@ -77,9 +76,6 @@ function toolOutputSummary(tc: AguiToolCallRecord): string {
   if (!tc.output) return ''
   if (tc.toolCallName === 'search_knowledge_base') {
     return `检索到 ${tc.output.hitCount ?? 0} 条结果` + (tc.durationMs ? ` (${tc.durationMs}ms)` : '')
-  }
-  if (tc.toolCallName === 'web_search') {
-    return `${tc.output.resultCount ?? 0} 条结果` + (tc.durationMs ? ` (${tc.durationMs}ms)` : '')
   }
   return ''
 }

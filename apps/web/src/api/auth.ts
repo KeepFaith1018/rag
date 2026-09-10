@@ -63,6 +63,25 @@ export function refreshToken(data: RefreshPayload) {
   });
 }
 
+export function logout() {
+  return apiRequest<MessageResponse>({
+    url: "/auth/logout",
+    method: "POST",
+    skipRefreshRetry: true,
+  });
+}
+
+export function changePassword(data: {
+  old_password: string;
+  new_password: string;
+}) {
+  return apiRequest<MessageResponse>({
+    url: "/users/me/password",
+    method: "POST",
+    body: data,
+  });
+}
+
 /**
  * 通过邮箱验证码重置密码。
  */
@@ -89,7 +108,7 @@ export function getCurrentUser() {
 /**
  * 更新当前用户个人资料。
  */
-export function updateUserProfile(data: { full_name?: string; avatar_url?: string }) {
+export function updateUserProfile(data: { full_name?: string }) {
   return apiRequest<UserProfile>({
     url: "/users/me",
     method: "PATCH",

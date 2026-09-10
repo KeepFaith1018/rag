@@ -54,7 +54,6 @@ export function useAgentChat(options?: UseAgentChatOptions) {
         : chatStore.selectedModel?.configId,
       selectedKbIds: chatStore.chatMode === 'rag' ? chatStore.selectedKbIds : undefined,
       agentMode: 'multi-agent',
-      enableWebSearch: chatStore.enableWebSearch,
     };
   }
 

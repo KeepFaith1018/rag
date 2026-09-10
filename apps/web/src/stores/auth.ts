@@ -3,6 +3,8 @@ import { computed, ref } from "vue";
 import {
   getCurrentUser,
   login as loginApi,
+  logout as logoutApi,
+  changePassword as changePasswordApi,
   register as registerApi,
   resetPassword as resetPasswordApi,
   sendVerificationCode as sendVerificationCodeApi,
@@ -137,7 +139,7 @@ export const useAuthStore = defineStore("auth", () => {
   /**
    * 更新当前用户个人资料。
    */
-  async function updateProfile(payload: { full_name?: string; avatar_url?: string }) {
+  async function updateProfile(payload: { full_name?: string }) {
     const profile = await updateUserProfile(payload);
     user.value = profile;
     return profile;
@@ -155,8 +157,24 @@ export const useAuthStore = defineStore("auth", () => {
   /**
    * 主动退出登录。
    */
-  function logout() {
+  async function logout() {
+    try {
+      await logoutApi();
+      return true;
+    } catch {
+      return false;
+    } finally {
+      clearAuthState();
+    }
+  }
+
+  async function changePassword(payload: {
+    old_password: string;
+    new_password: string;
+  }) {
+    const result = await changePasswordApi(payload);
     clearAuthState();
+    return result;
   }
 
   return {
@@ -177,5 +195,6 @@ export const useAuthStore = defineStore("auth", () => {
     updateProfile,
     updateAvatar,
     logout,
+    changePassword,
   };
 });

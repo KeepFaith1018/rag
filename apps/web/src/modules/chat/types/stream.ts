@@ -16,7 +16,7 @@ export type StepName =
   | 'writer';
 
 /** Tool 名称 */
-export type ToolCallName = 'search_knowledge_base' | 'web_search';
+export type ToolCallName = 'search_knowledge_base';
 
 // ── 运行生命周期 ──
 
@@ -170,7 +170,7 @@ export interface Citation {
 /** Agent 警告（兼容旧组件） */
 export interface AgentWarningPart {
   type: 'agent-warning';
-  code: 'LOW_CONFIDENCE' | 'PARTIAL_ANSWER' | 'WEB_SEARCH_CANDIDATE' | 'INSUFFICIENT_CONTEXT' | 'USER_CANCELLED';
+  code: 'LOW_CONFIDENCE' | 'PARTIAL_ANSWER' | 'INSUFFICIENT_CONTEXT' | 'USER_CANCELLED';
   message: string;
 }
 

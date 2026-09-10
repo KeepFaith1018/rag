@@ -1,7 +1,7 @@
 /**
  * 知识库可见性。
  */
-export type KnowledgeBaseVisibility = "private" | "shared";
+export type KnowledgeBaseVisibility = "private" | "collaborative" | "public";
 
 /**
  * 我的知识库列表归属视图。
@@ -109,8 +109,6 @@ export interface KnowledgeBaseListItem {
   name: string;
   description: string | null;
   visibility: KnowledgeBaseVisibility;
-  status: string;
-  isPublic: boolean;
   allowPublicDownload: boolean;
   ownerId: string;
   documentCount: number;
@@ -142,7 +140,6 @@ export interface CreateKnowledgeBasePayload {
   name: string;
   description?: string;
   visibility: KnowledgeBaseVisibility;
-  isPublic?: boolean;
   allowPublicDownload?: boolean;
 }
 
@@ -153,7 +150,6 @@ export interface UpdateKnowledgeBasePayload {
   name?: string;
   description?: string;
   visibility?: KnowledgeBaseVisibility;
-  isPublic?: boolean;
   allowPublicDownload?: boolean;
 }
 
@@ -205,7 +201,6 @@ export interface KnowledgeBaseInvitationInviter {
 export interface KnowledgeBaseInvitationItem {
   id: string;
   kbId: string;
-  inviteCode: string;
   role: KnowledgeBaseMemberRole;
   status: KnowledgeBaseInvitationStatus;
   expiresAt: string;
@@ -259,7 +254,6 @@ export interface JoinKnowledgeBasePayload {
  */
 export interface JoinKnowledgeBaseResponse {
   kbId: string;
-  inviteCode: string;
   joined: boolean;
   role: KnowledgeBaseMemberRole;
 }
@@ -380,8 +374,7 @@ export interface KnowledgeBaseDocumentListResponse {
 /**
  * 文档详情响应。
  */
-export interface KnowledgeBaseDocumentDetail
-  extends KnowledgeBaseDocumentItem {
+export interface KnowledgeBaseDocumentDetail extends KnowledgeBaseDocumentItem {
   processingOverview: KnowledgeBaseDocumentProcessingOverview;
   recentProcessingTasks: KnowledgeBaseDocumentProcessingTask[];
   kbPermission: KnowledgeBasePermissionContext;

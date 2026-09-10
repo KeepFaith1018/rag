@@ -93,7 +93,10 @@ const handleLogin = async () => {
     message.success("登录成功");
 
     const redirect =
-      typeof route.query.redirect === "string" ? route.query.redirect : "/chat";
+      typeof route.query.redirect === "string" &&
+      !route.query.redirect.startsWith("/chat")
+        ? route.query.redirect
+        : "/kb";
 
     await router.replace(redirect);
   } catch (error) {
@@ -268,17 +271,16 @@ function validatePassword(value: string, fieldName: string) {
     return `请输入${fieldName}`;
   }
 
-  if (value.length < 6) {
-    return `${fieldName}至少需要 6 位字符`;
+  if (value.length < 8) {
+    return `${fieldName}至少需要 8 位字符`;
   }
 
-  if (value.length > 50) {
-    return `${fieldName}长度不能超过 50 位字符`;
+  if (value.length > 128) {
+    return `${fieldName}长度不能超过 128 位字符`;
   }
 
   return "";
 }
-/**
 /**
  * 统一提取接口错误提示。
  */

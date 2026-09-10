@@ -1,7 +1,7 @@
 /**
  * 聊天配置 Store
  *
- * 管理对话模式、模型选择、知识库选择、联网搜索等 UI 配置状态。
+ * 管理对话模式、模型选择、知识库选择等 UI 配置状态。
  */
 import { defineStore } from 'pinia';
 import { computed, ref } from 'vue';
@@ -25,7 +25,6 @@ export interface AvailableModel {
 export const useChatConfigStore = defineStore('chat-config', () => {
   // ── 模式 ──
   const chatMode = ref<ChatMode>('rag');
-  const enableWebSearch = ref(false);
 
   // ── 知识库 ──
   const availableKbs = ref<AvailableKb[]>([]);
@@ -45,10 +44,6 @@ export const useChatConfigStore = defineStore('chat-config', () => {
 
   function setChatMode(mode: ChatMode) {
     chatMode.value = mode;
-  }
-
-  function toggleWebSearch() {
-    enableWebSearch.value = !enableWebSearch.value;
   }
 
   function setAvailableKbs(kbs: AvailableKb[]) {
@@ -87,7 +82,6 @@ export const useChatConfigStore = defineStore('chat-config', () => {
   return {
     // state
     chatMode,
-    enableWebSearch,
     availableKbs,
     selectedKbIds,
     availableModels,
@@ -98,7 +92,6 @@ export const useChatConfigStore = defineStore('chat-config', () => {
     isKbSelected,
     // actions
     setChatMode,
-    toggleWebSearch,
     setAvailableKbs,
     toggleKb,
     setSelectedKbIds,

@@ -4,7 +4,6 @@
 export const VerificationPurpose = {
   REGISTER: 1,
   RESET_PASSWORD: 2,
-  LOGIN: 3,
 } as const;
 
 export type VerificationPurpose =

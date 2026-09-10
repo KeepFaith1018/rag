@@ -53,15 +53,26 @@ function setFilter(filter: VisibilityFilter) {
         私有
       </button>
       <button
-        @click="setFilter('shared')"
+        @click="setFilter('collaborative')"
         :class="[
           'px-5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none',
-          props.modelValue === 'shared'
+          props.modelValue === 'collaborative'
             ? 'bg-surface-container-high text-on-surface shadow-md'
             : 'text-outline hover:text-on-surface',
         ]"
       >
-        共享
+        协作
+      </button>
+      <button
+        @click="setFilter('public')"
+        :class="[
+          'px-5 py-1.5 rounded-lg text-sm font-medium transition-all duration-200 focus:outline-none',
+          props.modelValue === 'public'
+            ? 'bg-surface-container-high text-on-surface shadow-md'
+            : 'text-outline hover:text-on-surface',
+        ]"
+      >
+        公开
       </button>
     </div>
 

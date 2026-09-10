@@ -49,7 +49,7 @@ export const useChatStore = defineStore('chat', () => {
 
   // ─── Config 代理 ───────────────────────────────────────────
 
-  const { chatMode, selectedKbIds, selectedKbCount, enableWebSearch } = storeToRefs(configStore);
+  const { chatMode, selectedKbIds, selectedKbCount } = storeToRefs(configStore);
   // 使用 toRef 而非直接取值，保持双向响应式绑定
   const lastUserMessage = toRef(configStore, 'lastUserMessage') as Ref<string>;
 
@@ -193,10 +193,6 @@ export const useChatStore = defineStore('chat', () => {
     configStore.toggleKb(kbId);
   }
 
-  function toggleWebSearch() {
-    configStore.toggleWebSearch();
-  }
-
   function setAvailableKbs(kbs: AvailableKb[]) {
     configStore.setAvailableKbs(kbs);
   }
@@ -263,7 +259,6 @@ export const useChatStore = defineStore('chat', () => {
     selectedModel,
     availableKbs,
     availableModels,
-    enableWebSearch,
     // citation actions
     setCitations,
     appendCitations,
@@ -299,7 +294,6 @@ export const useChatStore = defineStore('chat', () => {
     setChatMode,
     setSelectedKbIds,
     toggleKb,
-    toggleWebSearch,
     setAvailableKbs,
     setAvailableModels,
     setSelectedModel,

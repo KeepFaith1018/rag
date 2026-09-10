@@ -16,7 +16,7 @@ import {
 
 export const API_BASE_URL =
   (import.meta.env.VITE_API_BASE_URL as string | undefined)?.trim() ||
-  "http://localhost:3000/api";
+  "http://localhost:3001/api";
 
 type AuthFailureHandler = () => void | Promise<void>;
 
@@ -48,9 +48,9 @@ function pendingKey(url: string, params?: ApiQueryParams): string {
     ? Object.entries(params)
         .sort(([a], [b]) => a.localeCompare(b))
         .map(([k, v]) => `${k}=${String(v)}`)
-        .join('&')
-    : '';
-  return `${url}?${sorted}`;
+        .join("&")
+    : "";
+  return `${getAccessToken()}::${url}?${sorted}`;
 }
 
 /**
@@ -64,13 +64,21 @@ export function setApiAuthFailureHandler(handler: AuthFailureHandler | null) {
  * 统一发起 API 请求，并处理 token、刷新与错误转换。
  */
 export async function apiRequest<T>(options: ApiRequestOptions): Promise<T> {
-  const { url, params, skipAuth, skipRefreshRetry, _retry, body, method, ...rest } =
-    options;
+  const {
+    url,
+    params,
+    skipAuth,
+    skipRefreshRetry,
+    _retry,
+    body,
+    method,
+    ...rest
+  } = options;
   const requestBody = normalizeRequestBody(body);
   const requestHeaders = createHeaders(options, requestBody);
 
   // GET 请求去重（仅对非重试的首次请求生效）
-  const isGet = !method || method === 'GET';
+  const isGet = !method || method === "GET";
   const key = isGet && !_retry ? pendingKey(url, params) : null;
   if (key) {
     const pending = pendingRequests.get(key);
@@ -101,8 +109,8 @@ export async function apiRequest<T>(options: ApiRequestOptions): Promise<T> {
         signal,
       });
     } catch (error) {
-      if (error instanceof DOMException && error.name === 'TimeoutError') {
-        throw createNetworkError(new Error('请求超时'));
+      if (error instanceof DOMException && error.name === "TimeoutError") {
+        throw createNetworkError(new Error("请求超时"));
       }
       throw createNetworkError(error);
     }
@@ -123,7 +131,7 @@ export async function apiRequest<T>(options: ApiRequestOptions): Promise<T> {
       !_retry &&
       shouldRefresh(response.status, result)
     ) {
-      await ensureFreshAccessToken();
+      await ensureFreshAccessToken(extractAccessToken(requestHeaders));
       return apiRequest<T>({
         ...options,
         _retry: true,
@@ -174,7 +182,7 @@ export async function apiRequestBlob(
     !_retry &&
     shouldRefresh(response.status, result)
   ) {
-    await ensureFreshAccessToken();
+    await ensureFreshAccessToken(extractAccessToken(requestHeaders));
     return apiRequestBlob({
       ...options,
       _retry: true,
@@ -231,12 +239,8 @@ export async function apiRequestStream(
   }
 
   // 401 且未禁用刷新重试 → 刷新 token 后重试
-  if (
-    !skipAuth &&
-    !_retry &&
-    fetchResponse.status === 401
-  ) {
-    await ensureFreshAccessToken();
+  if (!skipAuth && !_retry && fetchResponse.status === 401) {
+    await ensureFreshAccessToken(extractAccessToken(requestHeaders));
     return apiRequestStream({
       ...options,
       _retry: true,
@@ -393,13 +397,15 @@ function shouldRefresh(status: number, result: ApiResult<unknown> | null) {
 /**
  * 确保全局只存在一个刷新动作，其余请求进入队列等待。
  */
-export async function ensureFreshAccessToken(): Promise<string> {
+export async function ensureFreshAccessToken(
+  staleAccessToken?: string,
+): Promise<string> {
   if (isRefreshing && refreshPromise) {
     return enqueuePendingRequest();
   }
 
   isRefreshing = true;
-  refreshPromise = refreshAccessToken();
+  refreshPromise = refreshWithCrossTabLock(staleAccessToken);
 
   try {
     const nextAccessToken = await refreshPromise;
@@ -415,6 +421,22 @@ export async function ensureFreshAccessToken(): Promise<string> {
     isRefreshing = false;
     refreshPromise = null;
   }
+}
+
+/**
+ * 记住登录时通过 Web Locks 串行化多标签页刷新；后进入者直接复用先行标签页写入的新凭证。
+ */
+async function refreshWithCrossTabLock(staleAccessToken?: string) {
+  const refresh = () => {
+    const current = getAccessToken();
+    if (staleAccessToken && current && current !== staleAccessToken)
+      return Promise.resolve(current);
+    return refreshAccessToken();
+  };
+  if (typeof navigator !== "undefined" && navigator.locks) {
+    return navigator.locks.request("linsor-server-next-token-refresh", refresh);
+  }
+  return refresh();
 }
 
 /**
@@ -494,6 +516,13 @@ function rejectPendingRequests(error: unknown) {
   pendingQueue.length = 0;
 }
 
+function extractAccessToken(headers: Headers) {
+  const authorization = headers.get("Authorization");
+  return authorization?.startsWith("Bearer ")
+    ? authorization.slice("Bearer ".length)
+    : undefined;
+}
+
 /**
  * 统一构造业务错误对象。
  */
@@ -508,12 +537,12 @@ function createApiError(status: number, result: ApiResult<unknown> | null) {
 
 /** 浏览器原生 fetch 英文错误 → 中文翻译 */
 const NETWORK_ERROR_ZH: Record<string, string> = {
-  'Failed to fetch': '无法连接到服务器，请检查网络或后端服务是否启动',
-  'NetworkError when attempting to fetch resource.': '网络错误，无法获取资源',
-  'Load failed': '加载失败',
-  'The Internet connection appears to be offline.': '网络连接已断开',
-  'Request timed out.': '请求超时',
-  'cancelled': '请求已取消',
+  "Failed to fetch": "无法连接到服务器，请检查网络或后端服务是否启动",
+  "NetworkError when attempting to fetch resource.": "网络错误，无法获取资源",
+  "Load failed": "加载失败",
+  "The Internet connection appears to be offline.": "网络连接已断开",
+  "Request timed out.": "请求超时",
+  cancelled: "请求已取消",
 };
 
 /**
@@ -523,7 +552,7 @@ function createNetworkError(error: unknown) {
   let message = "网络请求失败";
 
   if (error instanceof Error) {
-    const raw = error.message || '';
+    const raw = error.message || "";
     // 精确匹配
     if (NETWORK_ERROR_ZH[raw]) {
       message = NETWORK_ERROR_ZH[raw];

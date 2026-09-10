@@ -17,12 +17,6 @@ const warningConfig: Record<string, { label: string; icon: string; color: string
     color: 'text-blue-400',
     bg: 'bg-blue-400/10',
   },
-  WEB_SEARCH_CANDIDATE: {
-    label: '建议联网搜索',
-    icon: 'language',
-    color: 'text-purple-400',
-    bg: 'bg-purple-400/10',
-  },
   INSUFFICIENT_CONTEXT: {
     label: '上下文不足',
     icon: 'info',

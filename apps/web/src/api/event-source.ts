@@ -69,7 +69,7 @@ export async function createAuthenticatedEventSource(
       )
     ) {
       try {
-        token = await ensureFreshAccessToken();
+        token = await ensureFreshAccessToken(token);
       } catch {
         return null;
       }
@@ -83,7 +83,9 @@ export async function createAuthenticatedEventSource(
       : joinUrl(API_BASE_URL, options.path);
     const url = new URL(
       rawUrl,
-      typeof window !== "undefined" ? window.location.origin : "http://localhost",
+      typeof window !== "undefined"
+        ? window.location.origin
+        : "http://localhost",
     );
     url.searchParams.set(options.tokenParam ?? DEFAULT_TOKEN_PARAM, token);
     return url.toString();

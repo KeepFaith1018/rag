@@ -16,7 +16,6 @@ defineProps<{
 const emit = defineEmits<{
   reload: [];
   createInvitation: [role: KnowledgeBaseMemberRole];
-  copyInviteCode: [code: string];
   cancelInvitation: [inv: KnowledgeBaseInvitationItem];
   removeMember: [member: KnowledgeBaseMemberItem];
   updateRole: [member: KnowledgeBaseMemberItem, role: KnowledgeBaseMemberRole];
@@ -159,11 +158,10 @@ function confirmCreateInvitation() {
         <template v-if="invitations.length">
           <div v-for="inv in invitations" :key="inv.id" class="flex items-center justify-between py-2 border-b border-outline-variant/5 last:border-0">
             <div>
-              <span class="text-sm font-mono text-primary">{{ inv.inviteCode }}</span>
+              <span class="text-sm text-primary">有效至 {{ new Date(inv.expiresAt).toLocaleString() }}</span>
               <span class="text-xs text-outline ml-3">{{ inv.role === 'manager' ? '管理员' : inv.role === 'collaborator' ? '协作者' : '成员' }}</span>
             </div>
             <div class="flex items-center gap-2">
-              <button class="text-xs text-primary hover:underline" @click="$emit('copyInviteCode', inv.inviteCode)">复制</button>
               <button class="text-xs text-error hover:underline" @click="$emit('cancelInvitation', inv)">取消</button>
             </div>
           </div>

@@ -86,7 +86,6 @@ export interface StreamChatRequest {
   modelConfigId?: string;
   selectedKbIds?: string[];
   agentMode?: 'multi-agent';
-  enableWebSearch?: boolean;
   metadata?: Record<string, unknown>;
 }
 

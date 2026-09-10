@@ -8,9 +8,7 @@ defineProps<{
   /** 知识库描述 */
   description: string;
   /** 可见性 */
-  visibility: "private" | "shared";
-  /** 是否公开 */
-  isPublic: boolean;
+  visibility: "private" | "collaborative" | "public";
   /** 是否允许公开下载 */
   allowPublicDownload: boolean;
   /** 错误信息 */
@@ -44,18 +42,15 @@ defineProps<{
           <label class="text-sm font-medium text-on-surface mb-2 block">可见性</label>
           <div class="flex gap-3">
             <button class="flex-1 py-3 rounded-xl text-sm font-medium border transition-colors" :class="visibility === 'private' ? 'border-primary bg-primary/10 text-primary' : 'border-outline-variant/15 text-outline'" @click="$emit('update:visibility', 'private')">私有</button>
-            <button class="flex-1 py-3 rounded-xl text-sm font-medium border transition-colors" :class="visibility === 'shared' ? 'border-primary bg-primary/10 text-primary' : 'border-outline-variant/15 text-outline'" @click="$emit('update:visibility', 'shared')">共享</button>
+            <button class="flex-1 py-3 rounded-xl text-sm font-medium border transition-colors" :class="visibility === 'collaborative' ? 'border-primary bg-primary/10 text-primary' : 'border-outline-variant/15 text-outline'" @click="$emit('update:visibility', 'collaborative')">协作</button>
+            <button class="flex-1 py-3 rounded-xl text-sm font-medium border transition-colors" :class="visibility === 'public' ? 'border-primary bg-primary/10 text-primary' : 'border-outline-variant/15 text-outline'" @click="$emit('update:visibility', 'public')">公开</button>
           </div>
         </div>
-        <!-- 公开选项 (仅共享) -->
-        <template v-if="visibility === 'shared'">
-          <div class="flex items-center justify-between">
-            <span class="text-sm">公开访问</span>
-            <input type="checkbox" :checked="isPublic" :disabled="visibility !== 'shared'" @change="$emit('update:isPublic', ($event.target as HTMLInputElement).checked)" />
-          </div>
+        <!-- 公开选项 -->
+        <template v-if="visibility === 'public'">
           <div class="flex items-center justify-between">
             <span class="text-sm">允许公开下载</span>
-            <input type="checkbox" :checked="allowPublicDownload" :disabled="visibility !== 'shared'" @change="$emit('update:allowPublicDownload', ($event.target as HTMLInputElement).checked)" />
+            <input type="checkbox" :checked="allowPublicDownload" @change="$emit('update:allowPublicDownload', ($event.target as HTMLInputElement).checked)" />
           </div>
         </template>
       </div>

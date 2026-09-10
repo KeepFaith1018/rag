@@ -70,7 +70,6 @@ export function stepOutputSummary(step: { stepName: string; output?: Record<stri
 /** 工具图标和标签映射 */
 export const TOOL_META: Record<string, { icon: string; label: string }> = {
   search_knowledge_base: { icon: 'search', label: '知识库检索' },
-  web_search: { icon: 'language', label: '联网搜索' },
 };
 
 /** 工具名 → 图标 + 标签 */
@@ -84,10 +83,6 @@ export function toolOutputSummary(tc: AguiToolCallRecord): string {
   if (tc.toolCallName === 'search_knowledge_base') {
     const out = tc.output as Record<string, unknown>;
     return `检索到 ${out.hitCount ?? 0} 条结果${tc.durationMs ? ` (${tc.durationMs}ms)` : ''}`;
-  }
-  if (tc.toolCallName === 'web_search') {
-    const out = tc.output as Record<string, unknown>;
-    return `${out.resultCount ?? 0} 条结果${tc.durationMs ? ` (${tc.durationMs}ms)` : ''}`;
   }
   return '';
 }

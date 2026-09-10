@@ -1,5 +1,5 @@
-const ACCESS_TOKEN_KEY = "rag_kb_access_token";
-const REFRESH_TOKEN_KEY = "rag_kb_refresh_token";
+const ACCESS_TOKEN_KEY = "linsor_server_next_access_token";
+const REFRESH_TOKEN_KEY = "linsor_server_next_refresh_token";
 
 let accessTokenMemory = "";
 
@@ -18,20 +18,29 @@ export function getAccessToken(): string {
     return accessTokenMemory;
   }
 
-  return accessTokenMemory || sessionStorage.getItem(ACCESS_TOKEN_KEY) || "";
+  return (
+    localStorage.getItem(ACCESS_TOKEN_KEY) ||
+    sessionStorage.getItem(ACCESS_TOKEN_KEY) ||
+    accessTokenMemory ||
+    ""
+  );
 }
 
 /**
  * 设置 accessToken，同时写入内存与 sessionStorage。
  */
-export function setAccessToken(token: string) {
+export function setAccessToken(token: string, rememberMe?: boolean) {
   accessTokenMemory = token;
 
   if (!canUseStorage()) {
     return;
   }
 
-  sessionStorage.setItem(ACCESS_TOKEN_KEY, token);
+  const persist =
+    rememberMe ?? localStorage.getItem(REFRESH_TOKEN_KEY) !== null;
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
+  sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+  (persist ? localStorage : sessionStorage).setItem(ACCESS_TOKEN_KEY, token);
 }
 
 /**
@@ -77,8 +86,8 @@ export function setTokens(
   refreshToken: string,
   rememberMe = true,
 ) {
-  setAccessToken(accessToken);
   setRefreshToken(refreshToken, rememberMe);
+  setAccessToken(accessToken, rememberMe);
 }
 
 /**
@@ -92,6 +101,7 @@ export function clearTokens() {
   }
 
   sessionStorage.removeItem(ACCESS_TOKEN_KEY);
+  localStorage.removeItem(ACCESS_TOKEN_KEY);
   localStorage.removeItem(REFRESH_TOKEN_KEY);
   sessionStorage.removeItem(REFRESH_TOKEN_KEY);
 }

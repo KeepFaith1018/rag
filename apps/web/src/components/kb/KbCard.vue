@@ -34,7 +34,11 @@ const roleLabel = computed(() => {
  * 类型文案。
  */
 const visibilityLabel = computed(() =>
-  props.kb.visibility === "private" ? "私有" : "共享",
+  props.kb.visibility === "private"
+    ? "私有"
+    : props.kb.visibility === "collaborative"
+      ? "协作"
+      : "公开",
 );
 
 /**
@@ -45,7 +49,7 @@ const iconName = computed(() => {
     return "lock";
   }
 
-  return props.kb.isPublic ? "public" : "groups";
+  return props.kb.visibility === "public" ? "public" : "groups";
 });
 
 /**
@@ -112,16 +116,24 @@ function handleDelete() {
         <div
           class="w-12 h-12 rounded-xl flex items-center justify-center transition-transform group-hover:-translate-y-1 duration-300 shadow-sm icon-shell shrink-0"
         >
-          <span class="material-symbols-outlined icon-filled icon-mark text-[1.35rem]">
+          <span
+            class="material-symbols-outlined icon-filled icon-mark text-[1.35rem]"
+          >
             {{ iconName }}
           </span>
         </div>
         <div class="min-w-0 flex-1 pt-0.5">
-          <div v-if="!props.hideChips" class="flex flex-wrap items-center gap-2 mb-3">
+          <div
+            v-if="!props.hideChips"
+            class="flex flex-wrap items-center gap-2 mb-3"
+          >
             <span class="kb-chip">
               {{ visibilityLabel }}
             </span>
-            <span v-if="props.kb.isPublic" class="kb-chip kb-chip-public">
+            <span
+              v-if="props.kb.visibility === 'public'"
+              class="kb-chip kb-chip-public"
+            >
               公开
             </span>
             <span class="kb-chip kb-chip-role">
@@ -133,8 +145,13 @@ function handleDelete() {
           >
             {{ props.kb.name }}
           </h3>
-          <p class="text-xs text-on-surface-variant mt-1.5 leading-relaxed min-h-[2.5rem] line-clamp-2">
-            {{ props.kb.description || "暂无知识库说明，进入详情页后可继续完善描述与权限配置。" }}
+          <p
+            class="text-xs text-on-surface-variant mt-1.5 leading-relaxed min-h-[2.5rem] line-clamp-2"
+          >
+            {{
+              props.kb.description ||
+              "暂无知识库说明，进入详情页后可继续完善描述与权限配置。"
+            }}
           </p>
         </div>
       </div>
@@ -162,17 +179,23 @@ function handleDelete() {
     <div class="space-y-4">
       <div
         class="grid gap-3"
-        :class="props.kb.visibility === 'private' ? 'grid-cols-1' : 'grid-cols-2'"
+        :class="
+          props.kb.visibility === 'private' ? 'grid-cols-1' : 'grid-cols-2'
+        "
       >
         <div class="metric-card">
-          <span class="material-symbols-outlined text-[14px] text-outline">description</span>
+          <span class="material-symbols-outlined text-[14px] text-outline"
+            >description</span
+          >
           <div>
             <span class="metric-value">{{ props.kb.documentCount }}</span>
             <span class="metric-label">文档</span>
           </div>
         </div>
         <div v-if="props.kb.visibility !== 'private'" class="metric-card">
-          <span class="material-symbols-outlined text-[14px] text-outline">group</span>
+          <span class="material-symbols-outlined text-[14px] text-outline"
+            >group</span
+          >
           <div>
             <span class="metric-value">{{ props.kb.memberCount }}</span>
             <span class="metric-label">成员</span>
@@ -197,14 +220,18 @@ function handleDelete() {
       <div
         class="flex items-center justify-between pt-4 border-t border-outline-variant/10"
       >
-        <span class="text-[10px] font-label text-outline/80 uppercase tracking-wider">
+        <span
+          class="text-[10px] font-label text-outline/80 uppercase tracking-wider"
+        >
           创建于 {{ formatDate(props.kb.createdAt) }}
         </span>
         <span
           class="inline-flex items-center gap-1 text-xs text-primary group-hover:translate-x-0.5 transition-transform"
         >
           查看详情
-          <span class="material-symbols-outlined text-[15px]">arrow_forward</span>
+          <span class="material-symbols-outlined text-[15px]"
+            >arrow_forward</span
+          >
         </span>
       </div>
     </div>
@@ -270,8 +297,13 @@ function handleDelete() {
   align-items: center;
   gap: 0.75rem;
   border-radius: 0.9rem;
-  border: 1px solid color-mix(in srgb, var(--color-outline-variant) 14%, transparent);
-  background: color-mix(in srgb, var(--color-surface-container-high) 72%, transparent);
+  border: 1px solid
+    color-mix(in srgb, var(--color-outline-variant) 14%, transparent);
+  background: color-mix(
+    in srgb,
+    var(--color-surface-container-high) 72%,
+    transparent
+  );
   padding: 0.75rem 1rem;
 }
 

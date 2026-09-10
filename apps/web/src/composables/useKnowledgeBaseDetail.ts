@@ -94,7 +94,7 @@ export function useKnowledgeBaseDetail() {
    * 同时刷新详情与文档区。
    */
   async function reload(kbId: string) {
-    await Promise.all([fetchKnowledgeBase(kbId), fetchDocuments(kbId)]);
+    await fetchKnowledgeBase(kbId);
   }
 
   /**

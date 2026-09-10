@@ -115,23 +115,9 @@ function handleCancel() {
         </span>
       </div>
 
-      <!-- 右侧：模型 + 联网 + 发送（贴近排列） -->
+      <!-- 右侧：模型 + 发送（贴近排列） -->
       <div class="flex items-center gap-1 flex-shrink-0">
         <ChatModelSelector />
-        <button
-          :class="[
-            'flex items-center gap-1 px-2 py-1.5 rounded-lg text-xs font-medium transition-all focus:outline-none',
-            chatStore.enableWebSearch
-              ? 'bg-primary/10 text-primary border border-primary/30'
-              : 'text-outline hover:text-on-surface border border-transparent hover:bg-surface-container-high',
-          ]"
-          title="联网搜索"
-          @click="chatStore.toggleWebSearch()"
-        >
-          <span class="material-symbols-outlined text-base">language</span>
-          <span>联网</span>
-        </button>
-
         <!-- 发送 / 取消 -->
         <template v-if="isStreaming">
           <button
