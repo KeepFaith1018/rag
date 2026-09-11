@@ -1,20 +1,15 @@
-/**
- * 前端上传流程状态定义。
- */
 export type UploadLifecycleStatus =
-  | "idle"
+  | "queued"
   | "hashing"
   | "initializing"
   | "uploading"
+  | "completing"
   | "paused"
-  | "merging"
   | "completed"
   | "instantCompleted"
+  | "cancelled"
   | "failed";
 
-/**
- * 单个文件分片的前端描述结构。
- */
 export interface FileChunkItem {
   index: number;
   start: number;
@@ -23,98 +18,101 @@ export interface FileChunkItem {
   blob: Blob;
 }
 
-/**
- * 初始化上传请求参数。
- */
+export interface UploadPartSnapshot {
+  partNumber: number;
+  size: number | null;
+  etag: string | null;
+}
+
 export interface InitUploadPayload {
   fileName: string;
   title?: string;
   fileSize: number;
-  mimeType?: string;
-  fileHash: string;
-  chunkSize: number;
-  totalChunks: number;
+  mimeType: string;
+  clientSha256: string;
 }
 
-/**
- * 初始化上传响应结构。
- */
+export interface UploadSessionSnapshot {
+  sessionId: string;
+  status: string;
+  uploadId: string | null;
+  fileName: string;
+  fileSize: string;
+  partSize: number;
+  totalParts: number;
+  uploadedParts: UploadPartSnapshot[];
+  missingParts: number[];
+  uploadedBytes: string;
+  expiresAt: string;
+  documentId: string | null;
+}
+
 export interface InitUploadResult {
-  kbId: string;
+  isInstantUploaded: boolean;
+  deduplicated: boolean;
   uploadId: string | null;
   documentId: string | null;
-  isInstantUploaded: boolean;
-  chunkSize: number;
-  totalChunks: number;
-  uploadedChunks: number[];
-  status: string;
+  document?: {
+    id: string;
+    title: string;
+    status: string;
+    processingDeferred: boolean;
+    searchable: boolean;
+  };
+  sessionId?: string;
+  status?: string;
+  fileName?: string;
+  fileSize?: string;
+  partSize?: number;
+  totalParts?: number;
+  uploadedParts?: UploadPartSnapshot[];
+  missingParts?: number[];
+  uploadedBytes?: string;
+  expiresAt?: string;
 }
 
-/**
- * 上传分片响应结构。
- */
-export interface UploadChunkResult {
-  kbId: string;
-  uploadId: string;
-  chunkIndex: number;
-  uploadedCount: number;
-  totalChunks: number;
-  status: string;
+export interface SignedPartResult {
+  sessionId: string;
+  partNumber: number;
+  expectedSize: number;
+  uploadUrl: string;
+  expiresInSeconds: number;
 }
 
-/**
- * 上传状态查询响应结构。
- */
-export interface UploadStatusResult {
-  kbId: string;
-  uploadId: string;
-  status: string;
-  uploadedChunks: number[];
-  missingChunks: number[];
-  uploadedCount: number;
-  totalChunks: number;
-  chunkSize: number;
-  isExpired: boolean;
-  documentId: string | null;
-}
+export interface UploadStatusResult extends UploadSessionSnapshot {}
 
-/**
- * 完成上传响应结构。
- */
 export interface CompleteUploadResult {
-  kbId: string;
-  uploadId: string;
-  documentId: string;
-  status: string;
   isInstantUploaded: boolean;
+  deduplicated: boolean;
+  uploadId: string | null;
+  documentId: string;
+  document: InitUploadResult["document"];
 }
 
-/**
- * 组合式上传状态快照。
- */
+export interface PersistedUploadTaskSnapshot {
+  kbId: string;
+  sessionId: string | null;
+  fileName: string;
+  fileSize: number;
+  fileSha256: string;
+  partSize: number;
+  totalParts: number;
+  status: UploadLifecycleStatus;
+  recentError: string | null;
+}
+
 export interface ChunkUploadState {
   status: UploadLifecycleStatus;
   progress: number;
+  uploadedBytes: number;
+  totalBytes: number;
   kbId: string;
   fileName: string;
-  fileHash: string;
-  uploadId: string | null;
+  fileSha256: string;
+  sessionId: string | null;
   documentId: string | null;
-  uploadedChunks: number[];
-  totalChunks: number;
-  chunkSize: number;
+  uploadedParts: number;
+  totalParts: number;
+  partSize: number;
   errorMessage: string;
-}
-
-/**
- * 用于本地持久化的上传任务快照。
- */
-export interface PersistedUploadTaskSnapshot {
-  kbId: string;
-  fileName: string;
-  fileHash: string;
-  uploadId: string;
-  totalChunks: number;
-  chunkSize: number;
-  title?: string;
 }

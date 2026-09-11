@@ -2,6 +2,10 @@ import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { WorkerModule } from './worker.module';
 import { AppLogger } from './platform/observability/app-logger.service';
+import {
+  shouldIncludeStack,
+  writeStartupFailure,
+} from './platform/observability/startup-log';
 
 /**
  * 启动不监听 HTTP 端口的 Worker 应用上下文。
@@ -19,12 +23,17 @@ async function bootstrap() {
     .log('Worker context started; no business consumers registered in P1');
 }
 
-void bootstrap().catch(() => {
+void bootstrap().catch((error) => {
   /**
-   * 与 API 启动失败策略一致，不直接输出可能包含基础设施凭证的原始异常。
+   * 与 API 启动失败策略一致：开发环境在终端和日志文件显示堆栈，生产环境不记录原始异常。
    */
-  process.stderr.write(
-    'Worker startup failed; check configuration and infrastructure connectivity.\n',
-  );
+  const message =
+    'Worker startup failed; check configuration and infrastructure connectivity.';
+  writeStartupFailure(message, error);
+  const stack =
+    shouldIncludeStack() && error instanceof Error && error.stack
+      ? `\n${error.stack}`
+      : '';
+  process.stderr.write(`${message}${stack}\n`);
   process.exit(1);
 });

@@ -41,14 +41,11 @@ export type KnowledgeBaseMemberRole = "manager" | "collaborator" | "member";
  * 文档处理状态。
  */
 export type KnowledgeBaseDocumentStatus =
-  | "pending"
-  | "uploaded"
-  | "queued"
-  | "parsing"
-  | "chunking"
-  | "embedding"
+  | "processing"
   | "ready"
-  | "failed";
+  | "failed"
+  | "deleting"
+  | "deleted";
 
 /**
  * 面向前端的知识库权限标记。
@@ -283,10 +280,10 @@ export interface ListKnowledgeBaseDocumentsQuery {
  * 文档上传者。
  */
 export interface KnowledgeBaseDocumentUploader {
-  userId: string;
+  id: string;
   email: string;
-  fullName: string;
-  avatarUrl: string | null;
+  fullName: string | null;
+  avatarUrl?: string | null;
 }
 
 /**
@@ -336,26 +333,14 @@ export interface KnowledgeBaseDocumentProcessingOverview {
  */
 export interface KnowledgeBaseDocumentItem {
   id: string;
-  kbId: string;
   title: string;
-  originalFilename: string;
-  filePath: string;
-  fileHash: string;
+  originalFilename: string | null;
+  fileExtension: string | null;
   fileSize: string;
-  fileType: string;
-  mimeType: string;
+  mimeType: string | null;
   status: KnowledgeBaseDocumentStatus | string;
-  processingVersion: number;
-  currentStage: string | null;
-  lastErrorStage: string | null;
-  retryCount: number;
-  lastErrorCode: string | null;
-  errorMessage: string | null;
-  tokenCount: number;
-  chunkCount: number;
-  parseStartedAt: string | null;
-  parseFinishedAt: string | null;
-  lastReparseAt: string | null;
+  processingDeferred: boolean;
+  searchable: boolean;
   createdAt: string;
   updatedAt: string;
   uploader: KnowledgeBaseDocumentUploader | null;
@@ -366,7 +351,6 @@ export interface KnowledgeBaseDocumentItem {
  */
 export interface KnowledgeBaseDocumentListResponse {
   kbId: string;
-  kbPermission: KnowledgeBasePermissionContext;
   list: KnowledgeBaseDocumentItem[];
   pagination: PaginationPayload;
 }
@@ -374,8 +358,4 @@ export interface KnowledgeBaseDocumentListResponse {
 /**
  * 文档详情响应。
  */
-export interface KnowledgeBaseDocumentDetail extends KnowledgeBaseDocumentItem {
-  processingOverview: KnowledgeBaseDocumentProcessingOverview;
-  recentProcessingTasks: KnowledgeBaseDocumentProcessingTask[];
-  kbPermission: KnowledgeBasePermissionContext;
-}
+export type KnowledgeBaseDocumentDetail = KnowledgeBaseDocumentItem;

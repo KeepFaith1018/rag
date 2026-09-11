@@ -28,7 +28,7 @@ const error = ref('')
 
 // 响应式文件类型解析：fileType > 文件名扩展名
 const resolvedType = computed(() => {
-  const ft = (props.fileType || '').toLowerCase()
+  const ft = (props.fileType || '').toLowerCase().replace(/^\./, '')
   if (ft === 'pdf' || ft === 'md' || ft === 'txt') return ft
   const ext = (props.fileName || '').split('.').pop()?.toLowerCase() || ''
   if (ext === 'markdown') return 'md'

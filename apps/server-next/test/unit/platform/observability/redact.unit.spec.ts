@@ -16,6 +16,14 @@ describe('logging context and redaction', () => {
       expect(output).not.toContain(secret);
     expect(output).toContain('REDACTED');
   });
+  it('includes error diagnostics only when explicitly enabled', () => {
+    const error = new Error('development failure');
+    const output = redact(error, new WeakSet<object>(), {
+      includeStack: true,
+    }) as { message: string; stack: string };
+    expect(output.message).toBe('development failure');
+    expect(output.stack).toContain('Error: development failure');
+  });
   it('keeps concurrent request/task context separate', async () => {
     const context = new ExecutionContextStore();
     const results = await Promise.all(

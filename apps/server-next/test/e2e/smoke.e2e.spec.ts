@@ -9,7 +9,6 @@ import { cleanupTestRun } from '../support/cleanup';
 import { createTestVerificationCode } from '../support/test-verification';
 import { configureTestEnvironment, createTestRun } from '../support/test-run';
 import { TestHttpClient } from '../support/test-http';
-import { prepareTestStorage } from '../support/test-storage';
 
 interface Envelope<T> {
   success: boolean;
@@ -35,7 +34,6 @@ describe('server-next smoke flow', () => {
   let client: TestHttpClient;
 
   beforeAll(async () => {
-    await prepareTestStorage(run);
     const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();

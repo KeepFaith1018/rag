@@ -30,6 +30,27 @@ export class RuntimeConfig {
     return this.config.getOrThrow<string>('LOG_LEVEL');
   }
 
+  get environment() {
+    return this.config.getOrThrow<'development' | 'test' | 'production'>(
+      'NODE_ENV',
+    );
+  }
+
+  get logging() {
+    const configuredIncludeStack =
+      this.config.get<boolean>('LOG_INCLUDE_STACK');
+    return {
+      level: this.logLevel,
+      includeStack:
+        this.environment === 'production'
+          ? false
+          : (configuredIncludeStack ?? this.environment === 'development'),
+      fileEnabled: this.config.getOrThrow<boolean>('LOG_FILE_ENABLED'),
+      directory: this.config.getOrThrow<string>('LOG_DIRECTORY'),
+      retentionDays: this.config.getOrThrow<number>('LOG_FILE_RETENTION_DAYS'),
+    };
+  }
+
   get redis() {
     return {
       url: this.config.getOrThrow<string>('REDIS_URL'),
@@ -82,8 +103,21 @@ export class RuntimeConfig {
 
   get avatar() {
     return {
-      directory: this.config.getOrThrow<string>('AVATAR_STORAGE_DIR'),
       maxBytes: this.config.getOrThrow<number>('AVATAR_MAX_BYTES'),
+    };
+  }
+
+  get documentStorage() {
+    return {
+      endpoint: this.config.getOrThrow<string>('DOCUMENT_STORAGE_ENDPOINT'),
+      accessKey: this.config.getOrThrow<string>('DOCUMENT_STORAGE_ACCESS_KEY'),
+      secretKey: this.config.getOrThrow<string>('DOCUMENT_STORAGE_SECRET_KEY'),
+      bucket: this.config.getOrThrow<string>('DOCUMENT_STORAGE_BUCKET'),
+      region: this.config.getOrThrow<string>('DOCUMENT_STORAGE_REGION'),
+      partSize: this.config.getOrThrow<number>('DOCUMENT_STORAGE_PART_SIZE'),
+      sessionTtlSeconds: this.config.getOrThrow<number>(
+        'DOCUMENT_STORAGE_SESSION_TTL_SECONDS',
+      ),
     };
   }
 }

@@ -150,12 +150,16 @@ services:
       MINIO_ROOT_USER: ${MINIO_ROOT_USER:-rag_minio}
       MINIO_ROOT_PASSWORD: ${MINIO_ROOT_PASSWORD:-rag_minio}
       MINIO_BUCKET_NAME: ${MINIO_BUCKET_NAME:-rag-kb}
+      MINIO_CORS_FILE: /tmp/minio-cors.xml
+    volumes:
+      - ./deploy/minio/cors.xml:/tmp/minio-cors.xml:ro
     entrypoint:
       - /bin/sh
       - -c
       - >-
         mc alias set local http://minio:9000 "$${MINIO_ROOT_USER}" "$${MINIO_ROOT_PASSWORD}" &&
-        mc mb --ignore-existing "local/$${MINIO_BUCKET_NAME}"
+        mc mb --ignore-existing "local/$${MINIO_BUCKET_NAME}" &&
+        mc cors set "local/$${MINIO_BUCKET_NAME}" "$${MINIO_CORS_FILE}"
     networks:
       - rag_network
 

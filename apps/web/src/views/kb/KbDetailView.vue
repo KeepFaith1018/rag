@@ -9,6 +9,7 @@ import { useKnowledgeBaseDetail } from "@/composables/useKnowledgeBaseDetail";
 import { useKbMembers } from "@/composables/useKbMembers";
 import { useMessage } from "@/composables/useMessage";
 import { useGlobalConfirmDialog } from "@/composables/useGlobalConfirmDialog";
+import { useUploadQueue } from "@/modules/document-upload/composables/useUploadQueue";
 import {
   joinKnowledgeBaseByInvite,
   joinPublicKnowledgeBase,
@@ -16,12 +17,16 @@ import {
 } from "@/api/kb-member";
 import KbMemberPanel from "./KbMemberPanel.vue";
 import KbSettingsPanel from "./KbSettingsPanel.vue";
+import KbDocumentPanel from "./KbDocumentPanel.vue";
+import DocumentPreviewModal from "@/components/document/DocumentPreviewModal.vue";
 import { ApiError } from "@/types/api";
 import type {
   KnowledgeBaseDetail,
   KnowledgeBaseInvitationItem,
   KnowledgeBaseMemberItem,
   KnowledgeBaseMemberRole,
+  KnowledgeBaseDocumentItem,
+  KnowledgeBaseDocumentStatus,
 } from "@/types/knowledge-base";
 
 const router = useRouter();
@@ -33,6 +38,9 @@ const activeTab = ref<"overview" | "members" | "settings">("overview");
 
 const documentView = useKnowledgeBaseDetail();
 const memberView = useKbMembers();
+const uploadQueue = useUploadQueue();
+const fileInput = ref<HTMLInputElement | null>(null);
+const previewDocument = ref<KnowledgeBaseDocumentItem | null>(null);
 
 const settingsForm = reactive({
   name: "",
@@ -117,6 +125,14 @@ watch(
   { immediate: true },
 );
 
+uploadQueue.setCompletedHandler(() => {
+  if (!kbId.value) return;
+  void Promise.all([
+    documentView.fetchKnowledgeBase(kbId.value),
+    documentView.fetchDocuments(kbId.value),
+  ]);
+});
+
 watch(
   () => settingsForm.visibility,
   (val) => {
@@ -128,6 +144,89 @@ watch(
 
 function goBack() {
   router.back();
+}
+
+function openFilePicker() {
+  fileInput.value?.click();
+}
+
+function handleFileInput(event: Event) {
+  const input = event.target as HTMLInputElement;
+  if (input.files?.length) handleFiles(input.files);
+  input.value = "";
+}
+
+function handleFiles(files: FileList | File[]) {
+  const accepted = [".pdf", ".doc", ".docx", ".txt", ".md"];
+  const valid = Array.from(files).filter((file) => {
+    const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
+    if (!accepted.includes(extension)) {
+      message.error(`${file.name}：不支持的文件类型`);
+      return false;
+    }
+    if (file.size < 1 || file.size > 20 * 1024 * 1024) {
+      message.error(`${file.name}：文件必须大于 0 且不超过 20MB`);
+      return false;
+    }
+    return true;
+  });
+  if (valid.length) uploadQueue.enqueue(valid, kbId.value);
+}
+
+function setDocumentStatus(status: KnowledgeBaseDocumentStatus | "all") {
+  documentView.documentQuery.status = status;
+  documentView.documentPagination.page = 1;
+  void documentView.fetchDocuments(kbId.value);
+}
+
+function searchDocuments(keyword: string) {
+  documentView.documentQuery.keyword = keyword;
+  documentView.documentPagination.page = 1;
+  void documentView.fetchDocuments(kbId.value);
+}
+
+async function removeDocument(document: KnowledgeBaseDocumentItem) {
+  const confirmed = await confirm({
+    title: "删除文档",
+    message: `确认删除文档“${document.title}”吗？源文件也会被清理。`,
+  });
+  if (!confirmed) return;
+  try {
+    await documentView.removeDocument(kbId.value, document.id);
+    message.success("文档已删除");
+    await documentView.fetchKnowledgeBase(kbId.value);
+  } catch (error) {
+    message.error(resolveErrorMessage(error, "删除文档失败"));
+  }
+}
+
+async function updateDocument(document: KnowledgeBaseDocumentItem, currentTitle: string) {
+  const title = window.prompt("请输入新的文档标题", currentTitle)?.trim();
+  if (!title || title === currentTitle) return;
+  if (title.length > 255) {
+    message.error("文档标题不能超过 255 个字符");
+    return;
+  }
+  try {
+    await documentView.updateDocument(kbId.value, document.id, title);
+    message.success("文档标题已更新");
+  } catch (error) {
+    message.error(resolveErrorMessage(error, "修改文档标题失败"));
+  }
+}
+
+async function downloadDocument(document: KnowledgeBaseDocumentItem) {
+  try {
+    const result = await documentView.downloadDocument(kbId.value, document.id);
+    const url = URL.createObjectURL(result.blob);
+    const anchor = window.document.createElement("a");
+    anchor.href = url;
+    anchor.download = result.fileName || document.originalFilename || document.title;
+    anchor.click();
+    URL.revokeObjectURL(url);
+  } catch (error) {
+    message.error(resolveErrorMessage(error, "下载文档失败"));
+  }
 }
 
 // ── 成员操作 ──
@@ -417,25 +516,32 @@ function resolveErrorMessage(error: unknown, fallback: string) {
     <div class="flex-1 overflow-y-auto px-6 md:px-8 pb-12 pt-6">
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
         <div class="lg:col-span-8 flex flex-col gap-6">
-          <div
+          <KbDocumentPanel
             v-if="activeTab === 'overview'"
-            class="bg-surface-container-low rounded-xl p-8 border border-outline-variant/5"
-          >
-            <div class="flex items-start gap-4">
-              <span class="material-symbols-outlined text-3xl text-primary"
-                >construction</span
-              >
-              <div>
-                <h3 class="font-headline text-lg font-semibold">
-                  文档功能尚未开放
-                </h3>
-                <p class="mt-2 text-sm text-on-surface-variant">
-                  P2
-                  仅提供账号、资料、知识库和成员协作能力；上传、文档列表和处理进度将在后续阶段接入。
-                </p>
-              </div>
-            </div>
-          </div>
+            :can-upload="kb?.permissions.canUpload === true"
+            :documents="documentView.documents.value"
+            :total-count="documentView.documentPagination.total"
+            :active-status="documentView.documentQuery.status"
+            :queue-tasks="uploadQueue.tasks.value"
+            :queue-progress="uploadQueue.overallProgress.value"
+            :queue-busy="uploadQueue.isBusy.value"
+            :can-download="kb?.permissions.canDownload === true"
+            :can-delete-any-document="kb?.permissions.canDeleteAnyDocument === true"
+            :can-delete-own-document="kb?.permissions.canDeleteOwnDocument === true"
+            @open-file-picker="openFilePicker"
+            @drop-file="handleFiles"
+            @pause-all="uploadQueue.pauseAll"
+            @resume-all="uploadQueue.resumeAll"
+            @clear-completed="uploadQueue.clearCompleted"
+            @retry-task="uploadQueue.retryTask"
+            @cancel-task="uploadQueue.cancelTask"
+            @set-status="setDocumentStatus"
+            @update-search-keyword="searchDocuments"
+            @preview-document="previewDocument = $event"
+            @download-document="downloadDocument"
+            @remove-document="removeDocument"
+            @update-document="updateDocument"
+          />
 
           <KbMemberPanel
             v-else-if="activeTab === 'members'"
@@ -496,7 +602,24 @@ function resolveErrorMessage(error: unknown, fallback: string) {
       </div>
     </div>
 
-    <!-- 文档预览模态框 -->
+    <input
+      ref="fileInput"
+      class="hidden"
+      type="file"
+      multiple
+      accept=".pdf,.doc,.docx,.txt,.md"
+      @change="handleFileInput"
+    />
+
+    <DocumentPreviewModal
+      v-if="previewDocument"
+      :open="Boolean(previewDocument)"
+      :kb-id="kbId"
+      :document-id="previewDocument.id"
+      :file-name="previewDocument.originalFilename || previewDocument.title"
+      :file-type="previewDocument.fileExtension || ''"
+      @close="previewDocument = null"
+    />
 
     <!-- 加入知识库弹窗 -->
     <div

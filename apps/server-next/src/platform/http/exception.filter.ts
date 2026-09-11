@@ -7,6 +7,7 @@ import {
 import { Response } from 'express';
 import { BusinessError, ErrorKind } from '../../shared/errors/business-error';
 import { ErrorCode } from '../../shared/errors/error-code';
+import { RuntimeConfig } from '../config/runtime-config.service';
 import { AppLogger } from '../observability/app-logger.service';
 import { failure } from './api-result';
 
@@ -49,7 +50,10 @@ const httpErrors: Record<number, [number, string]> = {
  */
 @Catch()
 export class AllExceptionsFilter implements ExceptionFilter {
-  constructor(private readonly logger: AppLogger) {}
+  constructor(
+    private readonly logger: AppLogger,
+    private readonly config: RuntimeConfig,
+  ) {}
 
   /**
    * 5xx 以 error 级别记录，其余客户端或业务拒绝以 warn 级别记录。未知异常不会向客户端
@@ -76,7 +80,22 @@ export class AllExceptionsFilter implements ExceptionFilter {
       code,
       errorType: exception instanceof Error ? exception.name : 'unknown',
     };
-    if (status >= 500) this.logger.error('Request failed', metadata);
+    const diagnostics =
+      status >= 500 && this.config.logging.includeStack
+        ? {
+            stack: exception instanceof Error ? exception.stack : undefined,
+            causeMessage:
+              exception instanceof Error && exception.cause instanceof Error
+                ? exception.cause.message
+                : undefined,
+            causeStack:
+              exception instanceof Error && exception.cause instanceof Error
+                ? exception.cause.stack
+                : undefined,
+          }
+        : {};
+    if (status >= 500)
+      this.logger.error('Request failed', { ...metadata, ...diagnostics });
     else this.logger.warn('Request rejected', metadata);
     /**
      * 流式适配器在响应头发送后拥有自己的错误协议，此时不能再追加 JSON 错误体，否则会

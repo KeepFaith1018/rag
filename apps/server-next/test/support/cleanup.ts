@@ -1,7 +1,6 @@
 import { PrismaService } from '@platform/database/prisma.service';
 import { RedisService } from '@platform/redis/redis.service';
 import { TestRun } from './test-run';
-import { cleanupTestStorage } from './test-storage';
 
 /** 只删除本次运行登记的资源，失败时保留 runId 供后续定位。 */
 export async function cleanupTestRun(
@@ -38,7 +37,6 @@ export async function cleanupTestRun(
     if (redis) {
       for (const key of run.resources.redisKeys) await redis.delete(key);
     }
-    await cleanupTestStorage(run);
   } catch (error) {
     console.error(
       `[server-next test] cleanup failed; runId=${run.runId}. ` +

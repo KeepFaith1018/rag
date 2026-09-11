@@ -7,6 +7,7 @@ import { HealthModule } from './modules/health/health.module';
 import { IdentityModule } from './modules/identity/identity.module';
 import { UsersModule } from './modules/users/users.module';
 import { KnowledgeBasesModule } from './modules/knowledge-bases/knowledge-bases.module';
+import { DocumentsModule } from './modules/documents/documents.module';
 
 /**
  * API 进程的根组合模块。
@@ -23,6 +24,7 @@ import { KnowledgeBasesModule } from './modules/knowledge-bases/knowledge-bases.
     UsersModule,
     IdentityModule,
     KnowledgeBasesModule,
+    DocumentsModule,
     HealthModule,
   ],
 })

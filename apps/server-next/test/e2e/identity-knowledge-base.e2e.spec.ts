@@ -1,11 +1,13 @@
 import { INestApplication } from '@nestjs/common';
 import { Test } from '@nestjs/testing';
 import { createHmac, randomUUID } from 'node:crypto';
-import { unlink } from 'node:fs/promises';
-import { isAbsolute, join, resolve } from 'node:path';
 import { AppModule } from '@app/app.module';
 import { PrismaService } from '@platform/database/prisma.service';
 import { RuntimeConfig } from '@platform/config/runtime-config.service';
+import {
+  STORAGE_ADAPTER,
+  type StorageAdapter,
+} from '@platform/object-storage/storage-adapter';
 
 interface Envelope<T> {
   success: boolean;
@@ -31,6 +33,7 @@ describe('M1 identity, users and knowledge-base flow', () => {
   let app: INestApplication;
   let db: PrismaService;
   let config: RuntimeConfig;
+  let storage: StorageAdapter;
   let baseUrl: string;
   let schemaReady = false;
   const suffix = `${Date.now()}-${Math.random().toString(16).slice(2)}`;
@@ -50,6 +53,7 @@ describe('M1 identity, users and knowledge-base flow', () => {
     baseUrl = await app.getUrl();
     db = app.get(PrismaService);
     config = app.get(RuntimeConfig);
+    storage = app.get(STORAGE_ADAPTER);
     const tables = await db.$queryRaw<Array<{ table_count: bigint }>>`
       SELECT COUNT(*) AS table_count
       FROM information_schema.TABLES
@@ -71,13 +75,15 @@ describe('M1 identity, users and knowledge-base flow', () => {
       });
       await db.b_users.deleteMany({ where: { email: { in: emails } } });
       await db.sys_email_codes.deleteMany({ where: { email: { in: emails } } });
-      const avatarRoot = isAbsolute(config.avatar.directory)
-        ? config.avatar.directory
-        : resolve(process.cwd(), config.avatar.directory);
       await Promise.all(
         avatars.map((item) =>
           item.avatar_url
-            ? unlink(join(avatarRoot, item.avatar_url)).catch(() => undefined)
+            ? storage
+                .deleteObject({
+                  bucket: config.documentStorage.bucket,
+                  key: item.avatar_url,
+                })
+                .catch(() => undefined)
             : Promise.resolve(),
         ),
       );

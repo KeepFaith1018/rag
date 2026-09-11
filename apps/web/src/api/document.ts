@@ -44,12 +44,17 @@ export function deleteKnowledgeBaseDocument(kbId: string, documentId: string) {
 }
 
 /**
- * 触发文档重解析。
+ * 修改文档展示标题。
  */
-export function reparseKnowledgeBaseDocument(kbId: string, documentId: string) {
-  return apiRequest<{ kbId: string; documentId: string; reparsed: boolean }>({
-    url: `/knowledge-bases/${kbId}/documents/${documentId}/reparse`,
-    method: "POST",
+export function updateKnowledgeBaseDocument(
+  kbId: string,
+  documentId: string,
+  payload: { title: string },
+) {
+  return apiRequest<KnowledgeBaseDocumentDetail>({
+    url: `/knowledge-bases/${kbId}/documents/${documentId}`,
+    method: "PATCH",
+    body: payload,
   });
 }
 

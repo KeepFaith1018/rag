@@ -1,5 +1,6 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { APP_FILTER, APP_INTERCEPTOR, APP_PIPE } from '@nestjs/core';
+import { RuntimeConfigModule } from '../config/runtime-config.module';
 import { ObservabilityModule } from '../observability/observability.module';
 import { AllExceptionsFilter } from './exception.filter';
 import { ResponseInterceptor } from './response.interceptor';
@@ -13,7 +14,7 @@ import { createValidationPipe } from './validation.pipe';
  * Controller 无需重复装配。请求上下文中间件覆盖全部路由，用于建立 requestId 和访问日志。
  */
 @Module({
-  imports: [ObservabilityModule],
+  imports: [ObservabilityModule, RuntimeConfigModule],
   providers: [
     { provide: APP_FILTER, useClass: AllExceptionsFilter },
     { provide: APP_INTERCEPTOR, useClass: ResponseInterceptor },

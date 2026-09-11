@@ -64,10 +64,9 @@ export function createTestRun() {
   return new TestRun(runId);
 }
 
-/** 为真实基础设施测试设置独立的 Redis Key 和头像目录。 */
+/** 为真实基础设施测试设置独立的 Redis Key。 */
 export function configureTestEnvironment(run: TestRun) {
   process.env.REDIS_KEY_PREFIX ??= `server-next:test:${run.runId}:`;
-  process.env.AVATAR_STORAGE_DIR ??= `storage/test-avatars/${run.runId}`;
   process.env.NODE_ENV ??= 'test';
   process.env.LOG_LEVEL ??= 'silent';
 }

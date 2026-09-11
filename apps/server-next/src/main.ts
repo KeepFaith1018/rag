@@ -3,6 +3,10 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { RuntimeConfig } from './platform/config/runtime-config.service';
 import { AppLogger } from './platform/observability/app-logger.service';
+import {
+  shouldIncludeStack,
+  writeStartupFailure,
+} from './platform/observability/startup-log';
 
 /**
  * 启动 API 进程并完成仅属于网络入口的配置。
@@ -32,13 +36,17 @@ async function bootstrap() {
   }
 }
 
-void bootstrap().catch(() => {
+void bootstrap().catch((error) => {
   /**
-   * 启动异常可能携带数据库或 Redis 连接串，因此标准错误只输出固定提示，不直接打印
-   * 原始异常、配置值或堆栈。
+   * 标准错误在开发环境附带堆栈，生产环境只输出固定提示；堆栈同时写入开发日志文件。
    */
-  process.stderr.write(
-    'API startup failed; check configuration and infrastructure connectivity.\n',
-  );
+  const message =
+    'API startup failed; check configuration and infrastructure connectivity.';
+  writeStartupFailure(message, error);
+  const stack =
+    shouldIncludeStack() && error instanceof Error && error.stack
+      ? `\n${error.stack}`
+      : '';
+  process.stderr.write(`${message}${stack}\n`);
   process.exitCode = 1;
 });

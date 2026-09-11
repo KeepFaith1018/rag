@@ -1,13 +1,9 @@
-import { mkdtemp, readFile, rm, writeFile } from 'node:fs/promises';
-import { join } from 'node:path';
-import { tmpdir } from 'node:os';
 import { ConfigService } from '@nestjs/config';
 import { validateEnvironment } from '@platform/config/environment';
 import { RuntimeConfig } from '@platform/config/runtime-config.service';
 import { AvatarService } from '@app/modules/users/services/avatar.service';
 
 describe('avatar storage boundary', () => {
-  let directory: string;
   let service: AvatarService;
   const update = jest.fn();
   const requireActiveById = jest.fn();
@@ -28,9 +24,14 @@ describe('avatar storage boundary', () => {
   );
   const db = { b_users: { update } };
   const accounts = { requireActiveById, findById, buildProfile };
+  const storage = {
+    putObject: jest.fn(),
+    headObject: jest.fn(),
+    readObject: jest.fn(),
+    deleteObject: jest.fn(),
+  };
 
-  beforeEach(async () => {
-    directory = await mkdtemp(join(tmpdir(), 'server-next-avatar-'));
+  beforeEach(() => {
     const config = new RuntimeConfig(
       new ConfigService(
         validateEnvironment({
@@ -39,11 +40,15 @@ describe('avatar storage boundary', () => {
           JWT_SECRET: 'test-jwt-secret-with-at-least-32-characters',
           VERIFICATION_CODE_SECRET:
             'test-verification-secret-with-at-least-32-chars',
-          AVATAR_STORAGE_DIR: directory,
         }),
       ),
     );
-    service = new AvatarService(config, db as never, accounts as never);
+    service = new AvatarService(
+      config,
+      db as never,
+      accounts as never,
+      storage as never,
+    );
     update.mockReset();
     requireActiveById.mockReset().mockResolvedValue({
       id: 1n,
@@ -53,18 +58,18 @@ describe('avatar storage boundary', () => {
     });
     findById.mockReset();
     buildProfile.mockClear();
-  });
-
-  afterEach(async () => {
-    await rm(directory, { recursive: true, force: true });
+    storage.putObject.mockReset().mockResolvedValue({ etag: 'avatar-etag' });
+    storage.headObject.mockReset();
+    storage.readObject.mockReset();
+    storage.deleteObject.mockReset().mockResolvedValue(undefined);
   });
 
   it.each([
-    ['png', png(), '.png'],
-    ['jpeg', Buffer.from([0xff, 0xd8, 0xff, 0x00]), '.jpg'],
-    ['gif', Buffer.from('GIF89a'), '.gif'],
-    ['webp', webp(), '.webp'],
-  ])('accepts %s signature bytes', async (_name, bytes, extension) => {
+    ['png', png(), '.png', 'image/png'],
+    ['jpeg', Buffer.from([0xff, 0xd8, 0xff, 0x00]), '.jpg', 'image/jpeg'],
+    ['gif', Buffer.from('GIF89a'), '.gif', 'image/gif'],
+    ['webp', webp(), '.webp', 'image/webp'],
+  ])('accepts %s signature bytes', async (_name, bytes, extension, mime) => {
     update.mockImplementation(({ data }: { data: { avatar_url: string } }) => ({
       id: 1n,
       avatar_url: data.avatar_url,
@@ -73,35 +78,53 @@ describe('avatar storage boundary', () => {
     }));
     const profile = await service.update(1n, bytes);
     if (!profile.avatar) throw new Error('Avatar profile URL was not returned');
-    expect(profile.avatar).toMatch(new RegExp(`\\${extension}$`));
-    const saved = await readFile(join(directory, profile.avatar));
-    expect(saved.equals(bytes)).toBe(true);
+    expect(profile.avatar).toMatch(
+      new RegExp(`^avatars/1/[0-9a-f-]{36}\\${extension}$`),
+    );
+    expect(storage.putObject).toHaveBeenCalledWith({
+      bucket: 'rag-documents',
+      key: profile.avatar,
+      body: bytes,
+      contentType: mime,
+    });
   });
 
-  it('removes the replaced file after the database points to the new file', async () => {
-    const oldFile = join(directory, 'old.png');
-    await writeFile(oldFile, png());
-    requireActiveById.mockResolvedValue({ id: 1n, avatar_url: 'old.png' });
+  it('removes the replaced object after the database points to the new key', async () => {
+    const oldKey = 'avatars/1/00000000-0000-0000-0000-000000000001.png';
+    requireActiveById.mockResolvedValue({ id: 1n, avatar_url: oldKey });
     update.mockImplementation(({ data }: { data: { avatar_url: string } }) => ({
       id: 1n,
       avatar_url: data.avatar_url,
       full_name: null,
       email: 'avatar@example.test',
     }));
-    const profile = await service.update(1n, png());
-    await expect(readFile(oldFile)).rejects.toThrow();
-    if (!profile.avatar) throw new Error('Avatar profile URL was not returned');
-    await expect(
-      readFile(join(directory, profile.avatar)),
-    ).resolves.toBeTruthy();
+    await service.update(1n, png());
+    expect(storage.deleteObject).toHaveBeenCalledWith({
+      bucket: 'rag-documents',
+      key: oldKey,
+    });
   });
 
-  it('rejects forged bytes and unsafe stored paths', async () => {
-    await expect(
-      service.update(1n, Buffer.from('not-an-image')),
-    ).rejects.toMatchObject({
-      code: 40000,
+  it('reads a stored object and rejects unsafe stored keys', async () => {
+    const key = 'avatars/1/00000000-0000-0000-0000-000000000001.png';
+    findById.mockResolvedValue({
+      id: 1n,
+      avatar_url: key,
+      deleted_at: null,
+      is_active: true,
     });
+    storage.headObject.mockResolvedValue({
+      size: 8,
+      etag: 'etag',
+      contentType: 'image/png',
+    });
+    storage.readObject.mockResolvedValue({});
+    await expect(service.read(1n)).resolves.toBeDefined();
+    expect(storage.readObject).toHaveBeenCalledWith({
+      bucket: 'rag-documents',
+      key,
+    });
+
     findById.mockResolvedValue({
       id: 1n,
       avatar_url: '../outside.png',
@@ -109,6 +132,13 @@ describe('avatar storage boundary', () => {
       is_active: true,
     });
     await expect(service.read(1n)).rejects.toMatchObject({ code: 40400 });
+  });
+
+  it('rejects forged bytes', async () => {
+    await expect(
+      service.update(1n, Buffer.from('not-an-image')),
+    ).rejects.toMatchObject({ code: 40000 });
+    expect(storage.putObject).not.toHaveBeenCalled();
   });
 
   function png() {

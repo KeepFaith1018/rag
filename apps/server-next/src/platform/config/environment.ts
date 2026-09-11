@@ -22,8 +22,26 @@ const schema = Joi.object({
   LOGIN_RATE_LIMIT_WINDOW_SECONDS: Joi.number().integer().min(60).default(300),
 
   // 头像存储
-  AVATAR_STORAGE_DIR: Joi.string().default('storage/avatars'),
   AVATAR_MAX_BYTES: Joi.number().integer().min(1024).default(5242880),
+
+  // 文档对象存储（MinIO/S3-compatible）
+  DOCUMENT_STORAGE_ENDPOINT: Joi.string()
+    .uri({ scheme: ['http', 'https'] })
+    .default('http://127.0.0.1:19000'),
+  DOCUMENT_STORAGE_ACCESS_KEY: Joi.string().allow('').default(''),
+  DOCUMENT_STORAGE_SECRET_KEY: Joi.string().allow('').default(''),
+  DOCUMENT_STORAGE_BUCKET: Joi.string()
+    .pattern(/^[a-z0-9][a-z0-9.-]{2,62}$/)
+    .default('rag-documents'),
+  DOCUMENT_STORAGE_REGION: Joi.string().default('us-east-1'),
+  DOCUMENT_STORAGE_PART_SIZE: Joi.number()
+    .integer()
+    .min(5242880)
+    .default(5242880),
+  DOCUMENT_STORAGE_SESSION_TTL_SECONDS: Joi.number()
+    .integer()
+    .min(300)
+    .default(259200),
 
   // 应用配置
   NODE_ENV: Joi.string()
@@ -35,6 +53,11 @@ const schema = Joi.object({
   LOG_LEVEL: Joi.string()
     .valid('error', 'warn', 'info', 'debug', 'silent')
     .default('info'),
+  // 未配置时 development 开启堆栈，test/production 关闭；可显式覆盖。
+  LOG_INCLUDE_STACK: Joi.boolean().optional(),
+  LOG_FILE_ENABLED: Joi.boolean().default(true),
+  LOG_DIRECTORY: Joi.string().default('logs'),
+  LOG_FILE_RETENTION_DAYS: Joi.number().integer().min(1).max(3650).default(14),
 
   // 数据库
   DATABASE_URL: Joi.string()

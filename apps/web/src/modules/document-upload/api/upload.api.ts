@@ -3,88 +3,89 @@ import type {
   CompleteUploadResult,
   InitUploadPayload,
   InitUploadResult,
-  UploadChunkResult,
+  SignedPartResult,
   UploadStatusResult,
 } from "../types/upload";
 
-/**
- * 初始化上传会话。
- */
-export function initChunkUpload(kbId: string, payload: InitUploadPayload) {
+export function initUpload(kbId: string, payload: InitUploadPayload) {
   return apiRequest<InitUploadResult>({
-    url: `/knowledge-bases/${kbId}/uploads/init`,
+    url: `/knowledge-bases/${kbId}/uploads`,
     method: "POST",
     body: payload,
   });
 }
 
-/**
- * 上传单个文件分片。
- */
-export function uploadChunk(
-  kbId: string,
-  uploadId: string,
-  payload: {
-    chunkIndex: number;
-    chunkHash?: string;
-    file: Blob;
-    fileName: string;
-  },
-) {
-  const formData = new FormData();
-  formData.append("chunkIndex", String(payload.chunkIndex));
-
-  if (payload.chunkHash) {
-    formData.append("chunkHash", payload.chunkHash);
-  }
-
-  formData.append("file", payload.file, payload.fileName);
-
-  return apiRequest<UploadChunkResult>({
-    url: `/knowledge-bases/${kbId}/uploads/${uploadId}/chunks`,
-    method: "POST",
-    body: formData,
-  });
-}
-
-/**
- * 查询上传会话状态。
- */
-export function getUploadStatus(kbId: string, uploadId: string) {
+export function getUploadStatus(kbId: string, sessionId: string) {
   return apiRequest<UploadStatusResult>({
-    url: `/knowledge-bases/${kbId}/uploads/${uploadId}/status`,
+    url: `/knowledge-bases/${kbId}/uploads/${sessionId}`,
     method: "GET",
   });
 }
 
-/**
- * 通知后端执行分片合并。
- */
-export function completeChunkUpload(
+export function signUploadPart(
   kbId: string,
-  uploadId: string,
-  payload: {
-    fileHash?: string;
-    totalChunks?: number;
-  },
+  sessionId: string,
+  partNumber: number,
 ) {
-  return apiRequest<CompleteUploadResult>({
-    url: `/knowledge-bases/${kbId}/uploads/${uploadId}/complete`,
+  return apiRequest<SignedPartResult>({
+    url: `/knowledge-bases/${kbId}/uploads/${sessionId}/parts/${partNumber}/sign`,
+    method: "POST",
+  });
+}
+
+export function confirmUploadPart(
+  kbId: string,
+  sessionId: string,
+  partNumber: number,
+  payload: { etag: string },
+) {
+  return apiRequest<UploadStatusResult>({
+    url: `/knowledge-bases/${kbId}/uploads/${sessionId}/parts/${partNumber}/confirm`,
     method: "POST",
     body: payload,
   });
 }
 
-/**
- * 取消上传会话并清理临时分片。
- */
-export function cancelChunkUpload(kbId: string, uploadId: string) {
-  return apiRequest<{
-    kbId: string;
-    uploadId: string;
-    cancelled: boolean;
-  }>({
-    url: `/knowledge-bases/${kbId}/uploads/${uploadId}`,
+export function completeUpload(kbId: string, sessionId: string) {
+  return apiRequest<CompleteUploadResult>({
+    url: `/knowledge-bases/${kbId}/uploads/${sessionId}/complete`,
+    method: "POST",
+  });
+}
+
+export function cancelUpload(kbId: string, sessionId: string) {
+  return apiRequest<{ sessionId: string; status: string; aborted: boolean }>({
+    url: `/knowledge-bases/${kbId}/uploads/${sessionId}`,
     method: "DELETE",
+  });
+}
+
+/** 使用签名 URL 直传 MinIO part，并通过 XHR 获取浏览器上传进度。 */
+export function putSignedPart(
+  uploadUrl: string,
+  body: Blob,
+  onProgress?: (uploadedBytes: number) => void,
+) {
+  return new Promise<string>((resolve, reject) => {
+    const request = new XMLHttpRequest();
+    request.open("PUT", uploadUrl);
+    request.upload.onprogress = (event) => {
+      if (event.lengthComputable) onProgress?.(event.loaded);
+    };
+    request.onload = () => {
+      if (request.status >= 200 && request.status < 300) {
+        const etag = request.getResponseHeader("ETag")?.replaceAll('"', "");
+        if (etag) {
+          resolve(etag);
+          return;
+        }
+        reject(new Error("对象存储未返回分片 ETag，请检查 MinIO CORS 配置"));
+        return;
+      }
+      reject(new Error(`分片上传失败（${request.status}）`));
+    };
+    request.onerror = () => reject(new Error("分片上传网络错误"));
+    request.onabort = () => reject(new Error("分片上传已取消"));
+    request.send(body);
   });
 }

@@ -10,7 +10,6 @@ import { TestHttpClient } from '../support/test-http';
 import { createTestVerificationCode } from '../support/test-verification';
 import { configureTestEnvironment, createTestRun } from '../support/test-run';
 import { loginAsOwner } from '../support/test-auth';
-import { prepareTestStorage } from '../support/test-storage';
 
 describe('P1 identity and user regression', () => {
   const run = createTestRun();
@@ -25,7 +24,6 @@ describe('P1 identity and user regression', () => {
   let profileUser: Awaited<ReturnType<typeof createVerifiedUser>>;
 
   beforeAll(async () => {
-    await prepareTestStorage(run);
     const module = await Test.createTestingModule({
       imports: [AppModule],
     }).compile();
