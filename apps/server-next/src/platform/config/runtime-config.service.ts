@@ -1,6 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 
+export type RuntimeLogLevel = 'error' | 'warn' | 'info' | 'debug' | 'silent';
+
+export interface LoggingConfig {
+  level: RuntimeLogLevel;
+  includeStack: boolean;
+  fileEnabled: boolean;
+  directory: string;
+  retentionDays: number;
+}
+
 /**
  * 应用运行时配置的类型化访问入口。
  *
@@ -26,8 +36,8 @@ export class RuntimeConfig {
     return this.config.getOrThrow<string>('DATABASE_URL');
   }
 
-  get logLevel() {
-    return this.config.getOrThrow<string>('LOG_LEVEL');
+  get logLevel(): RuntimeLogLevel {
+    return this.config.getOrThrow<RuntimeLogLevel>('LOG_LEVEL');
   }
 
   get environment() {
@@ -36,7 +46,7 @@ export class RuntimeConfig {
     );
   }
 
-  get logging() {
+  get logging(): LoggingConfig {
     const configuredIncludeStack =
       this.config.get<boolean>('LOG_INCLUDE_STACK');
     return {
