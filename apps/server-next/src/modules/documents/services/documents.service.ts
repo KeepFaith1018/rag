@@ -2,7 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import type { Prisma } from '../../../../prisma/generated/client';
 import { PrismaService } from '../../../platform/database/prisma.service';
 import {
+  lockKnowledgeBaseById,
+  lockDocumentById,
+} from '../../../platform/database/transaction-locks';
+import {
   STORAGE_ADAPTER,
+  StorageError,
   type StorageAdapter,
 } from '../../../platform/object-storage/storage-adapter';
 import { BusinessError } from '../../../shared/errors/business-error';
@@ -11,9 +16,25 @@ import { parseId } from '../../../shared/parse-id';
 import { KnowledgeBaseAccessService } from '../../knowledge-bases/services/knowledge-base-access.service';
 import type { ListDocumentsDto } from '../dto/list-documents.dto';
 import type { UpdateDocumentDto } from '../dto/update-document.dto';
+import {
+  CleanupPayloadSchema,
+  IndexTargetsSchema,
+  parseVersioned,
+} from '../../ingestion/contracts/schemas';
+import { runPrefix } from '../../ingestion/contracts/identifiers';
 
 type DocumentRecord = Prisma.b_documentsGetPayload<{
-  include: { b_users: { select: { id: true; email: true; full_name: true } } };
+  include: {
+    b_users: { select: { id: true; email: true; full_name: true } };
+    desired_run: {
+      select: {
+        current_stage: true;
+        status: true;
+        error_code: true;
+        error_message: true;
+      };
+    };
+  };
 }>;
 
 @Injectable()
@@ -44,6 +65,14 @@ export class DocumentsService {
         where,
         include: {
           b_users: { select: { id: true, email: true, full_name: true } },
+          desired_run: {
+            select: {
+              current_stage: true,
+              status: true,
+              error_code: true,
+              error_message: true,
+            },
+          },
         },
         orderBy: [{ updated_at: 'desc' }, { id: 'desc' }],
         skip: (query.page - 1) * query.pageSize,
@@ -96,6 +125,14 @@ export class DocumentsService {
       data: { title: dto.title },
       include: {
         b_users: { select: { id: true, email: true, full_name: true } },
+        desired_run: {
+          select: {
+            current_stage: true,
+            status: true,
+            error_code: true,
+            error_message: true,
+          },
+        },
       },
     });
     return this.map(updated);
@@ -115,6 +152,8 @@ export class DocumentsService {
     const document = await this.getDocument(subject.id, documentId, true);
     if (document.status === 'deleted')
       return { kbId, documentId, deleted: true };
+    if (document.status === 'deleting')
+      return { kbId, documentId, deleting: true, deleted: false };
     const permissions = this.access.permissions(
       role,
       subject.visibility,
@@ -133,28 +172,61 @@ export class DocumentsService {
         'forbidden',
       );
 
-    await this.prisma.b_documents.updateMany({
-      where: { id: document.id, status: { not: 'deleted' } },
-      data: { status: 'deleting' },
+    const runs = await this.prisma.b_document_processing_runs.findMany({
+      where: { document_id: document.id },
+      select: { id: true, index_targets_json: true },
     });
-    try {
-      await this.storage.deleteObject({
-        bucket: document.storage_bucket,
-        key: document.storage_key,
+    const payload = CleanupPayloadSchema.parse({
+      schemaVersion: 1,
+      documentId: document.id.toString(),
+      source: { bucket: document.storage_bucket, key: document.storage_key },
+      deleteSource: true,
+      runs: runs.map((run) => ({
+        runId: run.id.toString(),
+        prefix: runPrefix(document.id, run.id),
+        indexTargets: parseVersioned(
+          IndexTargetsSchema,
+          run.index_targets_json,
+        ),
+      })),
+      reason: 'user_delete',
+      createdAt: new Date().toISOString(),
+    });
+    await this.prisma.$transaction(async (tx) => {
+      await lockKnowledgeBaseById(tx, subject.id);
+      await lockDocumentById(tx, document.id);
+      await tx.b_documents.updateMany({
+        where: { id: document.id, status: { notIn: ['deleting', 'deleted'] } },
+        data: {
+          status: 'deleting',
+          desired_run_id: null,
+          deleted_at: new Date(),
+        },
       });
-      await this.prisma.b_documents.updateMany({
-        where: { id: document.id, status: 'deleting' },
-        data: { status: 'deleted', deleted_at: new Date() },
+      await tx.b_document_processing_tasks.updateMany({
+        where: {
+          processing_run: { document_id: document.id },
+          status: { in: ['queued', 'running', 'retrying'] },
+        },
+        data: {
+          status: 'cancelled',
+          execution_version: { increment: 1 },
+          finished_at: new Date(),
+        },
       });
-      return { kbId, documentId, deleted: true };
-    } catch (error) {
-      throw new BusinessError(
-        ErrorCode.SERVICE_UNAVAILABLE,
-        '源文件清理失败，请稍后重试',
-        'unavailable',
-        { cause: error },
-      );
-    }
+      await tx.b_outbox_events.upsert({
+        where: { event_key: `cleanup-document-${document.id}` },
+        create: {
+          event_key: `cleanup-document-${document.id}`,
+          event_type: 'cleanup_document',
+          aggregate_type: 'document',
+          aggregate_id: document.id.toString(),
+          payload_json: payload,
+        },
+        update: {},
+      });
+    });
+    return { kbId, documentId, deleting: true, deleted: false };
   }
 
   private async filePayload(
@@ -195,6 +267,8 @@ export class DocumentsService {
         }),
       };
     } catch (error) {
+      if (error instanceof StorageError && error.storageKind !== 'not-found')
+        throw error;
       throw new BusinessError(
         ErrorCode.DOCUMENT_SOURCE_MISSING,
         '文档源文件不存在',
@@ -219,6 +293,14 @@ export class DocumentsService {
       },
       include: {
         b_users: { select: { id: true, email: true, full_name: true } },
+        desired_run: {
+          select: {
+            current_stage: true,
+            status: true,
+            error_code: true,
+            error_message: true,
+          },
+        },
       },
     });
     if (!document)
@@ -239,8 +321,17 @@ export class DocumentsService {
       mimeType: document.mime_type,
       fileSize: document.file_size,
       status: document.status,
-      processingDeferred: document.status === 'processing',
-      searchable: false,
+      processingStage: this.processingStage(document),
+      processingDeferred: false,
+      searchable: document.status === 'ready' && !!document.active_run_id,
+      servingPreviousVersion:
+        document.status === 'ready' &&
+        !!document.active_run_id &&
+        !!document.desired_run_id &&
+        document.active_run_id !== document.desired_run_id &&
+        document.desired_run?.status === 'failed',
+      processingErrorCode: document.desired_run?.error_code ?? null,
+      processingErrorMessage: document.desired_run?.error_message ?? null,
       uploader: document.b_users
         ? {
             id: document.b_users.id.toString(),
@@ -251,5 +342,18 @@ export class DocumentsService {
       createdAt: document.created_at,
       updatedAt: document.updated_at,
     };
+  }
+
+  private processingStage(document: DocumentRecord) {
+    if (document.status === 'ready') return 'ready';
+    if (['failed', 'deleting', 'deleted'].includes(document.status))
+      return 'failed';
+    if (document.desired_run?.current_stage === 'chunk') return 'chunking';
+    if (document.desired_run?.current_stage === 'embed') return 'embedding';
+    if (
+      ['index', 'completed'].includes(document.desired_run?.current_stage ?? '')
+    )
+      return 'indexing';
+    return 'parsing';
   }
 }

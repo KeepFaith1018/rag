@@ -10,7 +10,8 @@
     { "name": "Health", "description": "进程与基础设施健康检查" },
     { "name": "Identity", "description": "注册、登录、会话和密码" },
     { "name": "Users", "description": "当前用户资料和头像" },
-    { "name": "Knowledge Bases", "description": "知识库和成员协作" }
+    { "name": "Knowledge Bases", "description": "知识库和成员协作" },
+    { "name": "Documents", "description": "文档上传、异步处理和文件访问" }
   ],
   "paths": {
     "/health/live": {
@@ -209,6 +210,42 @@
         "summary": "修改成员角色",
         "responses": { "200": { "description": "角色更新成功" } }
       }
+    },
+    "/knowledge-bases/{kbId}/uploads": {
+      "post": { "tags": ["Documents"], "summary": "初始化分片上传", "responses": { "201": { "description": "上传会话已创建或命中秒传" } } }
+    },
+    "/knowledge-bases/{kbId}/uploads/{sessionId}": {
+      "get": { "tags": ["Documents"], "summary": "查询上传状态", "responses": { "200": { "description": "上传会话快照" } } },
+      "delete": { "tags": ["Documents"], "summary": "取消上传", "responses": { "200": { "description": "上传已取消" } } }
+    },
+    "/knowledge-bases/{kbId}/uploads/{sessionId}/parts/{partNumber}/sign": {
+      "post": { "tags": ["Documents"], "summary": "签发分片上传 URL", "responses": { "201": { "description": "返回签名 URL" } } }
+    },
+    "/knowledge-bases/{kbId}/uploads/{sessionId}/parts/{partNumber}/confirm": {
+      "post": { "tags": ["Documents"], "summary": "确认已上传分片", "responses": { "201": { "description": "分片已确认" } } }
+    },
+    "/knowledge-bases/{kbId}/uploads/{sessionId}/complete": {
+      "post": { "tags": ["Documents"], "summary": "完成上传并创建处理批次", "responses": { "201": { "description": "文档和异步处理批次已登记" } } }
+    },
+    "/knowledge-bases/{kbId}/documents": {
+      "get": { "tags": ["Documents"], "summary": "查询文档与处理阶段", "responses": { "200": { "description": "分页文档列表" } } }
+    },
+    "/knowledge-bases/{kbId}/documents/processing/stream": {
+      "get": { "tags": ["Documents"], "summary": "订阅文档处理变更", "responses": { "200": { "description": "SSE 变更通知流" } } }
+    },
+    "/knowledge-bases/{kbId}/documents/{documentId}": {
+      "get": { "tags": ["Documents"], "summary": "读取文档详情", "responses": { "200": { "description": "文档详情" } } },
+      "patch": { "tags": ["Documents"], "summary": "更新文档标题", "responses": { "200": { "description": "文档已更新" } } },
+      "delete": { "tags": ["Documents"], "summary": "异步删除文档", "responses": { "200": { "description": "文档已进入删除流程" } } }
+    },
+    "/knowledge-bases/{kbId}/documents/{documentId}/processing": {
+      "get": { "tags": ["Documents"], "summary": "读取权威处理快照", "responses": { "200": { "description": "处理状态快照" } } }
+    },
+    "/knowledge-bases/{kbId}/documents/{documentId}/preview": {
+      "get": { "tags": ["Documents"], "summary": "预览原始文档", "responses": { "200": { "description": "原文件流" } } }
+    },
+    "/knowledge-bases/{kbId}/documents/{documentId}/download": {
+      "get": { "tags": ["Documents"], "summary": "下载原始文档", "responses": { "200": { "description": "附件文件流" } } }
     }
   },
   "components": {

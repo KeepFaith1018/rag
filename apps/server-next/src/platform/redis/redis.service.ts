@@ -39,6 +39,14 @@ export class RedisService implements OnModuleInit, OnModuleDestroy {
   async ping(): Promise<void> {
     await this.client.ping();
   }
+  async assertNoEviction(): Promise<void> {
+    const rows = (await this.client.config(
+      'GET',
+      'maxmemory-policy',
+    )) as string[];
+    if (rows[1] !== 'noeviction')
+      throw new Error('Redis maxmemory-policy must be noeviction for BullMQ');
+  }
   async get(key: string): Promise<string | null> {
     try {
       return await this.client.get(key);

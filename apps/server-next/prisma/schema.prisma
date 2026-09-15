@@ -750,7 +750,7 @@ model b_outbox_events {
   lock_token     String?           @db.Char(36)
   locked_until   DateTime?         @db.DateTime(3)
   dispatched_at  DateTime?         @db.DateTime(3)
-  // 仅消费者确认目标效果后设置；dispatch_processing_task 表示对应任务已成功。
+  // 仅消费者确认目标效果后设置；dispatch_processing_task 表示对应 BullMQ Job 已存在。
   completed_at   DateTime?         @db.DateTime(3)
   last_error     String?           @db.Text
   created_at     DateTime          @default(now()) @db.DateTime(3)

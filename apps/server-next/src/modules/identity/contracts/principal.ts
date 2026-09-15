@@ -2,4 +2,6 @@
 export interface Principal {
   userId: string;
   sessionId: string;
+  /** 当前 access token 的绝对到期时间（Unix 毫秒）。 */
+  expiresAt: number;
 }

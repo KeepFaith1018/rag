@@ -8,6 +8,7 @@ import { Response } from 'express';
 import { BusinessError, ErrorKind } from '../../shared/errors/business-error';
 import { ErrorCode } from '../../shared/errors/error-code';
 import { RuntimeConfig } from '../config/runtime-config.service';
+import { StorageError } from '../object-storage/storage-adapter';
 import { AppLogger } from '../observability/app-logger.service';
 import { failure } from './api-result';
 
@@ -79,6 +80,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
       status,
       code,
       errorType: exception instanceof Error ? exception.name : 'unknown',
+      ...(exception instanceof StorageError
+        ? {
+            storageKind: exception.storageKind,
+            storageOperation: exception.operation,
+            storageStatusCode: exception.statusCode,
+            storageProviderCode: exception.providerCode,
+            storageRequestId: exception.requestId,
+          }
+        : {}),
     };
     const diagnostics =
       status >= 500 && this.config.logging.includeStack

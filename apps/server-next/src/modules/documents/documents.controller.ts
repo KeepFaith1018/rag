@@ -8,8 +8,10 @@ import {
   Patch,
   Post,
   Query,
+  Sse,
   StreamableFile,
 } from '@nestjs/common';
+import { RawResponse } from '../../platform/http/response.interceptor';
 import { BusinessError } from '../../shared/errors/business-error';
 import { ErrorCode } from '../../shared/errors/error-code';
 import { parseId } from '../../shared/parse-id';
@@ -21,12 +23,20 @@ import { ListDocumentsDto } from './dto/list-documents.dto';
 import { UpdateDocumentDto } from './dto/update-document.dto';
 import { DocumentsService } from './services/documents.service';
 import { UploadsService } from './services/uploads.service';
+import { ProcessingEventsService } from '../ingestion/application/processing-events.service';
+import { ProcessingStatusService } from '../ingestion/application/processing-status.service';
+import { KnowledgeBaseAccessService } from '../knowledge-bases/services/knowledge-base-access.service';
+import { IdentityService } from '../identity/services/identity.service';
 
 @Controller()
 export class DocumentsController {
   constructor(
     private readonly documents: DocumentsService,
     private readonly uploads: UploadsService,
+    private readonly processingStatus: ProcessingStatusService,
+    private readonly processingEvents: ProcessingEventsService,
+    private readonly access: KnowledgeBaseAccessService,
+    private readonly identity: IdentityService,
   ) {}
 
   @Post('knowledge-bases/:kbId/uploads')
@@ -98,6 +108,26 @@ export class DocumentsController {
     return this.uploads.abort(parseId(principal.userId), kbId, sessionId);
   }
 
+  @Sse('knowledge-bases/:kbId/documents/processing/stream')
+  @RawResponse()
+  async processingStream(
+    @CurrentPrincipal() principal: Principal,
+    @Param('kbId') kbId: string,
+  ) {
+    const subject = await this.access.subject(kbId);
+    this.access.requireRead(subject, parseId(principal.userId));
+    return this.processingEvents.stream(
+      subject.id,
+      principal.userId,
+      principal.expiresAt,
+      async () => {
+        await this.identity.assertPrincipalActive(principal);
+        const current = await this.access.subject(kbId);
+        this.access.requireRead(current, parseId(principal.userId));
+      },
+    );
+  }
+
   @Get('knowledge-bases/:kbId/documents')
   list(
     @CurrentPrincipal() principal: Principal,
@@ -114,6 +144,17 @@ export class DocumentsController {
     @Param('documentId') documentId: string,
   ) {
     return this.documents.detail(parseId(principal.userId), kbId, documentId);
+  }
+
+  @Get('knowledge-bases/:kbId/documents/:documentId/processing')
+  async processingSnapshot(
+    @CurrentPrincipal() principal: Principal,
+    @Param('kbId') kbId: string,
+    @Param('documentId') documentId: string,
+  ) {
+    const subject = await this.access.subject(kbId);
+    this.access.requireRead(subject, parseId(principal.userId));
+    return this.processingStatus.snapshot(subject.id, documentId);
   }
 
   @Patch('knowledge-bases/:kbId/documents/:documentId')

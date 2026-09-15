@@ -6,6 +6,7 @@ import { RuntimeConfig } from '../../../platform/config/runtime-config.service';
 import { AppLogger } from '../../../platform/observability/app-logger.service';
 import {
   STORAGE_ADAPTER,
+  StorageError,
   type StorageAdapter,
   type StoragePart,
 } from '../../../platform/object-storage/storage-adapter';
@@ -13,6 +14,8 @@ import { BusinessError } from '../../../shared/errors/business-error';
 import { ErrorCode } from '../../../shared/errors/error-code';
 import { parseId } from '../../../shared/parse-id';
 import { KnowledgeBaseAccessService } from '../../knowledge-bases/services/knowledge-base-access.service';
+import { ProcessingCoordinatorService } from '../../ingestion/application/processing-coordinator.service';
+import { lockUploadSessionById } from '../../../platform/database/transaction-locks';
 import {
   DOCUMENT_EXTENSIONS,
   DOCUMENT_MIME_TYPES,
@@ -46,6 +49,7 @@ export class UploadsService {
     private readonly config: RuntimeConfig,
     @Inject(STORAGE_ADAPTER) private readonly storage: StorageAdapter,
     @Optional() private readonly logger?: AppLogger,
+    @Optional() private readonly processing?: ProcessingCoordinatorService,
   ) {}
 
   async init(userId: bigint, kbId: string, dto: InitUploadDto) {
@@ -271,6 +275,9 @@ export class UploadsService {
     const session = await this.getSession(userId, kbId, sessionId);
     if (session.status === 'completed' && session.document_id)
       return this.completedResponse(session.document_id);
+    if (session.status === 'completing') {
+      return this.resumeCompleting(session, sessionId);
+    }
     this.requireActive(session);
     const claimed = await this.prisma.b_upload_sessions.updateMany({
       where: {
@@ -324,49 +331,21 @@ export class UploadsService {
           '文件完整性校验失败',
           'conflict',
         );
-      const document = await this.prisma.$transaction(async (tx) => {
-        const created = await tx.b_documents.create({
-          data: {
-            kb_id: current.kb_id,
-            uploader_id: current.user_id,
-            title: current.title ?? current.file_name,
-            original_filename: current.file_name,
-            file_extension: current.file_extension,
-            mime_type: current.mime_type,
-            storage_provider: current.storage_provider,
-            storage_bucket: current.storage_bucket,
-            storage_key: current.storage_key,
-            storage_etag: completeResult.etag || head.etag,
-            file_size: current.file_size,
-            file_sha256: fileSha256,
-            status: 'processing',
-          },
-        });
-        await tx.b_upload_sessions.update({
-          where: { id: current.id, status: 'completing' },
-          data: {
-            status: 'completed',
-            document_id: created.id,
-            completed_at: new Date(),
-            uploaded_parts: current.total_parts,
-            uploaded_bytes: current.file_size,
-            last_activity_at: new Date(),
-          },
-        });
-        return created;
-      });
-      return {
-        isInstantUploaded: false,
-        deduplicated: false,
-        uploadId: sessionId,
-        documentId: document.id.toString(),
-        document: this.documentItem(document),
-      };
+      return this.registerCompletedSession(
+        current,
+        sessionId,
+        fileSha256,
+        completeResult.etag || head.etag,
+      );
     } catch (error) {
-      await this.prisma.b_upload_sessions.updateMany({
-        where: { id: current.id, status: 'completing' },
-        data: { status: 'failed', last_activity_at: new Date() },
-      });
+      if (
+        error instanceof BusinessError &&
+        error.code === ErrorCode.DOCUMENT_UPLOAD_INTEGRITY_FAILED
+      )
+        await this.prisma.b_upload_sessions.updateMany({
+          where: { id: current.id, status: 'completing' },
+          data: { status: 'failed', last_activity_at: new Date() },
+        });
       throw error instanceof BusinessError
         ? error
         : new BusinessError(
@@ -376,6 +355,117 @@ export class UploadsService {
             { cause: error },
           );
     }
+  }
+
+  /** Complete 的不确定结果恢复：先核对正式对象，确认后只重试数据库登记。 */
+  private async resumeCompleting(session: UploadSession, sessionId: string) {
+    try {
+      const head = await this.storage.headObject({
+        bucket: session.storage_bucket,
+        key: session.storage_key,
+      });
+      if (head.size !== Number(session.file_size))
+        throw new BusinessError(
+          ErrorCode.DOCUMENT_UPLOAD_INTEGRITY_FAILED,
+          '文件大小校验失败',
+          'conflict',
+        );
+      const sha256 = await this.verifyObject(session);
+      if (session.client_sha256 && session.client_sha256 !== sha256)
+        throw new BusinessError(
+          ErrorCode.DOCUMENT_UPLOAD_INTEGRITY_FAILED,
+          '文件完整性校验失败',
+          'conflict',
+        );
+      return this.registerCompletedSession(
+        session,
+        sessionId,
+        sha256,
+        head.etag,
+      );
+    } catch (error) {
+      if (
+        error instanceof BusinessError &&
+        error.code === ErrorCode.DOCUMENT_UPLOAD_INTEGRITY_FAILED
+      )
+        await this.prisma.b_upload_sessions.updateMany({
+          where: { id: session.id, status: 'completing' },
+          data: { status: 'failed', last_activity_at: new Date() },
+        });
+      throw error instanceof BusinessError
+        ? error
+        : new BusinessError(
+            ErrorCode.SERVICE_UNAVAILABLE,
+            '上传结果正在恢复，请稍后重试',
+            'unavailable',
+            { cause: error },
+          );
+    }
+  }
+
+  private async registerCompletedSession(
+    session: UploadSession,
+    sessionId: string,
+    fileSha256: string,
+    etag: string | null,
+  ) {
+    const document = await this.prisma.$transaction(async (tx) => {
+      await lockUploadSessionById(tx, session.id);
+      const current = await tx.b_upload_sessions.findUniqueOrThrow({
+        where: { id: session.id },
+      });
+      if (current.status === 'completed' && current.document_id)
+        return tx.b_documents.findUniqueOrThrow({
+          where: { id: current.document_id },
+        });
+      if (current.status !== 'completing' || current.document_id)
+        throw new BusinessError(
+          ErrorCode.DOCUMENT_UPLOAD_SESSION_INVALID_STATE,
+          '上传会话不可完成',
+          'conflict',
+        );
+      const created = await tx.b_documents.create({
+        data: {
+          kb_id: current.kb_id,
+          uploader_id: current.user_id,
+          title: current.title ?? current.file_name,
+          original_filename: current.file_name,
+          file_extension: current.file_extension,
+          mime_type: current.mime_type,
+          storage_provider: current.storage_provider,
+          storage_bucket: current.storage_bucket,
+          storage_key: current.storage_key,
+          storage_etag: etag,
+          file_size: current.file_size,
+          file_sha256: fileSha256,
+          status: 'processing',
+        },
+      });
+      if (this.processing)
+        await this.processing.createInitialRun(tx, {
+          documentId: created.id,
+          sourceSha256: fileSha256,
+        });
+      await tx.b_upload_sessions.update({
+        where: { id: current.id },
+        data: {
+          status: 'completed',
+          document_id: created.id,
+          completed_at: new Date(),
+          uploaded_parts: current.total_parts,
+          uploaded_bytes: current.file_size,
+          last_activity_at: new Date(),
+        },
+      });
+      return created;
+    });
+    return {
+      isInstantUploaded: false,
+      deduplicated: false,
+      uploadId: sessionId,
+      documentId: document.id.toString(),
+      document: this.documentItem(document),
+    };
   }
 
   async abort(userId: bigint, kbId: string, sessionId: string) {
@@ -459,8 +549,10 @@ export class UploadsService {
           key: candidate.storage_key,
         });
         if (head.size === Number(candidate.file_size)) return candidate;
-      } catch {
-        // 源对象不存在或不可读时不能命中秒传，继续寻找其他候选。
+      } catch (error) {
+        if (error instanceof StorageError && error.storageKind !== 'not-found')
+          throw error;
+        // 源对象不存在时不能命中秒传，继续寻找其他候选。
       }
     }
     return null;
@@ -496,10 +588,6 @@ export class UploadsService {
   private contentMatches(extension: string, prefix: Buffer) {
     if (extension === '.pdf')
       return prefix.subarray(0, 5).toString() === '%PDF-';
-    if (extension === '.doc')
-      return prefix
-        .subarray(0, 4)
-        .equals(Buffer.from([0xd0, 0xcf, 0x11, 0xe0]));
     if (extension === '.docx') return prefix.subarray(0, 2).toString() === 'PK';
     return !prefix.includes(0);
   }
@@ -702,7 +790,7 @@ export class UploadsService {
       mimeType: document.mime_type,
       fileSize: document.file_size,
       status: document.status,
-      processingDeferred: true,
+      processingDeferred: document.status !== 'ready',
       searchable: false,
       createdAt: document.created_at,
       updatedAt: document.updated_at,

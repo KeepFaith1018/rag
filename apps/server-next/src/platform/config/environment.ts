@@ -31,9 +31,19 @@ const schema = Joi.object({
   DOCUMENT_STORAGE_ACCESS_KEY: Joi.string().allow('').default(''),
   DOCUMENT_STORAGE_SECRET_KEY: Joi.string().allow('').default(''),
   DOCUMENT_STORAGE_BUCKET: Joi.string()
-    .pattern(/^[a-z0-9][a-z0-9.-]{2,62}$/)
+    .pattern(/^[a-z0-9](?:[a-z0-9.-]{1,61}[a-z0-9])$/)
     .default('rag-documents'),
   DOCUMENT_STORAGE_REGION: Joi.string().default('us-east-1'),
+  DOCUMENT_STORAGE_REQUEST_TIMEOUT_MS: Joi.number()
+    .integer()
+    .min(1000)
+    .max(300000)
+    .default(30000),
+  DOCUMENT_STORAGE_STREAM_TIMEOUT_MS: Joi.number()
+    .integer()
+    .min(1000)
+    .max(3600000)
+    .default(300000),
   DOCUMENT_STORAGE_PART_SIZE: Joi.number()
     .integer()
     .min(5242880)
@@ -72,6 +82,120 @@ const schema = Joi.object({
   REDIS_KEY_PREFIX: Joi.string()
     .pattern(/^server-next:[a-zA-Z0-9:_-]*$/)
     .default('server-next:'),
+
+  // 队列与处理状态通知
+  BULLMQ_PREFIX: Joi.string()
+    .pattern(/^server-next:[a-zA-Z0-9:_-]*$/)
+    .default('server-next:bullmq'),
+  DOCUMENT_PROCESSING_CHANNEL_PREFIX: Joi.string()
+    .pattern(/^server-next:[a-zA-Z0-9:_-]*$/)
+    .default('server-next:documents:processing'),
+  DOCUMENT_PROCESSING_SSE_USER_LIMIT: Joi.number()
+    .integer()
+    .min(1)
+    .max(32)
+    .default(4),
+  DOCUMENT_PROCESSING_SSE_INSTANCE_LIMIT: Joi.number()
+    .integer()
+    .min(1)
+    .max(10000)
+    .default(200),
+  DOCUMENT_PROCESSING_SSE_HEARTBEAT_MS: Joi.number()
+    .integer()
+    .min(5000)
+    .max(300000)
+    .default(15000),
+  DOCUMENT_PROCESSING_SSE_MAX_DURATION_SECONDS: Joi.number()
+    .integer()
+    .min(60)
+    .max(86400)
+    .default(1500),
+
+  // Embedding Provider；密钥只从环境变量读取
+  EMBEDDING_PROVIDER: Joi.string().allow('').default(''),
+  EMBEDDING_API_KEY: Joi.string().allow('').default(''),
+  EMBEDDING_BASE_URL: Joi.string()
+    .uri({ scheme: ['http', 'https'] })
+    .allow('')
+    .default(''),
+
+  // Qdrant
+  QDRANT_URL: Joi.string()
+    .uri({ scheme: ['http', 'https'] })
+    .allow('')
+    .default(''),
+  QDRANT_API_KEY: Joi.string().allow('').default(''),
+
+  // Elasticsearch
+  ELASTICSEARCH_URL: Joi.string()
+    .uri({ scheme: ['http', 'https'] })
+    .allow('')
+    .default(''),
+  ELASTICSEARCH_USERNAME: Joi.string().allow('').default(''),
+  ELASTICSEARCH_PASSWORD: Joi.string().allow('').default(''),
+
+  // 解析资源限制
+  PARSER_MAX_BYTES: Joi.number()
+    .integer()
+    .min(1024)
+    .max(1073741824)
+    .default(52428800),
+  PARSER_MAX_ZIP_FILES: Joi.number()
+    .integer()
+    .min(1)
+    .max(100000)
+    .default(10000),
+  PARSER_MAX_UNCOMPRESSED_BYTES: Joi.number()
+    .integer()
+    .min(1024)
+    .max(2147483648)
+    .default(524288000),
+  // 派生产物与 tombstone 保留
+  FAILED_RUN_ARTIFACT_RETENTION_DAYS: Joi.number()
+    .integer()
+    .min(1)
+    .max(3650)
+    .default(7),
+  DELETED_DOCUMENT_RETENTION_DAYS: Joi.number()
+    .integer()
+    .min(1)
+    .max(3650)
+    .default(30),
+
+  // Worker 并发、批次、租约与对账周期
+  WORKER_CONCURRENCY: Joi.number().integer().min(1).max(32).default(2),
+  WORKER_BATCH_SIZE: Joi.number().integer().min(1).max(256).default(32),
+  WORKER_EMBEDDING_BATCH_TOKENS: Joi.number()
+    .integer()
+    .min(1)
+    .max(32768)
+    .default(8192),
+  WORKER_PROVIDER_RATE_LIMIT_PER_SECOND: Joi.number()
+    .min(0.1)
+    .max(1000)
+    .default(10),
+  WORKER_TASK_TIMEOUT_MS: Joi.number()
+    .integer()
+    .min(1000)
+    .max(3600000)
+    .default(600000),
+  WORKER_HEARTBEAT_INTERVAL_MS: Joi.number()
+    .integer()
+    .min(1000)
+    .max(300000)
+    .default(10000),
+  WORKER_LEASE_SECONDS: Joi.number().integer().min(10).max(3600).default(60),
+  WORKER_CLEANUP_SAFETY_WINDOW_MS: Joi.number()
+    .integer()
+    .min(1000)
+    .max(3600000)
+    .default(60000),
+  WORKER_RECONCILE_INTERVAL_MS: Joi.number()
+    .integer()
+    .min(1000)
+    .max(3600000)
+    .default(30000),
+  WORKER_OUTBOX_BATCH_SIZE: Joi.number().integer().min(1).max(256).default(50),
 
   // 邮件服务（可选）
   EMAIL_ENABLED: Joi.boolean().default(false),
@@ -147,5 +271,23 @@ export function validateEnvironment(
   ) {
     throw new Error('CORS_ORIGINS must contain explicit HTTP(S) origins');
   }
+  const storageEndpoint = new URL(value.DOCUMENT_STORAGE_ENDPOINT as string);
+  if (
+    storageEndpoint.username ||
+    storageEndpoint.password ||
+    storageEndpoint.search ||
+    storageEndpoint.hash
+  )
+    throw new Error(
+      'DOCUMENT_STORAGE_ENDPOINT must not contain credentials, query or fragment',
+    );
+  if (value.NODE_ENV === 'production' && storageEndpoint.protocol !== 'https:')
+    throw new Error('DOCUMENT_STORAGE_ENDPOINT must use HTTPS in production');
+  const storageBucket = value.DOCUMENT_STORAGE_BUCKET as string;
+  if (
+    storageBucket.includes('..') ||
+    /^\d{1,3}(?:\.\d{1,3}){3}$/.test(storageBucket)
+  )
+    throw new Error('DOCUMENT_STORAGE_BUCKET is not a valid S3 bucket name');
   return value;
 }

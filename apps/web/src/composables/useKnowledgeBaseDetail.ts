@@ -1,4 +1,4 @@
-import { computed, reactive, ref } from "vue";
+import { computed, onScopeDispose, reactive, ref } from "vue";
 import {
   deleteKnowledgeBase,
   getKnowledgeBaseDetail,
@@ -9,6 +9,7 @@ import {
   downloadKnowledgeBaseDocument,
   listKnowledgeBaseDocuments,
   updateKnowledgeBaseDocument,
+  consumeDocumentProcessingEvents,
 } from "@/api/document";
 import type {
   KnowledgeBaseDetail,
@@ -17,7 +18,7 @@ import type {
   UpdateKnowledgeBasePayload,
 } from "@/types/knowledge-base";
 
-/** 知识库详情与首期文档管理数据。处理流水线未接入，因此不建立 SSE/轮询。 */
+/** 知识库详情与文档处理状态协调：REST 为权威，SSE 负责唤醒，轮询负责兜底。 */
 export function useKnowledgeBaseDetail() {
   const isLoading = ref(false);
   const isMutating = ref(false);
@@ -30,6 +31,12 @@ export function useKnowledgeBaseDetail() {
   }>({ keyword: "", status: "all" });
 
   const hasKnowledgeBase = computed(() => Boolean(kb.value));
+  let monitoredKbId = "";
+  let streamController: AbortController | null = null;
+  let reconnectTimer: ReturnType<typeof setTimeout> | null = null;
+  let pollTimer: ReturnType<typeof setInterval> | null = null;
+  let refreshTimer: ReturnType<typeof setTimeout> | null = null;
+  let reconnectAttempt = 0;
 
   async function fetchKnowledgeBase(kbId: string) {
     isLoading.value = true;
@@ -53,14 +60,21 @@ export function useKnowledgeBaseDetail() {
     documentPagination.page = result.pagination.page;
     documentPagination.pageSize = result.pagination.pageSize;
     documentPagination.total = result.pagination.total;
+    reconcileMonitoring(kbId);
     return result;
   }
 
   async function reload(kbId: string) {
+    if (monitoredKbId && monitoredKbId !== kbId) stopMonitoring();
+    monitoredKbId = kbId;
     await Promise.all([fetchKnowledgeBase(kbId), fetchDocuments(kbId)]);
+    reconcileMonitoring(kbId);
   }
 
-  async function updateSettings(kbId: string, payload: UpdateKnowledgeBasePayload) {
+  async function updateSettings(
+    kbId: string,
+    payload: UpdateKnowledgeBasePayload,
+  ) {
     isMutating.value = true;
     try {
       const updated = await updateKnowledgeBase(kbId, payload);
@@ -100,10 +114,16 @@ export function useKnowledgeBaseDetail() {
     }
   }
 
-  async function updateDocument(kbId: string, documentId: string, title: string) {
+  async function updateDocument(
+    kbId: string,
+    documentId: string,
+    title: string,
+  ) {
     isMutating.value = true;
     try {
-      const updated = await updateKnowledgeBaseDocument(kbId, documentId, { title });
+      const updated = await updateKnowledgeBaseDocument(kbId, documentId, {
+        title,
+      });
       const index = documents.value.findIndex((item) => item.id === documentId);
       if (index >= 0) documents.value[index] = updated;
       return updated;
@@ -111,6 +131,83 @@ export function useKnowledgeBaseDetail() {
       isMutating.value = false;
     }
   }
+
+  function hasActiveProcessing() {
+    return documents.value.some(
+      (item) => item.status === "processing" || item.status === "deleting",
+    );
+  }
+
+  function reconcileMonitoring(kbId: string) {
+    if (kbId !== monitoredKbId || !hasActiveProcessing()) {
+      stopTransportOnly();
+      return;
+    }
+    if (!pollTimer) {
+      pollTimer = setInterval(() => {
+        if (monitoredKbId && hasActiveProcessing())
+          void fetchDocuments(monitoredKbId).catch(() => undefined);
+      }, 5000);
+    }
+    if (!streamController && !reconnectTimer) connectStream(kbId);
+  }
+
+  function connectStream(kbId: string) {
+    if (kbId !== monitoredKbId || !hasActiveProcessing()) return;
+    const controller = new AbortController();
+    streamController = controller;
+    void consumeDocumentProcessingEvents(kbId, controller.signal, {
+      connected: () => {
+        reconnectAttempt = 0;
+        scheduleAuthoritativeRefresh(kbId, 0);
+      },
+      changed: () => scheduleAuthoritativeRefresh(kbId, 100),
+    })
+      .catch(() => undefined)
+      .finally(() => {
+        if (streamController === controller) streamController = null;
+        if (
+          controller.signal.aborted ||
+          kbId !== monitoredKbId ||
+          !hasActiveProcessing()
+        )
+          return;
+        const delays = [1000, 2000, 5000, 10000];
+        const delay = delays[Math.min(reconnectAttempt++, delays.length - 1)];
+        reconnectTimer = setTimeout(() => {
+          reconnectTimer = null;
+          connectStream(kbId);
+        }, delay);
+      });
+  }
+
+  function scheduleAuthoritativeRefresh(kbId: string, delay: number) {
+    if (refreshTimer) return;
+    refreshTimer = setTimeout(() => {
+      refreshTimer = null;
+      if (kbId === monitoredKbId)
+        void fetchDocuments(kbId).catch(() => undefined);
+    }, delay);
+  }
+
+  function stopTransportOnly() {
+    streamController?.abort();
+    streamController = null;
+    if (reconnectTimer) clearTimeout(reconnectTimer);
+    reconnectTimer = null;
+    if (pollTimer) clearInterval(pollTimer);
+    pollTimer = null;
+    reconnectAttempt = 0;
+  }
+
+  function stopMonitoring() {
+    stopTransportOnly();
+    if (refreshTimer) clearTimeout(refreshTimer);
+    refreshTimer = null;
+    monitoredKbId = "";
+  }
+
+  onScopeDispose(stopMonitoring);
 
   return {
     kb,

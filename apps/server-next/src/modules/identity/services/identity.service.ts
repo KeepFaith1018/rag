@@ -10,6 +10,7 @@ type AccessPayload = {
   sub?: string;
   sid?: string;
   typ?: string;
+  exp?: number;
 };
 
 /** 校验访问令牌及其关联的服务端会话，并生成请求身份。 */
@@ -26,7 +27,12 @@ export class IdentityService {
       const payload = await this.jwt.verifyAsync<AccessPayload>(token, {
         secret: this.config.identity.jwtSecret,
       });
-      if (payload.typ !== 'access' || !payload.sub || !payload.sid)
+      if (
+        payload.typ !== 'access' ||
+        !payload.sub ||
+        !payload.sid ||
+        !payload.exp
+      )
         throw new Error('invalid token purpose');
       const userId = BigInt(payload.sub);
       // JWT 有效并不代表会话仍有效；登出、改密或封禁后必须立即拒绝访问。
@@ -41,7 +47,11 @@ export class IdentityService {
         select: { id: true },
       });
       if (!active) throw new Error('inactive session');
-      return { userId: payload.sub, sessionId: payload.sid };
+      return {
+        userId: payload.sub,
+        sessionId: payload.sid,
+        expiresAt: payload.exp * 1000,
+      };
     } catch {
       throw new BusinessError(
         ErrorCode.UNAUTHORIZED,
@@ -49,5 +59,28 @@ export class IdentityService {
         'unauthenticated',
       );
     }
+  }
+
+  async assertPrincipalActive(principal: Principal): Promise<void> {
+    if (principal.expiresAt <= Date.now()) throw this.unauthorized();
+    const active = await this.prisma.b_user_sessions.findFirst({
+      where: {
+        session_id: principal.sessionId,
+        user_id: BigInt(principal.userId),
+        revoked: false,
+        expired_at: { gt: new Date() },
+        b_users: { is_active: true, deleted_at: null },
+      },
+      select: { id: true },
+    });
+    if (!active) throw this.unauthorized();
+  }
+
+  private unauthorized() {
+    return new BusinessError(
+      ErrorCode.UNAUTHORIZED,
+      '登录状态无效',
+      'unauthenticated',
+    );
   }
 }

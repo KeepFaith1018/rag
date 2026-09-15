@@ -11,6 +11,19 @@ export interface LoggingConfig {
   retentionDays: number;
 }
 
+export interface WorkerConfig {
+  concurrency: number;
+  batchSize: number;
+  embeddingBatchTokens: number;
+  providerRateLimitPerSecond: number;
+  taskTimeoutMs: number;
+  heartbeatIntervalMs: number;
+  leaseSeconds: number;
+  cleanupSafetyWindowMs: number;
+  reconcileIntervalMs: number;
+  outboxBatchSize: number;
+}
+
 /**
  * 应用运行时配置的类型化访问入口。
  *
@@ -69,6 +82,125 @@ export class RuntimeConfig {
     };
   }
 
+  get queue() {
+    return {
+      bullmqPrefix: this.config.getOrThrow<string>('BULLMQ_PREFIX'),
+      processingChannelPrefix: this.config.getOrThrow<string>(
+        'DOCUMENT_PROCESSING_CHANNEL_PREFIX',
+      ),
+    };
+  }
+
+  get processingSse() {
+    return {
+      perUserLimit: this.config.getOrThrow<number>(
+        'DOCUMENT_PROCESSING_SSE_USER_LIMIT',
+      ),
+      instanceLimit: this.config.getOrThrow<number>(
+        'DOCUMENT_PROCESSING_SSE_INSTANCE_LIMIT',
+      ),
+      heartbeatMs: this.config.getOrThrow<number>(
+        'DOCUMENT_PROCESSING_SSE_HEARTBEAT_MS',
+      ),
+      maxDurationSeconds: this.config.getOrThrow<number>(
+        'DOCUMENT_PROCESSING_SSE_MAX_DURATION_SECONDS',
+      ),
+    };
+  }
+
+  get embedding() {
+    return {
+      provider: this.config.getOrThrow<string>('EMBEDDING_PROVIDER'),
+      apiKey: this.config.get<string>('EMBEDDING_API_KEY') || undefined,
+      baseUrl: this.config.getOrThrow<string>('EMBEDDING_BASE_URL'),
+    };
+  }
+
+  get qdrant() {
+    return {
+      url: this.config.getOrThrow<string>('QDRANT_URL'),
+      apiKey: this.config.get<string>('QDRANT_API_KEY') || undefined,
+    };
+  }
+
+  get elasticsearch() {
+    return {
+      url: this.config.getOrThrow<string>('ELASTICSEARCH_URL'),
+      username: this.config.get<string>('ELASTICSEARCH_USERNAME') || undefined,
+      password: this.config.get<string>('ELASTICSEARCH_PASSWORD') || undefined,
+    };
+  }
+
+  get parser() {
+    return {
+      maxBytes: this.config.getOrThrow<number>('PARSER_MAX_BYTES'),
+      maxZipFiles: this.config.getOrThrow<number>('PARSER_MAX_ZIP_FILES'),
+      maxUncompressedBytes: this.config.getOrThrow<number>(
+        'PARSER_MAX_UNCOMPRESSED_BYTES',
+      ),
+    };
+  }
+
+  get retention() {
+    return {
+      failedRunArtifactDays: this.config.getOrThrow<number>(
+        'FAILED_RUN_ARTIFACT_RETENTION_DAYS',
+      ),
+      deletedDocumentDays: this.config.getOrThrow<number>(
+        'DELETED_DOCUMENT_RETENTION_DAYS',
+      ),
+    };
+  }
+
+  get worker(): WorkerConfig {
+    return {
+      concurrency: this.config.getOrThrow<number>('WORKER_CONCURRENCY'),
+      batchSize: this.config.getOrThrow<number>('WORKER_BATCH_SIZE'),
+      embeddingBatchTokens: this.config.getOrThrow<number>(
+        'WORKER_EMBEDDING_BATCH_TOKENS',
+      ),
+      providerRateLimitPerSecond: this.config.getOrThrow<number>(
+        'WORKER_PROVIDER_RATE_LIMIT_PER_SECOND',
+      ),
+      taskTimeoutMs: this.config.getOrThrow<number>('WORKER_TASK_TIMEOUT_MS'),
+      heartbeatIntervalMs: this.config.getOrThrow<number>(
+        'WORKER_HEARTBEAT_INTERVAL_MS',
+      ),
+      leaseSeconds: this.config.getOrThrow<number>('WORKER_LEASE_SECONDS'),
+      cleanupSafetyWindowMs: this.config.getOrThrow<number>(
+        'WORKER_CLEANUP_SAFETY_WINDOW_MS',
+      ),
+      reconcileIntervalMs: this.config.getOrThrow<number>(
+        'WORKER_RECONCILE_INTERVAL_MS',
+      ),
+      outboxBatchSize: this.config.getOrThrow<number>(
+        'WORKER_OUTBOX_BATCH_SIZE',
+      ),
+    };
+  }
+
+  /** Worker 专用配置 fail-fast；API 不调用此方法。 */
+  assertWorkerRequirements() {
+    const missing: string[] = [];
+    if (!this.embedding.provider || !this.embedding.apiKey)
+      missing.push('EMBEDDING');
+    if (!this.qdrant.url) missing.push('QDRANT');
+    if (!this.elasticsearch.url) missing.push('ELASTICSEARCH');
+    if (missing.length)
+      throw new Error(`Missing worker configuration: ${missing.join(', ')}`);
+    if (this.environment === 'production') {
+      const insecure = [
+        ['EMBEDDING_BASE_URL', this.embedding.baseUrl],
+        ['QDRANT_URL', this.qdrant.url],
+        ['ELASTICSEARCH_URL', this.elasticsearch.url],
+      ].filter(([, value]) => !value.startsWith('https://'));
+      if (insecure.length)
+        throw new Error(
+          `Worker endpoints must use HTTPS in production: ${insecure.map(([name]) => name).join(', ')}`,
+        );
+    }
+  }
+
   get mail() {
     return {
       enabled: this.config.getOrThrow<boolean>('EMAIL_ENABLED'),
@@ -124,6 +256,12 @@ export class RuntimeConfig {
       secretKey: this.config.getOrThrow<string>('DOCUMENT_STORAGE_SECRET_KEY'),
       bucket: this.config.getOrThrow<string>('DOCUMENT_STORAGE_BUCKET'),
       region: this.config.getOrThrow<string>('DOCUMENT_STORAGE_REGION'),
+      requestTimeoutMs: this.config.getOrThrow<number>(
+        'DOCUMENT_STORAGE_REQUEST_TIMEOUT_MS',
+      ),
+      streamTimeoutMs: this.config.getOrThrow<number>(
+        'DOCUMENT_STORAGE_STREAM_TIMEOUT_MS',
+      ),
       partSize: this.config.getOrThrow<number>('DOCUMENT_STORAGE_PART_SIZE'),
       sessionTtlSeconds: this.config.getOrThrow<number>(
         'DOCUMENT_STORAGE_SESSION_TTL_SECONDS',

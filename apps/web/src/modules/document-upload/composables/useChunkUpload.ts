@@ -88,7 +88,8 @@ export function useChunkUpload() {
       if (!sessionId) throw new Error("上传会话初始化失败");
       state.sessionId = sessionId;
       state.partSize = initResult.partSize ?? DEFAULT_UPLOAD_CHUNK_SIZE;
-      state.totalParts = initResult.totalParts ?? Math.ceil(options.file.size / state.partSize);
+      state.totalParts =
+        initResult.totalParts ?? Math.ceil(options.file.size / state.partSize);
       persistUploadTask({
         kbId: options.kbId,
         sessionId,
@@ -102,7 +103,13 @@ export function useChunkUpload() {
       });
 
       state.status = "uploading";
-      await uploadPendingParts(options.file, options.kbId, sessionId, initResult.uploadedParts ?? [], options.onProgress);
+      await uploadPendingParts(
+        options.file,
+        options.kbId,
+        sessionId,
+        initResult.uploadedParts ?? [],
+        options.onProgress,
+      );
       if (pauseRequested) {
         state.status = "paused";
         persistCurrentTask();
@@ -203,13 +210,17 @@ export function useChunkUpload() {
     );
     const totalParts = state.totalParts;
     state.uploadedParts = uploaded.size;
-    state.uploadedBytes = [...uploaded.values()].reduce((sum, size) => sum + size, 0);
+    state.uploadedBytes = [...uploaded.values()].reduce(
+      (sum, size) => sum + size,
+      0,
+    );
     state.progress = calculateProgress(state.uploadedBytes, state.totalBytes);
     onProgress?.(state.progress, state.uploadedBytes);
 
-    const pending = Array.from({ length: totalParts }, (_, index) => index + 1).filter(
-      (partNumber) => !uploaded.has(partNumber),
-    );
+    const pending = Array.from(
+      { length: totalParts },
+      (_, index) => index + 1,
+    ).filter((partNumber) => !uploaded.has(partNumber));
     let pointer = 0;
     const progressByPart = new Map<number, number>();
 
@@ -218,7 +229,10 @@ export function useChunkUpload() {
         const partNumber = pending[pointer++];
         if (!partNumber) return;
         const start = (partNumber - 1) * state.partSize;
-        const blob = file.slice(start, Math.min(start + state.partSize, file.size));
+        const blob = file.slice(
+          start,
+          Math.min(start + state.partSize, file.size),
+        );
         progressByPart.set(partNumber, 0);
         await uploadPartWithRetry(
           kbId,
@@ -227,10 +241,15 @@ export function useChunkUpload() {
           blob,
           (loaded) => {
             progressByPart.set(partNumber, loaded);
-            const transient = [...progressByPart.values()].reduce((sum, size) => sum + size, 0);
+            const transient = [...progressByPart.values()].reduce(
+              (sum, size) => sum + size,
+              0,
+            );
             const progress = Math.min(
               99,
-              Math.floor(((state.uploadedBytes + transient) / state.totalBytes) * 100),
+              Math.floor(
+                ((state.uploadedBytes + transient) / state.totalBytes) * 100,
+              ),
             );
             state.progress = progress;
             onProgress?.(progress, state.uploadedBytes + transient);
@@ -240,7 +259,10 @@ export function useChunkUpload() {
         state.uploadedBytes += confirmedSize;
         state.uploadedParts += 1;
         progressByPart.delete(partNumber);
-        state.progress = calculateProgress(state.uploadedBytes, state.totalBytes);
+        state.progress = calculateProgress(
+          state.uploadedBytes,
+          state.totalBytes,
+        );
         onProgress?.(state.progress, state.uploadedBytes);
         persistCurrentTask();
       }
@@ -271,7 +293,9 @@ export function useChunkUpload() {
       } catch (error) {
         lastError = error;
         if (attempt < DEFAULT_RETRY_TIMES)
-          await new Promise((resolve) => window.setTimeout(resolve, 2 ** attempt * 300));
+          await new Promise((resolve) =>
+            window.setTimeout(resolve, 2 ** attempt * 300),
+          );
       }
     }
     throw lastError ?? new Error("分片上传失败");
@@ -279,12 +303,22 @@ export function useChunkUpload() {
 
   function computeFileHash(file: File) {
     return new Promise<string>((resolve, reject) => {
-      const worker = new Worker(new URL("../workers/file-hash.worker.ts", import.meta.url), {
-        type: "module",
-      });
-      worker.onmessage = (event: MessageEvent<{ success: boolean; fileHash?: string; errorMessage?: string }>) => {
+      const worker = new Worker(
+        new URL("../workers/file-hash.worker.ts", import.meta.url),
+        {
+          type: "module",
+        },
+      );
+      worker.onmessage = (
+        event: MessageEvent<{
+          success: boolean;
+          fileHash?: string;
+          errorMessage?: string;
+        }>,
+      ) => {
         worker.terminate();
-        if (event.data.success && event.data.fileHash) resolve(event.data.fileHash);
+        if (event.data.success && event.data.fileHash)
+          resolve(event.data.fileHash);
         else reject(new Error(event.data.errorMessage ?? "文件哈希计算失败"));
       };
       worker.onerror = (event) => {
@@ -311,11 +345,15 @@ export function useChunkUpload() {
   }
 
   function persistUploadTask(snapshot: PersistedUploadTaskSnapshot) {
-    window.localStorage.setItem(UPLOAD_TASK_STORAGE_KEY, JSON.stringify(snapshot));
+    window.localStorage.setItem(
+      UPLOAD_TASK_STORAGE_KEY,
+      JSON.stringify(snapshot),
+    );
   }
 
   function clearPersistedTask() {
-    if (typeof window !== "undefined") window.localStorage.removeItem(UPLOAD_TASK_STORAGE_KEY);
+    if (typeof window !== "undefined")
+      window.localStorage.removeItem(UPLOAD_TASK_STORAGE_KEY);
   }
 
   function calculateProgress(uploadedBytes: number, totalBytes: number) {
@@ -343,11 +381,13 @@ export function useChunkUpload() {
 
 function inferMimeType(fileName: string) {
   const extension = fileName.slice(fileName.lastIndexOf(".")).toLowerCase();
-  return {
-    ".pdf": "application/pdf",
-    ".doc": "application/msword",
-    ".docx": "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
-    ".txt": "text/plain",
-    ".md": "text/markdown",
-  }[extension] ?? "application/octet-stream";
+  return (
+    {
+      ".pdf": "application/pdf",
+      ".docx":
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+      ".txt": "text/plain",
+      ".md": "text/markdown",
+    }[extension] ?? "application/octet-stream"
+  );
 }

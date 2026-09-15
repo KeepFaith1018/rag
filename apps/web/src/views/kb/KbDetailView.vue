@@ -157,7 +157,7 @@ function handleFileInput(event: Event) {
 }
 
 function handleFiles(files: FileList | File[]) {
-  const accepted = [".pdf", ".doc", ".docx", ".txt", ".md"];
+  const accepted = [".pdf", ".docx", ".txt", ".md"];
   const valid = Array.from(files).filter((file) => {
     const extension = file.name.slice(file.name.lastIndexOf(".")).toLowerCase();
     if (!accepted.includes(extension)) {
@@ -193,14 +193,17 @@ async function removeDocument(document: KnowledgeBaseDocumentItem) {
   if (!confirmed) return;
   try {
     await documentView.removeDocument(kbId.value, document.id);
-    message.success("文档已删除");
+    message.success("文档已进入删除队列");
     await documentView.fetchKnowledgeBase(kbId.value);
   } catch (error) {
     message.error(resolveErrorMessage(error, "删除文档失败"));
   }
 }
 
-async function updateDocument(document: KnowledgeBaseDocumentItem, currentTitle: string) {
+async function updateDocument(
+  document: KnowledgeBaseDocumentItem,
+  currentTitle: string,
+) {
   const title = window.prompt("请输入新的文档标题", currentTitle)?.trim();
   if (!title || title === currentTitle) return;
   if (title.length > 255) {
@@ -221,7 +224,8 @@ async function downloadDocument(document: KnowledgeBaseDocumentItem) {
     const url = URL.createObjectURL(result.blob);
     const anchor = window.document.createElement("a");
     anchor.href = url;
-    anchor.download = result.fileName || document.originalFilename || document.title;
+    anchor.download =
+      result.fileName || document.originalFilename || document.title;
     anchor.click();
     URL.revokeObjectURL(url);
   } catch (error) {
@@ -526,8 +530,12 @@ function resolveErrorMessage(error: unknown, fallback: string) {
             :queue-progress="uploadQueue.overallProgress.value"
             :queue-busy="uploadQueue.isBusy.value"
             :can-download="kb?.permissions.canDownload === true"
-            :can-delete-any-document="kb?.permissions.canDeleteAnyDocument === true"
-            :can-delete-own-document="kb?.permissions.canDeleteOwnDocument === true"
+            :can-delete-any-document="
+              kb?.permissions.canDeleteAnyDocument === true
+            "
+            :can-delete-own-document="
+              kb?.permissions.canDeleteOwnDocument === true
+            "
             @open-file-picker="openFilePicker"
             @drop-file="handleFiles"
             @pause-all="uploadQueue.pauseAll"
@@ -607,7 +615,7 @@ function resolveErrorMessage(error: unknown, fallback: string) {
       class="hidden"
       type="file"
       multiple
-      accept=".pdf,.doc,.docx,.txt,.md"
+      accept=".pdf,.docx,.txt,.md"
       @change="handleFileInput"
     />
 

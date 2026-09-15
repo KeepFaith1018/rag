@@ -1,7 +1,10 @@
 import 'reflect-metadata';
 import { NestFactory } from '@nestjs/core';
 import { WorkerModule } from './worker.module';
+import { RuntimeConfig } from './platform/config/runtime-config.service';
 import { AppLogger } from './platform/observability/app-logger.service';
+import { RedisService } from './platform/redis/redis.service';
+import { ModelAccessService } from './modules/model-access/model-access.service';
 import {
   shouldIncludeStack,
   writeStartupFailure,
@@ -17,10 +20,13 @@ async function bootstrap() {
     abortOnError: false,
   });
   app.useLogger(app.get(AppLogger));
+  app.get(RuntimeConfig).assertWorkerRequirements();
+  await app.get(RedisService).assertNoEviction();
+  const embedding = await app.get(ModelAccessService).defaultEmbedding();
+  if (!embedding.apiKey || !embedding.baseUrl)
+    throw new Error('Default embedding model credentials are unavailable');
   app.enableShutdownHooks();
-  app
-    .get(AppLogger)
-    .log('Worker context started; no business consumers registered in P1');
+  app.get(AppLogger).log('Document processing worker started');
 }
 
 void bootstrap().catch((error) => {

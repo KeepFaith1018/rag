@@ -106,7 +106,7 @@ function makeStorage(): jest.Mocked<StorageAdapter> {
       .fn()
       .mockResolvedValue(Readable.from([Buffer.from('abc')])),
     deleteObject: jest.fn().mockResolvedValue(undefined),
-    hashObject: jest.fn(),
+    listObjects: jest.fn().mockResolvedValue([]),
   };
 }
 
@@ -350,9 +350,8 @@ describe('文档上传首期状态机', () => {
 });
 
 describe('文档删除故障边界', () => {
-  it('对象删除失败时保留 deleting 状态并返回可重试错误', async () => {
+  it('删除请求只登记自包含 cleanup Outbox，不在 API 请求内删除对象', async () => {
     const storage = makeStorage();
-    storage.deleteObject.mockRejectedValue(new Error('storage unavailable'));
     const document = {
       ...makeSession(),
       id: 31n,
@@ -366,13 +365,31 @@ describe('文档删除故障边界', () => {
       storage_bucket: 'rag-documents',
       storage_key: 'documents/31.txt',
       b_users: { id: 1n, email: 'owner@example.test', full_name: 'Owner' },
+      desired_run: null,
     };
-    const updateMany = jest.fn().mockResolvedValue({ count: 1 });
+    const updateMany = jest.fn((_input: unknown) =>
+      Promise.resolve({ count: 1 }),
+    );
+    const transactionClient = {
+      b_documents: { updateMany },
+      $queryRaw: jest.fn().mockResolvedValue([{ id: 1n }]),
+      b_document_processing_tasks: {
+        updateMany: jest.fn().mockResolvedValue({ count: 0 }),
+      },
+      b_outbox_events: { upsert: jest.fn().mockResolvedValue({}) },
+    };
     const prisma = {
       b_documents: {
         findFirst: jest.fn().mockResolvedValue(document),
         updateMany,
       },
+      b_document_processing_runs: { findMany: jest.fn().mockResolvedValue([]) },
+      $transaction: jest
+        .fn()
+        .mockImplementation(
+          (callback: (tx: typeof transactionClient) => unknown) =>
+            callback(transactionClient),
+        ),
     } as unknown as PrismaService;
     const service = new DocumentsService(
       prisma,
@@ -380,11 +397,15 @@ describe('文档删除故障边界', () => {
       storage,
     );
 
-    await expect(service.remove(1n, '9', '31')).rejects.toMatchObject({
-      code: ErrorCode.SERVICE_UNAVAILABLE,
+    await expect(service.remove(1n, '9', '31')).resolves.toEqual({
+      kbId: '9',
+      documentId: '31',
+      deleting: true,
+      deleted: false,
     });
-    expect(updateMany).toHaveBeenCalledWith(
-      expect.objectContaining({ data: { status: 'deleting' } }),
-    );
+    expect(updateMany.mock.calls[0]?.[0]).toMatchObject({
+      data: { status: 'deleting' },
+    });
+    expect(storage.deleteObject.mock.calls).toHaveLength(0);
   });
 });

@@ -39,6 +39,25 @@ describe('OpenAPI contract inventory', () => {
     '/knowledge-bases/{kbId}/join': ['post'],
     '/knowledge-bases/{kbId}/leave': ['post'],
     '/knowledge-bases/{kbId}/members/{memberUserId}': ['delete', 'patch'],
+    '/knowledge-bases/{kbId}/uploads': ['post'],
+    '/knowledge-bases/{kbId}/uploads/{sessionId}': ['get', 'delete'],
+    '/knowledge-bases/{kbId}/uploads/{sessionId}/parts/{partNumber}/sign': [
+      'post',
+    ],
+    '/knowledge-bases/{kbId}/uploads/{sessionId}/parts/{partNumber}/confirm': [
+      'post',
+    ],
+    '/knowledge-bases/{kbId}/uploads/{sessionId}/complete': ['post'],
+    '/knowledge-bases/{kbId}/documents': ['get'],
+    '/knowledge-bases/{kbId}/documents/processing/stream': ['get'],
+    '/knowledge-bases/{kbId}/documents/{documentId}': [
+      'get',
+      'patch',
+      'delete',
+    ],
+    '/knowledge-bases/{kbId}/documents/{documentId}/processing': ['get'],
+    '/knowledge-bases/{kbId}/documents/{documentId}/preview': ['get'],
+    '/knowledge-bases/{kbId}/documents/{documentId}/download': ['get'],
   };
 
   it('declares every current controller route exactly once', () => {

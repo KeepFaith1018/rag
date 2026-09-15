@@ -47,6 +47,14 @@ export type KnowledgeBaseDocumentStatus =
   | "deleting"
   | "deleted";
 
+export type KnowledgeBaseDocumentProcessingStage =
+  | "parsing"
+  | "chunking"
+  | "embedding"
+  | "indexing"
+  | "ready"
+  | "failed";
+
 /**
  * 面向前端的知识库权限标记。
  */
@@ -339,8 +347,12 @@ export interface KnowledgeBaseDocumentItem {
   fileSize: string;
   mimeType: string | null;
   status: KnowledgeBaseDocumentStatus | string;
+  processingStage: KnowledgeBaseDocumentProcessingStage;
   processingDeferred: boolean;
   searchable: boolean;
+  servingPreviousVersion: boolean;
+  processingErrorCode: string | null;
+  processingErrorMessage: string | null;
   createdAt: string;
   updatedAt: string;
   uploader: KnowledgeBaseDocumentUploader | null;
@@ -359,3 +371,10 @@ export interface KnowledgeBaseDocumentListResponse {
  * 文档详情响应。
  */
 export type KnowledgeBaseDocumentDetail = KnowledgeBaseDocumentItem;
+
+export interface DocumentProcessingChangedEvent {
+  schemaVersion: 0 | 1;
+  eventType: "document_processing_changed";
+  documentId: string;
+  updatedAt: string;
+}

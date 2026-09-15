@@ -26,10 +26,12 @@ describe('access token identity boundary', () => {
       { sub: '9007199254740993', sid: 'session', typ: 'access' },
       { secret: config.identity.jwtSecret, expiresIn: 60 },
     );
-    await expect(service.resolveAccessToken(token)).resolves.toEqual({
+    const principal = await service.resolveAccessToken(token);
+    expect(principal).toMatchObject({
       userId: '9007199254740993',
       sessionId: 'session',
     });
+    expect(typeof principal.expiresAt).toBe('number');
     expect(sessions.findFirst).toHaveBeenCalledTimes(1);
   });
 

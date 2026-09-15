@@ -1,19 +1,12 @@
 export const MAX_DOCUMENT_FILE_SIZE = 20 * 1024 * 1024;
 
-export const DOCUMENT_EXTENSIONS = [
-  '.pdf',
-  '.doc',
-  '.docx',
-  '.txt',
-  '.md',
-] as const;
+export const DOCUMENT_EXTENSIONS = ['.pdf', '.docx', '.txt', '.md'] as const;
 
 export const DOCUMENT_MIME_TYPES: Record<
   (typeof DOCUMENT_EXTENSIONS)[number],
   string[]
 > = {
   '.pdf': ['application/pdf'],
-  '.doc': ['application/msword', 'application/octet-stream'],
   '.docx': [
     'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     'application/zip',
@@ -32,7 +25,6 @@ export function defaultMimeType(extension: string) {
   return (
     {
       '.pdf': 'application/pdf',
-      '.doc': 'application/msword',
       '.docx':
         'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
       '.txt': 'text/plain',

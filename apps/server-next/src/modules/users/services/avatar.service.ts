@@ -4,6 +4,7 @@ import { PrismaService } from '../../../platform/database/prisma.service';
 import { RuntimeConfig } from '../../../platform/config/runtime-config.service';
 import {
   STORAGE_ADAPTER,
+  StorageError,
   type StorageAdapter,
 } from '../../../platform/object-storage/storage-adapter';
 import { BusinessError } from '../../../shared/errors/business-error';
@@ -97,7 +98,9 @@ export class AvatarService {
         key,
       });
       return new StreamableFile(stream, { type: format.mime });
-    } catch {
+    } catch (error) {
+      if (error instanceof StorageError && error.storageKind !== 'not-found')
+        throw error;
       throw new BusinessError(ErrorCode.NOT_FOUND, '头像不存在', 'not-found');
     }
   }
